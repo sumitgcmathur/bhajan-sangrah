@@ -50,6 +50,7 @@ function main() {
     const enriched = bhajans.map((b, i) => ({
       title: b.title,
       tarz: b.tarz,
+      group: b.group,
       swarachit: b.swarachit,
       lyrics: b.lyrics,
       id: b.id || anchorId(section.slug, b.title, i),

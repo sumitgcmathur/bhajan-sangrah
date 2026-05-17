@@ -83,6 +83,25 @@ function renderSectionIndexList(sections, base) {
   return `<ul class="content-index">${items}</ul>`;
 }
 
+function bhajansByGroup(bhajans) {
+  const groups = [];
+  const seen = new Map();
+  for (const b of bhajans) {
+    const title = b.group || '';
+    if (!seen.has(title)) {
+      const entry = { title, items: [] };
+      seen.set(title, entry);
+      groups.push(entry);
+    }
+    seen.get(title).items.push(b);
+  }
+  return groups;
+}
+
+function sectionUsesGroups(section, bhajans) {
+  return section.grouped === true || section.grouped === 'true' || bhajans.some((b) => b.group);
+}
+
 function renderBhajanIndex(bhajans, section) {
   const items = bhajans
     .map((b, i) => {
@@ -93,6 +112,37 @@ function renderBhajanIndex(bhajans, section) {
   return `<nav class="bhajan-index" aria-label="भजन सूची">
   <ul class="content-index">${items}</ul>
 </nav>`;
+}
+
+function renderGroupedBhajanIndex(groups) {
+  const blocks = groups
+    .filter((g) => g.title)
+    .map((g) => {
+      const items = g.items
+        .map((b) => `<li><a href="#${b.id}">${escapeHtml(b.title)}</a></li>`)
+        .join('\n');
+      return `<section class="index-group">
+  <h2 class="index-group__title">${escapeHtml(g.title)}</h2>
+  <ul class="content-index content-index--nested">${items}</ul>
+</section>`;
+    })
+    .join('\n');
+  return `<nav class="bhajan-index bhajan-index--grouped" aria-label="भजन सूची">
+${blocks}
+</nav>`;
+}
+
+function renderBhajanCard(b, section, index, showSwarachitBadge) {
+  const id = b.id || anchorId(section.slug, b.title, index);
+  const tarz = b.tarz
+    ? `<p class="bhajan-tarz"><span class="label">तर्ज</span> ${escapeHtml(b.tarz)}</p>`
+    : '';
+  const sw = showSwarachitBadge && b.swarachit ? '<span class="bhajan-badge">स्वरचित</span>' : '';
+  return `<article class="bhajan-card" id="${id}">
+  <h3 class="bhajan-card__title">${escapeHtml(b.title)}${sw}</h3>
+  ${tarz}
+  <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics)}</div>
+</article>`;
 }
 
 function renderBannerBox(src, alt) {
@@ -132,26 +182,39 @@ function renderIndex(config, sections, base) {
 }
 
 function renderSectionPage(section, bhajans, config, sections, base) {
-  const articles = bhajans
-    .map((b, i) => {
-      const id = b.id || anchorId(section.slug, b.title, i);
-      const tarz = b.tarz
-        ? `<p class="bhajan-tarz"><span class="label">तर्ज</span> ${escapeHtml(b.tarz)}</p>`
-        : '';
-      const sw = b.swarachit ? '<span class="bhajan-badge">स्वरचित</span>' : '';
-      return `<article class="bhajan-card" id="${id}">
-  <h2 class="bhajan-card__title">${escapeHtml(b.title)}${sw}</h2>
-  ${tarz}
-  <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics)}</div>
-</article>`;
-    })
-    .join('\n');
+  const showSwarachitBadge = section.slug !== 'swarachit';
+  const grouped = sectionUsesGroups(section, bhajans);
+  const groups = grouped ? bhajansByGroup(bhajans) : [];
+
+  let indexHtml;
+  let articlesHtml;
+  if (grouped && groups.some((g) => g.title)) {
+    indexHtml = renderGroupedBhajanIndex(groups);
+    let bhajanIndex = 0;
+    articlesHtml = groups
+      .filter((g) => g.title)
+      .map((g) => {
+        const cards = g.items
+          .map((b) => renderBhajanCard(b, section, bhajanIndex++, showSwarachitBadge))
+          .join('\n');
+        return `<section class="bhajan-group">
+  <h2 class="bhajan-group__title">${escapeHtml(g.title)}</h2>
+  <div class="bhajan-list">${cards}</div>
+</section>`;
+      })
+      .join('\n');
+  } else {
+    indexHtml = renderBhajanIndex(bhajans, section);
+    articlesHtml = `<div class="bhajan-list">${bhajans
+      .map((b, i) => renderBhajanCard(b, section, i, showSwarachitBadge))
+      .join('\n')}</div>`;
+  }
 
   const body = `${renderSectionBanner(section, base)}
 <main class="content-main content-main--section">
   <h1 class="section-title">${escapeHtml(section.title)}</h1>
-  ${renderBhajanIndex(bhajans, section)}
-  <div class="bhajan-list">${articles}</div>
+  ${indexHtml}
+  ${articlesHtml}
 </main>`;
 
   return renderPage({

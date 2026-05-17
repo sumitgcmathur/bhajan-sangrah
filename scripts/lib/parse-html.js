@@ -43,7 +43,36 @@ function parseChunk(chunk, title, swarachitDefault) {
   return doc;
 }
 
+function parseSwarachitBhajans(html) {
+  const groups = collectHeadings(html, 'h2');
+  if (!groups.length) return null;
+  const bhajans = [];
+  for (let g = 0; g < groups.length; g++) {
+    const groupTitle = groups[g].title;
+    const chunkStart = groups[g].end;
+    const chunkEnd = groups[g + 1] ? groups[g + 1].index : html.length;
+    const chunk = html.slice(chunkStart, chunkEnd);
+    let matches = collectHeadings(chunk, 'h1');
+    if (!matches.length) matches = collectHeadings(chunk, 'h3');
+    for (let i = 0; i < matches.length; i++) {
+      const { title, end } = matches[i];
+      if (!title || title === groupTitle) continue;
+      const songEnd = matches[i + 1] ? matches[i + 1].index : chunk.length;
+      const doc = parseChunk(chunk.slice(end, songEnd), title, true);
+      if (doc) {
+        doc.group = groupTitle;
+        bhajans.push(doc);
+      }
+    }
+  }
+  return bhajans.length ? bhajans : null;
+}
+
 function parseBhajans(html, sectionTitle, options = {}) {
+  if (options.swarachitSection) {
+    const grouped = parseSwarachitBhajans(html);
+    if (grouped) return grouped;
+  }
   const swDefault = options.swarachitSection === true;
   let matches = collectHeadings(html, 'h1');
   let skipFirst = true;
