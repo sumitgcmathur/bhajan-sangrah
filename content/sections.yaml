@@ -1,0 +1,75 @@
+# Master section index — edit via add-section.js or directly
+base_url: /bhajan-sangrah/
+site_title: भजन संग्रह
+
+sections:
+  - slug: aarti
+    folder: aarti
+    google_path: Aarti
+    title: आरती
+    banner: assets/banners/aarti.jpg
+  - slug: shiv
+    folder: shiv
+    google_path: shiv
+    title: शिव भजन
+    banner: assets/banners/shiv.jpg
+  - slug: ram
+    folder: ram
+    google_path: ram
+    title: राम भजन
+    banner: assets/banners/ram.jpg
+  - slug: krishna
+    folder: krishna
+    google_path: krishna
+    title: कृष्ण भजन
+    banner: assets/banners/krishna.jpg
+  - slug: ambe
+    folder: ambe
+    google_path: ambe
+    title: अम्बे भजन
+    banner: assets/banners/ambe.jpg
+  - slug: ambikacharitra
+    folder: ambikacharitra
+    google_path: AmbikaCharitra
+    title: अंबिका चरित्र (शुंभ निशुंभ वध कथा)
+    banner: assets/banners/ambikacharitra.jpg
+  - slug: bhairav
+    folder: bhairav
+    google_path: bhairav
+    title: भैरव गान
+    banner: assets/banners/bhairav.jpg
+  - slug: hanuman
+    folder: hanuman
+    google_path: hanuman
+    title: हनुमान भजन
+    banner: assets/banners/hanuman.jpg
+  - slug: ganpati
+    folder: ganpati
+    google_path: ganpati
+    title: गणपति भजन
+    banner: assets/banners/ganpati.jpg
+  - slug: horiya
+    folder: horiya
+    google_path: horiya
+    title: होरिया
+    banner: assets/banners/horiya.jpg
+  - slug: misc
+    folder: misc
+    google_path: misc
+    title: विविध भजन
+    banner: assets/banners/misc.jpg
+  - slug: navratri
+    folder: navratri
+    google_path: navratri
+    title: नवरात्री पूजन
+    banner: assets/banners/navratri.jpg
+  - slug: mooltatva
+    folder: mooltatva
+    google_path: mooltatva
+    title: मूल तत्त्व भजन
+    banner: assets/banners/mooltatva.jpg
+  - slug: swarachit
+    folder: swarachit
+    google_path: swarachit
+    title: स्वरचित भजन
+    banner: assets/banners/swarachit.jpg
