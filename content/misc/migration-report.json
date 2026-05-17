@@ -1,0 +1,140 @@
+{
+  "generatedAt": "2026-05-17T23:28:16.637Z",
+  "section": "misc",
+  "backup": "C:/Sumit/coding/bhajan-sangrah/content-backup-20260517-123521/misc",
+  "total": 7,
+  "summary": {
+    "high": 2,
+    "medium": 2,
+    "low": 3,
+    "manualReview": 7,
+    "strategies": {
+      "verse-end-stanzas": 2,
+      "tail-refrain": 3,
+      "pairs": 2
+    }
+  },
+  "files": [
+    {
+      "file": "content/misc/001-मैली-चादर-ओढ़-के-कैसे.yaml",
+      "title": "मैली चादर ओढ़ के कैसे",
+      "score": 48,
+      "tier": "low",
+      "strategy": "verse-end-stanzas",
+      "backupLines": 20,
+      "proposedLines": 9,
+      "sthayiLines": 1,
+      "paragraphCount": 4,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:4",
+        "possible-content-loss"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/misc/002-अब-सौंप-दिया-इस-जीवन-का.yaml",
+      "title": "अब सौंप दिया इस जीवन का",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "verse-end-stanzas",
+      "backupLines": 14,
+      "proposedLines": 7,
+      "sthayiLines": 1,
+      "paragraphCount": 6,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "possible-content-loss"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/misc/003-ओ,-पालनहारे,-निर्गुण-और-न्यारे.yaml",
+      "title": "ओ, पालनहारे, निर्गुण और न्यारे",
+      "score": 25,
+      "tier": "low",
+      "strategy": "tail-refrain",
+      "backupLines": 29,
+      "proposedLines": 3,
+      "sthayiLines": 1,
+      "paragraphCount": 2,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "possible-content-loss"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/misc/004-उड़-जाएगा-हंस-अकेला.yaml",
+      "title": "उड़ जाएगा हंस अकेला",
+      "score": 80,
+      "tier": "high",
+      "strategy": "pairs",
+      "backupLines": 8,
+      "proposedLines": 8,
+      "sthayiLines": 1,
+      "paragraphCount": 4,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:3"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/misc/005-सुमिरन-कर-ले-मेरे-मना.yaml",
+      "title": "सुमिरन कर ले मेरे मना",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "tail-refrain",
+      "backupLines": 10,
+      "proposedLines": 4,
+      "sthayiLines": 1,
+      "paragraphCount": 2,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:1",
+        "possible-content-loss"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/misc/006-काया-नहीं-तेरी,-नहीं-तेरी.yaml",
+      "title": "काया नहीं तेरी, नहीं तेरी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "pairs",
+      "backupLines": 9,
+      "proposedLines": 9,
+      "sthayiLines": 1,
+      "paragraphCount": 4,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:4"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/misc/007-पता-नहीं-किस-रूप-में-आकर,-नारायण-मिल-जाएगा.yaml",
+      "title": "पता नहीं किस रूप में आकर, नारायण मिल जाएगा",
+      "score": 40,
+      "tier": "low",
+      "strategy": "tail-refrain",
+      "backupLines": 25,
+      "proposedLines": 5,
+      "sthayiLines": 1,
+      "paragraphCount": 4,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "possible-content-loss"
+      ],
+      "manualReview": true
+    }
+  ]
+}
