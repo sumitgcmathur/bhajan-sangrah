@@ -91,6 +91,66 @@ function createSectionMigrator(options = {}) {
     };
   }
 
+  /** Scraped chorus echo on its own line, e.g. `॥ कृष्ण जिनका नाम है...॥` */
+  function isQuatrainEchoLine(line) {
+    const t = String(line || '').trim();
+    if (!/^॥/.test(t)) return false;
+    if (/\.{3,}|…/.test(t)) return true;
+    const inner = t.replace(/^॥\s*/, '').replace(/॥\s*$/, '').trim();
+    return inner.length < 52 && !/।/.test(inner);
+  }
+
+  function shouldUseQuatrainRefrain(lines) {
+    const echoes = lines.filter(isQuatrainEchoLine).length;
+    if (echoes < 2) return false;
+    const content = lines.filter((l) => !isQuatrainEchoLine(l));
+    if (content.length < 8 || content.length % 4 !== 0) return false;
+    const closes = content.filter((l) => /प्रणाम है[।॥]?/i.test(l)).length;
+    return closes >= 3;
+  }
+
+  function joinHalfLines(a, b) {
+    const left = cleanedLine(a)
+      .replace(/[।॥]\s*$/, '')
+      .trim();
+    if (!b) return cleanedLine(a);
+    const right = cleanedLine(b);
+    if (left.endsWith(',')) return `${left} ${right}`;
+    return `${left}, ${right}`;
+  }
+
+  function formatQuatrainBlock(lines) {
+    const rows = [];
+    for (let i = 0; i < lines.length; i += 2) {
+      rows.push(joinHalfLines(lines[i], lines[i + 1]));
+    }
+    return rows.join('\n');
+  }
+
+  function quatrainKey(quatrain) {
+    return quatrain.map((l) => cleanedLine(l)).join('|');
+  }
+
+  /** Four-line antaras; omit standalone `॥ ……` echo lines between them. */
+  function migrateQuatrainRefrain(lines) {
+    const quatrains = [];
+    const content = lines.filter((l) => !isQuatrainEchoLine(l));
+    for (let i = 0; i < content.length; i += 4) {
+      quatrains.push(content.slice(i, i + 4));
+    }
+    if (quatrains.length < 2) return null;
+
+    if (quatrains.length >= 6 && quatrainKey(quatrains[0]) === quatrainKey(quatrains[quatrains.length - 1])) {
+      quatrains.pop();
+    }
+
+    return {
+      strategy: 'quatrain-refrain',
+      sthayi: formatQuatrainBlock(quatrains[0]),
+      paragraphs: quatrains.slice(1).map(formatQuatrainBlock),
+    };
+  }
+
   /** Quatrain + `॥ …` echo lines (e.g. Krishna film bhajans). */
   function migrateEchoStanzas(lines) {
     const echoCount = lines.filter((l) => /^॥/.test(String(l).trim())).length;
@@ -296,6 +356,7 @@ function createSectionMigrator(options = {}) {
 
     if (shouldUseCouplets(lines)) return 'couplets';
     if (shouldUseOpeningAntaras(lines)) return 'opening-antaras';
+    if (shouldUseQuatrainRefrain(lines)) return 'quatrain-refrain';
 
     const ambeShape = detectAmbeShape(lines);
     if (
@@ -350,6 +411,10 @@ function createSectionMigrator(options = {}) {
     if (shape === 'opening-antaras') {
       return migrateOpeningAntaras(cleaned);
     }
+    if (shape === 'quatrain-refrain') {
+      const migrated = migrateQuatrainRefrain(cleaned);
+      if (migrated) return migrated;
+    }
     if (shape === 'hook-stanzas') {
       return migrateHookStanzas(cleaned);
     }
@@ -360,12 +425,15 @@ function createSectionMigrator(options = {}) {
       return migrateRefrainLines(cleaned);
     }
 
+    const quatrain = migrateQuatrainRefrain(cleaned);
+    if (quatrain) return quatrain;
+
     const echoStanzas = migrateEchoStanzas(cleaned);
-    if (echoStanzas) return echoStanzas;
+    if (echoStanzas && !shouldUseQuatrainRefrain(cleaned)) return echoStanzas;
 
     const migrated = migrateAmbeLines(cleaned, title);
-    if (migrated.strategy === 'refrain-blocks') {
-      const fixed = migrateEchoStanzas(cleaned);
+    if (migrated.strategy === 'refrain-blocks' && shouldUseQuatrainRefrain(cleaned)) {
+      const fixed = migrateQuatrainRefrain(cleaned);
       if (fixed) return fixed;
     }
     const structuredRefrain =

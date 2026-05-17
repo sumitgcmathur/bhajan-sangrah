@@ -1,87 +1,66 @@
 {
-  "generatedAt": "2026-05-17T21:20:13.636Z",
+  "generatedAt": "2026-05-17T21:56:40.954Z",
   "section": "krishna",
   "backup": "C:/Sumit/coding/bhajan-sangrah/content-backup-20260517-123521/krishna",
   "total": 25,
   "summary": {
-    "high": 10,
+    "high": 2,
     "medium": 13,
-    "low": 2,
-    "manualReview": 24,
+    "low": 10,
+    "manualReview": 25,
     "strategies": {
-      "echo-stanzas": 1,
-      "refrain-stanza": 2,
-      "numbered-stanzas": 1,
-      "ellipsis-stanzas": 3,
-      "refrain-blocks": 5,
-      "pairs": 8,
+      "quatrain-refrain": 21,
+      "pairs": 1,
       "hook-stanzas": 1,
-      "refrain-every-4": 1,
-      "couplets": 2,
-      "refrain-every-3": 1
+      "couplets": 2
     }
   },
   "files": [
     {
       "file": "content/krishna/001-कृष्ण-जिनका-नाम-है.yaml",
       "title": "कृष्ण जिनका नाम है",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "echo-stanzas",
+      "score": 40,
+      "tier": "low",
+      "strategy": "quatrain-refrain",
       "backupLines": 28,
-      "proposedLines": 28,
-      "sthayiLines": 9,
+      "proposedLines": 10,
+      "sthayiLines": 2,
       "paragraphCount": 4,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:4"
+        "multiline-paragraphs:4",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/002-अच्चुतम-केशवं-कृष्ण-दामोदरं.yaml",
       "title": "अच्चुतम केशवं कृष्ण दामोदरं",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "refrain-stanza",
+      "score": 40,
+      "tier": "low",
+      "strategy": "quatrain-refrain",
       "backupLines": 26,
-      "proposedLines": 26,
-      "sthayiLines": 1,
-      "paragraphCount": 7,
+      "proposedLines": 13,
+      "sthayiLines": 2,
+      "paragraphCount": 6,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:6"
+        "multiline-paragraphs:5",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/003-अधरं-मधुरं-वदनं-मधुरं.yaml",
       "title": "अधरं मधुरं वदनं मधुरं",
-      "score": 80,
-      "tier": "high",
-      "strategy": "numbered-stanzas",
-      "backupLines": 16,
-      "proposedLines": 16,
-      "sthayiLines": 2,
-      "paragraphCount": 7,
-      "tarz": null,
-      "flags": [
-        "no-tarz-field",
-        "multiline-paragraphs:7"
-      ],
-      "manualReview": true
-    },
-    {
-      "file": "content/krishna/004-हे-गोविन्द-हे-गोपाल.yaml",
-      "title": "हे गोविन्द हे गोपाल",
       "score": 60,
       "tier": "medium",
-      "strategy": "ellipsis-stanzas",
-      "backupLines": 11,
+      "strategy": "quatrain-refrain",
+      "backupLines": 16,
       "proposedLines": 8,
-      "sthayiLines": 1,
+      "sthayiLines": 2,
       "paragraphCount": 3,
       "tarz": null,
       "flags": [
@@ -92,15 +71,33 @@
       "manualReview": true
     },
     {
+      "file": "content/krishna/004-हे-गोविन्द-हे-गोपाल.yaml",
+      "title": "हे गोविन्द हे गोपाल",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "quatrain-refrain",
+      "backupLines": 11,
+      "proposedLines": 6,
+      "sthayiLines": 2,
+      "paragraphCount": 2,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:2",
+        "possible-content-loss"
+      ],
+      "manualReview": true
+    },
+    {
       "file": "content/krishna/005-तुम-मोरी-राखो-लाज-हरि.yaml",
       "title": "तुम मोरी राखो लाज हरि",
       "score": 60,
       "tier": "medium",
-      "strategy": "ellipsis-stanzas",
+      "strategy": "quatrain-refrain",
       "backupLines": 13,
-      "proposedLines": 9,
-      "sthayiLines": 1,
-      "paragraphCount": 4,
+      "proposedLines": 7,
+      "sthayiLines": 2,
+      "paragraphCount": 3,
       "tarz": null,
       "flags": [
         "no-tarz-field",
@@ -112,170 +109,179 @@
     {
       "file": "content/krishna/006-लाज-राखो-गिरधारी.yaml",
       "title": "लाज राखो गिरधारी",
-      "score": 80,
-      "tier": "high",
-      "strategy": "refrain-blocks",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "quatrain-refrain",
       "backupLines": 12,
-      "proposedLines": 12,
-      "sthayiLines": 1,
-      "paragraphCount": 1,
+      "proposedLines": 6,
+      "sthayiLines": 2,
+      "paragraphCount": 2,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:1"
+        "multiline-paragraphs:2",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/007-दीनन-दुख-हरन-देव.yaml",
       "title": "दीनन दुख हरन देव",
-      "score": 80,
-      "tier": "high",
-      "strategy": "pairs",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "quatrain-refrain",
       "backupLines": 9,
-      "proposedLines": 9,
-      "sthayiLines": 1,
-      "paragraphCount": 4,
+      "proposedLines": 5,
+      "sthayiLines": 2,
+      "paragraphCount": 2,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:4"
+        "multiline-paragraphs:1",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/008-श्री-राधे-गोविंदा.yaml",
       "title": "श्री राधे गोविंदा",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "refrain-stanza",
+      "score": 40,
+      "tier": "low",
+      "strategy": "quatrain-refrain",
       "backupLines": 22,
-      "proposedLines": 22,
-      "sthayiLines": 1,
-      "paragraphCount": 7,
+      "proposedLines": 11,
+      "sthayiLines": 2,
+      "paragraphCount": 5,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:7"
+        "multiline-paragraphs:4",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/009-फूलों-में-सज-रहे-हैं.yaml",
       "title": "फूलों में सज रहे हैं",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "refrain-blocks",
+      "score": 40,
+      "tier": "low",
+      "strategy": "quatrain-refrain",
       "backupLines": 25,
-      "proposedLines": 25,
-      "sthayiLines": 1,
-      "paragraphCount": 7,
+      "proposedLines": 13,
+      "sthayiLines": 2,
+      "paragraphCount": 6,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:7"
+        "multiline-paragraphs:5",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/010-तन-के-तम्बूरे-में-दो.yaml",
       "title": "तन के तम्बूरे में दो",
-      "score": 50,
+      "score": 30,
       "tier": "low",
-      "strategy": "refrain-blocks",
+      "strategy": "quatrain-refrain",
       "backupLines": 36,
-      "proposedLines": 36,
-      "sthayiLines": 1,
-      "paragraphCount": 6,
+      "proposedLines": 18,
+      "sthayiLines": 2,
+      "paragraphCount": 8,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:6"
+        "multiline-paragraphs:8",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/011-ऐसी-लागी-लगन.yaml",
       "title": "ऐसी लागी लगन",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "refrain-blocks",
+      "score": 40,
+      "tier": "low",
+      "strategy": "quatrain-refrain",
       "backupLines": 25,
-      "proposedLines": 25,
-      "sthayiLines": 1,
-      "paragraphCount": 3,
+      "proposedLines": 13,
+      "sthayiLines": 2,
+      "paragraphCount": 6,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:3"
+        "multiline-paragraphs:5",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/012-वो-काला-एक-बांसुरी-वाला.yaml",
       "title": "वो काला एक बांसुरी वाला",
-      "score": 80,
-      "tier": "high",
-      "strategy": "pairs",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "quatrain-refrain",
       "backupLines": 11,
-      "proposedLines": 11,
-      "sthayiLines": 1,
-      "paragraphCount": 5,
+      "proposedLines": 6,
+      "sthayiLines": 2,
+      "paragraphCount": 2,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:5"
+        "multiline-paragraphs:2",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/013-श्याम-पिया-मोरे-रंग-दे-चुनरिया.yaml",
       "title": "श्याम पिया मोरे रंग दे चुनरिया",
-      "score": 65,
-      "tier": "medium",
-      "strategy": "pairs",
+      "score": 45,
+      "tier": "low",
+      "strategy": "quatrain-refrain",
       "backupLines": 14,
-      "proposedLines": 14,
-      "sthayiLines": 1,
-      "paragraphCount": 7,
+      "proposedLines": 7,
+      "sthayiLines": 2,
+      "paragraphCount": 3,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:6"
+        "multiline-paragraphs:2",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/014-मैया-मोरी-मैं-नहिं-माखन-खायो-।.yaml",
       "title": "मैया मोरी मैं नहिं माखन खायो ।",
-      "score": 53,
+      "score": 33,
       "tier": "low",
-      "strategy": "pairs",
+      "strategy": "quatrain-refrain",
       "backupLines": 17,
-      "proposedLines": 17,
-      "sthayiLines": 1,
-      "paragraphCount": 8,
+      "proposedLines": 9,
+      "sthayiLines": 2,
+      "paragraphCount": 4,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:8"
+        "multiline-paragraphs:3",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/015-रानी-तेरो-चिरजीयो-गोपाल-।.yaml",
       "title": "रानी तेरो चिरजीयो गोपाल ।",
-      "score": 65,
-      "tier": "medium",
-      "strategy": "pairs",
+      "score": 45,
+      "tier": "low",
+      "strategy": "quatrain-refrain",
       "backupLines": 6,
-      "proposedLines": 6,
-      "sthayiLines": 1,
-      "paragraphCount": 3,
+      "proposedLines": 3,
+      "sthayiLines": 2,
+      "paragraphCount": 1,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:2"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
@@ -301,15 +307,15 @@
       "title": "बाट निहारे घनश्याम",
       "score": 74,
       "tier": "medium",
-      "strategy": "ellipsis-stanzas",
+      "strategy": "quatrain-refrain",
       "backupLines": 11,
-      "proposedLines": 7,
-      "sthayiLines": 1,
-      "paragraphCount": 3,
+      "proposedLines": 6,
+      "sthayiLines": 2,
+      "paragraphCount": 2,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:3",
+        "multiline-paragraphs:2",
         "possible-content-loss"
       ],
       "manualReview": true
@@ -334,33 +340,35 @@
     {
       "file": "content/krishna/019-मेरे-बांके-बिहारी-लाल.yaml",
       "title": "मेरे बांके बिहारी लाल",
-      "score": 80,
-      "tier": "high",
-      "strategy": "refrain-every-4",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "quatrain-refrain",
       "backupLines": 14,
-      "proposedLines": 14,
-      "sthayiLines": 1,
-      "paragraphCount": 4,
+      "proposedLines": 7,
+      "sthayiLines": 2,
+      "paragraphCount": 3,
       "tarz": "घुँघुरु टूट गए",
       "flags": [
-        "multiline-paragraphs:3"
+        "multiline-paragraphs:2",
+        "possible-content-loss"
       ],
-      "manualReview": false
+      "manualReview": true
     },
     {
       "file": "content/krishna/020-जय-राधा-माधव.yaml",
       "title": "जय राधा माधव",
-      "score": 80,
-      "tier": "high",
-      "strategy": "pairs",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "quatrain-refrain",
       "backupLines": 8,
-      "proposedLines": 8,
-      "sthayiLines": 1,
-      "paragraphCount": 4,
+      "proposedLines": 4,
+      "sthayiLines": 2,
+      "paragraphCount": 1,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:3"
+        "multiline-paragraphs:1",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
@@ -384,34 +392,36 @@
     {
       "file": "content/krishna/022-तुम-ढूंढो-मुझे-गोपाल.yaml",
       "title": "तुम ढूंढो मुझे गोपाल",
-      "score": 68,
-      "tier": "medium",
-      "strategy": "refrain-blocks",
+      "score": 48,
+      "tier": "low",
+      "strategy": "quatrain-refrain",
       "backupLines": 18,
-      "proposedLines": 18,
-      "sthayiLines": 1,
-      "paragraphCount": 2,
+      "proposedLines": 9,
+      "sthayiLines": 2,
+      "paragraphCount": 4,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:2"
+        "multiline-paragraphs:3",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/krishna/023-हे,-कृष्ण-गोपाल-हरी.yaml",
       "title": "हे, कृष्ण गोपाल हरी",
-      "score": 80,
-      "tier": "high",
-      "strategy": "pairs",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "quatrain-refrain",
       "backupLines": 14,
-      "proposedLines": 12,
-      "sthayiLines": 1,
-      "paragraphCount": 6,
+      "proposedLines": 7,
+      "sthayiLines": 2,
+      "paragraphCount": 3,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:5"
+        "multiline-paragraphs:2",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
@@ -435,17 +445,18 @@
     {
       "file": "content/krishna/025-अखियाँ-हरी-दर्शन-की-प्यासी.yaml",
       "title": "अखियाँ हरी दर्शन की प्यासी",
-      "score": 80,
-      "tier": "high",
-      "strategy": "refrain-every-3",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "quatrain-refrain",
       "backupLines": 9,
-      "proposedLines": 9,
-      "sthayiLines": 1,
-      "paragraphCount": 3,
+      "proposedLines": 5,
+      "sthayiLines": 2,
+      "paragraphCount": 2,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:3"
+        "multiline-paragraphs:1",
+        "possible-content-loss"
       ],
       "manualReview": true
     }
