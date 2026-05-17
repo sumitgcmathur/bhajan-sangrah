@@ -300,6 +300,13 @@ function createSectionMigrator(options = {}) {
     for (const line of lines) {
       const c = cleanedLine(line);
       if (!c) continue;
+      if (isQuatrainEchoLine(line)) {
+        if (buf.length) {
+          blocks.push(buf);
+          buf = [];
+        }
+        continue;
+      }
       buf.push(line);
       if (/॥\s*$/.test(c)) {
         blocks.push(buf);
