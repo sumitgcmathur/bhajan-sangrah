@@ -1,0 +1,144 @@
+{
+  "generatedAt": "2026-05-17T17:34:46.758Z",
+  "backupDir": "C:\\Sumit\\coding\\bhajan-sangrah\\content-backup-20260517-123521\\aarti",
+  "converted": [
+    {
+      "file": "001-ॐ-जय-शिव-ओंकारा.yaml",
+      "title": "ॐ जय शिव ओंकारा",
+      "stats": {
+        "blocks": 8,
+        "inputLines": 16,
+        "outputLines": 16,
+        "twoLineBlocks": 8,
+        "multiLineBlocks": 0,
+        "singleLineBlocks": 0,
+        "chorusSkips": 0,
+        "stanzaCount": 8
+      }
+    },
+    {
+      "file": "002-आरती-कीजै-हनुमान-लला-की.yaml",
+      "title": "आरती कीजै हनुमान लला की",
+      "stats": {
+        "blocks": 7,
+        "inputLines": 13,
+        "outputLines": 13,
+        "twoLineBlocks": 6,
+        "multiLineBlocks": 0,
+        "singleLineBlocks": 1,
+        "chorusSkips": 0,
+        "stanzaCount": 7
+      }
+    },
+    {
+      "file": "004-ॐ-जय-जगदीश-हरे.yaml",
+      "title": "ॐ जय जगदीश हरे",
+      "stats": {
+        "blocks": 8,
+        "inputLines": 16,
+        "outputLines": 16,
+        "twoLineBlocks": 8,
+        "multiLineBlocks": 0,
+        "singleLineBlocks": 0,
+        "chorusSkips": 0,
+        "stanzaCount": 8
+      }
+    },
+    {
+      "file": "005-जय-अम्बे-गौरी.yaml",
+      "title": "जय अम्बे गौरी",
+      "stats": {
+        "blocks": 13,
+        "inputLines": 26,
+        "outputLines": 26,
+        "twoLineBlocks": 13,
+        "multiLineBlocks": 0,
+        "singleLineBlocks": 0,
+        "chorusSkips": 0,
+        "stanzaCount": 13
+      }
+    }
+  ],
+  "skipped": [
+    {
+      "file": "003-जय-गणेश-देवा.yaml",
+      "title": "जय गणेश देवा",
+      "issues": [
+        {
+          "code": "repeated-chorus",
+          "detail": "2 repeated chorus block(s) — may need pairing (e.g. जय गणेश)"
+        },
+        {
+          "code": "needs-block-pairing",
+          "detail": "consecutive 2-line blocks should merge into one paragraph (comma-joined lines)"
+        },
+        {
+          "code": "content-loss",
+          "detail": "would keep 10 of 14 content lines in YAML"
+        }
+      ],
+      "stats": {
+        "blocks": 7,
+        "inputLines": 14,
+        "outputLines": 10,
+        "twoLineBlocks": 7,
+        "multiLineBlocks": 0,
+        "singleLineBlocks": 0,
+        "chorusSkips": 2,
+        "stanzaCount": 5
+      }
+    },
+    {
+      "file": "006-आरती-कुंजबिहारी-की.yaml",
+      "title": "आरती कुंजबिहारी की",
+      "issues": [
+        {
+          "code": "multiline-blocks",
+          "detail": "4 stanza block(s) have more than 2 lines — needs custom layout"
+        },
+        {
+          "code": "repeated-chorus",
+          "detail": "4 repeated chorus block(s) — may need pairing (e.g. जय गणेश)"
+        },
+        {
+          "code": "content-loss",
+          "detail": "would keep 19 of 23 content lines in YAML"
+        },
+        {
+          "code": "long-sthayi",
+          "detail": "स्थाई would exceed 3 lines — likely merged a long stanza incorrectly"
+        }
+      ],
+      "stats": {
+        "blocks": 9,
+        "inputLines": 23,
+        "outputLines": 19,
+        "twoLineBlocks": 0,
+        "multiLineBlocks": 4,
+        "singleLineBlocks": 5,
+        "chorusSkips": 4,
+        "stanzaCount": 5
+      }
+    },
+    {
+      "file": "007-श्री-रामचन्द्र-कृपालु-भजुमन.yaml",
+      "title": "श्री रामचन्द्र कृपालु भजुमन",
+      "issues": [
+        {
+          "code": "multiline-blocks",
+          "detail": "1 stanza block(s) have more than 2 lines — needs custom layout"
+        }
+      ],
+      "stats": {
+        "blocks": 8,
+        "inputLines": 17,
+        "outputLines": 17,
+        "twoLineBlocks": 7,
+        "multiLineBlocks": 1,
+        "singleLineBlocks": 0,
+        "chorusSkips": 0,
+        "stanzaCount": 8
+      }
+    }
+  ]
+}
