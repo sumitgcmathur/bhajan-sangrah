@@ -428,17 +428,8 @@ body {
   font-weight: 500;
 }
 
-.bhajan-lyrics--standard .lyrics-section-label {
-  margin: 0 0 0.35rem;
-  font-size: 0.95em;
-  font-weight: 600;
-  color: var(--muted);
-}
-
 .bhajan-lyrics--standard .lyrics-sthayi {
-  margin: 0 0 1.35rem;
-  font-size: 1.05em;
-  line-height: 1.85;
+  /* same block as antara; end marker ॥स्थायी॥ */
 }
 
 .bhajan-lyrics--standard .lyrics-antara {
