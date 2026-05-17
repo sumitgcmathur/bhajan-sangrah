@@ -28,7 +28,7 @@ async function main() {
     folder,
     google_path,
     title,
-    banner: `assets/banners/${slug}.jpg`,
+    banner: `assets/icons/${slug}.jpg`,
   };
 
   config.sections.push(section);
@@ -36,7 +36,7 @@ async function main() {
   fs.mkdirSync(sectionFolder(section), { recursive: true });
 
   console.log(`\nAdded section "${title}" → content/${folder}/`);
-  console.log(`Place banner at assets/banners/${slug}.jpg`);
+  console.log(`Place banner at assets/icons/${slug}.jpg (or set banner in sections.yaml)`);
   console.log('Run: npm run build');
   rl.close();
 }

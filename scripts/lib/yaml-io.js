@@ -93,6 +93,8 @@ function dumpSectionsDoc(config) {
   const out = [];
   out.push(`base_url: ${config.base_url || '/'}`);
   out.push(`site_title: ${config.site_title || 'भजन संग्रह'}`);
+  if (config.site_icon) out.push(`site_icon: ${config.site_icon}`);
+  if (config.home_banner) out.push(`home_banner: ${config.home_banner}`);
   out.push('');
   out.push('sections:');
   for (const s of config.sections) {
