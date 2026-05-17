@@ -5,9 +5,9 @@ const HEADING_RE =
 
 const DEVA_DIGITS = '०१२३४५६७८९';
 const END_MARKER_RE = /(?:\s*(\|\|\s*[^|]+\s*\|\|)|(\s*॥+))\s*$/u;
-/** Trailing verse numbers, dandas, || markers — stripped from stored YAML */
+/** Trailing verse numbers / टेर — not a plain closing ॥ on the line */
 const VERSE_TAIL_RE =
-  /(?:\s*\|\|\s*[^|]+\s*\|\||\s*॥+[०-९0-9]*॥*|\s*।\s*[०-९0-9]+\s*।?|\s*[।॥]\s*[०-९0-9]+\s*(?:टेर|तेर)?\s*[।॥]?|\s*॥+)\s*$/u;
+  /(?:\s*\|\|\s*[^|]+\s*\|\||\s*॥+[०-९0-9]+॥*|\s*।\s*[०-९0-9]+\s*।?|\s*[।॥]\s*[०-९0-9]+\s*(?:टेर|तेर)?\s*[।॥]?)\s*$/u;
 const TARZ_LINE_RE = /^(?:तर्ज|राग)\s*[:：\-]\s*(.+)$/i;
 
 function isHeadingLine(line) {
@@ -49,9 +49,18 @@ function stripVerseNumbers(text) {
   return s.replace(/\s{2,}/g, ' ').trim();
 }
 
+/** Scraped shorthand repeat after the main line, e.g. `भरपूर॥ पूर है...` */
+function stripEllipsisRefrainShorthand(line) {
+  let s = String(line || '').trim();
+  if (!/\.\.\./u.test(s)) return s;
+  const afterDanda = s.match(/^(.+?॥)\s+.+?\.\.\.\s*$/u);
+  if (afterDanda) return afterDanda[1].trim();
+  return s.replace(/\s+.+?\.\.\.\s*$/u, '').trim();
+}
+
 function sanitizeStanzaText(text) {
   return linesOf(text)
-    .map((l) => stripVerseNumbers(l))
+    .map((l) => stripEllipsisRefrainShorthand(stripVerseNumbers(l)))
     .join('\n');
 }
 
@@ -230,11 +239,54 @@ function normalizeFromLegacy(text) {
   };
 }
 
+const PAREN_TARZ_RE = /\(\s*(?:तर्ज|राग)\s*[-:：]?\s*([^)]+)\)/gi;
+const PAREN_FILM_RE = /\(\s*फिल्म\s*[-:：]?\s*([^)]+)\)/gi;
+
+function parseTarzFromLine(line) {
+  const trimmed = String(line || '').trim();
+  if (!trimmed) return null;
+
+  const tarzParts = [];
+  let m;
+  const tarzRe = new RegExp(PAREN_TARZ_RE.source, 'gi');
+  while ((m = tarzRe.exec(trimmed)) !== null) tarzParts.push(m[1].trim());
+
+  const filmParts = [];
+  const filmRe = new RegExp(PAREN_FILM_RE.source, 'gi');
+  while ((m = filmRe.exec(trimmed)) !== null) filmParts.push(m[1].trim());
+
+  const plain = trimmed.match(TARZ_LINE_RE);
+  if (plain) return { tarz: plain[1].trim(), restLine: '' };
+
+  if (!tarzParts.length && !filmParts.length) return null;
+
+  let tarz = tarzParts.join(' · ');
+  if (filmParts.length) {
+    const film = filmParts.join(' · ');
+    tarz = tarz ? `${tarz} (${film})` : film;
+  }
+
+  const restLine = trimmed
+    .replace(PAREN_TARZ_RE, '')
+    .replace(PAREN_FILM_RE, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return { tarz, restLine };
+}
+
 function extractTarzFromText(text) {
   const lines = String(text || '').split('\n');
   let i = 0;
   while (i < lines.length && !lines[i].trim()) i += 1;
   if (i >= lines.length) return { tarz: null, rest: '' };
+
+  const parsed = parseTarzFromLine(lines[i]);
+  if (parsed) {
+    const restLines = [...lines.slice(0, i), ...lines.slice(i + 1)];
+    if (parsed.restLine) restLines.splice(i, 0, parsed.restLine);
+    return { tarz: parsed.tarz, rest: restLines.join('\n') };
+  }
+
   const m = lines[i].trim().match(TARZ_LINE_RE);
   if (m) {
     const rest = [...lines.slice(0, i), ...lines.slice(i + 1)].join('\n');
@@ -442,12 +494,14 @@ function analyzeBhajanLyrics(lyricsText, title) {
 module.exports = {
   analyzeBhajanLyrics,
   migrateDoc,
+  extractTarzFromText,
   normalizeFromLegacy,
   flattenLyricsText,
   mapLyricsStrings,
   isStructuredLyrics,
   stripEndMarkers,
   stripVerseNumbers,
+  stripEllipsisRefrainShorthand,
   sanitizeStanzaText,
   parseEndMarker,
   toDevaNum,

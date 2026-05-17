@@ -38,10 +38,30 @@ function renderFooter() {
   return '<footer class="site-footer"><p>भक्ति भजन संग्रह</p></footer>';
 }
 
+function iconTypeFromHref(href) {
+  if (/\.jpe?g$/i.test(href)) return 'image/jpeg';
+  if (/\.png$/i.test(href)) return 'image/png';
+  if (/\.svg$/i.test(href)) return 'image/svg+xml';
+  if (/\.ico$/i.test(href)) return 'image/x-icon';
+  return '';
+}
+
+function renderIconLinks(base, config) {
+  const iconSrc = config?.site_icon || 'assets/icons/favicon.jpg';
+  const iconHref = pageUrl(base, iconSrc);
+  if (!iconHref) return '';
+  const type = iconTypeFromHref(iconHref);
+  const typeAttr = type ? ` type="${type}"` : '';
+  // iOS needs apple-touch-icon for home screen; rel=icon for Safari tabs (PNG most reliable).
+  return (
+    `<link rel="icon"${typeAttr} href="${iconHref}">\n` +
+    `<link rel="apple-touch-icon" sizes="180x180" href="${iconHref}">\n`
+  );
+}
+
 function renderHead(pageTitle, base, config) {
   const css = pageUrl(base, 'assets/css/site.css');
-  const iconHref = config?.site_icon ? pageUrl(base, config.site_icon) : '';
-  const favicon = iconHref ? `<link rel="icon" href="${iconHref}">\n` : '';
+  const favicon = renderIconLinks(base, config);
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#1565c0">

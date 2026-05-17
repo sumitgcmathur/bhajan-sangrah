@@ -15,6 +15,7 @@
     "migrate-lyrics": "node scripts/migrate-lyrics.js",
     "migrate-from-backup": "node scripts/remigrate-from-backup.js",
     "convert-aarti": "node scripts/convert-aarti-couplet.js",
+    "migrate-ambe": "node scripts/migrate-ambe-from-backup.js",
     "serve": "npx --yes serve docs -l 3000"
   }
 }
