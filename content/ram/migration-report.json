@@ -1,21 +1,17 @@
 {
-  "generatedAt": "2026-05-17T21:20:13.738Z",
+  "generatedAt": "2026-05-17T23:35:53.272Z",
   "section": "ram",
   "backup": "C:/Sumit/coding/bhajan-sangrah/content-backup-20260517-123521/ram",
   "total": 15,
   "summary": {
-    "high": 11,
-    "medium": 3,
-    "low": 1,
-    "manualReview": 14,
+    "high": 5,
+    "medium": 8,
+    "low": 2,
+    "manualReview": 15,
     "strategies": {
-      "refrain-every-3": 2,
-      "hook-stanzas": 2,
-      "ellipsis-stanzas": 1,
-      "pairs": 4,
-      "refrain-blocks": 3,
-      "refrain-line": 1,
-      "refrain-every-6": 1,
+      "tail-refrain": 5,
+      "verse-end-stanzas": 8,
+      "inline-chorus-tag": 1,
       "refrain-every-4": 1
     }
   },
@@ -23,81 +19,47 @@
     {
       "file": "content/ram/001-राम-का-गुणगान-करिये.yaml",
       "title": "राम का गुणगान करिये",
-      "score": 94,
-      "tier": "high",
-      "strategy": "refrain-every-3",
+      "score": 74,
+      "tier": "medium",
+      "strategy": "tail-refrain",
       "backupLines": 9,
-      "proposedLines": 9,
+      "proposedLines": 4,
       "sthayiLines": 1,
       "paragraphCount": 3,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:3"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/ram/002-रामा-रामा-रटते-रटते.yaml",
       "title": "रामा रामा रटते रटते",
-      "score": 50,
+      "score": 30,
       "tier": "low",
-      "strategy": "hook-stanzas",
+      "strategy": "verse-end-stanzas",
       "backupLines": 39,
-      "proposedLines": 39,
-      "sthayiLines": 4,
+      "proposedLines": 17,
+      "sthayiLines": 2,
       "paragraphCount": 5,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:5"
+        "multiline-paragraphs:5",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/ram/003-राम-को-देख-कर-के-जनक-नंदिनी.yaml",
       "title": "राम को देख कर के जनक नंदिनी",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "ellipsis-stanzas",
+      "score": 80,
+      "tier": "high",
+      "strategy": "verse-end-stanzas",
       "backupLines": 11,
-      "proposedLines": 8,
-      "sthayiLines": 1,
-      "paragraphCount": 3,
-      "tarz": null,
-      "flags": [
-        "no-tarz-field",
-        "multiline-paragraphs:3",
-        "possible-content-loss"
-      ],
-      "manualReview": true
-    },
-    {
-      "file": "content/ram/004-हमारे-साथ-श्री-रघुनाथ-तो.yaml",
-      "title": "हमारे साथ श्री रघुनाथ तो",
-      "score": 80,
-      "tier": "high",
-      "strategy": "pairs",
-      "backupLines": 10,
-      "proposedLines": 10,
-      "sthayiLines": 1,
-      "paragraphCount": 5,
-      "tarz": null,
-      "flags": [
-        "no-tarz-field",
-        "multiline-paragraphs:4"
-      ],
-      "manualReview": true
-    },
-    {
-      "file": "content/ram/005-जय-रघुनन्दन-जय-सियाराम.yaml",
-      "title": "जय रघुनन्दन जय सियाराम",
-      "score": 80,
-      "tier": "high",
-      "strategy": "pairs",
-      "backupLines": 8,
-      "proposedLines": 8,
-      "sthayiLines": 1,
+      "proposedLines": 9,
+      "sthayiLines": 2,
       "paragraphCount": 4,
       "tarz": null,
       "flags": [
@@ -107,11 +69,45 @@
       "manualReview": true
     },
     {
+      "file": "content/ram/004-हमारे-साथ-श्री-रघुनाथ-तो.yaml",
+      "title": "हमारे साथ श्री रघुनाथ तो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "tail-refrain",
+      "backupLines": 10,
+      "proposedLines": 9,
+      "sthayiLines": 1,
+      "paragraphCount": 2,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:2"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/ram/005-जय-रघुनन्दन-जय-सियाराम.yaml",
+      "title": "जय रघुनन्दन जय सियाराम",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "verse-end-stanzas",
+      "backupLines": 8,
+      "proposedLines": 3,
+      "sthayiLines": 1,
+      "paragraphCount": 2,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "possible-content-loss"
+      ],
+      "manualReview": true
+    },
+    {
       "file": "content/ram/006-ठुमक-चलत-रामचंद्र.yaml",
       "title": "ठुमक चलत रामचंद्र",
       "score": 80,
       "tier": "high",
-      "strategy": "pairs",
+      "strategy": "inline-chorus-tag",
       "backupLines": 9,
       "proposedLines": 9,
       "sthayiLines": 1,
@@ -128,32 +124,33 @@
       "title": "नगरी हो अयोध्या सी",
       "score": 80,
       "tier": "high",
-      "strategy": "refrain-blocks",
+      "strategy": "verse-end-stanzas",
       "backupLines": 14,
       "proposedLines": 14,
-      "sthayiLines": 1,
-      "paragraphCount": 3,
+      "sthayiLines": 2,
+      "paragraphCount": 6,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:2"
+        "multiline-paragraphs:6"
       ],
       "manualReview": true
     },
     {
       "file": "content/ram/008-केवट-ने-कहा-रघुराई-से.yaml",
       "title": "केवट ने कहा रघुराई से",
-      "score": 94,
-      "tier": "high",
-      "strategy": "refrain-blocks",
+      "score": 74,
+      "tier": "medium",
+      "strategy": "tail-refrain",
       "backupLines": 7,
-      "proposedLines": 7,
+      "proposedLines": 5,
       "sthayiLines": 1,
       "paragraphCount": 2,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:2"
+        "multiline-paragraphs:2",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
@@ -162,11 +159,11 @@
       "title": "जग में सुन्दर हैं दो नाम",
       "score": 80,
       "tier": "high",
-      "strategy": "refrain-every-3",
+      "strategy": "verse-end-stanzas",
       "backupLines": 14,
       "proposedLines": 14,
-      "sthayiLines": 1,
-      "paragraphCount": 5,
+      "sthayiLines": 2,
+      "paragraphCount": 8,
       "tarz": null,
       "flags": [
         "no-tarz-field",
@@ -177,83 +174,85 @@
     {
       "file": "content/ram/010-कभी-राम-बनके-कभी-श्याम-बनके.yaml",
       "title": "कभी राम बनके कभी श्याम बनके",
-      "score": 80,
-      "tier": "high",
-      "strategy": "pairs",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "verse-end-stanzas",
       "backupLines": 12,
-      "proposedLines": 12,
+      "proposedLines": 6,
       "sthayiLines": 1,
-      "paragraphCount": 6,
+      "paragraphCount": 5,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:5"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/ram/011-तेरा-रामजी-करेंगे-बेड़ा-पार.yaml",
       "title": "तेरा रामजी करेंगे बेड़ा पार",
-      "score": 80,
-      "tier": "high",
-      "strategy": "refrain-blocks",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "tail-refrain",
       "backupLines": 14,
-      "proposedLines": 14,
+      "proposedLines": 5,
       "sthayiLines": 1,
       "paragraphCount": 4,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:4"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/ram/012-जानकी-नाथ-सहाय-करें.yaml",
       "title": "जानकी नाथ सहाय करें",
-      "score": 80,
-      "tier": "high",
-      "strategy": "hook-stanzas",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "tail-refrain",
       "backupLines": 9,
-      "proposedLines": 9,
-      "sthayiLines": 4,
+      "proposedLines": 3,
+      "sthayiLines": 1,
       "paragraphCount": 2,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:2"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/ram/013-राम-नाम-के-साबुन-से-जो-मन-का-मैल-भगाएगा.yaml",
       "title": "राम नाम के साबुन से जो मन का मैल भगाएगा",
-      "score": 80,
-      "tier": "high",
-      "strategy": "refrain-line",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "verse-end-stanzas",
       "backupLines": 9,
-      "proposedLines": 9,
+      "proposedLines": 5,
       "sthayiLines": 1,
-      "paragraphCount": 8,
+      "paragraphCount": 4,
       "tarz": null,
       "flags": [
-        "no-tarz-field"
+        "no-tarz-field",
+        "possible-content-loss"
       ],
-      "manualReview": false
+      "manualReview": true
     },
     {
       "file": "content/ram/014-सीता-राम-सीता-राम,-सीताराम-कहिये.yaml",
       "title": "सीता राम सीता राम, सीताराम कहिये",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "refrain-every-6",
+      "score": 40,
+      "tier": "low",
+      "strategy": "verse-end-stanzas",
       "backupLines": 26,
-      "proposedLines": 26,
-      "sthayiLines": 1,
-      "paragraphCount": 5,
+      "proposedLines": 13,
+      "sthayiLines": 3,
+      "paragraphCount": 4,
       "tarz": "झिलममिल सितारों का",
       "flags": [
-        "multiline-paragraphs:4"
+        "multiline-paragraphs:3",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
