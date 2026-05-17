@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { DICTIONARY, CONTENT } = require('./lib/paths');
 const { loadSections, sectionFolder, listBhajanFiles, loadBhajan } = require('./lib/sections');
+const { flattenLyricsText } = require('./lib/lyrics-structure');
 
 function loadDictionary() {
   if (!fs.existsSync(DICTIONARY)) return new Set();
@@ -32,7 +33,9 @@ function main() {
   for (const section of config.sections) {
     for (const file of listBhajanFiles(section)) {
       const data = loadBhajan(path.join(sectionFolder(section), file));
-      const text = [data.title, data.tarz, data.lyrics].filter(Boolean).join('\n');
+      const lyricsText =
+        typeof data.lyrics === 'string' ? data.lyrics : flattenLyricsText(data.lyrics);
+      const text = [data.title, data.tarz, lyricsText].filter(Boolean).join('\n');
       for (const word of tokenize(text)) {
         words += 1;
         if (!dict.has(word)) {

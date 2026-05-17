@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { isStructuredLyrics } = require('./lyrics-structure');
 
 function parseScalar(line) {
   const m = line.match(/^([^:]+):\s*(.*)$/);
@@ -9,6 +10,127 @@ function parseScalar(line) {
   if (v === 'true') return { key: m[1].trim(), value: true };
   if (v === 'false') return { key: m[1].trim(), value: false };
   return { key: m[1].trim(), value: v };
+}
+
+function readIndentedBlock(lines, startIdx, baseIndent) {
+  const block = [];
+  let i = startIdx;
+  while (i < lines.length) {
+    const raw = lines[i];
+    if (!raw.trim()) {
+      block.push('');
+      i += 1;
+      continue;
+    }
+    const indent = raw.match(/^(\s*)/)[1].length;
+    if (indent < baseIndent && /^\s*\S/.test(raw)) break;
+    if (/^[a-zA-Z_][\w-]*:\s/.test(raw) && indent <= baseIndent) break;
+    block.push(raw.slice(baseIndent));
+    i += 1;
+  }
+  return { text: block.join('\n').replace(/\n+$/, ''), next: i };
+}
+
+function parseParagraphList(lines, startIdx, baseIndent) {
+  const paragraphs = [];
+  let i = startIdx;
+  while (i < lines.length) {
+    const raw = lines[i];
+    if (!raw.trim()) {
+      i += 1;
+      continue;
+    }
+    const indent = raw.match(/^(\s*)/)[1].length;
+    if (indent < baseIndent) break;
+    const listMatch = raw.match(/^(\s*)-\s+\|\s*$/);
+    if (listMatch) {
+      const itemIndent = listMatch[1].length + 2;
+      const { text, next } = readIndentedBlock(lines, i + 1, itemIndent);
+      paragraphs.push(text);
+      i = next;
+      continue;
+    }
+    if (/^[a-zA-Z_][\w-]*:\s/.test(raw) && indent === baseIndent) break;
+    break;
+  }
+  return { paragraphs, next: i };
+}
+
+function parseLyricsObject(lines, startIdx) {
+  const lyrics = {};
+  let i = startIdx;
+  const baseIndent = 2;
+
+  while (i < lines.length) {
+    const raw = lines[i];
+    if (!raw.trim()) {
+      i += 1;
+      continue;
+    }
+    const indent = raw.match(/^(\s*)/)[1].length;
+    if (indent < baseIndent) break;
+
+    if (raw.match(/^\s{2}parts:\s*$/)) {
+      lyrics.parts = [];
+      i += 1;
+      let part = null;
+      while (i < lines.length) {
+        const pr = lines[i];
+        if (!pr.trim()) {
+          i += 1;
+          continue;
+        }
+        const pi = pr.match(/^(\s*)/)[1].length;
+        if (pi < 4) break;
+        if (pr.match(/^\s{4}-\s+sthayi:\s*\|\s*$/)) {
+          if (part) lyrics.parts.push(part);
+          part = { paragraphs: [] };
+          const { text, next } = readIndentedBlock(lines, i + 1, 6);
+          part.sthayi = text;
+          i = next;
+          continue;
+        }
+        if (part && pr.match(/^\s{6}sthayi_marker:\s/)) {
+          part.sthayi_marker = pr.replace(/^\s{6}sthayi_marker:\s*/, '').trim();
+          i += 1;
+          continue;
+        }
+        if (part && pr.match(/^\s{6}paragraphs:\s*$/)) {
+          const parsed = parseParagraphList(lines, i + 1, 6);
+          part.paragraphs = parsed.paragraphs;
+          i = parsed.next;
+          continue;
+        }
+        break;
+      }
+      if (part) lyrics.parts.push(part);
+      continue;
+    }
+
+    if (raw.match(/^\s{2}sthayi:\s*\|\s*$/)) {
+      const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
+      lyrics.sthayi = text;
+      i = next;
+      continue;
+    }
+
+    if (raw.match(/^\s{2}sthayi_marker:\s/)) {
+      lyrics.sthayi_marker = raw.replace(/^\s{2}sthayi_marker:\s*/, '').trim();
+      i += 1;
+      continue;
+    }
+
+    if (raw.match(/^\s{2}paragraphs:\s*$/)) {
+      const parsed = parseParagraphList(lines, i + 1, baseIndent + 2);
+      lyrics.paragraphs = parsed.paragraphs;
+      i = parsed.next;
+      continue;
+    }
+
+    break;
+  }
+
+  return { lyrics, next: i };
 }
 
 /** Parse a single bhajan YAML file */
@@ -27,12 +149,17 @@ function loadBhajanDoc(text) {
       const block = [];
       while (i < lines.length) {
         const raw = lines[i];
-        // End block at next top-level key (e.g. title:, tarz:) — not at unindented lyric lines
         if (/^[a-zA-Z_][\w-]*:\s/.test(raw)) break;
         block.push(raw.replace(/^\s{0,2}/, ''));
         i += 1;
       }
       doc.lyrics = block.join('\n').replace(/\n+$/, '');
+      continue;
+    }
+    if (line.match(/^lyrics:\s*$/)) {
+      const parsed = parseLyricsObject(lines, i + 1);
+      doc.lyrics = parsed.lyrics;
+      i = parsed.next;
       continue;
     }
     const p = parseScalar(line);
@@ -42,14 +169,55 @@ function loadBhajanDoc(text) {
   return doc;
 }
 
+function dumpLiteralBlock(key, text, indent) {
+  const pad = ' '.repeat(indent);
+  const contentPad = ' '.repeat(indent + 2);
+  const out = [`${pad}${key}: |`];
+  for (const line of String(text || '').split('\n')) out.push(`${contentPad}${line}`);
+  return out;
+}
+
+function dumpParagraphList(paragraphs, indent) {
+  const pad = ' '.repeat(indent);
+  const itemPad = ' '.repeat(indent + 2);
+  const out = [`${pad}paragraphs:`];
+  for (const para of paragraphs || []) {
+    out.push(`${itemPad}- |`);
+    for (const line of String(para).split('\n')) out.push(`${itemPad}  ${line}`);
+  }
+  return out;
+}
+
+function dumpLyricsObject(lyrics) {
+  const out = ['lyrics:'];
+  if (lyrics.parts?.length) {
+    out.push('  parts:');
+    for (const part of lyrics.parts) {
+      out.push('    - sthayi: |');
+      for (const line of String(part.sthayi || '').split('\n')) out.push(`        ${line}`);
+      if (part.sthayi_marker) out.push(`      sthayi_marker: ${part.sthayi_marker}`);
+      out.push(...dumpParagraphList(part.paragraphs, 6));
+    }
+    return out;
+  }
+  out.push(...dumpLiteralBlock('sthayi', lyrics.sthayi, 2));
+  if (lyrics.sthayi_marker) out.push(`  sthayi_marker: ${lyrics.sthayi_marker}`);
+  out.push(...dumpParagraphList(lyrics.paragraphs, 2));
+  return out;
+}
+
 function dumpBhajanDoc(doc) {
   const out = [];
   out.push(`title: ${doc.title}`);
   if (doc.tarz) out.push(`tarz: ${doc.tarz}`);
   if (doc.group) out.push(`group: ${doc.group}`);
   if (doc.swarachit) out.push('swarachit: true');
-  out.push('lyrics: |');
-  for (const line of String(doc.lyrics || '').split('\n')) out.push(`  ${line}`);
+  if (isStructuredLyrics(doc.lyrics)) {
+    out.push(...dumpLyricsObject(doc.lyrics));
+  } else {
+    out.push('lyrics: |');
+    for (const line of String(doc.lyrics || '').split('\n')) out.push(`  ${line}`);
+  }
   return out.join('\n') + '\n';
 }
 
