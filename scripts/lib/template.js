@@ -99,14 +99,14 @@ function renderHomeBanner(config, base) {
   const src = config.home_banner ? pageUrl(base, config.home_banner) : '';
   if (!src) return '';
   return `<div class="content-banner">
-  <img class="content-banner__img" src="${src}" alt="">
+  <img class="content-banner__img" src="${src}" alt="${escapeHtml(config.site_title)}" loading="lazy" decoding="async">
 </div>`;
 }
 
 function renderSectionBanner(section, base) {
   if (!section.banner) return '';
   return `<div class="content-banner">
-  <img class="content-banner__img" src="${pageUrl(base, section.banner)}" alt="">
+  <img class="content-banner__img" src="${pageUrl(base, section.banner)}" alt="${escapeHtml(section.title)}" loading="lazy" decoding="async">
 </div>`;
 }
 
