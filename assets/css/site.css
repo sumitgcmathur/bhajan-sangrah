@@ -1,0 +1,243 @@
+:root {
+  --bg: #faf8f5;
+  --surface: #fff;
+  --text: #1a1a1a;
+  --muted: #5c5348;
+  --accent: #8b4513;
+  --accent-soft: #e8d5c4;
+  --border: #e5ddd3;
+  --font: "Noto Sans Devanagari", system-ui, sans-serif;
+  --max: 42rem;
+  --nav-h: 3.25rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: 18px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  min-height: var(--nav-h);
+}
+
+.site-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--accent);
+  text-decoration: none;
+  flex: 1;
+}
+
+.nav-toggle {
+  font-size: 1.4rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  cursor: pointer;
+}
+
+.nav-panel {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.nav-panel.is-open { display: block; }
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem;
+  columns: 2;
+  column-gap: 1rem;
+}
+
+.nav-list a {
+  display: block;
+  padding: 0.35rem 0.5rem;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-radius: 0.25rem;
+}
+
+.nav-list a:hover,
+.nav-list a[aria-current="page"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.site-main {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 1rem 1rem 3rem;
+}
+
+.hero {
+  text-align: center;
+  padding: 1.5rem 0 2rem;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: var(--accent);
+}
+
+.section-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 480px) {
+  .section-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.section-card {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.section-card__banner {
+  width: 100%;
+  height: 6rem;
+  object-fit: cover;
+  background: var(--accent-soft);
+}
+
+.section-card__title {
+  display: block;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+}
+
+.section-banner {
+  width: 100%;
+  max-height: 12rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  background: var(--accent-soft);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  color: var(--accent);
+  margin: 0 0 1rem;
+  text-align: center;
+}
+
+.bhajan-toc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 2rem;
+}
+
+.bhajan-toc ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.bhajan-toc a {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.bhajan {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px dashed var(--border);
+}
+
+.bhajan-title {
+  font-size: 1.25rem;
+  margin: 0 0 0.75rem;
+  color: var(--accent);
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+
+.bhajan-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.25rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.bhajan-tarz {
+  color: var(--muted);
+  font-style: italic;
+  margin: 0 0 0.75rem;
+}
+
+.bhajan-tarz .label { font-style: normal; font-weight: 600; }
+
+.bhajan-lyrics p {
+  margin: 0 0 0.35rem;
+}
+
+.stanza-gap {
+  height: 0.75rem;
+  margin: 0;
+}
+
+.site-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@media (min-width: 768px) {
+  .nav-toggle { display: none; }
+  .nav-panel {
+    display: block !important;
+    position: static;
+    max-height: none;
+    box-shadow: none;
+    border: none;
+    flex: 2;
+  }
+  .nav-list { columns: 3; }
+  .site-header { flex-wrap: wrap; }
+}

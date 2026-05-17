@@ -1,0 +1,15 @@
+{
+  "name": "bhajan-sangrah",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "scrape": "node scripts/scraper.js",
+    "scrape:cache": "node scripts/scraper.js --cache-only",
+    "download-banners": "node scripts/download-banners.js",
+    "build": "node scripts/build.js",
+    "add-bhajan": "node scripts/add-bhajan.js",
+    "add-section": "node scripts/add-section.js",
+    "spellcheck": "node scripts/spellcheck.js",
+    "serve": "npx --yes serve docs -l 3000"
+  }
+}

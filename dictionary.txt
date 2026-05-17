@@ -1,0 +1,13 @@
+# Custom Hindi dictionary — one word per line; grows over time
+# Lines starting with # are ignored
+
+ॐ
+नमः
+शिवाय
+हर
+भोले
+महादेव
+शंकर
+शम्भू
+राम
+कृष्ण
