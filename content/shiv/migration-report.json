@@ -1,0 +1,157 @@
+{
+  "generatedAt": "2026-05-17T21:20:13.819Z",
+  "section": "shiv",
+  "backup": "C:/Sumit/coding/bhajan-sangrah/content-backup-20260517-123521/shiv",
+  "total": 8,
+  "summary": {
+    "high": 1,
+    "medium": 5,
+    "low": 2,
+    "manualReview": 8,
+    "strategies": {
+      "refrain-blocks": 2,
+      "ellipsis-stanzas": 1,
+      "hook-stanzas": 2,
+      "numbered-stanzas": 2,
+      "pairs": 1
+    }
+  },
+  "files": [
+    {
+      "file": "content/shiv/001-ॐ-नमः-शिवाय-ॐ-नमः-शिवाय.yaml",
+      "title": "ॐ नमः शिवाय ॐ नमः शिवाय",
+      "score": 45,
+      "tier": "low",
+      "strategy": "refrain-blocks",
+      "backupLines": 28,
+      "proposedLines": 28,
+      "sthayiLines": 1,
+      "paragraphCount": 3,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:2"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/shiv/002-शिव-कैलाशो-के-वासी.yaml",
+      "title": "शिव कैलाशो के वासी",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "refrain-blocks",
+      "backupLines": 35,
+      "proposedLines": 35,
+      "sthayiLines": 1,
+      "paragraphCount": 3,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:3"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/shiv/003-शिव-शंकर-को-जिसने-पूजा.yaml",
+      "title": "शिव शंकर को जिसने पूजा",
+      "score": 50,
+      "tier": "low",
+      "strategy": "ellipsis-stanzas",
+      "backupLines": 37,
+      "proposedLines": 34,
+      "sthayiLines": 1,
+      "paragraphCount": 9,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:9"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/shiv/004-आशुतोष-शशाँक-शेखर.yaml",
+      "title": "आशुतोष शशाँक शेखर",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "hook-stanzas",
+      "backupLines": 35,
+      "proposedLines": 35,
+      "sthayiLines": 4,
+      "paragraphCount": 3,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:1"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/shiv/005-निर्वाण-षट्कम.yaml",
+      "title": "निर्वाण षट्कम",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "numbered-stanzas",
+      "backupLines": 24,
+      "proposedLines": 24,
+      "sthayiLines": 2,
+      "paragraphCount": 6,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:6"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/shiv/006-श्रीरुद्राष्टकम्.yaml",
+      "title": "श्रीरुद्राष्टकम्",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "numbered-stanzas",
+      "backupLines": 35,
+      "proposedLines": 35,
+      "sthayiLines": 2,
+      "paragraphCount": 9,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:9"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/shiv/007-मेरा-भोला-है-भंडारी.yaml",
+      "title": "मेरा भोला है भंडारी",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "hook-stanzas",
+      "backupLines": 35,
+      "proposedLines": 35,
+      "sthayiLines": 4,
+      "paragraphCount": 9,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:5"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/shiv/008-शंकर-तेरी-जटा-में.yaml",
+      "title": "शंकर तेरी जटा में",
+      "score": 80,
+      "tier": "high",
+      "strategy": "pairs",
+      "backupLines": 10,
+      "proposedLines": 10,
+      "sthayiLines": 1,
+      "paragraphCount": 5,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:4"
+      ],
+      "manualReview": true
+    }
+  ]
+}

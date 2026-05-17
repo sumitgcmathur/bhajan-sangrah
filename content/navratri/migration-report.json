@@ -1,0 +1,154 @@
+{
+  "generatedAt": "2026-05-17T21:20:13.876Z",
+  "section": "navratri",
+  "backup": "C:/Sumit/coding/bhajan-sangrah/content-backup-20260517-123521/navratri",
+  "total": 8,
+  "summary": {
+    "high": 4,
+    "medium": 4,
+    "low": 0,
+    "manualReview": 7,
+    "strategies": {
+      "numbered-stanzas": 5,
+      "hook-stanzas": 1,
+      "ellipsis-stanzas": 1,
+      "single": 1
+    }
+  },
+  "files": [
+    {
+      "file": "content/navratri/001-राजभोग.yaml",
+      "title": "राजभोग",
+      "score": 74,
+      "tier": "medium",
+      "strategy": "numbered-stanzas",
+      "backupLines": 25,
+      "proposedLines": 25,
+      "sthayiLines": 2,
+      "paragraphCount": 10,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:9"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/navratri/002-श्रृंगार.yaml",
+      "title": "श्रृंगार",
+      "score": 80,
+      "tier": "high",
+      "strategy": "numbered-stanzas",
+      "backupLines": 6,
+      "proposedLines": 6,
+      "sthayiLines": 2,
+      "paragraphCount": 2,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:1"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/navratri/003-जय-अम्बे-गौरी.yaml",
+      "title": "जय अम्बे गौरी",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "hook-stanzas",
+      "backupLines": 35,
+      "proposedLines": 35,
+      "sthayiLines": 3,
+      "paragraphCount": 10,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:9"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/navratri/004-पुष्पांजलि.yaml",
+      "title": "पुष्पांजलि",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "numbered-stanzas",
+      "backupLines": 20,
+      "proposedLines": 20,
+      "sthayiLines": 2,
+      "paragraphCount": 5,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:5"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/navratri/005-परिक्रमा.yaml",
+      "title": "परिक्रमा",
+      "score": 80,
+      "tier": "high",
+      "strategy": "numbered-stanzas",
+      "backupLines": 10,
+      "proposedLines": 10,
+      "sthayiLines": 2,
+      "paragraphCount": 4,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:4"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/navratri/006-तोरी-शरण-में.yaml",
+      "title": "तोरी शरण में",
+      "score": 80,
+      "tier": "high",
+      "strategy": "ellipsis-stanzas",
+      "backupLines": 9,
+      "proposedLines": 7,
+      "sthayiLines": 1,
+      "paragraphCount": 2,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:2"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/navratri/007-मेहंदी.yaml",
+      "title": "मेहंदी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "numbered-stanzas",
+      "backupLines": 5,
+      "proposedLines": 5,
+      "sthayiLines": 2,
+      "paragraphCount": 3,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/navratri/008-ध्वनि.yaml",
+      "title": "ध्वनि",
+      "score": 72,
+      "tier": "medium",
+      "strategy": "single",
+      "backupLines": 2,
+      "proposedLines": 2,
+      "sthayiLines": 1,
+      "paragraphCount": 1,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": true
+    }
+  ]
+}
