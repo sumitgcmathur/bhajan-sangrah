@@ -26,8 +26,10 @@ function loadBhajanDoc(text) {
       i += 1;
       const block = [];
       while (i < lines.length) {
-        if (lines[i].match(/^\S/) && !lines[i].startsWith(' ')) break;
-        block.push(lines[i].replace(/^\s{0,2}/, ''));
+        const raw = lines[i];
+        // End block at next top-level key (e.g. title:, tarz:) — not at unindented lyric lines
+        if (/^[a-zA-Z_][\w-]*:\s/.test(raw)) break;
+        block.push(raw.replace(/^\s{0,2}/, ''));
         i += 1;
       }
       doc.lyrics = block.join('\n').replace(/\n+$/, '');
