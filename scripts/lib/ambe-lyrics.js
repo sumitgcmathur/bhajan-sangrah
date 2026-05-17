@@ -61,7 +61,31 @@ function normalizeLineEndings(line) {
   s = s.replace(/।॥/g, '॥');
   s = s.replace(/॥+/g, '॥');
   s = s.replace(/।+/g, (m) => (m.length > 1 ? '॥' : '।'));
+  s = s.replace(/([।॥])\s*,\s*/g, '$1\n');
   return s.trim();
+}
+
+/** Final pass on sthayi/paragraph blocks: no `,,` / `,।` / `,॥`; each line ends in । or ॥. */
+function sanitizeLyricBlock(text) {
+  let s = String(text || '');
+  s = s.replace(/\|\|/g, '॥');
+  s = s.replace(/,{2,}/g, ',');
+  s = s.replace(/,\s*([।॥])/g, '$1');
+  s = s.replace(/([।॥])\s*,\s*/g, '$1\n');
+
+  const lines = s.split('\n');
+  const out = [];
+  for (const line of lines) {
+    let t = line.trim();
+    if (!t) continue;
+    t = t.replace(/,{2,}/g, ',');
+    t = t.replace(/,\s*([।॥])/g, '$1');
+    t = t.replace(/([।॥])\s*,\s*/g, '$1');
+    t = t.replace(/[,，\s]+$/u, '');
+    if (!/[।॥]$/.test(t)) t += '।';
+    out.push(t);
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 
 function cleanAmbeLine(line) {
@@ -426,8 +450,8 @@ function migrateAmbeDoc(doc) {
 
   const { strategy, sthayi, paragraphs } = migrateAmbeLines(lines, out.title || doc.title || '');
   out.lyrics = {
-    sthayi,
-    paragraphs: paragraphs.filter(Boolean),
+    sthayi: sanitizeLyricBlock(sthayi),
+    paragraphs: paragraphs.filter(Boolean).map(sanitizeLyricBlock),
   };
   out._ambeStrategy = strategy;
   return out;
@@ -439,5 +463,6 @@ module.exports = {
   detectAmbeShape,
   cleanAmbeLine,
   normalizeLineEndings,
+  sanitizeLyricBlock,
   decodeHtmlEntities,
 };

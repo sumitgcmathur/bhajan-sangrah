@@ -12,6 +12,7 @@ const {
   cleanAmbeLine,
   decodeHtmlEntities,
   detectAmbeShape,
+  sanitizeLyricBlock,
 } = require('./ambe-lyrics');
 
 const TER_RE = /॥\s*टेर\s*॥|।।\s*टेर|टेर\s*।+|।\s*टेर\s*।/i;
@@ -109,6 +110,19 @@ function createSectionMigrator(options = {}) {
     return closes >= 3;
   }
 
+  /** Join scraped lines: newline after danda, comma only within a half-line couplet. */
+  function joinVerseLines(lines) {
+    const parts = lines.map((l) => cleanedLine(l)).filter(Boolean);
+    if (!parts.length) return '';
+    return parts.reduce((acc, part, i) => {
+      if (i === 0) return part;
+      if (/[।॥]\s*$/.test(acc)) return `${acc}\n${part}`;
+      const left = acc.replace(/[,，\s]+$/u, '');
+      const right = part.replace(/^[,，\s]+/u, '');
+      return `${left}, ${right}`;
+    });
+  }
+
   function joinHalfLines(a, b) {
     const left = cleanedLine(a)
       .replace(/[।॥]\s*$/, '')
@@ -133,6 +147,8 @@ function createSectionMigrator(options = {}) {
 
   /** Four-line antaras; omit standalone `॥ ……` echo lines between them. */
   function migrateQuatrainRefrain(lines) {
+    if (!shouldUseQuatrainRefrain(lines)) return null;
+
     const quatrains = [];
     const content = lines.filter((l) => !isQuatrainEchoLine(l));
     for (let i = 0; i < content.length; i += 4) {
@@ -148,6 +164,336 @@ function createSectionMigrator(options = {}) {
       strategy: 'quatrain-refrain',
       sthayi: formatQuatrainBlock(quatrains[0]),
       paragraphs: quatrains.slice(1).map(formatQuatrainBlock),
+    };
+  }
+
+  function coupletPairKey(l1, l2) {
+    return `${normKey(l1)}||${normKey(l2)}`;
+  }
+
+  function findRepeatingChorusCouplet(lines) {
+    const counts = new Map();
+    for (let i = 0; i < lines.length - 1; i += 2) {
+      const k = coupletPairKey(lines[i], lines[i + 1]);
+      if (k.length > 24) counts.set(k, (counts.get(k) || 0) + 1);
+    }
+    let best = null;
+    let bestCount = 0;
+    for (const [key, count] of counts) {
+      if (count >= 3 && count > bestCount) {
+        bestCount = count;
+        best = key;
+      }
+    }
+    return best;
+  }
+
+  function shouldUseChorusCouplet(lines) {
+    if (shouldUseQuatrainRefrain(lines)) return false;
+    return Boolean(findRepeatingChorusCouplet(lines));
+  }
+
+  /** Alternating chorus couplet + antara (e.g. Acchyutam Keshavam). */
+  function migrateChorusCouplet(lines) {
+    const chorusKey = findRepeatingChorusCouplet(lines);
+    if (!chorusKey) return null;
+
+    let sthayi = null;
+    const body = [];
+    for (let i = 0; i < lines.length; i += 1) {
+      if (i + 1 < lines.length && coupletPairKey(lines[i], lines[i + 1]) === chorusKey) {
+        if (!sthayi) sthayi = joinHalfLines(lines[i], lines[i + 1]);
+        i += 1;
+        continue;
+      }
+      body.push(lines[i]);
+    }
+
+    const paragraphs = [];
+    for (let j = 0; j < body.length; j += 2) {
+      paragraphs.push(joinHalfLines(body[j], body[j + 1]));
+    }
+
+    return {
+      strategy: 'chorus-couplet',
+      sthayi: sthayi || joinHalfLines(body[0], body[1]),
+      paragraphs,
+    };
+  }
+
+  function shouldUseNumberedCouplets(lines) {
+    return lines.filter((l) => /॥\s*[०-९0-9]+\s*॥?/u.test(String(l))).length >= 3;
+  }
+
+  /** Two-line numbered stanzas (e.g. Madhuradhipate). */
+  function migrateNumberedCouplets(lines) {
+    if (!shouldUseNumberedCouplets(lines)) return null;
+
+    const stanzas = [];
+    for (let i = 0; i < lines.length; i += 2) {
+      if (i + 1 < lines.length) stanzas.push(joinHalfLines(lines[i], lines[i + 1]));
+      else stanzas.push(cleanedLine(lines[i]));
+    }
+    if (stanzas.length < 2) return null;
+
+    return {
+      strategy: 'numbered-couplets',
+      sthayi: stanzas[0],
+      paragraphs: stanzas.slice(1),
+    };
+  }
+
+  function isHookEchoLine(line) {
+    const t = String(line || '').trim();
+    if (/\.{3,}|…/.test(t)) {
+      const after = (t.match(/\.{3,}\s*(.+)$/u) || [])[1];
+      if (after && after.trim().length > 0) return false;
+      const before = t.replace(/\.{3,}.*$/u, '').trim();
+      if (before.length < 42) return true;
+      return false;
+    }
+    if (t.length < 36 && /^(हे\s+)?(गोविन्द|गोपाल)/i.test(t)) return true;
+    return false;
+  }
+
+  function stripHookTail(line, hooks) {
+    let s = cleanedLine(line);
+    for (const hook of hooks) {
+      const esc = hook.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      s = s.replace(new RegExp(`\\s*\\.{3,}\\s*${esc}.*$`, 'iu'), '');
+    }
+    return s.replace(/\s*\.{3,}.*$/u, '').trim();
+  }
+
+  function findEllipsisHooks(lines) {
+    const hooks = [];
+    for (const line of lines) {
+      const m = String(line).match(/\.{3,}\s*(.+)$/u);
+      if (m && m[1].trim().length >= 8) hooks.push(m[1].trim());
+    }
+    return [...new Set(hooks)];
+  }
+
+  function shouldUseHookSplit(lines) {
+    const echoLines = lines.filter((l) => isHookEchoLine(l)).length;
+    if (echoLines >= 2) return true;
+    const hooks = findEllipsisHooks(lines);
+    return hooks.length >= 2 && lines.filter((l) => /\.{3,}|…/.test(l)).length >= 2;
+  }
+
+  function formatLyricBlock(chunk) {
+    const cleaned = chunk.map((l) => cleanedLine(l));
+    if (!cleaned.length) return '';
+    if (cleaned.length === 1) return cleaned[0];
+    if (cleaned.length === 2) {
+      const avg = (cleaned[0].length + cleaned[1].length) / 2;
+      if (avg >= 38) return cleaned.join('\n');
+      return joinHalfLines(cleaned[0], cleaned[1]);
+    }
+    if (cleaned.length === 3) {
+      if (cleaned[0].length < 45) {
+        return `${cleaned[0]}\n${joinHalfLines(cleaned[1], cleaned[2])}`;
+      }
+      return `${joinHalfLines(cleaned[0], cleaned[1])}\n${cleaned[2]}`;
+    }
+    const rows = [];
+    for (let i = 0; i < cleaned.length; i += 2) {
+      rows.push(joinHalfLines(cleaned[i], cleaned[i + 1] || ''));
+    }
+    return rows.join('\n');
+  }
+
+  /** Opening block + antaras; skip `...` chorus echo lines (Govind Gopal). */
+  function migrateHookSplit(lines) {
+    if (!shouldUseHookSplit(lines)) return null;
+
+    const hooks = findEllipsisHooks(lines);
+    const blocks = [];
+    let buf = [];
+
+    for (const line of lines) {
+      if (isHookEchoLine(line)) {
+        if (buf.length) {
+          blocks.push(buf);
+          buf = [];
+        }
+        continue;
+      }
+      const stripped = stripHookTail(line, hooks);
+      if (stripped) buf.push(stripped);
+    }
+    if (buf.length) blocks.push(buf);
+
+    if (blocks.length < 2) return null;
+
+    return {
+      strategy: 'hook-split',
+      sthayi: formatLyricBlock(blocks[0]),
+      paragraphs: blocks.slice(1).map(formatLyricBlock),
+    };
+  }
+
+  function findTailRefrainPhrase(lines, title) {
+    const titleKey = normKey(title || '');
+    if (titleKey.length >= 8) {
+      const titleHits = lines.filter((l) => normKey(l).includes(titleKey)).length;
+      if (titleHits >= 3) return titleKey;
+    }
+    const tails = new Map();
+    for (const line of lines) {
+      const m = String(line).match(/,\s*([^,।॥|]{8,35})\s*[।॥]\s*$/u);
+      if (m) {
+        const t = normKey(m[1]);
+        if (t.length >= 10) tails.set(t, (tails.get(t) || 0) + 1);
+      }
+    }
+    let best = null;
+    let bestCount = 0;
+    for (const [t, count] of tails) {
+      if (count >= 2 && count > bestCount) {
+        bestCount = count;
+        best = t;
+      }
+    }
+    return best;
+  }
+
+  function lineEndsWithTailRefrain(line, phraseKey) {
+    return normKey(line).includes(phraseKey);
+  }
+
+  function shouldUseTailRefrain(lines, title) {
+    if (lines.filter((l) => isHookEchoLine(l)).length >= 2) return false;
+    const phrase = findTailRefrainPhrase(lines, title);
+    if (!phrase) return false;
+    return lines.filter((l) => lineEndsWithTailRefrain(l, phrase)).length >= 2;
+  }
+
+  /** Narrative stanzas ending with a repeated tail refrain (Laj rakho Girdhari). */
+  function migrateTailRefrain(lines, title) {
+    const phraseKey = findTailRefrainPhrase(lines, title);
+    if (!phraseKey) return null;
+
+    let i = 0;
+    const sthayiParts = [];
+    for (; i < lines.length; i += 1) {
+      const line = lines[i];
+      if (/^जैसी|^सूरदास/i.test(line)) break;
+      if (sthayiParts.length >= 2) break;
+      if (sthayiParts.length && line.length > 85) break;
+      sthayiParts.push(line);
+    }
+    const sthayi =
+      sthayiParts.length >= 2
+        ? joinHalfLines(sthayiParts[0], sthayiParts[1])
+        : cleanedLine(sthayiParts[0] || '');
+
+    const paragraphs = [];
+    let buf = [];
+    for (; i < lines.length; i += 1) {
+      if (
+        buf.length === 0 &&
+        paragraphs.length > 0 &&
+        lineEndsWithTailRefrain(lines[i], phraseKey) &&
+        lines[i].length < 90
+      ) {
+        continue;
+      }
+      buf.push(lines[i]);
+      if (lineEndsWithTailRefrain(lines[i], phraseKey)) {
+        paragraphs.push(joinVerseLines(buf));
+        buf = [];
+      }
+    }
+
+    return {
+      strategy: 'tail-refrain',
+      sthayi,
+      paragraphs,
+    };
+  }
+
+  function detectInlineChorusTag(lines) {
+    for (const line of lines) {
+      const m = String(line).match(/।\s*([^\n।॥|]{8,40})\s*\.{3,}/u);
+      if (m) return m[1].trim();
+    }
+    return null;
+  }
+
+  function shouldUseInlineChorusTag(lines) {
+    const tag = detectInlineChorusTag(lines);
+    if (!tag) return false;
+    return lines.filter((l) => new RegExp(`।\\s*${tag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(l)).length >= 2;
+  }
+
+  /** Strip inline `। chorus...` tails; sthayi + antaras (Dinan dukh haran). */
+  function migrateInlineChorusTag(lines) {
+    const tag = detectInlineChorusTag(lines);
+    if (!tag) return null;
+
+    const esc = tag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const tagRe = new RegExp(`\\s*।\\s*${esc}.*?(?:\\.{3,}|$)`, 'iu');
+
+    const sthayi = cleanedLine(String(lines[0]).replace(tagRe, '').trim());
+    const paragraphs = [];
+    let buf = [];
+    const fmtVerse = (chunk) => chunk.map((l) => cleanedLine(l)).join('\n');
+    for (let i = 1; i < lines.length; i += 1) {
+      const line = lines[i];
+      const cleaned = cleanedLine(String(line).replace(tagRe, '').trim());
+      if (cleaned) buf.push(cleaned);
+      if (tagRe.test(line)) {
+        paragraphs.push(fmtVerse(buf));
+        buf = [];
+      }
+    }
+    if (buf.length) paragraphs.push(fmtVerse(buf));
+    if (!paragraphs.length) return null;
+
+    return {
+      strategy: 'inline-chorus-tag',
+      sthayi,
+      paragraphs,
+    };
+  }
+
+  function shouldUseInlineHookTail(lines) {
+    if (lines.some((l) => isHookEchoLine(l))) return false;
+    return (
+      findEllipsisHooks(lines).length >= 1 &&
+      lines.filter((l) => /\.{3,}|…/.test(l)).length >= 3
+    );
+  }
+
+  /** Antaras split on `...hook` line endings (Tum mori rakho laj). */
+  function migrateInlineHookTail(lines) {
+    if (!shouldUseInlineHookTail(lines)) return null;
+
+    const hooks = findEllipsisHooks(lines);
+    const mainHook = hooks.sort((a, b) => b.length - a.length)[0] || '';
+    const blocks = [];
+    let buf = [];
+    for (const line of lines) {
+      const stripped = stripHookTail(line, hooks);
+      if (stripped) buf.push(stripped);
+      const endsHook =
+        mainHook &&
+        normKey(stripped).includes(normKey(mainHook)) &&
+        /[।॥]\s*$/.test(stripped) &&
+        !/\.{3,}|…/.test(line);
+      if (/\.{3,}|…/.test(line) || (endsHook && buf.length >= 2 && blocks.length === 0)) {
+        blocks.push(buf);
+        buf = [];
+      }
+    }
+    if (buf.length) blocks.push(buf);
+
+    if (blocks.length < 2) return null;
+    return {
+      strategy: 'inline-hook-tail',
+      sthayi: formatLyricBlock(blocks[0]),
+      paragraphs: blocks.slice(1).map(formatLyricBlock),
     };
   }
 
@@ -351,12 +697,19 @@ function createSectionMigrator(options = {}) {
     };
   }
 
-  function detectShape(lines) {
+  function detectShape(lines, title) {
     if (lines.length <= 1) return 'single';
+
+    if (shouldUseQuatrainRefrain(lines)) return 'quatrain-refrain';
+    if (shouldUseChorusCouplet(lines)) return 'chorus-couplet';
+    if (shouldUseNumberedCouplets(lines)) return 'numbered-couplets';
+    if (shouldUseInlineChorusTag(lines)) return 'inline-chorus-tag';
+    if (shouldUseHookSplit(lines)) return 'hook-split';
+    if (shouldUseInlineHookTail(lines)) return 'inline-hook-tail';
+    if (shouldUseTailRefrain(lines, title)) return 'tail-refrain';
 
     if (shouldUseCouplets(lines)) return 'couplets';
     if (shouldUseOpeningAntaras(lines)) return 'opening-antaras';
-    if (shouldUseQuatrainRefrain(lines)) return 'quatrain-refrain';
 
     const ambeShape = detectAmbeShape(lines);
     if (
@@ -403,8 +756,32 @@ function createSectionMigrator(options = {}) {
       return { strategy: 'empty', sthayi: '', paragraphs: [] };
     }
 
-    const shape = detectShape(cleaned);
+    const shape = detectShape(cleaned, title);
 
+    if (shape === 'chorus-couplet') {
+      const migrated = migrateChorusCouplet(cleaned);
+      if (migrated) return migrated;
+    }
+    if (shape === 'numbered-couplets') {
+      const migrated = migrateNumberedCouplets(cleaned);
+      if (migrated) return migrated;
+    }
+    if (shape === 'inline-chorus-tag') {
+      const migrated = migrateInlineChorusTag(cleaned);
+      if (migrated) return migrated;
+    }
+    if (shape === 'tail-refrain') {
+      const migrated = migrateTailRefrain(cleaned, title);
+      if (migrated) return migrated;
+    }
+    if (shape === 'hook-split') {
+      const migrated = migrateHookSplit(cleaned);
+      if (migrated) return migrated;
+    }
+    if (shape === 'inline-hook-tail') {
+      const migrated = migrateInlineHookTail(cleaned);
+      if (migrated) return migrated;
+    }
     if (shape === 'couplets') {
       return migrateCouplets(cleaned);
     }
@@ -424,9 +801,6 @@ function createSectionMigrator(options = {}) {
     if (shape === 'refrain-line') {
       return migrateRefrainLines(cleaned);
     }
-
-    const quatrain = migrateQuatrainRefrain(cleaned);
-    if (quatrain) return quatrain;
 
     const echoStanzas = migrateEchoStanzas(cleaned);
     if (echoStanzas && !shouldUseQuatrainRefrain(cleaned)) return echoStanzas;
@@ -487,8 +861,8 @@ function createSectionMigrator(options = {}) {
 
     const { strategy, sthayi, paragraphs } = migrateLines(lines, out.title || doc.title || '');
     out.lyrics = {
-      sthayi,
-      paragraphs: paragraphs.filter(Boolean),
+      sthayi: sanitizeLyricBlock(sthayi),
+      paragraphs: paragraphs.filter(Boolean).map(sanitizeLyricBlock),
     };
     out[strategyField] = strategy;
     return out;
