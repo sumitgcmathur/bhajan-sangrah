@@ -11,22 +11,26 @@ function renderNav(sections, base, currentSlug) {
     .map((s) => {
       const href = pageUrl(base, `${s.slug}.html`);
       const active = s.slug === currentSlug ? ' is-active' : '';
-      return `<a class="nav-link${active}" href="${href}">${escapeHtml(s.title)}</a>`;
+      return `<li><a class="sidebar-link${active}" href="${href}">${escapeHtml(s.title)}</a></li>`;
     })
     .join('\n');
 }
 
-function renderHeader(config, sections, base, currentSlug) {
+function renderSidebar(config, sections, base, currentSlug) {
   const home = pageUrl(base, 'index.html');
-  return `<header class="site-header">
-  <div class="header-inner">
-    <a class="site-brand" href="${home}">
-      <span class="site-brand__title">${escapeHtml(config.site_title)}</span>
+  const icon = pageUrl(base, 'assets/icons/veena.svg');
+  return `<aside class="site-sidebar" id="site-sidebar" aria-label="साइट मार्गदर्शन">
+  <div class="sidebar-brand">
+    <a class="sidebar-brand__link" href="${home}">
+      <img class="sidebar-brand__icon" src="${icon}" width="48" height="48" alt="">
+      <span class="sidebar-brand__title">${escapeHtml(config.site_title)}</span>
     </a>
-    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">&#9776;</button>
   </div>
-  <nav id="site-nav" class="site-nav" aria-label="विभाग">${renderNav(sections, base, currentSlug)}</nav>
-</header>`;
+  <nav class="sidebar-nav" aria-label="विभाग">
+    <p class="sidebar-nav__label">${escapeHtml(config.site_title)}</p>
+    <ul class="sidebar-nav__list">${renderNav(sections, base, currentSlug)}</ul>
+  </nav>
+</aside>`;
 }
 
 function renderFooter() {
@@ -37,7 +41,7 @@ function renderHead(pageTitle, base) {
   const css = pageUrl(base, 'assets/css/site.css');
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#6b2d0a">
+<meta name="theme-color" content="#333333">
 <title>${escapeHtml(pageTitle)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,34 +56,62 @@ function renderPage(opts) {
 <head>
 ${renderHead(pageTitle, base)}
 </head>
-<body class="${bodyClass}">
-${renderHeader(config, sections, base, currentSlug)}
+<body class="has-sidebar ${bodyClass}">
+<button type="button" class="sidebar-toggle" aria-expanded="false" aria-controls="site-sidebar">&#9776;</button>
+<div class="site-shell">
+${renderSidebar(config, sections, base, currentSlug)}
+<div class="site-content">
 ${body}
 ${renderFooter()}
+</div>
+</div>
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
 </body>
 </html>`;
 }
 
-function renderIndex(config, sections, base) {
-  const cards = sections
+function renderSectionIndexList(sections, base) {
+  const items = sections
     .map((s) => {
       const href = pageUrl(base, `${s.slug}.html`);
-      const banner = s.banner
-        ? `<div class="section-card__img-wrap"><img class="section-card__banner" src="${pageUrl(base, s.banner)}" alt="" loading="lazy"></div>`
-        : '<div class="section-card__img-wrap section-card__img-wrap--placeholder"></div>';
-      return `<a class="section-card" href="${href}">${banner}<span class="section-card__title">${escapeHtml(s.title)}</span></a>`;
+      return `<li><a href="${href}">${escapeHtml(s.title)}</a></li>`;
     })
     .join('\n');
+  return `<ul class="content-index">${items}</ul>`;
+}
 
-  const body = `<div class="home-hero">
-  <div class="home-hero__inner">
-    <h1>${escapeHtml(config.site_title)}</h1>
-    <p class="home-hero__tagline">भक्ति भजन — पढ़ने के लिए विभाग चुनें</p>
-  </div>
-</div>
-<main class="site-main site-main--home">
-  <section class="section-grid" aria-label="सभी विभाग">${cards}</section>
+function renderBhajanIndex(bhajans, section) {
+  const items = bhajans
+    .map((b, i) => {
+      const id = b.id || anchorId(section.slug, b.title, i);
+      return `<li><a href="#${id}">${escapeHtml(b.title)}</a></li>`;
+    })
+    .join('\n');
+  return `<nav class="bhajan-index" aria-label="भजन सूची">
+  <ul class="content-index">${items}</ul>
+</nav>`;
+}
+
+function renderHomeBanner(config, base) {
+  const src = config.home_banner ? pageUrl(base, config.home_banner) : '';
+  if (!src) return '';
+  return `<div class="content-banner">
+  <img class="content-banner__img" src="${src}" alt="">
+</div>`;
+}
+
+function renderSectionBanner(section, base) {
+  if (!section.banner) return '';
+  return `<div class="content-banner">
+  <img class="content-banner__img" src="${pageUrl(base, section.banner)}" alt="">
+</div>`;
+}
+
+function renderIndex(config, sections, base) {
+  const body = `${renderHomeBanner(config, base)}
+<main class="content-main content-main--home">
+  <h1 class="visually-hidden">${escapeHtml(config.site_title)}</h1>
+  ${renderSectionIndexList(sections, base)}
 </main>`;
 
   return renderPage({
@@ -94,15 +126,6 @@ function renderIndex(config, sections, base) {
 }
 
 function renderSectionPage(section, bhajans, config, sections, base) {
-  const banner = section.banner
-    ? `<img class="section-hero__banner" src="${pageUrl(base, section.banner)}" alt="">`
-    : '';
-  const toc = bhajans
-    .map((b, i) => {
-      const id = b.id || anchorId(section.slug, b.title, i);
-      return `<li><a href="#${id}">${escapeHtml(b.title)}</a></li>`;
-    })
-    .join('\n');
   const articles = bhajans
     .map((b, i) => {
       const id = b.id || anchorId(section.slug, b.title, i);
@@ -118,20 +141,11 @@ function renderSectionPage(section, bhajans, config, sections, base) {
     })
     .join('\n');
 
-  const body = `<div class="section-hero">
-  ${banner}
-  <div class="section-hero__overlay">
-    <h1 class="section-hero__title">${escapeHtml(section.title)}</h1>
-  </div>
-</div>
-<main class="site-main site-main--section">
-  <div class="section-layout">
-    <aside class="bhajan-toc" aria-label="भजन सूची">
-      <h2 class="bhajan-toc__heading">भजन सूची</h2>
-      <ul>${toc}</ul>
-    </aside>
-    <div class="bhajan-list">${articles}</div>
-  </div>
+  const body = `${renderSectionBanner(section, base)}
+<main class="content-main content-main--section">
+  <h1 class="section-title">${escapeHtml(section.title)}</h1>
+  ${renderBhajanIndex(bhajans, section)}
+  <div class="bhajan-list">${articles}</div>
 </main>`;
 
   return renderPage({

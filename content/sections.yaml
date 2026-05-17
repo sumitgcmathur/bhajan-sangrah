@@ -1,6 +1,7 @@
 # Master section index — edit via add-section.js or directly
 base_url: /bhajan-sangrah/
 site_title: भजन संग्रह
+home_banner: assets/banners/home.jpg
 
 sections:
   - slug: aarti
