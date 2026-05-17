@@ -190,6 +190,7 @@ function createSectionMigrator(options = {}) {
 
   function shouldUseChorusCouplet(lines) {
     if (shouldUseQuatrainRefrain(lines)) return false;
+    if (shouldUseVerseEndStanzas(lines)) return false;
     return Boolean(findRepeatingChorusCouplet(lines));
   }
 
@@ -279,6 +280,42 @@ function createSectionMigrator(options = {}) {
     if (echoLines >= 2) return true;
     const hooks = findEllipsisHooks(lines);
     return hooks.length >= 2 && lines.filter((l) => /\.{3,}|…/.test(l)).length >= 2;
+  }
+
+  function shouldUseVerseEndStanzas(lines) {
+    if (shouldUseQuatrainRefrain(lines) || shouldUseNumberedCouplets(lines)) return false;
+    const ends = lines.filter((l) => /॥\s*$/.test(cleanedLine(l))).length;
+    if (ends < 3) return false;
+    const numbered = lines.filter((l) => /॥\s*[०-९0-9]/u.test(cleanedLine(l))).length;
+    if (numbered >= 3) return false;
+    return true;
+  }
+
+  /** Group lines into stanzas ending with ॥ (Hanuman bhajans, film bhajans). */
+  function migrateVerseEndStanzas(lines) {
+    if (!shouldUseVerseEndStanzas(lines)) return null;
+
+    const blocks = [];
+    let buf = [];
+    for (const line of lines) {
+      const c = cleanedLine(line);
+      if (!c) continue;
+      buf.push(line);
+      if (/॥\s*$/.test(c)) {
+        blocks.push(buf);
+        buf = [];
+      }
+    }
+    if (buf.length) blocks.push(buf);
+
+    if (blocks.length < 2) return null;
+
+    const fmt = (chunk) => sanitizeLyricBlock(joinVerseLines(chunk));
+    return {
+      strategy: 'verse-end-stanzas',
+      sthayi: fmt(blocks[0]),
+      paragraphs: blocks.slice(1).map(fmt),
+    };
   }
 
   function formatLyricBlock(chunk) {
@@ -701,8 +738,9 @@ function createSectionMigrator(options = {}) {
     if (lines.length <= 1) return 'single';
 
     if (shouldUseQuatrainRefrain(lines)) return 'quatrain-refrain';
-    if (shouldUseChorusCouplet(lines)) return 'chorus-couplet';
     if (shouldUseNumberedCouplets(lines)) return 'numbered-couplets';
+    if (shouldUseVerseEndStanzas(lines)) return 'verse-end-stanzas';
+    if (shouldUseChorusCouplet(lines)) return 'chorus-couplet';
     if (shouldUseInlineChorusTag(lines)) return 'inline-chorus-tag';
     if (shouldUseHookSplit(lines)) return 'hook-split';
     if (shouldUseInlineHookTail(lines)) return 'inline-hook-tail';
@@ -764,6 +802,10 @@ function createSectionMigrator(options = {}) {
     }
     if (shape === 'numbered-couplets') {
       const migrated = migrateNumberedCouplets(cleaned);
+      if (migrated) return migrated;
+    }
+    if (shape === 'verse-end-stanzas') {
+      const migrated = migrateVerseEndStanzas(cleaned);
       if (migrated) return migrated;
     }
     if (shape === 'inline-chorus-tag') {
