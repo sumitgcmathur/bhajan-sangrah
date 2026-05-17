@@ -1,0 +1,448 @@
+{
+  "generatedAt": "2026-05-17T18:39:39.102Z",
+  "section": "ambe",
+  "backup": "C:/Sumit/coding/bhajan-sangrah/content-backup-20260517-123521/ambe",
+  "total": 20,
+  "summary": {
+    "high": 17,
+    "medium": 1,
+    "low": 2,
+    "manualReview": 2,
+    "withTarz": 11,
+    "stanzaBlocks": 0,
+    "firstLineSthayi": 0
+  },
+  "files": [
+    {
+      "file": "content/ambe/001-पूर-है-धीरियाणी-है.yaml",
+      "title": "पूर है धीरियाणी है",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "single",
+      "ambeShape": "single",
+      "tarz": "बांगारी कोयल",
+      "sthayiLines": 1,
+      "paragraphCount": 5,
+      "backupLineCount": 6,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/002-शिव-प्रिये-अम्बे-मात-मनाऊँ.yaml",
+      "title": "शिव प्रिये अम्बे मात मनाऊँ",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "single",
+      "ambeShape": "single",
+      "tarz": null,
+      "sthayiLines": 1,
+      "paragraphCount": 7,
+      "backupLineCount": 8,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/003-मारी-सहाय-करे-जगदम्बा-सिंह-गाज-रयो.yaml",
+      "title": "मारी सहाय करे जगदम्बा सिंह गाज रयो",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "ter-split",
+      "ambeShape": "ter-split",
+      "tarz": "तीखे नैनों से नखवाली",
+      "sthayiLines": 2,
+      "paragraphCount": 4,
+      "backupLineCount": 10,
+      "flags": [
+        "multiline-paragraphs:4"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/004-जै-जै-जै-जै-सुराई.yaml",
+      "title": "जै जै जै जै सुराई",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "pairs",
+      "ambeShape": "pairs",
+      "tarz": "बाबा सीता रे खोले में हनुमत डाली मूंडी",
+      "sthayiLines": 1,
+      "paragraphCount": 5,
+      "backupLineCount": 11,
+      "flags": [
+        "multiline-paragraphs:5"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/005-सहाय-जगदम्बे-कीजो-हमारी.yaml",
+      "title": "सहाय जगदम्बे कीजो हमारी",
+      "score": 94,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "pairs",
+      "ambeShape": "pairs",
+      "tarz": "फूलन लो बहार",
+      "sthayiLines": 1,
+      "paragraphCount": 3,
+      "backupLineCount": 7,
+      "flags": [
+        "multiline-paragraphs:3"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "refrain-hook-in-most-lines",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/006-बरसे-श्री-जगदम्ब-मात-के.yaml",
+      "title": "बरसे श्री जगदम्ब मात के",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "ter-single",
+      "ambeShape": "ter-single",
+      "tarz": "आजज रंग बरसे रे",
+      "sthayiLines": 1,
+      "paragraphCount": 4,
+      "backupLineCount": 9,
+      "flags": [
+        "multiline-paragraphs:4",
+        "verse-markers-in-text:1"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/007-रट-जगदम्बा-रो-नाम.yaml",
+      "title": "रट जगदम्बा रो नाम",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "ter-split",
+      "ambeShape": "ter-split",
+      "tarz": "खेलण दो गिणगोर भँवर म्हाने",
+      "sthayiLines": 2,
+      "paragraphCount": 5,
+      "backupLineCount": 12,
+      "flags": [
+        "multiline-paragraphs:5",
+        "verse-markers-in-text:2"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/008-आतोतो-आद-भवानी-ईश्वरी.yaml",
+      "title": "आतोतो आद भवानी ईश्वरी",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "numbered-stanzas",
+      "ambeShape": "numbered-stanzas",
+      "tarz": "आतोतो उत्तर दिशा री पीपली",
+      "sthayiLines": 3,
+      "paragraphCount": 6,
+      "backupLineCount": 9,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/009-हद-नीको-रे-दरशन.yaml",
+      "title": "हद नीको रे दरशन",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "numbered-stanzas",
+      "ambeShape": "numbered-stanzas",
+      "tarz": "रस लेवे रे रुख्याली, लेवे रे मिजाजजी हरमल रो",
+      "sthayiLines": 1,
+      "paragraphCount": 5,
+      "backupLineCount": 11,
+      "flags": [
+        "multiline-paragraphs:5"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/010-अम्बे-रानी-मैं-तो-राज-रा.yaml",
+      "title": "अम्बे रानी मैं तो राज रा",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "numbered-stanzas",
+      "ambeShape": "numbered-stanzas",
+      "tarz": null,
+      "sthayiLines": 2,
+      "paragraphCount": 2,
+      "backupLineCount": 12,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:2"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/011-नवदुर्गा-मात-भवानी-का.yaml",
+      "title": "नवदुर्गा मात भवानी का",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "numbered-stanzas",
+      "ambeShape": "numbered-stanzas",
+      "tarz": "दिल लूटने वाले जादूगर (मदारी)",
+      "sthayiLines": 2,
+      "paragraphCount": 3,
+      "backupLineCount": 11,
+      "flags": [
+        "multiline-paragraphs:3"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/012-मैं-शरणे-आयो-है.yaml",
+      "title": "मैं शरणे आयो है",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "numbered-stanzas",
+      "ambeShape": "numbered-stanzas",
+      "tarz": "बोलम रही है हे सालू वाली समदण नित नवी है",
+      "sthayiLines": 1,
+      "paragraphCount": 5,
+      "backupLineCount": 11,
+      "flags": [
+        "multiline-paragraphs:5"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/013-अम्बे-दर्श-तिहारो.yaml",
+      "title": "अम्बे दर्श तिहारो",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "numbered-stanzas",
+      "ambeShape": "numbered-stanzas",
+      "tarz": "जुलाबड़ारो",
+      "sthayiLines": 2,
+      "paragraphCount": 3,
+      "backupLineCount": 11,
+      "flags": [
+        "multiline-paragraphs:2"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/014-आयो-मैं-तो-अंबे-रानी.yaml",
+      "title": "आयो मैं तो अंबे रानी",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "ellipsis-stanzas",
+      "ambeShape": "ellipsis-stanzas",
+      "tarz": null,
+      "sthayiLines": 1,
+      "paragraphCount": 4,
+      "backupLineCount": 14,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:4"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/015-मोय-दीजे-वरदान-देवी.yaml",
+      "title": "मोय दीजे वरदान देवी",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "pairs",
+      "ambeShape": "pairs",
+      "tarz": null,
+      "sthayiLines": 1,
+      "paragraphCount": 3,
+      "backupLineCount": 6,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:2"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/016-अम्बे-चरण-कमल-है-तेरे.yaml",
+      "title": "अम्बे चरण कमल है तेरे",
+      "score": 80,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "refrain-blocks",
+      "ambeShape": "refrain-blocks",
+      "tarz": null,
+      "sthayiLines": 1,
+      "paragraphCount": 2,
+      "backupLineCount": 12,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:1"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/017-ऐसा-प्यार-बहा-दे-मैया.yaml",
+      "title": "ऐसा प्यार बहा दे मैया",
+      "score": 68,
+      "tier": "medium",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "refrain-blocks",
+      "ambeShape": "refrain-blocks",
+      "tarz": null,
+      "sthayiLines": 1,
+      "paragraphCount": 4,
+      "backupLineCount": 18,
+      "flags": [
+        "long-song-many-verses",
+        "no-tarz-field",
+        "multiline-paragraphs:4"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/018-मेरा-जीवन-तेरी-शरण।.yaml",
+      "title": "मेरा जीवन तेरी शरण।",
+      "score": 53,
+      "tier": "low",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "refrain-stanza",
+      "ambeShape": "refrain-stanza",
+      "tarz": null,
+      "sthayiLines": 1,
+      "paragraphCount": 4,
+      "backupLineCount": 17,
+      "flags": [
+        "long-song-many-verses",
+        "sthayi-equals-title",
+        "no-tarz-field",
+        "multiline-paragraphs:4"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/ambe/019-मेरे-मन-के-अंध-तमस-में.yaml",
+      "title": "मेरे मन के अंध तमस में",
+      "score": 94,
+      "tier": "high",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "refrain-blocks",
+      "ambeShape": "refrain-blocks",
+      "tarz": null,
+      "sthayiLines": 1,
+      "paragraphCount": 2,
+      "backupLineCount": 7,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:2"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "refrain-hook-in-most-lines",
+        "typical-bhajan-shape"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ambe/020-हे-गिरि-नंदिनी,-विश्व-की-स्वामिनी.yaml",
+      "title": "हे गिरि नंदिनी, विश्व की स्वामिनी",
+      "score": 50,
+      "tier": "low",
+      "backupStrategy": "first-line-sthayi",
+      "migratedStrategy": "chorus-quad",
+      "ambeShape": "chorus-quad",
+      "tarz": null,
+      "sthayiLines": 1,
+      "paragraphCount": 12,
+      "backupLineCount": 48,
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song",
+        "no-tarz-field",
+        "multiline-paragraphs:12",
+        "verse-markers-in-text:1"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "manualReview": true
+    }
+  ]
+}
