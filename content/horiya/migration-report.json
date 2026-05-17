@@ -1,0 +1,215 @@
+{
+  "generatedAt": "2026-05-17T20:55:58.421Z",
+  "section": "horiya",
+  "backup": "C:/Sumit/coding/bhajan-sangrah/content-backup-20260517-123521/horiya",
+  "total": 12,
+  "summary": {
+    "high": 12,
+    "medium": 0,
+    "low": 0,
+    "manualReview": 6,
+    "strategies": {
+      "hook-stanzas": 8,
+      "pairs": 3,
+      "refrain-line": 1
+    }
+  },
+  "files": [
+    {
+      "file": "content/horiya/001-कैसे-होरी-खेलूं-रे-इन-सांवरिया-रे-संग.yaml",
+      "title": "कैसे होरी खेलूं रे इन सांवरिया रे संग",
+      "score": 80,
+      "tier": "high",
+      "strategy": "hook-stanzas",
+      "backupLines": 12,
+      "proposedLines": 12,
+      "sthayiLines": 2,
+      "paragraphCount": 5,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:5"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/horiya/002-काना-धर-लो-मुकुट-और-खेलो-होली.yaml",
+      "title": "काना धर लो मुकुट और खेलो होली",
+      "score": 80,
+      "tier": "high",
+      "strategy": "hook-stanzas",
+      "backupLines": 13,
+      "proposedLines": 13,
+      "sthayiLines": 1,
+      "paragraphCount": 12,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/horiya/003-आज-ब्रिज-में-होरी-ओ-रसिया.yaml",
+      "title": "आज ब्रिज में होरी ओ रसिया",
+      "score": 80,
+      "tier": "high",
+      "strategy": "hook-stanzas",
+      "backupLines": 9,
+      "proposedLines": 9,
+      "sthayiLines": 2,
+      "paragraphCount": 7,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/horiya/004-खेलो-जी-खेलो-गंग-श्याम-मो-संग-होरी-खेलो.yaml",
+      "title": "खेलो जी खेलो गंग श्याम मो संग होरी खेलो",
+      "score": 94,
+      "tier": "high",
+      "strategy": "hook-stanzas",
+      "backupLines": 8,
+      "proposedLines": 8,
+      "sthayiLines": 1,
+      "paragraphCount": 7,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/horiya/005-हारे-महीनो-फागण-रो.yaml",
+      "title": "हारे महीनो फागण रो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "hook-stanzas",
+      "backupLines": 6,
+      "proposedLines": 6,
+      "sthayiLines": 1,
+      "paragraphCount": 5,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/horiya/006-हारे-आनंद-आयो-रे.yaml",
+      "title": "हारे आनंद आयो रे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "hook-stanzas",
+      "backupLines": 9,
+      "proposedLines": 9,
+      "sthayiLines": 2,
+      "paragraphCount": 3,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:2"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/horiya/007-हारे-लारो-छोड़-दे.yaml",
+      "title": "हारे लारो छोड़ दे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "pairs",
+      "backupLines": 15,
+      "proposedLines": 15,
+      "sthayiLines": 1,
+      "paragraphCount": 7,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:7"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/horiya/008-खेले-माडाणी-होली-रो-रसियो.yaml",
+      "title": "खेले माडाणी होली रो रसियो",
+      "score": 94,
+      "tier": "high",
+      "strategy": "hook-stanzas",
+      "backupLines": 5,
+      "proposedLines": 5,
+      "sthayiLines": 1,
+      "paragraphCount": 4,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/horiya/009-सांवरियो-होरी-खेले-रे.yaml",
+      "title": "सांवरियो होरी खेले रे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "pairs",
+      "backupLines": 9,
+      "proposedLines": 7,
+      "sthayiLines": 1,
+      "paragraphCount": 3,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:3"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/horiya/010-और-रंग-दे-रे-राधे-और-रंग-दे.yaml",
+      "title": "और रंग दे रे राधे और रंग दे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "hook-stanzas",
+      "backupLines": 12,
+      "proposedLines": 12,
+      "sthayiLines": 1,
+      "paragraphCount": 6,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:5"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/horiya/011-होली-कनक-भवन-में.yaml",
+      "title": "होली कनक भवन में",
+      "score": 80,
+      "tier": "high",
+      "strategy": "pairs",
+      "backupLines": 6,
+      "proposedLines": 6,
+      "sthayiLines": 1,
+      "paragraphCount": 3,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field",
+        "multiline-paragraphs:2"
+      ],
+      "manualReview": true
+    },
+    {
+      "file": "content/horiya/012-झोली-को-भरलो-भक्तो.yaml",
+      "title": "झोली को भरलो भक्तो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "refrain-line",
+      "backupLines": 14,
+      "proposedLines": 14,
+      "sthayiLines": 1,
+      "paragraphCount": 13,
+      "tarz": "ये गोटेदार लहँगा",
+      "flags": [],
+      "manualReview": false
+    }
+  ]
+}
