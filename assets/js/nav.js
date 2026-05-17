@@ -1,1 +1,9 @@
-(function(){var b=document.querySelector(".nav-toggle"),p=document.getElementById("site-nav-panel");if(!b||!p)return;b.addEventListener("click",function(){var o=p.classList.toggle("is-open");b.setAttribute("aria-expanded",o?"true":"false");});})();
+(function () {
+  var btn = document.querySelector(".nav-toggle");
+  var nav = document.getElementById("site-nav");
+  if (!btn || !nav) return;
+  btn.addEventListener("click", function () {
+    var open = nav.classList.toggle("is-open");
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+})();

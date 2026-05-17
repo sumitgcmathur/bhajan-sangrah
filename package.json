@@ -6,6 +6,7 @@
     "scrape": "node scripts/scraper.js",
     "scrape:cache": "node scripts/scraper.js --cache-only",
     "download-banners": "node scripts/download-banners.js",
+    "clean-content": "node scripts/clean-content.js",
     "build": "node scripts/build.js",
     "add-bhajan": "node scripts/add-bhajan.js",
     "add-section": "node scripts/add-section.js",

@@ -1,3 +1,5 @@
+const { isJunkLine, cleanLyricsText } = require('./clean-lyrics');
+
 function stripTags(html) {
   return html
     .replace(/<br\s*\/?>/gi, '\n')
@@ -33,9 +35,9 @@ function parseChunk(chunk, title, swarachitDefault) {
   const lines = body
     .split('\n')
     .map((l) => l.replace(/\s+/g, ' ').trim())
-    .filter((l) => l && l !== title);
+    .filter((l) => l && l !== title && !isJunkLine(l));
   if (!lines.length) return null;
-  const doc = { title, lyrics: lines.join('\n') };
+  const doc = { title, lyrics: cleanLyricsText(lines.join('\n')) };
   if (tarz) doc.tarz = tarz;
   if (swarachitDefault) doc.swarachit = true;
   return doc;
