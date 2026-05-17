@@ -101,12 +101,6 @@ function parseLyricsObject(lines, startIdx) {
           i = parsed.next;
           continue;
         }
-        if (part && pr.match(/^\s{6}jabani:\s*\|\s*$/)) {
-          const { text, next } = readIndentedBlock(lines, i + 1, 10);
-          part.jabani = text;
-          i = next;
-          continue;
-        }
         break;
       }
       if (part) lyrics.parts.push(part);
@@ -135,7 +129,7 @@ function parseLyricsObject(lines, startIdx) {
 
     if (raw.match(/^\s{2}jabani:\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
-      lyrics.jabani = text;
+      lyrics._legacyJabani = text;
       i = next;
       continue;
     }
@@ -144,6 +138,46 @@ function parseLyricsObject(lines, startIdx) {
   }
 
   return { lyrics, next: i };
+}
+
+/** Narration after the song — not part of lyrics (legacy: nested under lyrics). */
+function hoistJabani(doc) {
+  if (!doc?.lyrics || typeof doc.lyrics === 'string') return doc;
+
+  const pieces = doc.jabani ? [doc.jabani] : [];
+
+  const stripFromPart = (part) => {
+    if (!part) return;
+    if (part._legacyJabani) {
+      pieces.push(part._legacyJabani);
+      delete part._legacyJabani;
+    }
+    if (part.jabani) {
+      pieces.push(part.jabani);
+      delete part.jabani;
+    }
+  };
+
+  if (doc.lyrics._legacyJabani) {
+    pieces.push(doc.lyrics._legacyJabani);
+    delete doc.lyrics._legacyJabani;
+  }
+  if (doc.lyrics.jabani) {
+    pieces.push(doc.lyrics.jabani);
+    delete doc.lyrics.jabani;
+  }
+  if (doc.lyrics.parts?.length) {
+    for (const part of doc.lyrics.parts) stripFromPart(part);
+  }
+
+  const jabani = pieces
+    .map((p) => String(p).trim())
+    .filter(Boolean)
+    .join('\n\n');
+  const out = { ...doc };
+  if (jabani) out.jabani = jabani;
+  else delete out.jabani;
+  return out;
 }
 
 /** Parse a single bhajan YAML file */
@@ -155,6 +189,12 @@ function loadBhajanDoc(text) {
     const line = lines[i];
     if (!line.trim() || line.trim().startsWith('#')) {
       i += 1;
+      continue;
+    }
+    if (line.match(/^jabani:\s*\|\s*$/)) {
+      const { text, next } = readIndentedBlock(lines, i + 1, 2);
+      doc.jabani = text;
+      i = next;
       continue;
     }
     if (line.match(/^lyrics:\s*\|/)) {
@@ -179,7 +219,7 @@ function loadBhajanDoc(text) {
     if (p) doc[p.key] = p.value;
     i += 1;
   }
-  return doc;
+  return hoistJabani(doc);
 }
 
 function dumpLiteralBlock(key, text, indent) {
@@ -214,14 +254,12 @@ function dumpLyricsObject(lyrics) {
       for (const line of String(part.sthayi || '').split('\n')) out.push(`        ${line}`);
       if (part.sthayi_marker) out.push(`      sthayi_marker: ${part.sthayi_marker}`);
       out.push(...dumpParagraphList(part.paragraphs, 6));
-      if (part.jabani) out.push(...dumpLiteralBlock('jabani', part.jabani, 6));
     }
     return out;
   }
   out.push(...dumpLiteralBlock('sthayi', lyrics.sthayi, 2));
   if (lyrics.sthayi_marker) out.push(`  sthayi_marker: ${lyrics.sthayi_marker}`);
   out.push(...dumpParagraphList(lyrics.paragraphs, 2));
-  if (lyrics.jabani) out.push(...dumpLiteralBlock('jabani', lyrics.jabani, 2));
   return out;
 }
 
@@ -237,6 +275,7 @@ function dumpBhajanDoc(doc) {
     out.push('lyrics: |');
     for (const line of String(doc.lyrics || '').split('\n')) out.push(`  ${line}`);
   }
+  if (doc.jabani) out.push(...dumpLiteralBlock('jabani', doc.jabani, 0));
   return out.join('\n') + '\n';
 }
 
@@ -309,6 +348,7 @@ function dumpFile(path, data, kind) {
 module.exports = {
   loadBhajanDoc,
   dumpBhajanDoc,
+  hoistJabani,
   loadSectionsDoc,
   dumpSectionsDoc,
   loadFile,

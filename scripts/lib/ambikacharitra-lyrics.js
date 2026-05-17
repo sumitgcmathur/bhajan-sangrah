@@ -290,8 +290,8 @@ function migrateAmbikaCharitraDoc(doc) {
     sthayi: sthayi || '',
     ...(sthayi_marker ? { sthayi_marker } : {}),
     paragraphs: partitioned.paragraphs,
-    ...(narration ? { jabani: narration } : {}),
   };
+  if (narration) out.jabani = narration;
   out._charitraShape = shape;
   return out;
 }
@@ -377,19 +377,36 @@ function normalizeJabaniLyrics(lyrics) {
   if (!lyrics || typeof lyrics === 'string') return lyrics;
 
   const fixPart = (part) => {
-    if (!part) return part;
+    if (!part) return { part, jabani: null };
     const { paragraphs, jabani: fromParas } = partitionJabaniParagraphs(part.paragraphs);
-    const out = { ...part, paragraphs };
-    const merged = [part.jabani, fromParas].filter(Boolean).join('\n\n').trim();
-    if (merged) out.jabani = merged;
-    else delete out.jabani;
-    return out;
+    const cleaned = { ...part, paragraphs };
+    delete cleaned.jabani;
+    delete cleaned._legacyJabani;
+    const merged = [part.jabani, part._legacyJabani, fromParas].filter(Boolean).join('\n\n').trim();
+    return { part: cleaned, jabani: merged || null };
   };
 
   if (lyrics.parts?.length) {
-    return { ...lyrics, parts: lyrics.parts.map(fixPart) };
+    const jabaniParts = [];
+    const parts = lyrics.parts.map((p) => {
+      const { part, jabani } = fixPart(p);
+      if (jabani) jabaniParts.push(jabani);
+      return part;
+    });
+    return { lyrics: { ...lyrics, parts }, jabaniParts };
   }
-  return fixPart(lyrics);
+  const { part, jabani } = fixPart(lyrics);
+  return { lyrics: part, jabaniParts: jabani ? [jabani] : [] };
+}
+
+/** Move जबानी to doc root (not under lyrics). */
+function normalizeJabaniDoc(doc) {
+  const { lyrics, jabaniParts } = normalizeJabaniLyrics(doc.lyrics);
+  const merged = [doc.jabani, ...jabaniParts].filter(Boolean).join('\n\n').trim();
+  const out = { ...doc, lyrics };
+  if (merged) out.jabani = merged;
+  else delete out.jabani;
+  return out;
 }
 
 module.exports = {
@@ -401,5 +418,6 @@ module.exports = {
   isJabaniText,
   partitionJabaniParagraphs,
   normalizeJabaniLyrics,
+  normalizeJabaniDoc,
   JABANI_RE,
 };

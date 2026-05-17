@@ -53,6 +53,7 @@ function main() {
       group: b.group,
       swarachit: b.swarachit,
       lyrics: b.lyrics,
+      jabani: b.jabani,
       id: b.id || anchorId(section.slug, b.title, i),
     }));
     fs.writeFileSync(
