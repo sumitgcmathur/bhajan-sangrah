@@ -5,7 +5,7 @@
  *
  *   node scripts/migrate-ambikacharitra-from-backup.js           # report only
  *   node scripts/migrate-ambikacharitra-from-backup.js --write   # apply YAML
- *   node scripts/migrate-ambikacharitra-from-backup.js --fix-jabani  # move जबानी out of paragraphs
+ *   node scripts/migrate-ambikacharitra-from-backup.js --fix-jabani  # top-level jabani: (not under lyrics)
  */
 const fs = require('fs');
 const path = require('path');
@@ -15,7 +15,7 @@ const { isStructuredLyrics, flattenLyricsText } = require('./lib/lyrics-structur
 const {
   migrateAmbikaCharitraDoc,
   analyzeAmbikaCharitraMigration,
-  normalizeJabaniLyrics,
+  normalizeJabaniDoc,
 } = require('./lib/ambikacharitra-lyrics');
 
 const write = process.argv.includes('--write');
@@ -50,14 +50,16 @@ if (fixJabani) {
   let updated = 0;
   for (const name of yamlFiles) {
     const p = path.join(outDir, name);
-    const doc = loadBhajanDoc(fs.readFileSync(p, 'utf8'));
+    const raw = fs.readFileSync(p, 'utf8');
+    const doc = loadBhajanDoc(raw);
     if (!isStructuredLyrics(doc.lyrics)) continue;
-    const lyrics = normalizeJabaniLyrics(doc.lyrics);
-    if (JSON.stringify(lyrics) === JSON.stringify(doc.lyrics)) continue;
-    fs.writeFileSync(p, dumpBhajanDoc({ ...doc, lyrics }), 'utf8');
+    const next = normalizeJabaniDoc(doc);
+    const dumped = dumpBhajanDoc(next);
+    if (dumped.replace(/\r\n/g, '\n') === raw.replace(/\r\n/g, '\n')) continue;
+    fs.writeFileSync(p, dumped, 'utf8');
     updated += 1;
   }
-  console.log(`--fix-jabani: moved जबानी out of paragraphs in ${updated} file(s)`);
+  console.log(`--fix-jabani: hoisted जबानी to top-level jabani: in ${updated} file(s)`);
 }
 
 for (const name of files) {
@@ -68,9 +70,8 @@ for (const name of files) {
   if (write) {
     const migrated = migrateAmbikaCharitraDoc({ ...backupDoc });
     delete migrated._charitraShape;
-    migrated.lyrics = normalizeJabaniLyrics(migrated.lyrics);
     fs.mkdirSync(outDir, { recursive: true });
-    fs.writeFileSync(path.join(outDir, name), dumpBhajanDoc(migrated), 'utf8');
+    fs.writeFileSync(path.join(outDir, name), dumpBhajanDoc(normalizeJabaniDoc(migrated)), 'utf8');
   }
 
   const row = {
@@ -179,4 +180,4 @@ console.log(`  Shapes: ${JSON.stringify(report.summary.shapes)}`);
 console.log(`Wrote ${outJson}`);
 console.log(`Wrote ${path.join(outDir, 'migration-report.md')}`);
 if (!write) console.log('\nDry run — pass --write to update YAML files.');
-if (!fixJabani) console.log('Pass --fix-jabani to move जबानी lines to lyrics.jabani (no verse numbers).');
+if (!fixJabani) console.log('Pass --fix-jabani to hoist जबानी to top-level jabani: (outside lyrics).');

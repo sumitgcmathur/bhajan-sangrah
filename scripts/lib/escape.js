@@ -138,20 +138,13 @@ function renderLyricsPart(part, tarzHtml) {
   }
 
   let paraNum = 1;
-  let jabaniText = part.jabani || '';
   for (const para of part.paragraphs || []) {
     if (!String(para).trim()) continue;
-    if (isJabaniText(para)) {
-      if (!jabaniText) jabaniText = String(para).trim();
-      continue;
-    }
+    if (isJabaniText(para)) continue;
     const { html, nextVerse } = renderParagraphHtml(para, paraNum);
     if (html) chunks.push(html);
     paraNum = nextVerse;
   }
-
-  const jabaniHtml = renderJabaniHtml(jabaniText);
-  if (jabaniHtml) chunks.push(jabaniHtml);
 
   return chunks.filter(Boolean).join('\n');
 }
@@ -177,7 +170,14 @@ function lyricsStructureToHtml(lyrics, tarz) {
   }
 
   const html = parts.map((p, i) => renderLyricsPart(p, i === 0 ? tarzHtml : '')).join('\n');
+  if (!html && !tarzHtml) return '';
   return `<div class="bhajan-lyrics bhajan-lyrics--standard">${html}</div>`;
+}
+
+function jabaniToHtml(jabani) {
+  const body = renderJabaniHtml(jabani);
+  if (!body) return '';
+  return `<div class="bhajan-card__jabani">${body}</div>`;
 }
 
 function lyricsToHtml(lyrics, tarz) {
@@ -187,4 +187,4 @@ function lyricsToHtml(lyrics, tarz) {
   return '';
 }
 
-module.exports = { escapeHtml, lyricsToHtml, lyricsStructureToHtml };
+module.exports = { escapeHtml, lyricsToHtml, jabaniToHtml, lyricsStructureToHtml };

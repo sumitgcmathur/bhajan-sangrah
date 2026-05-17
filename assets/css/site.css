@@ -450,15 +450,20 @@ body {
   white-space: nowrap;
 }
 
-/* अंबिका चरित्र — post-song narration (not numbered) */
-.bhajan-lyrics--standard .lyrics-jabani {
-  margin: 1.25rem 0 0;
+/* अंबिका चरित्र — जबानी (narration after bhajan, not part of lyrics) */
+.bhajan-card__jabani {
+  margin-top: 1.25rem;
   padding-top: 1rem;
   border-top: 1px solid var(--border);
+  width: 100%;
+  max-width: none;
   line-height: 1.75;
   font-size: 0.95em;
   color: var(--muted);
-  font-style: normal;
+}
+
+.bhajan-card__jabani .lyrics-jabani {
+  margin: 0;
 }
 
 .stanza-gap {
