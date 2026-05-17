@@ -1,20 +1,26 @@
 :root {
-  --bg: #faf8f5;
-  --surface: #fff;
-  --text: #1a1a1a;
-  --muted: #5c5348;
-  --accent: #8b4513;
-  --accent-soft: #e8d5c4;
-  --border: #e5ddd3;
-  --font: "Noto Sans Devanagari", system-ui, sans-serif;
-  --max: 42rem;
-  --nav-h: 3.25rem;
+  --bg: #f4efe6;
+  --bg-warm: #ebe3d6;
+  --surface: #ffffff;
+  --text: #2c2419;
+  --muted: #6b5d4f;
+  --accent: #8b2500;
+  --accent-dark: #5c1800;
+  --accent-soft: #f5e6d8;
+  --gold: #c9a227;
+  --border: #ddd4c8;
+  --shadow: 0 2px 12px rgba(44, 36, 25, 0.08);
+  --shadow-lg: 0 8px 32px rgba(44, 36, 25, 0.12);
+  --font: "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
+  --nav-h: 3.5rem;
+  --content: 40rem;
+  --wide: 56rem;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
-  font-size: 18px;
+  font-size: 17px;
   scroll-behavior: smooth;
 }
 
@@ -23,221 +29,368 @@ body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--text);
-  line-height: 1.75;
+  line-height: 1.8;
 }
 
+/* ---- Header & nav (Google Sites–style top bar) ---- */
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 1rem;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  min-height: var(--nav-h);
+  z-index: 200;
+  background: linear-gradient(135deg, var(--accent-dark) 0%, var(--accent) 55%, #a63c10 100%);
+  box-shadow: var(--shadow-lg);
 }
 
-.site-title {
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--accent);
+.header-inner {
+  display: flex;
+  align-items: center;
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 0.65rem 1rem;
+  gap: 0.75rem;
+}
+
+.site-brand {
   text-decoration: none;
+  color: #fff;
   flex: 1;
+  min-width: 0;
+}
+
+.site-brand__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .nav-toggle {
-  font-size: 1.4rem;
-  border: 1px solid var(--border);
-  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
   border-radius: 0.35rem;
-  padding: 0.2rem 0.55rem;
   cursor: pointer;
 }
 
-.nav-panel {
+.site-nav {
   display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  max-height: 70vh;
-  overflow-y: auto;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.nav-panel.is-open { display: block; }
-
-.nav-list {
-  list-style: none;
-  margin: 0;
-  padding: 0.5rem;
-  columns: 2;
-  column-gap: 1rem;
-}
-
-.nav-list a {
-  display: block;
-  padding: 0.35rem 0.5rem;
-  color: var(--text);
-  text-decoration: none;
-  font-size: 0.9rem;
-  border-radius: 0.25rem;
-}
-
-.nav-list a:hover,
-.nav-list a[aria-current="page"] {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.site-main {
-  max-width: var(--max);
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem 0.85rem;
+  max-width: var(--wide);
   margin: 0 auto;
-  padding: 1rem 1rem 3rem;
+  background: rgba(0, 0, 0, 0.12);
 }
 
-.hero {
+.site-nav.is-open { display: flex; }
+
+.nav-link {
+  display: inline-block;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.nav-link:hover,
+.nav-link.is-active {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
+}
+
+/* ---- Home page ---- */
+.home-hero {
+  background: linear-gradient(160deg, var(--accent-soft) 0%, var(--bg-warm) 50%, var(--bg) 100%);
+  border-bottom: 3px solid var(--gold);
   text-align: center;
-  padding: 1.5rem 0 2rem;
+  padding: 2.5rem 1rem 2rem;
 }
 
-.hero h1 {
+.home-hero__inner { max-width: var(--content); margin: 0 auto; }
+
+.home-hero h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.home-hero__tagline {
   margin: 0;
-  font-size: 1.75rem;
-  color: var(--accent);
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+
+.site-main--home {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
 }
 
 .section-grid {
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
   grid-template-columns: 1fr;
 }
 
-@media (min-width: 480px) {
-  .section-grid { grid-template-columns: 1fr 1fr; }
+@media (min-width: 520px) {
+  .section-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+  .section-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 .section-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
+  border-radius: 0.65rem;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.section-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.section-card__img-wrap {
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  background: var(--accent-soft);
+}
+
+.section-card__img-wrap--placeholder {
+  background: linear-gradient(135deg, var(--accent-soft), var(--bg-warm));
 }
 
 .section-card__banner {
   width: 100%;
-  height: 6rem;
+  height: 100%;
   object-fit: cover;
-  background: var(--accent-soft);
 }
 
 .section-card__title {
   display: block;
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1rem;
   font-weight: 600;
-}
-
-.section-banner {
-  width: 100%;
-  max-height: 12rem;
-  object-fit: cover;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
-  background: var(--accent-soft);
-}
-
-.section-title {
-  font-size: 1.5rem;
-  color: var(--accent);
-  margin: 0 0 1rem;
+  font-size: 1.05rem;
   text-align: center;
+  color: var(--accent-dark);
+  border-top: 2px solid var(--gold);
 }
 
+/* ---- Section pages: full-width hero banner ---- */
+.section-hero {
+  position: relative;
+  width: 100%;
+  min-height: 11rem;
+  max-height: 22rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+}
+
+.section-hero__banner {
+  width: 100%;
+  height: 100%;
+  min-height: 11rem;
+  max-height: 22rem;
+  object-fit: cover;
+  display: block;
+}
+
+.section-hero__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  background: linear-gradient(to top, rgba(44, 24, 8, 0.75) 0%, rgba(44, 24, 8, 0.2) 55%, transparent 100%);
+}
+
+.section-hero__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 4.5vw, 2rem);
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  max-width: var(--content);
+}
+
+.site-main--section {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+}
+
+.section-layout {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: -1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 900px) {
+  .section-layout {
+    grid-template-columns: 14rem 1fr;
+    align-items: start;
+    gap: 2rem;
+  }
+}
+
+/* TOC sidebar */
 .bhajan-toc {
   background: var(--surface);
+  border-radius: 0.65rem;
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow);
   border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  margin-bottom: 2rem;
+}
+
+@media (min-width: 900px) {
+  .bhajan-toc {
+    position: sticky;
+    top: calc(var(--nav-h) + 4rem);
+    max-height: calc(100vh - var(--nav-h) - 5rem);
+    overflow-y: auto;
+  }
+}
+
+.bhajan-toc__heading {
+  margin: 0 0 0.65rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .bhajan-toc ul {
   margin: 0;
-  padding-left: 1.25rem;
+  padding: 0;
+  list-style: none;
 }
+
+.bhajan-toc li { margin: 0; }
 
 .bhajan-toc a {
-  color: var(--accent);
+  display: block;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.92rem;
+  color: var(--text);
   text-decoration: none;
-  font-size: 0.95rem;
+  border-radius: 0.35rem;
+  border-left: 3px solid transparent;
+  line-height: 1.45;
 }
 
-.bhajan {
-  margin-bottom: 2.5rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px dashed var(--border);
+.bhajan-toc a:hover {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  border-left-color: var(--gold);
 }
 
-.bhajan-title {
-  font-size: 1.25rem;
+/* Bhajan cards */
+.bhajan-list { min-width: 0; }
+
+.bhajan-card {
+  background: var(--surface);
+  border-radius: 0.65rem;
+  padding: 1.25rem 1.35rem 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  scroll-margin-top: calc(var(--nav-h) + 1.5rem);
+}
+
+.bhajan-card__title {
   margin: 0 0 0.75rem;
-  color: var(--accent);
-  scroll-margin-top: calc(var(--nav-h) + 1rem);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--gold);
 }
 
 .bhajan-badge {
-  font-size: 0.7rem;
+  display: inline-block;
+  font-size: 0.68rem;
   font-weight: 600;
   background: var(--accent-soft);
   color: var(--accent);
-  padding: 0.15rem 0.45rem;
+  padding: 0.15rem 0.5rem;
   border-radius: 0.25rem;
-  margin-left: 0.5rem;
+  margin-left: 0.45rem;
   vertical-align: middle;
 }
 
 .bhajan-tarz {
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg);
+  border-radius: 0.35rem;
+  font-size: 0.95rem;
   color: var(--muted);
-  font-style: italic;
-  margin: 0 0 0.75rem;
+  border-left: 3px solid var(--gold);
 }
 
-.bhajan-tarz .label { font-style: normal; font-weight: 600; }
+.bhajan-tarz .label {
+  font-weight: 700;
+  color: var(--accent);
+  margin-right: 0.35rem;
+}
 
-.bhajan-lyrics p {
-  margin: 0 0 0.35rem;
+.bhajan-card__lyrics {
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+
+.bhajan-card__lyrics p {
+  margin: 0 0 0.4rem;
 }
 
 .stanza-gap {
-  height: 0.75rem;
+  height: 0.85rem;
   margin: 0;
+  visibility: hidden;
 }
 
 .site-footer {
   text-align: center;
   padding: 2rem 1rem;
-  color: var(--muted);
   font-size: 0.85rem;
+  color: var(--muted);
+  background: var(--bg-warm);
+  border-top: 1px solid var(--border);
 }
 
 @media (min-width: 768px) {
   .nav-toggle { display: none; }
-  .nav-panel {
-    display: block !important;
-    position: static;
-    max-height: none;
-    box-shadow: none;
-    border: none;
-    flex: 2;
+  .site-nav {
+    display: flex !important;
+    padding-top: 0;
+    padding-bottom: 0.65rem;
+    background: transparent;
   }
-  .nav-list { columns: 3; }
-  .site-header { flex-wrap: wrap; }
+  .header-inner { padding-bottom: 0; }
+  .site-header { padding-bottom: 0.5rem; }
 }
