@@ -1,0 +1,5543 @@
+{
+  "generatedAt": "2026-05-17T16:24:56.986Z",
+  "total": 199,
+  "summary": {
+    "high": 143,
+    "medium": 42,
+    "low": 14,
+    "autoFormat": 143,
+    "autoLikely": 1,
+    "review": 42,
+    "manual": 14
+  },
+  "bySection": {
+    "aarti": {
+      "high": 5,
+      "medium": 2,
+      "low": 0,
+      "total": 7
+    },
+    "ambe": {
+      "high": 17,
+      "medium": 1,
+      "low": 2,
+      "total": 20
+    },
+    "ambikacharitra": {
+      "high": 40,
+      "medium": 4,
+      "low": 0,
+      "total": 44
+    },
+    "bhairav": {
+      "high": 9,
+      "medium": 1,
+      "low": 0,
+      "total": 10
+    },
+    "ganpati": {
+      "high": 6,
+      "medium": 0,
+      "low": 0,
+      "total": 6
+    },
+    "hanuman": {
+      "high": 1,
+      "medium": 2,
+      "low": 3,
+      "total": 6
+    },
+    "horiya": {
+      "high": 12,
+      "medium": 0,
+      "low": 0,
+      "total": 12
+    },
+    "krishna": {
+      "high": 13,
+      "medium": 10,
+      "low": 2,
+      "total": 25
+    },
+    "misc": {
+      "high": 4,
+      "medium": 2,
+      "low": 1,
+      "total": 7
+    },
+    "mooltatva": {
+      "high": 12,
+      "medium": 7,
+      "low": 0,
+      "total": 19
+    },
+    "navratri": {
+      "high": 4,
+      "medium": 4,
+      "low": 0,
+      "total": 8
+    },
+    "ram": {
+      "high": 12,
+      "medium": 2,
+      "low": 1,
+      "total": 15
+    },
+    "shiv": {
+      "high": 1,
+      "medium": 5,
+      "low": 2,
+      "total": 8
+    },
+    "swarachit": {
+      "high": 7,
+      "medium": 2,
+      "low": 3,
+      "total": 12
+    }
+  },
+  "high": [
+    {
+      "file": "content/aarti/001-ॐ-जय-शिव-ओंकारा.yaml",
+      "score": 88,
+      "strategy": "blank-blocks",
+      "title": "ॐ जय शिव ओंकारा"
+    },
+    {
+      "file": "content/aarti/002-आरती-कीजै-हनुमान-लला-की.yaml",
+      "score": 88,
+      "strategy": "blank-blocks",
+      "title": "आरती कीजै हनुमान लला की"
+    },
+    {
+      "file": "content/aarti/004-ॐ-जय-जगदीश-हरे.yaml",
+      "score": 88,
+      "strategy": "blank-blocks",
+      "title": "ॐ जय जगदीश हरे"
+    },
+    {
+      "file": "content/aarti/005-जय-अम्बे-गौरी.yaml",
+      "score": 88,
+      "strategy": "blank-blocks",
+      "title": "जय अम्बे गौरी"
+    },
+    {
+      "file": "content/aarti/007-श्री-रामचन्द्र-कृपालु-भजुमन.yaml",
+      "score": 88,
+      "strategy": "blank-blocks",
+      "title": "श्री रामचन्द्र कृपालु भजुमन"
+    },
+    {
+      "file": "content/ambe/001-पूर-है-धीरियाणी-है.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "पूर है धीरियाणी है"
+    },
+    {
+      "file": "content/ambe/002-शिव-प्रिये-अम्बे-मात-मनाऊँ.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "शिव प्रिये अम्बे मात मनाऊँ"
+    },
+    {
+      "file": "content/ambe/003-मारी-सहाय-करे-जगदम्बा-सिंह-गाज-रयो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "मारी सहाय करे जगदम्बा सिंह गाज रयो"
+    },
+    {
+      "file": "content/ambe/004-जै-जै-जै-जै-सुराई.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "जै जै जै जै सुराई"
+    },
+    {
+      "file": "content/ambe/005-सहाय-जगदम्बे-कीजो-हमारी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "सहाय जगदम्बे कीजो हमारी"
+    },
+    {
+      "file": "content/ambe/006-बरसे-श्री-जगदम्ब-मात-के.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "बरसे श्री जगदम्ब मात के"
+    },
+    {
+      "file": "content/ambe/007-रट-जगदम्बा-रो-नाम.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "रट जगदम्बा रो नाम"
+    },
+    {
+      "file": "content/ambe/008-आतोतो-आद-भवानी-ईश्वरी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "आतोतो आद भवानी ईश्वरी"
+    },
+    {
+      "file": "content/ambe/009-हद-नीको-रे-दरशन.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हद नीको रे दरशन"
+    },
+    {
+      "file": "content/ambe/010-अम्बे-रानी-मैं-तो-राज-रा.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अम्बे रानी मैं तो राज रा"
+    },
+    {
+      "file": "content/ambe/011-नवदुर्गा-मात-भवानी-का.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "नवदुर्गा मात भवानी का"
+    },
+    {
+      "file": "content/ambe/012-मैं-शरणे-आयो-है.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "मैं शरणे आयो है"
+    },
+    {
+      "file": "content/ambe/013-अम्बे-दर्श-तिहारो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अम्बे दर्श तिहारो"
+    },
+    {
+      "file": "content/ambe/014-आयो-मैं-तो-अंबे-रानी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "आयो मैं तो अंबे रानी"
+    },
+    {
+      "file": "content/ambe/015-मोय-दीजे-वरदान-देवी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "मोय दीजे वरदान देवी"
+    },
+    {
+      "file": "content/ambe/016-अम्बे-चरण-कमल-है-तेरे.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अम्बे चरण कमल है तेरे"
+    },
+    {
+      "file": "content/ambe/019-मेरे-मन-के-अंध-तमस-में.yaml",
+      "score": 94,
+      "strategy": "first-line-sthayi",
+      "title": "मेरे मन के अंध तमस में"
+    },
+    {
+      "file": "content/ambikacharitra/001-नमो-नमो-हिमगिरि-कन्या-कुमार.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "नमो नमो हिमगिरि कन्या-कुमार"
+    },
+    {
+      "file": "content/ambikacharitra/002-श्री-सरस्वती-स्तुति.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "श्री सरस्वती स्तुति"
+    },
+    {
+      "file": "content/ambikacharitra/003-श्री-गुरू-प्रार्थना.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "श्री गुरू प्रार्थना"
+    },
+    {
+      "file": "content/ambikacharitra/004-देवी-प्रार्थना.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "देवी प्रार्थना"
+    },
+    {
+      "file": "content/ambikacharitra/005-मोय-दीजे-कथा-सुनाय.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "मोय दीजे कथा सुनाय"
+    },
+    {
+      "file": "content/ambikacharitra/006-राज-ऋषि-राजा-से-फरमावें.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "राज ऋषि राजा से फरमावें"
+    },
+    {
+      "file": "content/ambikacharitra/007-कर-जोर-अरज-गुदरावें.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "कर जोर अरज गुदरावें"
+    },
+    {
+      "file": "content/ambikacharitra/008-सुनत-वचन-विधि-मन-मुसकाई.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "सुनत वचन विधि मन मुसकाई"
+    },
+    {
+      "file": "content/ambikacharitra/009-कछु-हेर-फेर-चतुराई.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "कछु हेर फेर चतुराई"
+    },
+    {
+      "file": "content/ambikacharitra/010-सुन-शुंभ-को-राज्यभिषेक.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "सुन शुंभ को राज्यभिषेक"
+    },
+    {
+      "file": "content/ambikacharitra/011-इन्द्र-अरू-देव-सब-जाई.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "इन्द्र अरू देव सब जाई"
+    },
+    {
+      "file": "content/ambikacharitra/012-कहे-गुरू-राज-समझाई.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "कहे गुरू राज समझाई"
+    },
+    {
+      "file": "content/ambikacharitra/013-सहाय-जगदम्बे-कीजो-हमारी-सहाय.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "सहाय जगदम्बे कीजो हमारी सहाय"
+    },
+    {
+      "file": "content/ambikacharitra/014-होय-प्रसन्न-भवानी-मैया.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "होय प्रसन्न भवानी मैया"
+    },
+    {
+      "file": "content/ambikacharitra/015-चंड-अरू-मुंड-गये-दोऊ-भाई.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "चंड अरू मुंड गये दोऊ भाई"
+    },
+    {
+      "file": "content/ambikacharitra/016-आदर-सहित-सुग्रीव-ही-बोल्यो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "आदर सहित सुग्रीव ही बोल्यो"
+    },
+    {
+      "file": "content/ambikacharitra/017-बोली-मन-मुसकाइ-यूँ-महामाईं.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "बोली मन मुसकाइ यूँ महामाईं"
+    },
+    {
+      "file": "content/ambikacharitra/018-जावोरे-सेना-ले-जाओ.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "जावोरे सेना ले जाओ"
+    },
+    {
+      "file": "content/ambikacharitra/019-धूम्रलोचन-को-समझावे.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "धूम्रलोचन को समझावे"
+    },
+    {
+      "file": "content/ambikacharitra/020-युद्ध-को-हाल-कहे-क्या.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "युद्ध को हाल कहे क्या"
+    },
+    {
+      "file": "content/ambikacharitra/021-सुन-शुंभ-यह-बात.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "सुन शुंभ यह बात"
+    },
+    {
+      "file": "content/ambikacharitra/022-कर-चंड-मुंड-चतुराई.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "कर चंड मुंड चतुराई"
+    },
+    {
+      "file": "content/ambikacharitra/023-सुन-चंड-अरू-मंड-के-बैन.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "सुन चंड अरू मंड के बैन"
+    },
+    {
+      "file": "content/ambikacharitra/024-कांई-बात-बतावा-हो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "कांई बात बतावा हो"
+    },
+    {
+      "file": "content/ambikacharitra/026-हँस-बोली-भवानी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हँस बोली भवानी"
+    },
+    {
+      "file": "content/ambikacharitra/027-निज-निज-रूप-समान-शक्तियां.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "निज निज रूप समान शक्तियां"
+    },
+    {
+      "file": "content/ambikacharitra/028-हम-आये-हैं-कहाँ-के-पठाये.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हम आये हैं कहाँ के पठाये"
+    },
+    {
+      "file": "content/ambikacharitra/029-अब-रक्तबीज-उठके.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अब रक्तबीज उठके"
+    },
+    {
+      "file": "content/ambikacharitra/030-जगदम्ब-बने-सुरराई-है.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "जगदम्ब बने सुरराई है"
+    },
+    {
+      "file": "content/ambikacharitra/031-भग-दानव-सेना-आई.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "भग दानव सेना आई"
+    },
+    {
+      "file": "content/ambikacharitra/032-हँस-बोली-आद-भवानी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हँस बोली आद भवानी"
+    },
+    {
+      "file": "content/ambikacharitra/033-घनघोर-युद्ध-मचायारी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "घनघोर युद्ध मचायारी"
+    },
+    {
+      "file": "content/ambikacharitra/034-सुनहो-सुनहो-सुनहो-नृपराई.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "सुनहो सुनहो सुनहो नृपराई"
+    },
+    {
+      "file": "content/ambikacharitra/035-क्रोध-भरे-बैन.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "क्रोध भरे बैन"
+    },
+    {
+      "file": "content/ambikacharitra/036-कामातुर-होय-शुंभ-बने-लख.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "कामातुर होय शुंभ बने लख"
+    },
+    {
+      "file": "content/ambikacharitra/037-हँस-बोली-आद-भवानी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हँस बोली आद भवानी"
+    },
+    {
+      "file": "content/ambikacharitra/039-जै-जै-जै-शब्द-उचारी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "जै जै जै शब्द उचारी"
+    },
+    {
+      "file": "content/ambikacharitra/041-चरित्र-महात्म.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "चरित्र महात्म"
+    },
+    {
+      "file": "content/ambikacharitra/042-बधाई.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "बधाई"
+    },
+    {
+      "file": "content/ambikacharitra/043-कथा-महात्म्य.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "कथा महात्म्य"
+    },
+    {
+      "file": "content/bhairav/002-अम्बाजी-रो-लाडलो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अम्बाजी रो लाडलो"
+    },
+    {
+      "file": "content/bhairav/003-भैरू-थारी-बीन-बजी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "भैरू थारी बीन बजी"
+    },
+    {
+      "file": "content/bhairav/004-वावा-लटियालो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "वावा लटियालो"
+    },
+    {
+      "file": "content/bhairav/005-दर्शन-करसाँ-मैं-तो-आज.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "दर्शन करसाँ मैं तो आज"
+    },
+    {
+      "file": "content/bhairav/006-चालो-हे-सहेलियां-आपा.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "चालो हे सहेलियां आपा"
+    },
+    {
+      "file": "content/bhairav/007-लटियाला-बाला-घणा-हो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "लटियाला बाला घणा हो"
+    },
+    {
+      "file": "content/bhairav/008-में-तो-भैरु-जी-थाने-नोतियो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "में तो भैरु जी थाने नोतियो"
+    },
+    {
+      "file": "content/bhairav/009-मन-भजो-तो-सरी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "मन भजो तो सरी"
+    },
+    {
+      "file": "content/bhairav/010-देखो-देखो-रे-अलबेली.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "देखो देखो रे अलबेली"
+    },
+    {
+      "file": "content/ganpati/001-आजो,-आजो-जी-आजो-गणराज.yaml",
+      "score": 94,
+      "strategy": "first-line-sthayi",
+      "title": "आजो, आजो जी आजो गणराज"
+    },
+    {
+      "file": "content/ganpati/002-घुमतड़ा-घर-आवो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "घुमतड़ा घर आवो"
+    },
+    {
+      "file": "content/ganpati/003-घुमतड़ा-घर-आओ२.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "घुमतड़ा घर आओ२"
+    },
+    {
+      "file": "content/ganpati/004-नमो-नमो-हिमगिरी-कन्या-कुमार.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "नमो नमो हिमगिरी कन्या कुमार"
+    },
+    {
+      "file": "content/ganpati/005-गौरी-के-नन्दन-की,-हम-पूजा-करते-है.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "गौरी के नन्दन की, हम पूजा करते है"
+    },
+    {
+      "file": "content/ganpati/006-महाराज-गजानन्द-आवोनी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "महाराज गजानन्द आवोनी"
+    },
+    {
+      "file": "content/hanuman/006-श्री-राम-जानकी-बैठे-हैं-मेरे-सीने-में.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "श्री राम जानकी बैठे हैं मेरे सीने में"
+    },
+    {
+      "file": "content/horiya/001-कैसे-होरी-खेलूं-रे-इन-सांवरिया-रे-संग.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "कैसे होरी खेलूं रे इन सांवरिया रे संग"
+    },
+    {
+      "file": "content/horiya/002-काना-धर-लो-मुकुट-और-खेलो-होली.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "काना धर लो मुकुट और खेलो होली"
+    },
+    {
+      "file": "content/horiya/003-आज-ब्रिज-में-होरी-ओ-रसिया.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "आज ब्रिज में होरी ओ रसिया"
+    },
+    {
+      "file": "content/horiya/004-खेलो-जी-खेलो-गंग-श्याम-मो-संग-होरी-खेलो.yaml",
+      "score": 94,
+      "strategy": "first-line-sthayi",
+      "title": "खेलो जी खेलो गंग श्याम मो संग होरी खेलो"
+    },
+    {
+      "file": "content/horiya/005-हारे-महीनो-फागण-रो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हारे महीनो फागण रो"
+    },
+    {
+      "file": "content/horiya/006-हारे-आनंद-आयो-रे.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हारे आनंद आयो रे"
+    },
+    {
+      "file": "content/horiya/007-हारे-लारो-छोड़-दे.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हारे लारो छोड़ दे"
+    },
+    {
+      "file": "content/horiya/008-खेले-माडाणी-होली-रो-रसियो.yaml",
+      "score": 94,
+      "strategy": "first-line-sthayi",
+      "title": "खेले माडाणी होली रो रसियो"
+    },
+    {
+      "file": "content/horiya/009-सांवरियो-होरी-खेले-रे.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "सांवरियो होरी खेले रे"
+    },
+    {
+      "file": "content/horiya/010-और-रंग-दे-रे-राधे-और-रंग-दे.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "और रंग दे रे राधे और रंग दे"
+    },
+    {
+      "file": "content/horiya/011-होली-कनक-भवन-में.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "होली कनक भवन में"
+    },
+    {
+      "file": "content/horiya/012-झोली-को-भरलो-भक्तो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "झोली को भरलो भक्तो"
+    },
+    {
+      "file": "content/krishna/003-अधरं-मधुरं-वदनं-मधुरं.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अधरं मधुरं वदनं मधुरं"
+    },
+    {
+      "file": "content/krishna/004-हे-गोविन्द-हे-गोपाल.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हे गोविन्द हे गोपाल"
+    },
+    {
+      "file": "content/krishna/005-तुम-मोरी-राखो-लाज-हरि.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "तुम मोरी राखो लाज हरि"
+    },
+    {
+      "file": "content/krishna/006-लाज-राखो-गिरधारी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "लाज राखो गिरधारी"
+    },
+    {
+      "file": "content/krishna/007-दीनन-दुख-हरन-देव.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "दीनन दुख हरन देव"
+    },
+    {
+      "file": "content/krishna/012-वो-काला-एक-बांसुरी-वाला.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "वो काला एक बांसुरी वाला"
+    },
+    {
+      "file": "content/krishna/016-श्याम-बिना-उनये-ये-बदरा.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "श्याम बिना उनये ये बदरा"
+    },
+    {
+      "file": "content/krishna/017-बाट-निहारे-घनश्याम.yaml",
+      "score": 94,
+      "strategy": "first-line-sthayi",
+      "title": "बाट निहारे घनश्याम"
+    },
+    {
+      "file": "content/krishna/019-मेरे-बांके-बिहारी-लाल.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "मेरे बांके बिहारी लाल"
+    },
+    {
+      "file": "content/krishna/020-जय-राधा-माधव.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "जय राधा माधव"
+    },
+    {
+      "file": "content/krishna/021-मुरली-मनोहर-गोपाला.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "मुरली मनोहर गोपाला"
+    },
+    {
+      "file": "content/krishna/023-हे,-कृष्ण-गोपाल-हरी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हे, कृष्ण गोपाल हरी"
+    },
+    {
+      "file": "content/krishna/025-अखियाँ-हरी-दर्शन-की-प्यासी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अखियाँ हरी दर्शन की प्यासी"
+    },
+    {
+      "file": "content/misc/002-अब-सौंप-दिया-इस-जीवन-का.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अब सौंप दिया इस जीवन का"
+    },
+    {
+      "file": "content/misc/004-उड़-जाएगा-हंस-अकेला.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "उड़ जाएगा हंस अकेला"
+    },
+    {
+      "file": "content/misc/005-सुमिरन-कर-ले-मेरे-मना.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "सुमिरन कर ले मेरे मना"
+    },
+    {
+      "file": "content/misc/006-काया-नहीं-तेरी,-नहीं-तेरी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "काया नहीं तेरी, नहीं तेरी"
+    },
+    {
+      "file": "content/mooltatva/001-घर-आओजी-म्हारे-घर-आओ.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "घर आओजी म्हारे घर आओ"
+    },
+    {
+      "file": "content/mooltatva/002-ले-लो-रे-ले-लो-गुरुजी-से-ज्ञान.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "ले लो रे ले लो गुरुजी से ज्ञान"
+    },
+    {
+      "file": "content/mooltatva/005-अम्बे-रा-सब-गुण-गावे-रे.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अम्बे रा सब गुण गावे रे"
+    },
+    {
+      "file": "content/mooltatva/008-सेवा-मात-पिता-री-करले-रे,-करले-रे.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "सेवा मात पिता री करले रे, करले रे"
+    },
+    {
+      "file": "content/mooltatva/009-झूठी-जग-की-माया.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "झूठी जग की माया"
+    },
+    {
+      "file": "content/mooltatva/010-भगतारे-बस-में-गोपाल.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "भगतारे बस में गोपाल"
+    },
+    {
+      "file": "content/mooltatva/012-रट-रट-रे-मन-राम-नाम-तू.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "रट रट रे मन राम नाम तू"
+    },
+    {
+      "file": "content/mooltatva/013-जीवो-भुगते-जगरें-माय.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "जीवो भुगते जगरें माय"
+    },
+    {
+      "file": "content/mooltatva/014-सांवरिया-प्रेम-रस-घोल-नी-रे.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "सांवरिया प्रेम रस घोल नी रे"
+    },
+    {
+      "file": "content/mooltatva/015-मिनख-जमारो-दुर्लभ-है.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "मिनख जमारो दुर्लभ है"
+    },
+    {
+      "file": "content/mooltatva/016-धोली-धोली-चांदनी-चमक-रयो-चीर.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "धोली-धोली चांदनी चमक रयो चीर"
+    },
+    {
+      "file": "content/mooltatva/018-वारी-हो-कन्हैया-लाल.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "वारी हो कन्हैया लाल"
+    },
+    {
+      "file": "content/navratri/002-श्रृंगार.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "श्रृंगार"
+    },
+    {
+      "file": "content/navratri/005-परिक्रमा.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "परिक्रमा"
+    },
+    {
+      "file": "content/navratri/006-तोरी-शरण-में.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "तोरी शरण में"
+    },
+    {
+      "file": "content/navratri/007-मेहंदी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "मेहंदी"
+    },
+    {
+      "file": "content/ram/001-राम-का-गुणगान-करिये.yaml",
+      "score": 94,
+      "strategy": "first-line-sthayi",
+      "title": "राम का गुणगान करिये"
+    },
+    {
+      "file": "content/ram/003-राम-को-देख-कर-के-जनक-नंदिनी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "राम को देख कर के जनक नंदिनी"
+    },
+    {
+      "file": "content/ram/004-हमारे-साथ-श्री-रघुनाथ-तो.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हमारे साथ श्री रघुनाथ तो"
+    },
+    {
+      "file": "content/ram/005-जय-रघुनन्दन-जय-सियाराम.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "जय रघुनन्दन जय सियाराम"
+    },
+    {
+      "file": "content/ram/006-ठुमक-चलत-रामचंद्र.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "ठुमक चलत रामचंद्र"
+    },
+    {
+      "file": "content/ram/007-नगरी-हो-अयोध्या-सी.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "नगरी हो अयोध्या सी"
+    },
+    {
+      "file": "content/ram/008-केवट-ने-कहा-रघुराई-से.yaml",
+      "score": 94,
+      "strategy": "first-line-sthayi",
+      "title": "केवट ने कहा रघुराई से"
+    },
+    {
+      "file": "content/ram/009-जग-में-सुन्दर-हैं-दो-नाम.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "जग में सुन्दर हैं दो नाम"
+    },
+    {
+      "file": "content/ram/010-कभी-राम-बनके-कभी-श्याम-बनके.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "कभी राम बनके कभी श्याम बनके"
+    },
+    {
+      "file": "content/ram/011-तेरा-रामजी-करेंगे-बेड़ा-पार.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "तेरा रामजी करेंगे बेड़ा पार"
+    },
+    {
+      "file": "content/ram/012-जानकी-नाथ-सहाय-करें.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "जानकी नाथ सहाय करें"
+    },
+    {
+      "file": "content/ram/013-राम-नाम-के-साबुन-से-जो-मन-का-मैल-भगाएगा.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "राम नाम के साबुन से जो मन का मैल भगाएगा"
+    },
+    {
+      "file": "content/shiv/008-शंकर-तेरी-जटा-में.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "शंकर तेरी जटा में"
+    },
+    {
+      "file": "content/swarachit/001-हम-तो-है-जपते-रहते.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "हम तो है जपते रहते"
+    },
+    {
+      "file": "content/swarachit/003-अंबे-नाम,-अंबे-नाम,-अंबे-नाम-कहिए.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अंबे नाम, अंबे नाम, अंबे नाम कहिए"
+    },
+    {
+      "file": "content/swarachit/006-अब-अंबे-मैया,-दर्शन-देने.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अब अंबे मैया, दर्शन देने"
+    },
+    {
+      "file": "content/swarachit/007-शक्तिपीठ-वर्णन.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "शक्तिपीठ वर्णन"
+    },
+    {
+      "file": "content/swarachit/008-धरी-रूप-नाना,-बहु-विधाना.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "धरी रूप नाना, बहु विधाना"
+    },
+    {
+      "file": "content/swarachit/010-मेरे-घर-आओ,-गणपति-आप.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "मेरे घर आओ, गणपति आप"
+    },
+    {
+      "file": "content/swarachit/012-अब-तू-जाने-रघुनाथ.yaml",
+      "score": 80,
+      "strategy": "first-line-sthayi",
+      "title": "अब तू जाने रघुनाथ"
+    }
+  ],
+  "medium": [
+    {
+      "file": "content/aarti/003-जय-गणेश-देवा.yaml",
+      "score": 60,
+      "strategy": "blank-blocks",
+      "flags": [
+        "repeated-sthayi-between-blocks"
+      ],
+      "title": "जय गणेश देवा"
+    },
+    {
+      "file": "content/aarti/006-आरती-कुंजबिहारी-की.yaml",
+      "score": 60,
+      "strategy": "blank-blocks",
+      "flags": [
+        "repeated-sthayi-between-blocks"
+      ],
+      "title": "आरती कुंजबिहारी की"
+    },
+    {
+      "file": "content/ambe/017-ऐसा-प्यार-बहा-दे-मैया.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "ऐसा प्यार बहा दे मैया"
+    },
+    {
+      "file": "content/ambikacharitra/025-असुर-झट-बोल-उठ्यो-झूंजलाई.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "असुर झट बोल उठ्यो झूंजलाई"
+    },
+    {
+      "file": "content/ambikacharitra/038-काली-से-शुंभ-लड़े-हैं.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "काली से शुंभ लड़े हैं"
+    },
+    {
+      "file": "content/ambikacharitra/040-जै-जै-अंबिके.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "जै जै अंबिके"
+    },
+    {
+      "file": "content/ambikacharitra/044-स्वामीजी-की-महिमा.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "स्वामीजी की महिमा"
+    },
+    {
+      "file": "content/bhairav/001-हे-माने-भैरु-रो-थान-सुहावे-है-माँ.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "हे माने भैरु रो थान सुहावे है माँ"
+    },
+    {
+      "file": "content/hanuman/003-मंगल-मूरति-राम-दुलारे.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "मंगल मूरति राम दुलारे"
+    },
+    {
+      "file": "content/hanuman/004-हे-दुःख-भन्जन,-मारुती-नंदन.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "हे दुःख भन्जन, मारुती नंदन"
+    },
+    {
+      "file": "content/krishna/001-कृष्ण-जिनका-नाम-है.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "कृष्ण जिनका नाम है"
+    },
+    {
+      "file": "content/krishna/002-अच्चुतम-केशवं-कृष्ण-दामोदरं.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "अच्चुतम केशवं कृष्ण दामोदरं"
+    },
+    {
+      "file": "content/krishna/008-श्री-राधे-गोविंदा.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "श्री राधे गोविंदा"
+    },
+    {
+      "file": "content/krishna/009-फूलों-में-सज-रहे-हैं.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "फूलों में सज रहे हैं"
+    },
+    {
+      "file": "content/krishna/011-ऐसी-लागी-लगन.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "ऐसी लागी लगन"
+    },
+    {
+      "file": "content/krishna/013-श्याम-पिया-मोरे-रंग-दे-चुनरिया.yaml",
+      "score": 65,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "sthayi-equals-title"
+      ],
+      "title": "श्याम पिया मोरे रंग दे चुनरिया"
+    },
+    {
+      "file": "content/krishna/015-रानी-तेरो-चिरजीयो-गोपाल-।.yaml",
+      "score": 65,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "sthayi-equals-title"
+      ],
+      "title": "रानी तेरो चिरजीयो गोपाल ।"
+    },
+    {
+      "file": "content/krishna/018-बांके-बिहारी-कृष्ण-मुरारी.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "बांके बिहारी कृष्ण मुरारी"
+    },
+    {
+      "file": "content/krishna/022-तुम-ढूंढो-मुझे-गोपाल.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "तुम ढूंढो मुझे गोपाल"
+    },
+    {
+      "file": "content/krishna/024-कुंवर-कानजी-एक-समय.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "कुंवर कानजी एक समय"
+    },
+    {
+      "file": "content/misc/001-मैली-चादर-ओढ़-के-कैसे.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "मैली चादर ओढ़ के कैसे"
+    },
+    {
+      "file": "content/misc/007-पता-नहीं-किस-रूप-में-आकर,-नारायण-मिल-जाएगा.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "पता नहीं किस रूप में आकर, नारायण मिल जाएगा"
+    },
+    {
+      "file": "content/mooltatva/003-आन-सहाय-करो-मोरी.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "आन सहाय करो मोरी"
+    },
+    {
+      "file": "content/mooltatva/004-जब-जब-भी-असुरादि-जन्मे-धरती-पे-२.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "जब जब भी असुरादि जन्मे धरती पे २"
+    },
+    {
+      "file": "content/mooltatva/006-आया-तोरे-द्वारे-भवानी.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "आया तोरे द्वारे भवानी"
+    },
+    {
+      "file": "content/mooltatva/007-जगदम्बा-को-देखा-तो-ऐसा-लगा.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "जगदम्बा को देखा तो ऐसा लगा"
+    },
+    {
+      "file": "content/mooltatva/011-उमा-शंकर-से-यूँ-बोले-होले-होले.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "उमा शंकर से यूँ बोले होले होले"
+    },
+    {
+      "file": "content/mooltatva/017-हे-आय-गोपियाँ-यूँ-केवे.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "हे आय गोपियाँ यूँ केवे"
+    },
+    {
+      "file": "content/mooltatva/019-बालकिया-लांकडिया-रे.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "बालकिया लांकडिया रे"
+    },
+    {
+      "file": "content/navratri/001-राजभोग.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "राजभोग"
+    },
+    {
+      "file": "content/navratri/003-जय-अम्बे-गौरी.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "जय अम्बे गौरी"
+    },
+    {
+      "file": "content/navratri/004-पुष्पांजलि.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "पुष्पांजलि"
+    },
+    {
+      "file": "content/navratri/008-ध्वनि.yaml",
+      "score": 72,
+      "strategy": "first-line-sthayi",
+      "flags": [],
+      "title": "ध्वनि"
+    },
+    {
+      "file": "content/ram/014-सीता-राम-सीता-राम,-सीताराम-कहिये.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "सीता राम सीता राम, सीताराम कहिये"
+    },
+    {
+      "file": "content/ram/015-हे-रोम-रोम-में-बसने-वाले-राम.yaml",
+      "score": 65,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "sthayi-equals-title"
+      ],
+      "title": "हे रोम रोम में बसने वाले राम"
+    },
+    {
+      "file": "content/shiv/002-शिव-कैलाशो-के-वासी.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "शिव कैलाशो के वासी"
+    },
+    {
+      "file": "content/shiv/004-आशुतोष-शशाँक-शेखर.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "आशुतोष शशाँक शेखर"
+    },
+    {
+      "file": "content/shiv/005-निर्वाण-षट्कम.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "निर्वाण षट्कम"
+    },
+    {
+      "file": "content/shiv/006-श्रीरुद्राष्टकम्.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "श्रीरुद्राष्टकम्"
+    },
+    {
+      "file": "content/shiv/007-मेरा-भोला-है-भंडारी.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "मेरा भोला है भंडारी"
+    },
+    {
+      "file": "content/swarachit/002-अंबे-अंबे-जगदम्बे-माँ.yaml",
+      "score": 60,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "title": "अंबे अंबे जगदम्बे माँ"
+    },
+    {
+      "file": "content/swarachit/005-सप्त-मातृका.yaml",
+      "score": 68,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "title": "सप्त मातृका"
+    }
+  ],
+  "low": [
+    {
+      "file": "content/ambe/018-मेरा-जीवन-तेरी-शरण।.yaml",
+      "score": 53,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses",
+        "sthayi-equals-title"
+      ],
+      "title": "मेरा जीवन तेरी शरण।"
+    },
+    {
+      "file": "content/ambe/020-हे-गिरि-नंदिनी,-विश्व-की-स्वामिनी.yaml",
+      "score": 50,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "title": "हे गिरि नंदिनी, विश्व की स्वामिनी"
+    },
+    {
+      "file": "content/hanuman/001-हनुमान-चालीसा.yaml",
+      "score": 50,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "title": "हनुमान चालीसा"
+    },
+    {
+      "file": "content/hanuman/002-हनुमानाष्टक.yaml",
+      "score": 50,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "title": "हनुमानाष्टक"
+    },
+    {
+      "file": "content/hanuman/005-भरत-भाई,-कपि-से-उरिन-हम-नाहीं.yaml",
+      "score": 45,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs",
+        "sthayi-equals-title"
+      ],
+      "title": "भरत भाई, कपि से उरिन हम नाहीं"
+    },
+    {
+      "file": "content/krishna/010-तन-के-तम्बूरे-में-दो.yaml",
+      "score": 50,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "title": "तन के तम्बूरे में दो"
+    },
+    {
+      "file": "content/krishna/014-मैया-मोरी-मैं-नहिं-माखन-खायो-।.yaml",
+      "score": 53,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "long-song-many-verses",
+        "sthayi-equals-title"
+      ],
+      "title": "मैया मोरी मैं नहिं माखन खायो ।"
+    },
+    {
+      "file": "content/misc/003-ओ,-पालनहारे,-निर्गुण-और-न्यारे.yaml",
+      "score": 45,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs",
+        "sthayi-equals-title"
+      ],
+      "title": "ओ, पालनहारे, निर्गुण और न्यारे"
+    },
+    {
+      "file": "content/ram/002-रामा-रामा-रटते-रटते.yaml",
+      "score": 50,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "title": "रामा रामा रटते रटते"
+    },
+    {
+      "file": "content/shiv/001-ॐ-नमः-शिवाय-ॐ-नमः-शिवाय.yaml",
+      "score": 45,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs",
+        "sthayi-equals-title"
+      ],
+      "title": "ॐ नमः शिवाय ॐ नमः शिवाय"
+    },
+    {
+      "file": "content/shiv/003-शिव-शंकर-को-जिसने-पूजा.yaml",
+      "score": 50,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "title": "शिव शंकर को जिसने पूजा"
+    },
+    {
+      "file": "content/swarachit/004-अम्बे-का-जयकारा.yaml",
+      "score": 50,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "title": "अम्बे का जयकारा"
+    },
+    {
+      "file": "content/swarachit/009-अम्बे-माँ,-हम-है-तेरे.yaml",
+      "score": 45,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "heading-line-in-lyrics"
+      ],
+      "title": "अम्बे माँ, हम है तेरे"
+    },
+    {
+      "file": "content/swarachit/011-आओ-गणपति-आज.yaml",
+      "score": 45,
+      "strategy": "first-line-sthayi",
+      "flags": [
+        "heading-line-in-lyrics"
+      ],
+      "title": "आओ गणपति आज"
+    }
+  ],
+  "all": [
+    {
+      "file": "content/aarti/001-ॐ-जय-शिव-ओंकारा.yaml",
+      "section": "aarti",
+      "title": "ॐ जय शिव ओंकारा",
+      "score": 88,
+      "tier": "high",
+      "strategy": "blank-blocks",
+      "lineCount": 24,
+      "blockCount": 8,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "blank-line-blocks",
+        "clear-sthayi-block"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "ॐ जय शिव ओंकारा, स्वामी जय शिव ओंकारा।"
+    },
+    {
+      "file": "content/aarti/002-आरती-कीजै-हनुमान-लला-की.yaml",
+      "section": "aarti",
+      "title": "आरती कीजै हनुमान लला की",
+      "score": 88,
+      "tier": "high",
+      "strategy": "blank-blocks",
+      "lineCount": 19,
+      "blockCount": 7,
+      "paragraphCount": 6,
+      "flags": [],
+      "reasons": [
+        "blank-line-blocks",
+        "clear-sthayi-block"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "आरती कीजै हनुमान लला की,  दुष्ट दलन रघुनाथ कला की॥"
+    },
+    {
+      "file": "content/aarti/003-जय-गणेश-देवा.yaml",
+      "section": "aarti",
+      "title": "जय गणेश देवा",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "blank-blocks",
+      "lineCount": 14,
+      "blockCount": 7,
+      "paragraphCount": 6,
+      "flags": [
+        "repeated-sthayi-between-blocks"
+      ],
+      "reasons": [
+        "blank-line-blocks",
+        "clear-sthayi-block",
+        "aarti-style-refrain-repeats"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "जय गणेश जय गणेश, जय गणेश देवा ।"
+    },
+    {
+      "file": "content/aarti/004-ॐ-जय-जगदीश-हरे.yaml",
+      "section": "aarti",
+      "title": "ॐ जय जगदीश हरे",
+      "score": 88,
+      "tier": "high",
+      "strategy": "blank-blocks",
+      "lineCount": 24,
+      "blockCount": 8,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "blank-line-blocks",
+        "clear-sthayi-block"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "ॐ जय जगदीश हरे, स्वामी जय जगदीश हरे ।"
+    },
+    {
+      "file": "content/aarti/005-जय-अम्बे-गौरी.yaml",
+      "section": "aarti",
+      "title": "जय अम्बे गौरी",
+      "score": 88,
+      "tier": "high",
+      "strategy": "blank-blocks",
+      "lineCount": 26,
+      "blockCount": 13,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "blank-line-blocks",
+        "clear-sthayi-block"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "जय अम्बे गौरी, मैया जय श्यामा गौरी"
+    },
+    {
+      "file": "content/aarti/006-आरती-कुंजबिहारी-की.yaml",
+      "section": "aarti",
+      "title": "आरती कुंजबिहारी की",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "blank-blocks",
+      "lineCount": 23,
+      "blockCount": 9,
+      "paragraphCount": 8,
+      "flags": [
+        "repeated-sthayi-between-blocks"
+      ],
+      "reasons": [
+        "blank-line-blocks",
+        "clear-sthayi-block",
+        "aarti-style-refrain-repeats"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "आरती कुंजबिहारी की, श्री गिरिधर कृष्ण मुरारी की ॥"
+    },
+    {
+      "file": "content/aarti/007-श्री-रामचन्द्र-कृपालु-भजुमन.yaml",
+      "section": "aarti",
+      "title": "श्री रामचन्द्र कृपालु भजुमन",
+      "score": 88,
+      "tier": "high",
+      "strategy": "blank-blocks",
+      "lineCount": 17,
+      "blockCount": 8,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "blank-line-blocks",
+        "clear-sthayi-block"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "श्री रामचन्द्र कृपालु भजुमन हरण भवभय दारुणं ।"
+    },
+    {
+      "file": "content/ambe/001-पूर-है-धीरियाणी-है.yaml",
+      "section": "ambe",
+      "title": "पूर है धीरियाणी है",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 7,
+      "blockCount": 1,
+      "paragraphCount": 6,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "(तर्ज: बांगारी कोयल)"
+    },
+    {
+      "file": "content/ambe/002-शिव-प्रिये-अम्बे-मात-मनाऊँ.yaml",
+      "section": "ambe",
+      "title": "शिव प्रिये अम्बे मात मनाऊँ",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "शिव प्रिये अम्बे मात मनाऊँ, हाँ रे मैं तो रट रट रट रट ध्याऊँ, हर प्रिये अम्बे मा"
+    },
+    {
+      "file": "content/ambe/003-मारी-सहाय-करे-जगदम्बा-सिंह-गाज-रयो.yaml",
+      "section": "ambe",
+      "title": "मारी सहाय करे जगदम्बा सिंह गाज रयो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 11,
+      "blockCount": 1,
+      "paragraphCount": 10,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज: तीखे नैनों से नखवाली"
+    },
+    {
+      "file": "content/ambe/004-जै-जै-जै-जै-सुराई.yaml",
+      "section": "ambe",
+      "title": "जै जै जै जै सुराई",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज: बाबा सीता रे खोले में हनुमत डाली मूंडी"
+    },
+    {
+      "file": "content/ambe/005-सहाय-जगदम्बे-कीजो-हमारी.yaml",
+      "section": "ambe",
+      "title": "सहाय जगदम्बे कीजो हमारी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज: फूलन लो बहार"
+    },
+    {
+      "file": "content/ambe/006-बरसे-श्री-जगदम्ब-मात-के.yaml",
+      "section": "ambe",
+      "title": "बरसे श्री जगदम्ब मात के",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 10,
+      "blockCount": 1,
+      "paragraphCount": 9,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज: आजज रंग बरसे रे"
+    },
+    {
+      "file": "content/ambe/007-रट-जगदम्बा-रो-नाम.yaml",
+      "section": "ambe",
+      "title": "रट जगदम्बा रो नाम",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज: खेलण दो गिणगोर भँवर म्हाने"
+    },
+    {
+      "file": "content/ambe/008-आतोतो-आद-भवानी-ईश्वरी.yaml",
+      "section": "ambe",
+      "title": "आतोतो आद भवानी ईश्वरी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 10,
+      "blockCount": 1,
+      "paragraphCount": 9,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "(तर्ज: आतोतो उत्तर दिशा री पीपली)"
+    },
+    {
+      "file": "content/ambe/009-हद-नीको-रे-दरशन.yaml",
+      "section": "ambe",
+      "title": "हद नीको रे दरशन",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "(तर्ज: रस लेवे रे रुख्याली, लेवे रे मिजाजजी हरमल रो )"
+    },
+    {
+      "file": "content/ambe/010-अम्बे-रानी-मैं-तो-राज-रा.yaml",
+      "section": "ambe",
+      "title": "अम्बे रानी मैं तो राज रा",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "अम्बे रानी मैं तो राज रा दर्शन करवा आयो है, जग जननी है माय"
+    },
+    {
+      "file": "content/ambe/011-नवदुर्गा-मात-भवानी-का.yaml",
+      "section": "ambe",
+      "title": "नवदुर्गा मात भवानी का",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "(तर्ज -दिल लूटने वाले जादूगर ) (फिल्म - मदारी )"
+    },
+    {
+      "file": "content/ambe/012-मैं-शरणे-आयो-है.yaml",
+      "section": "ambe",
+      "title": "मैं शरणे आयो है",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "(तर्ज-बोलम रही है हे सालू वाली समदण नित नवी है )"
+    },
+    {
+      "file": "content/ambe/013-अम्बे-दर्श-तिहारो.yaml",
+      "section": "ambe",
+      "title": "अम्बे दर्श तिहारो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "(तर्ज-जुलाबड़ारो)"
+    },
+    {
+      "file": "content/ambe/014-आयो-मैं-तो-अंबे-रानी.yaml",
+      "section": "ambe",
+      "title": "आयो मैं तो अंबे रानी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "आयो मैं तो अंबे रानी, शरण आज आपरी।"
+    },
+    {
+      "file": "content/ambe/015-मोय-दीजे-वरदान-देवी.yaml",
+      "section": "ambe",
+      "title": "मोय दीजे वरदान देवी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "मोय दीजे वरदान देवी, शरण तोरी आयो रे-२ ।"
+    },
+    {
+      "file": "content/ambe/016-अम्बे-चरण-कमल-है-तेरे.yaml",
+      "section": "ambe",
+      "title": "अम्बे चरण कमल है तेरे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "अम्बे चरण कमल है तेरे,"
+    },
+    {
+      "file": "content/ambe/017-ऐसा-प्यार-बहा-दे-मैया.yaml",
+      "section": "ambe",
+      "title": "ऐसा प्यार बहा दे मैया",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 18,
+      "blockCount": 1,
+      "paragraphCount": 17,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "या देवी सर्वभूतेषु, दया-रूपेण संस्थिता"
+    },
+    {
+      "file": "content/ambe/018-मेरा-जीवन-तेरी-शरण।.yaml",
+      "section": "ambe",
+      "title": "मेरा जीवन तेरी शरण।",
+      "score": 53,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 17,
+      "blockCount": 1,
+      "paragraphCount": 16,
+      "flags": [
+        "long-song-many-verses",
+        "sthayi-equals-title"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "मेरा जीवन तेरी शरण।"
+    },
+    {
+      "file": "content/ambe/019-मेरे-मन-के-अंध-तमस-में.yaml",
+      "section": "ambe",
+      "title": "मेरे मन के अंध तमस में",
+      "score": 94,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 7,
+      "blockCount": 1,
+      "paragraphCount": 6,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "refrain-hook-in-most-lines",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "मेरे मन के अंध तमस में, ज्योतिर्मयी उतरो॥"
+    },
+    {
+      "file": "content/ambe/020-हे-गिरि-नंदिनी,-विश्व-की-स्वामिनी.yaml",
+      "section": "ambe",
+      "title": "हे गिरि नंदिनी, विश्व की स्वामिनी",
+      "score": 50,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 48,
+      "blockCount": 1,
+      "paragraphCount": 47,
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "हे गिरि नंदिनी, विश्व की स्वामिनी, नंदी गण तव शरण रहें"
+    },
+    {
+      "file": "content/ambikacharitra/001-नमो-नमो-हिमगिरि-कन्या-कुमार.yaml",
+      "section": "ambikacharitra",
+      "title": "नमो नमो हिमगिरि कन्या-कुमार",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग : श्याम कल्याण"
+    },
+    {
+      "file": "content/ambikacharitra/002-श्री-सरस्वती-स्तुति.yaml",
+      "section": "ambikacharitra",
+      "title": "श्री सरस्वती स्तुति",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 4,
+      "blockCount": 1,
+      "paragraphCount": 3,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज - अम्बाजी री मैंदी माणक रंग"
+    },
+    {
+      "file": "content/ambikacharitra/003-श्री-गुरू-प्रार्थना.yaml",
+      "section": "ambikacharitra",
+      "title": "श्री गुरू प्रार्थना",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 4,
+      "blockCount": 1,
+      "paragraphCount": 3,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "अनाथ हूँ गुरूनाथ, मेरी बेग सुध लीजिये,"
+    },
+    {
+      "file": "content/ambikacharitra/004-देवी-प्रार्थना.yaml",
+      "section": "ambikacharitra",
+      "title": "देवी प्रार्थना",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 5,
+      "blockCount": 1,
+      "paragraphCount": 4,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "मोय दीजे वरदान देवी शरण तोरी आयो री ||टेर||"
+    },
+    {
+      "file": "content/ambikacharitra/005-मोय-दीजे-कथा-सुनाय.yaml",
+      "section": "ambikacharitra",
+      "title": "मोय दीजे कथा सुनाय",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राजा वेशम्पायनजी श्री वेदव्यासजी से प्रश्न करते हैं।"
+    },
+    {
+      "file": "content/ambikacharitra/006-राज-ऋषि-राजा-से-फरमावें.yaml",
+      "section": "ambikacharitra",
+      "title": "राज ऋषि राजा से फरमावें",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज - नाथ बिन बिगडी कौन बनाये ।"
+    },
+    {
+      "file": "content/ambikacharitra/007-कर-जोर-अरज-गुदरावें.yaml",
+      "section": "ambikacharitra",
+      "title": "कर जोर अरज गुदरावें",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 5,
+      "blockCount": 1,
+      "paragraphCount": 4,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज - गुरुनाथ है प्राण हमारा, विधि ऐसा बचन उचारा।"
+    },
+    {
+      "file": "content/ambikacharitra/008-सुनत-वचन-विधि-मन-मुसकाई.yaml",
+      "section": "ambikacharitra",
+      "title": "सुनत वचन विधि मन मुसकाई",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 15,
+      "blockCount": 1,
+      "paragraphCount": 14,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग - चोपाई"
+    },
+    {
+      "file": "content/ambikacharitra/009-कछु-हेर-फेर-चतुराई.yaml",
+      "section": "ambikacharitra",
+      "title": "कछु हेर फेर चतुराई",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज - नरसिंघ रूप हरी धारे ।"
+    },
+    {
+      "file": "content/ambikacharitra/010-सुन-शुंभ-को-राज्यभिषेक.yaml",
+      "section": "ambikacharitra",
+      "title": "सुन शुंभ को राज्यभिषेक",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग - माड"
+    },
+    {
+      "file": "content/ambikacharitra/011-इन्द्र-अरू-देव-सब-जाई.yaml",
+      "section": "ambikacharitra",
+      "title": "इन्द्र अरू देव सब जाई",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 5,
+      "blockCount": 1,
+      "paragraphCount": 4,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग - गज़ल"
+    },
+    {
+      "file": "content/ambikacharitra/012-कहे-गुरू-राज-समझाई.yaml",
+      "section": "ambikacharitra",
+      "title": "कहे गुरू राज समझाई",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 7,
+      "blockCount": 1,
+      "paragraphCount": 6,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग - गजल"
+    },
+    {
+      "file": "content/ambikacharitra/013-सहाय-जगदम्बे-कीजो-हमारी-सहाय.yaml",
+      "section": "ambikacharitra",
+      "title": "सहाय जगदम्बे कीजो हमारी सहाय",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज - बहार मेरे प्यारे फलन की लेलो बहार ।"
+    },
+    {
+      "file": "content/ambikacharitra/014-होय-प्रसन्न-भवानी-मैया.yaml",
+      "section": "ambikacharitra",
+      "title": "होय प्रसन्न भवानी मैया",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग - टोडी"
+    },
+    {
+      "file": "content/ambikacharitra/015-चंड-अरू-मुंड-गये-दोऊ-भाई.yaml",
+      "section": "ambikacharitra",
+      "title": "चंड अरू मुंड गये दोऊ भाई",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 11,
+      "blockCount": 1,
+      "paragraphCount": 10,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग - ठुमरी"
+    },
+    {
+      "file": "content/ambikacharitra/016-आदर-सहित-सुग्रीव-ही-बोल्यो.yaml",
+      "section": "ambikacharitra",
+      "title": "आदर सहित सुग्रीव ही बोल्यो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 15,
+      "blockCount": 1,
+      "paragraphCount": 14,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग - मारू"
+    },
+    {
+      "file": "content/ambikacharitra/017-बोली-मन-मुसकाइ-यूँ-महामाईं.yaml",
+      "section": "ambikacharitra",
+      "title": "बोली मन मुसकाइ यूँ महामाईं",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज - कानो मुख से न बोले बाजूबन्द खोले"
+    },
+    {
+      "file": "content/ambikacharitra/018-जावोरे-सेना-ले-जाओ.yaml",
+      "section": "ambikacharitra",
+      "title": "जावोरे सेना ले जाओ",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज - नाचे गावे नारी प्यारी चली जाओ बलिहारी तिहारी"
+    },
+    {
+      "file": "content/ambikacharitra/019-धूम्रलोचन-को-समझावे.yaml",
+      "section": "ambikacharitra",
+      "title": "धूम्रलोचन को समझावे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग - पीलू"
+    },
+    {
+      "file": "content/ambikacharitra/020-युद्ध-को-हाल-कहे-क्या.yaml",
+      "section": "ambikacharitra",
+      "title": "युद्ध को हाल कहे क्या",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग - काफी"
+    },
+    {
+      "file": "content/ambikacharitra/021-सुन-शुंभ-यह-बात.yaml",
+      "section": "ambikacharitra",
+      "title": "सुन शुंभ यह बात",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज - तोरी छल बल है न्यारी"
+    },
+    {
+      "file": "content/ambikacharitra/022-कर-चंड-मुंड-चतुराई.yaml",
+      "section": "ambikacharitra",
+      "title": "कर चंड मुंड चतुराई",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज - नरसिंह रूप हरि धारे हिरना कश दानव मारे।"
+    },
+    {
+      "file": "content/ambikacharitra/023-सुन-चंड-अरू-मंड-के-बैन.yaml",
+      "section": "ambikacharitra",
+      "title": "सुन चंड अरू मंड के बैन",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : भजरे मन मेरे बार-बार जगदम्बा मात भवानी है"
+    },
+    {
+      "file": "content/ambikacharitra/024-कांई-बात-बतावा-हो.yaml",
+      "section": "ambikacharitra",
+      "title": "कांई बात बतावा हो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज - माधो बस कियोरे, कुबजा पर पडजो बेरण बीजली"
+    },
+    {
+      "file": "content/ambikacharitra/025-असुर-झट-बोल-उठ्यो-झूंजलाई.yaml",
+      "section": "ambikacharitra",
+      "title": "असुर झट बोल उठ्यो झूंजलाई",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 18,
+      "blockCount": 1,
+      "paragraphCount": 17,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तर्ज - किये खूश यार बदन लिपटाई, चित्तमन से सेज बिछार्ड"
+    },
+    {
+      "file": "content/ambikacharitra/026-हँस-बोली-भवानी.yaml",
+      "section": "ambikacharitra",
+      "title": "हँस बोली भवानी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज - सखी फलन में राजन झूलेरी झूलन"
+    },
+    {
+      "file": "content/ambikacharitra/027-निज-निज-रूप-समान-शक्तियां.yaml",
+      "section": "ambikacharitra",
+      "title": "निज निज रूप समान शक्तियां",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 11,
+      "blockCount": 1,
+      "paragraphCount": 10,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज – पिया मिलन के काज आज जोगन बन आऊंगी।"
+    },
+    {
+      "file": "content/ambikacharitra/028-हम-आये-हैं-कहाँ-के-पठाये.yaml",
+      "section": "ambikacharitra",
+      "title": "हम आये हैं कहाँ के पठाये",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 7,
+      "blockCount": 1,
+      "paragraphCount": 6,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : जियातर से बदरिया बरसे, सखीरी दिन कैसे कटेंगे बहार के।"
+    },
+    {
+      "file": "content/ambikacharitra/029-अब-रक्तबीज-उठके.yaml",
+      "section": "ambikacharitra",
+      "title": "अब रक्तबीज उठके",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : क्या भूलिये दिवाने दुनियां में सार नहीं।"
+    },
+    {
+      "file": "content/ambikacharitra/030-जगदम्ब-बने-सुरराई-है.yaml",
+      "section": "ambikacharitra",
+      "title": "जगदम्ब बने सुरराई है",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 7,
+      "blockCount": 1,
+      "paragraphCount": 6,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज – मेरे शंकर दर्शन दोनी मुझे।"
+    },
+    {
+      "file": "content/ambikacharitra/031-भग-दानव-सेना-आई.yaml",
+      "section": "ambikacharitra",
+      "title": "भग दानव सेना आई",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज – नाथ कैसे गज को फंद छुड़ाया।"
+    },
+    {
+      "file": "content/ambikacharitra/032-हँस-बोली-आद-भवानी.yaml",
+      "section": "ambikacharitra",
+      "title": "हँस बोली आद भवानी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग – कालिंगडा"
+    },
+    {
+      "file": "content/ambikacharitra/033-घनघोर-युद्ध-मचायारी.yaml",
+      "section": "ambikacharitra",
+      "title": "घनघोर युद्ध मचायारी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज – मेरा जगा के जोबन लुटारी।"
+    },
+    {
+      "file": "content/ambikacharitra/034-सुनहो-सुनहो-सुनहो-नृपराई.yaml",
+      "section": "ambikacharitra",
+      "title": "सुनहो सुनहो सुनहो नृपराई",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग – सोहनी"
+    },
+    {
+      "file": "content/ambikacharitra/035-क्रोध-भरे-बैन.yaml",
+      "section": "ambikacharitra",
+      "title": "क्रोध भरे बैन",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग – प्रभाती"
+    },
+    {
+      "file": "content/ambikacharitra/036-कामातुर-होय-शुंभ-बने-लख.yaml",
+      "section": "ambikacharitra",
+      "title": "कामातुर होय शुंभ बने लख",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग – प्रभाती"
+    },
+    {
+      "file": "content/ambikacharitra/037-हँस-बोली-आद-भवानी.yaml",
+      "section": "ambikacharitra",
+      "title": "हँस बोली आद भवानी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 10,
+      "blockCount": 1,
+      "paragraphCount": 9,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग – भैरवी"
+    },
+    {
+      "file": "content/ambikacharitra/038-काली-से-शुंभ-लड़े-हैं.yaml",
+      "section": "ambikacharitra",
+      "title": "काली से शुंभ लड़े हैं",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 23,
+      "blockCount": 1,
+      "paragraphCount": 22,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "राग – भैरवी"
+    },
+    {
+      "file": "content/ambikacharitra/039-जै-जै-जै-शब्द-उचारी.yaml",
+      "section": "ambikacharitra",
+      "title": "जै जै जै शब्द उचारी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 7,
+      "blockCount": 1,
+      "paragraphCount": 6,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग – भैरवी"
+    },
+    {
+      "file": "content/ambikacharitra/040-जै-जै-अंबिके.yaml",
+      "section": "ambikacharitra",
+      "title": "जै जै अंबिके",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 18,
+      "blockCount": 1,
+      "paragraphCount": 17,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "राग – भैरवी"
+    },
+    {
+      "file": "content/ambikacharitra/041-चरित्र-महात्म.yaml",
+      "section": "ambikacharitra",
+      "title": "चरित्र महात्म",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राग – भैरवी"
+    },
+    {
+      "file": "content/ambikacharitra/042-बधाई.yaml",
+      "section": "ambikacharitra",
+      "title": "बधाई",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज – रंगीली आज की धरियां।"
+    },
+    {
+      "file": "content/ambikacharitra/043-कथा-महात्म्य.yaml",
+      "section": "ambikacharitra",
+      "title": "कथा महात्म्य",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 16,
+      "blockCount": 1,
+      "paragraphCount": 15,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज – कथरो रस बिंदराबिन सूं आये।"
+    },
+    {
+      "file": "content/ambikacharitra/044-स्वामीजी-की-महिमा.yaml",
+      "section": "ambikacharitra",
+      "title": "स्वामीजी की महिमा",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 35,
+      "blockCount": 1,
+      "paragraphCount": 34,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तर्ज : उमराव थांरी बोली प्यारी लागे।"
+    },
+    {
+      "file": "content/bhairav/001-हे-माने-भैरु-रो-थान-सुहावे-है-माँ.yaml",
+      "section": "bhairav",
+      "title": "हे माने भैरु रो थान सुहावे है माँ",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 25,
+      "blockCount": 1,
+      "paragraphCount": 24,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तर्ज : धूमर"
+    },
+    {
+      "file": "content/bhairav/002-अम्बाजी-रो-लाडलो.yaml",
+      "section": "bhairav",
+      "title": "अम्बाजी रो लाडलो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : नींबू नव रंगो पिच्छ रंगो"
+    },
+    {
+      "file": "content/bhairav/003-भैरू-थारी-बीन-बजी.yaml",
+      "section": "bhairav",
+      "title": "भैरू थारी बीन बजी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 10,
+      "blockCount": 1,
+      "paragraphCount": 9,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : ओ सांवरा बंशी शुभकारी"
+    },
+    {
+      "file": "content/bhairav/004-वावा-लटियालो.yaml",
+      "section": "bhairav",
+      "title": "वावा लटियालो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : वावाआनन्दी ले घोटो"
+    },
+    {
+      "file": "content/bhairav/005-दर्शन-करसाँ-मैं-तो-आज.yaml",
+      "section": "bhairav",
+      "title": "दर्शन करसाँ मैं तो आज",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : मेझते मसीद मुहावणी"
+    },
+    {
+      "file": "content/bhairav/006-चालो-हे-सहेलियां-आपा.yaml",
+      "section": "bhairav",
+      "title": "चालो हे सहेलियां आपा",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 16,
+      "blockCount": 1,
+      "paragraphCount": 15,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "चालो हे सहेलियां आपा, भैरू ने मनासा हे,"
+    },
+    {
+      "file": "content/bhairav/007-लटियाला-बाला-घणा-हो.yaml",
+      "section": "bhairav",
+      "title": "लटियाला बाला घणा हो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "लटियाला बाला घणा, हो भैरव थे अम्बारा प्रधान।"
+    },
+    {
+      "file": "content/bhairav/008-में-तो-भैरु-जी-थाने-नोतियो.yaml",
+      "section": "bhairav",
+      "title": "में तो भैरु जी थाने नोतियो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "में तो भैरु जी थाने नोतियो हो, भरिया भाद्रवा री तीज,"
+    },
+    {
+      "file": "content/bhairav/009-मन-भजो-तो-सरी.yaml",
+      "section": "bhairav",
+      "title": "मन भजो तो सरी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 10,
+      "blockCount": 1,
+      "paragraphCount": 9,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "मन भजो तो सरी रे, सिद्ध करो तो सरी"
+    },
+    {
+      "file": "content/bhairav/010-देखो-देखो-रे-अलबेली.yaml",
+      "section": "bhairav",
+      "title": "देखो देखो रे अलबेली",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "देखो देखो रे, अलबेली सैंया भैरू नाथ मनाय ।टेर।।"
+    },
+    {
+      "file": "content/ganpati/001-आजो,-आजो-जी-आजो-गणराज.yaml",
+      "section": "ganpati",
+      "title": "आजो, आजो जी आजो गणराज",
+      "score": 94,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "refrain-hook-in-most-lines",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "आजो, आजो जी आजो गणराज हो, गवरां रा लाल दुलारा, हमारे घर आवाजो।"
+    },
+    {
+      "file": "content/ganpati/002-घुमतड़ा-घर-आवो.yaml",
+      "section": "ganpati",
+      "title": "घुमतड़ा घर आवो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "घुमतड़ा घर आवो हो, म्हारा प्यारा गजानन।। टेर।"
+    },
+    {
+      "file": "content/ganpati/003-घुमतड़ा-घर-आओ२.yaml",
+      "section": "ganpati",
+      "title": "घुमतड़ा घर आओ२",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 11,
+      "blockCount": 1,
+      "paragraphCount": 10,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "घुमतड़ा घर आओ हो, मारा प्यारा गजानन,"
+    },
+    {
+      "file": "content/ganpati/004-नमो-नमो-हिमगिरी-कन्या-कुमार.yaml",
+      "section": "ganpati",
+      "title": "नमो नमो हिमगिरी कन्या कुमार",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 4,
+      "blockCount": 1,
+      "paragraphCount": 3,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "नमो नमो हिमगिरी कन्या कुमार ।। टेर ।l"
+    },
+    {
+      "file": "content/ganpati/005-गौरी-के-नन्दन-की,-हम-पूजा-करते-है.yaml",
+      "section": "ganpati",
+      "title": "गौरी के नन्दन की, हम पूजा करते है",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "(तर्ज-होठों से छू लो तुम मेरा गीत अमर कर दो)"
+    },
+    {
+      "file": "content/ganpati/006-महाराज-गजानन्द-आवोनी.yaml",
+      "section": "ganpati",
+      "title": "महाराज गजानन्द आवोनी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "महाराज गजानन्द आवोनी, म्हारी सभा में रंग बरसावोनी ।। टेर ।।"
+    },
+    {
+      "file": "content/hanuman/001-हनुमान-चालीसा.yaml",
+      "section": "hanuman",
+      "title": "हनुमान चालीसा",
+      "score": 50,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 95,
+      "blockCount": 1,
+      "paragraphCount": 94,
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "॥ दोहा॥"
+    },
+    {
+      "file": "content/hanuman/002-हनुमानाष्टक.yaml",
+      "section": "hanuman",
+      "title": "हनुमानाष्टक",
+      "score": 50,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 55,
+      "blockCount": 1,
+      "paragraphCount": 54,
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "बाल समय रवि भक्षी लियो तब,"
+    },
+    {
+      "file": "content/hanuman/003-मंगल-मूरति-राम-दुलारे.yaml",
+      "section": "hanuman",
+      "title": "मंगल मूरति राम दुलारे",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 30,
+      "blockCount": 1,
+      "paragraphCount": 29,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "मंगल मूरति राम दुलारे,"
+    },
+    {
+      "file": "content/hanuman/004-हे-दुःख-भन्जन,-मारुती-नंदन.yaml",
+      "section": "hanuman",
+      "title": "हे दुःख भन्जन, मारुती नंदन",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 33,
+      "blockCount": 1,
+      "paragraphCount": 32,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "हे दुःख भन्जन, मारुती नंदन,"
+    },
+    {
+      "file": "content/hanuman/005-भरत-भाई,-कपि-से-उरिन-हम-नाहीं.yaml",
+      "section": "hanuman",
+      "title": "भरत भाई, कपि से उरिन हम नाहीं",
+      "score": 45,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 27,
+      "blockCount": 1,
+      "paragraphCount": 26,
+      "flags": [
+        "many-single-line-paragraphs",
+        "sthayi-equals-title"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "भरत भाई, कपि से उरिन हम नाहीं"
+    },
+    {
+      "file": "content/hanuman/006-श्री-राम-जानकी-बैठे-हैं-मेरे-सीने-में.yaml",
+      "section": "hanuman",
+      "title": "श्री राम जानकी बैठे हैं मेरे सीने में",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 16,
+      "blockCount": 1,
+      "paragraphCount": 15,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "श्री राम जानकी बैठे हैं मेरे सीने में,"
+    },
+    {
+      "file": "content/horiya/001-कैसे-होरी-खेलूं-रे-इन-सांवरिया-रे-संग.yaml",
+      "section": "horiya",
+      "title": "कैसे होरी खेलूं रे इन सांवरिया रे संग",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "कैसे होरी खेलूं रे इन सांवरिया रे संग, बृज में"
+    },
+    {
+      "file": "content/horiya/002-काना-धर-लो-मुकुट-और-खेलो-होली.yaml",
+      "section": "horiya",
+      "title": "काना धर लो मुकुट और खेलो होली",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "काना धर लो मुकुट और खेलो होली, काना धर लो"
+    },
+    {
+      "file": "content/horiya/003-आज-ब्रिज-में-होरी-ओ-रसिया.yaml",
+      "section": "horiya",
+      "title": "आज ब्रिज में होरी ओ रसिया",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "आज ब्रिज में होरी ओ रसिया , आज ब्रिज में होरी ओ रसिया,"
+    },
+    {
+      "file": "content/horiya/004-खेलो-जी-खेलो-गंग-श्याम-मो-संग-होरी-खेलो.yaml",
+      "section": "horiya",
+      "title": "खेलो जी खेलो गंग श्याम मो संग होरी खेलो",
+      "score": 94,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "refrain-hook-in-most-lines",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "खेलो जी खेलो गंग श्याम मो संग होरी खेलो |"
+    },
+    {
+      "file": "content/horiya/005-हारे-महीनो-फागण-रो.yaml",
+      "section": "horiya",
+      "title": "हारे महीनो फागण रो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "हारे महीनो फागण रो सांवरिया थारी ओळू आवे रे के... महीनो फागण रो|"
+    },
+    {
+      "file": "content/horiya/006-हारे-आनंद-आयो-रे.yaml",
+      "section": "horiya",
+      "title": "हारे आनंद आयो रे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "हारे आनंद आयो रे, घनश्याम सा मुख पे रंग बरसायो रे..."
+    },
+    {
+      "file": "content/horiya/007-हारे-लारो-छोड़-दे.yaml",
+      "section": "horiya",
+      "title": "हारे लारो छोड़ दे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 15,
+      "blockCount": 1,
+      "paragraphCount": 14,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "हारे लारो छोड़ दे, सांवरिया थारे पाए लागू रे...कि लारो छोड़ दे|"
+    },
+    {
+      "file": "content/horiya/008-खेले-माडाणी-होली-रो-रसियो.yaml",
+      "section": "horiya",
+      "title": "खेले माडाणी होली रो रसियो",
+      "score": 94,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 5,
+      "blockCount": 1,
+      "paragraphCount": 4,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "refrain-hook-in-most-lines",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "खेले माडाणी होली रो रसियो कानो साचाणी कि खेले माडाणी।"
+    },
+    {
+      "file": "content/horiya/009-सांवरियो-होरी-खेले-रे.yaml",
+      "section": "horiya",
+      "title": "सांवरियो होरी खेले रे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "सांवरियो होरी खेले रे बिरज रे मायने, मन चाही गाली गावे रे बिरज रे मायने।।"
+    },
+    {
+      "file": "content/horiya/010-और-रंग-दे-रे-राधे-और-रंग-दे.yaml",
+      "section": "horiya",
+      "title": "और रंग दे रे राधे और रंग दे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "और रंग दे रे राधे और रंग दे,"
+    },
+    {
+      "file": "content/horiya/011-होली-कनक-भवन-में.yaml",
+      "section": "horiya",
+      "title": "होली कनक भवन में",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "होली कनक भवन में खेलत सिया रघुवीर।"
+    },
+    {
+      "file": "content/horiya/012-झोली-को-भरलो-भक्तो.yaml",
+      "section": "horiya",
+      "title": "झोली को भरलो भक्तो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 15,
+      "blockCount": 1,
+      "paragraphCount": 14,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : ये गोटेदार लहँगा"
+    },
+    {
+      "file": "content/krishna/001-कृष्ण-जिनका-नाम-है.yaml",
+      "section": "krishna",
+      "title": "कृष्ण जिनका नाम है",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 28,
+      "blockCount": 1,
+      "paragraphCount": 27,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "कृष्ण जिनका नाम है,"
+    },
+    {
+      "file": "content/krishna/002-अच्चुतम-केशवं-कृष्ण-दामोदरं.yaml",
+      "section": "krishna",
+      "title": "अच्चुतम केशवं कृष्ण दामोदरं",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 26,
+      "blockCount": 1,
+      "paragraphCount": 25,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "अच्चुतम केशवं कृष्ण दामोदरं,"
+    },
+    {
+      "file": "content/krishna/003-अधरं-मधुरं-वदनं-मधुरं.yaml",
+      "section": "krishna",
+      "title": "अधरं मधुरं वदनं मधुरं",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 16,
+      "blockCount": 1,
+      "paragraphCount": 15,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "अधरं मधुरं वदनं मधुरं नयनं मधुरं हसितं मधुरं ।"
+    },
+    {
+      "file": "content/krishna/004-हे-गोविन्द-हे-गोपाल.yaml",
+      "section": "krishna",
+      "title": "हे गोविन्द हे गोपाल",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 11,
+      "blockCount": 1,
+      "paragraphCount": 10,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "हे गोविन्द हे गोपाल, हे गोविन्द हे गोपाल"
+    },
+    {
+      "file": "content/krishna/005-तुम-मोरी-राखो-लाज-हरि.yaml",
+      "section": "krishna",
+      "title": "तुम मोरी राखो लाज हरि",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तुम मोरी राखो लाज हरि,"
+    },
+    {
+      "file": "content/krishna/006-लाज-राखो-गिरधारी.yaml",
+      "section": "krishna",
+      "title": "लाज राखो गिरधारी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "लाज राखो गिरधारी, लाज राखो गिरधारी।"
+    },
+    {
+      "file": "content/krishna/007-दीनन-दुख-हरन-देव.yaml",
+      "section": "krishna",
+      "title": "दीनन दुख हरन देव",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "दीनन दुख हरन देव, संतन हितकारी।"
+    },
+    {
+      "file": "content/krishna/008-श्री-राधे-गोविंदा.yaml",
+      "section": "krishna",
+      "title": "श्री राधे गोविंदा",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 22,
+      "blockCount": 1,
+      "paragraphCount": 21,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "श्री राधे गोविंदा, मन भज ले हरी का प्यारा नाम है ।"
+    },
+    {
+      "file": "content/krishna/009-फूलों-में-सज-रहे-हैं.yaml",
+      "section": "krishna",
+      "title": "फूलों में सज रहे हैं",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 25,
+      "blockCount": 1,
+      "paragraphCount": 24,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "फूलों में सज रहे हैं, श्री वृन्दावन बिहारी,"
+    },
+    {
+      "file": "content/krishna/010-तन-के-तम्बूरे-में-दो.yaml",
+      "section": "krishna",
+      "title": "तन के तम्बूरे में दो",
+      "score": 50,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 36,
+      "blockCount": 1,
+      "paragraphCount": 35,
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "तन तम्बूरा, तार मन,"
+    },
+    {
+      "file": "content/krishna/011-ऐसी-लागी-लगन.yaml",
+      "section": "krishna",
+      "title": "ऐसी लागी लगन",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 25,
+      "blockCount": 1,
+      "paragraphCount": 24,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "है आँख वो जो,श्याम का दर्शन किया करे,"
+    },
+    {
+      "file": "content/krishna/012-वो-काला-एक-बांसुरी-वाला.yaml",
+      "section": "krishna",
+      "title": "वो काला एक बांसुरी वाला",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 11,
+      "blockCount": 1,
+      "paragraphCount": 10,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "वो काला एक बांसुरी वाला,"
+    },
+    {
+      "file": "content/krishna/013-श्याम-पिया-मोरे-रंग-दे-चुनरिया.yaml",
+      "section": "krishna",
+      "title": "श्याम पिया मोरे रंग दे चुनरिया",
+      "score": 65,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [
+        "sthayi-equals-title"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "श्याम पिया मोरे रंग दे चुनरिया"
+    },
+    {
+      "file": "content/krishna/014-मैया-मोरी-मैं-नहिं-माखन-खायो-।.yaml",
+      "section": "krishna",
+      "title": "मैया मोरी मैं नहिं माखन खायो ।",
+      "score": 53,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 17,
+      "blockCount": 1,
+      "paragraphCount": 16,
+      "flags": [
+        "long-song-many-verses",
+        "sthayi-equals-title"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "मैया मोरी मैं नहिं माखन खायो ।"
+    },
+    {
+      "file": "content/krishna/015-रानी-तेरो-चिरजीयो-गोपाल-।.yaml",
+      "section": "krishna",
+      "title": "रानी तेरो चिरजीयो गोपाल ।",
+      "score": 65,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [
+        "sthayi-equals-title"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "रानी तेरो चिरजीयो गोपाल ।"
+    },
+    {
+      "file": "content/krishna/016-श्याम-बिना-उनये-ये-बदरा.yaml",
+      "section": "krishna",
+      "title": "श्याम बिना उनये ये बदरा",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 3,
+      "blockCount": 1,
+      "paragraphCount": 2,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "श्याम बिना उनये ये बदरा, आज श्याम सपने में देखे, भर आई नैन, धुरक गयो कजरा"
+    },
+    {
+      "file": "content/krishna/017-बाट-निहारे-घनश्याम.yaml",
+      "section": "krishna",
+      "title": "बाट निहारे घनश्याम",
+      "score": 94,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 11,
+      "blockCount": 1,
+      "paragraphCount": 10,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "refrain-hook-in-most-lines",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "बाट निहारे घनश्याम, नैना नीर भरे"
+    },
+    {
+      "file": "content/krishna/018-बांके-बिहारी-कृष्ण-मुरारी.yaml",
+      "section": "krishna",
+      "title": "बांके बिहारी कृष्ण मुरारी",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 17,
+      "blockCount": 1,
+      "paragraphCount": 16,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "बांके बिहारी कृष्ण मुरारी, मेरे बारी कहाँ छुपे,"
+    },
+    {
+      "file": "content/krishna/019-मेरे-बांके-बिहारी-लाल.yaml",
+      "section": "krishna",
+      "title": "मेरे बांके बिहारी लाल",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 15,
+      "blockCount": 1,
+      "paragraphCount": 14,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : घुँघुरु टूट गए"
+    },
+    {
+      "file": "content/krishna/020-जय-राधा-माधव.yaml",
+      "section": "krishna",
+      "title": "जय राधा माधव",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "जय राधा माधव जय कुंज बिहारी,"
+    },
+    {
+      "file": "content/krishna/021-मुरली-मनोहर-गोपाला.yaml",
+      "section": "krishna",
+      "title": "मुरली मनोहर गोपाला",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 7,
+      "blockCount": 1,
+      "paragraphCount": 6,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "मुरली मनोहर गोपाला, गोविन्द राधे गोपाला..."
+    },
+    {
+      "file": "content/krishna/022-तुम-ढूंढो-मुझे-गोपाल.yaml",
+      "section": "krishna",
+      "title": "तुम ढूंढो मुझे गोपाल",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 18,
+      "blockCount": 1,
+      "paragraphCount": 17,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तुम ढूंढो मुझे गोपाल, मैं खोई गईयाँ तेरी"
+    },
+    {
+      "file": "content/krishna/023-हे,-कृष्ण-गोपाल-हरी.yaml",
+      "section": "krishna",
+      "title": "हे, कृष्ण गोपाल हरी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "हे, कृष्ण गोपाल हरी, हे, दीन दयाल हरी"
+    },
+    {
+      "file": "content/krishna/024-कुंवर-कानजी-एक-समय.yaml",
+      "section": "krishna",
+      "title": "कुंवर कानजी एक समय",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 20,
+      "blockCount": 1,
+      "paragraphCount": 19,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "कुंवर कानजी एक समय, बृजराज सांवरा एक समय"
+    },
+    {
+      "file": "content/krishna/025-अखियाँ-हरी-दर्शन-की-प्यासी.yaml",
+      "section": "krishna",
+      "title": "अखियाँ हरी दर्शन की प्यासी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "हरी दर्शन की प्यासी अखियाँ, अखियाँ हरी दर्शन की प्यासी।"
+    },
+    {
+      "file": "content/misc/001-मैली-चादर-ओढ़-के-कैसे.yaml",
+      "section": "misc",
+      "title": "मैली चादर ओढ़ के कैसे",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 20,
+      "blockCount": 1,
+      "paragraphCount": 19,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "मैली चादर ओढ़ के कैसे, द्वार तुम्हारे आऊँ,"
+    },
+    {
+      "file": "content/misc/002-अब-सौंप-दिया-इस-जीवन-का.yaml",
+      "section": "misc",
+      "title": "अब सौंप दिया इस जीवन का",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "अब सौंप दिया इस जीवन का, सब भार तुम्हारे हाथों में,"
+    },
+    {
+      "file": "content/misc/003-ओ,-पालनहारे,-निर्गुण-और-न्यारे.yaml",
+      "section": "misc",
+      "title": "ओ, पालनहारे, निर्गुण और न्यारे",
+      "score": 45,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 29,
+      "blockCount": 1,
+      "paragraphCount": 28,
+      "flags": [
+        "many-single-line-paragraphs",
+        "sthayi-equals-title"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "ओ, पालनहारे, निर्गुण और न्यारे"
+    },
+    {
+      "file": "content/misc/004-उड़-जाएगा-हंस-अकेला.yaml",
+      "section": "misc",
+      "title": "उड़ जाएगा हंस अकेला",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "उड़ जाएगा हंस अकेला, जग दर्शन का मेला।"
+    },
+    {
+      "file": "content/misc/005-सुमिरन-कर-ले-मेरे-मना.yaml",
+      "section": "misc",
+      "title": "सुमिरन कर ले मेरे मना",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 10,
+      "blockCount": 1,
+      "paragraphCount": 9,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "सुमिरन कर ले मेरे मना,"
+    },
+    {
+      "file": "content/misc/006-काया-नहीं-तेरी,-नहीं-तेरी.yaml",
+      "section": "misc",
+      "title": "काया नहीं तेरी, नहीं तेरी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "काया नहीं तेरी, नहीं तेरी।"
+    },
+    {
+      "file": "content/misc/007-पता-नहीं-किस-रूप-में-आकर,-नारायण-मिल-जाएगा.yaml",
+      "section": "misc",
+      "title": "पता नहीं किस रूप में आकर, नारायण मिल जाएगा",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 25,
+      "blockCount": 1,
+      "paragraphCount": 24,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "प्रेम प्रभु का बरस रहा है, पीले अमृत प्यासेसातों तीरथ तेरे अंदर, बाहर किसे तलाशे"
+    },
+    {
+      "file": "content/mooltatva/001-घर-आओजी-म्हारे-घर-आओ.yaml",
+      "section": "mooltatva",
+      "title": "घर आओजी म्हारे घर आओ",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज: भर लाऊँ रे ढोला भर लाऊँ..."
+    },
+    {
+      "file": "content/mooltatva/002-ले-लो-रे-ले-लो-गुरुजी-से-ज्ञान.yaml",
+      "section": "mooltatva",
+      "title": "ले लो रे ले लो गुरुजी से ज्ञान",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 15,
+      "blockCount": 1,
+      "paragraphCount": 14,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज: उड़ियो रे उड़ियो इयोढो इयोढो जाय ....."
+    },
+    {
+      "file": "content/mooltatva/003-आन-सहाय-करो-मोरी.yaml",
+      "section": "mooltatva",
+      "title": "आन सहाय करो मोरी",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 23,
+      "blockCount": 1,
+      "paragraphCount": 22,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तर्ज : दल बादल बिच चमके जी तारा........."
+    },
+    {
+      "file": "content/mooltatva/004-जब-जब-भी-असुरादि-जन्मे-धरती-पे-२.yaml",
+      "section": "mooltatva",
+      "title": "जब जब भी असुरादि जन्मे धरती पे २",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 27,
+      "blockCount": 1,
+      "paragraphCount": 26,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तर्ज : झूटणिया-झूटणिया गोरी काई बिलखे मेह बिना धरती तरसे—"
+    },
+    {
+      "file": "content/mooltatva/005-अम्बे-रा-सब-गुण-गावे-रे.yaml",
+      "section": "mooltatva",
+      "title": "अम्बे रा सब गुण गावे रे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 15,
+      "blockCount": 1,
+      "paragraphCount": 14,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : जोबनियो एडो जावे है"
+    },
+    {
+      "file": "content/mooltatva/006-आया-तोरे-द्वारे-भवानी.yaml",
+      "section": "mooltatva",
+      "title": "आया तोरे द्वारे भवानी",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 27,
+      "blockCount": 1,
+      "paragraphCount": 26,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तर्ज : दीदी तेरा देवर दीवाना"
+    },
+    {
+      "file": "content/mooltatva/007-जगदम्बा-को-देखा-तो-ऐसा-लगा.yaml",
+      "section": "mooltatva",
+      "title": "जगदम्बा को देखा तो ऐसा लगा",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 20,
+      "blockCount": 1,
+      "paragraphCount": 19,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तर्ज : एक लड़की को देखा तो ऐसा लगा"
+    },
+    {
+      "file": "content/mooltatva/008-सेवा-मात-पिता-री-करले-रे,-करले-रे.yaml",
+      "section": "mooltatva",
+      "title": "सेवा मात पिता री करले रे, करले रे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 15,
+      "blockCount": 1,
+      "paragraphCount": 14,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : डोला डोल मंजीरा बाजे रे काली छींट को पाछो निजारा मोरे रे...."
+    },
+    {
+      "file": "content/mooltatva/009-झूठी-जग-की-माया.yaml",
+      "section": "mooltatva",
+      "title": "झूठी जग की माया",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "झूठी जग की माया, काहे सिंगारत काया,"
+    },
+    {
+      "file": "content/mooltatva/010-भगतारे-बस-में-गोपाल.yaml",
+      "section": "mooltatva",
+      "title": "भगतारे बस में गोपाल",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : चिरमी रा डाला चार वारी जाड़ा चिरमी रे...."
+    },
+    {
+      "file": "content/mooltatva/011-उमा-शंकर-से-यूँ-बोले-होले-होले.yaml",
+      "section": "mooltatva",
+      "title": "उमा शंकर से यूँ बोले होले होले",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 17,
+      "blockCount": 1,
+      "paragraphCount": 16,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तर्ज़ : होले 2 रे ढिलाईवर गाड़ी होलेले 2, अजेन की सीटी में मारो मन डोले"
+    },
+    {
+      "file": "content/mooltatva/012-रट-रट-रे-मन-राम-नाम-तू.yaml",
+      "section": "mooltatva",
+      "title": "रट रट रे मन राम नाम तू",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज़ : उड़ उड़ रे म्हारा काला रे कागला...."
+    },
+    {
+      "file": "content/mooltatva/013-जीवो-भुगते-जगरें-माय.yaml",
+      "section": "mooltatva",
+      "title": "जीवो भुगते जगरें माय",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : छैलो आवे आधी रात बटावे चरणी...."
+    },
+    {
+      "file": "content/mooltatva/014-सांवरिया-प्रेम-रस-घोल-नी-रे.yaml",
+      "section": "mooltatva",
+      "title": "सांवरिया प्रेम रस घोल नी रे",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज़ : कागलिया गेरो गेरो बोल नी रे...."
+    },
+    {
+      "file": "content/mooltatva/015-मिनख-जमारो-दुर्लभ-है.yaml",
+      "section": "mooltatva",
+      "title": "मिनख जमारो दुर्लभ है",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 13,
+      "blockCount": 1,
+      "paragraphCount": 12,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : कोरो काजलिया..."
+    },
+    {
+      "file": "content/mooltatva/016-धोली-धोली-चांदनी-चमक-रयो-चीर.yaml",
+      "section": "mooltatva",
+      "title": "धोली-धोली चांदनी चमक रयो चीर",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 16,
+      "blockCount": 1,
+      "paragraphCount": 15,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : पीलो पीलो घाघरो गलाबी रंग चीर..."
+    },
+    {
+      "file": "content/mooltatva/017-हे-आय-गोपियाँ-यूँ-केवे.yaml",
+      "section": "mooltatva",
+      "title": "हे आय गोपियाँ यूँ केवे",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 35,
+      "blockCount": 1,
+      "paragraphCount": 34,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तर्ज : रुणझुणियो"
+    },
+    {
+      "file": "content/mooltatva/018-वारी-हो-कन्हैया-लाल.yaml",
+      "section": "mooltatva",
+      "title": "वारी हो कन्हैया लाल",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 16,
+      "blockCount": 1,
+      "paragraphCount": 15,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तर्ज : अणवट"
+    },
+    {
+      "file": "content/mooltatva/019-बालकिया-लांकडिया-रे.yaml",
+      "section": "mooltatva",
+      "title": "बालकिया लांकडिया रे",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 17,
+      "blockCount": 1,
+      "paragraphCount": 16,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तर्ज: तालरिया मगरिया रे...."
+    },
+    {
+      "file": "content/navratri/001-राजभोग.yaml",
+      "section": "navratri",
+      "title": "राजभोग",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 25,
+      "blockCount": 1,
+      "paragraphCount": 24,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "मीठो मीठो भावे, हो राज अम्बाजी ने, मीठो मीठो भावे,"
+    },
+    {
+      "file": "content/navratri/002-श्रृंगार.yaml",
+      "section": "navratri",
+      "title": "श्रृंगार",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "मारो मन दरशन सूँ हर्षे।"
+    },
+    {
+      "file": "content/navratri/003-जय-अम्बे-गौरी.yaml",
+      "section": "navratri",
+      "title": "जय अम्बे गौरी",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 35,
+      "blockCount": 1,
+      "paragraphCount": 34,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "जय अम्बे गौरी, मैया जय श्यामा गौरी ।"
+    },
+    {
+      "file": "content/navratri/004-पुष्पांजलि.yaml",
+      "section": "navratri",
+      "title": "पुष्पांजलि",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 20,
+      "blockCount": 1,
+      "paragraphCount": 19,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "अयि गिरिनन्दिनि नन्दितमेदिनि विश्वविनोदिनि नन्दिनुते"
+    },
+    {
+      "file": "content/navratri/005-परिक्रमा.yaml",
+      "section": "navratri",
+      "title": "परिक्रमा",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 10,
+      "blockCount": 1,
+      "paragraphCount": 9,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "सुधा सिन्धोर्मध्ये सुरविट पिवाटी परिवृते ।"
+    },
+    {
+      "file": "content/navratri/006-तोरी-शरण-में.yaml",
+      "section": "navratri",
+      "title": "तोरी शरण में",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "तोरी शरण में तो आन पड़ियो हूँ,"
+    },
+    {
+      "file": "content/navratri/007-मेहंदी.yaml",
+      "section": "navratri",
+      "title": "मेहंदी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 5,
+      "blockCount": 1,
+      "paragraphCount": 4,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "अम्बा थारी मेहंदी, माणक रंग,"
+    },
+    {
+      "file": "content/navratri/008-ध्वनि.yaml",
+      "section": "navratri",
+      "title": "ध्वनि",
+      "score": 72,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 2,
+      "blockCount": 1,
+      "paragraphCount": 1,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "आदि शक्ति महामाया तू ,जग तारण जगदम्बा तू।"
+    },
+    {
+      "file": "content/ram/001-राम-का-गुणगान-करिये.yaml",
+      "section": "ram",
+      "title": "राम का गुणगान करिये",
+      "score": 94,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "refrain-hook-in-most-lines",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राम का गुणगान करिये, राम का गुणगान करिये"
+    },
+    {
+      "file": "content/ram/002-रामा-रामा-रटते-रटते.yaml",
+      "section": "ram",
+      "title": "रामा रामा रटते रटते",
+      "score": 50,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 39,
+      "blockCount": 1,
+      "paragraphCount": 38,
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "रामा रामा रटते रटते,"
+    },
+    {
+      "file": "content/ram/003-राम-को-देख-कर-के-जनक-नंदिनी.yaml",
+      "section": "ram",
+      "title": "राम को देख कर के जनक नंदिनी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 11,
+      "blockCount": 1,
+      "paragraphCount": 10,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राम को देख कर के जनक नंदिनी, बाग में जा खड़ी की खड़ी रह गयी ।"
+    },
+    {
+      "file": "content/ram/004-हमारे-साथ-श्री-रघुनाथ-तो.yaml",
+      "section": "ram",
+      "title": "हमारे साथ श्री रघुनाथ तो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 10,
+      "blockCount": 1,
+      "paragraphCount": 9,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "हमारे साथ श्री रघुनाथ तो, किस बात की चिंता ।"
+    },
+    {
+      "file": "content/ram/005-जय-रघुनन्दन-जय-सियाराम.yaml",
+      "section": "ram",
+      "title": "जय रघुनन्दन जय सियाराम",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 8,
+      "blockCount": 1,
+      "paragraphCount": 7,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "जय रघुनन्दन जय सियाराम |"
+    },
+    {
+      "file": "content/ram/006-ठुमक-चलत-रामचंद्र.yaml",
+      "section": "ram",
+      "title": "ठुमक चलत रामचंद्र",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "ठुमक चलत रामचंद्र, बाजत पैंजनियां,"
+    },
+    {
+      "file": "content/ram/007-नगरी-हो-अयोध्या-सी.yaml",
+      "section": "ram",
+      "title": "नगरी हो अयोध्या सी",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "नगरी हो अयोध्या सी, रघुकुल सा घराना हो ।"
+    },
+    {
+      "file": "content/ram/008-केवट-ने-कहा-रघुराई-से.yaml",
+      "section": "ram",
+      "title": "केवट ने कहा रघुराई से",
+      "score": 94,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 7,
+      "blockCount": 1,
+      "paragraphCount": 6,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "refrain-hook-in-most-lines",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "केवट ने कहा रघुराई से, उतराई ना लूंगा हे भगवन।"
+    },
+    {
+      "file": "content/ram/009-जग-में-सुन्दर-हैं-दो-नाम.yaml",
+      "section": "ram",
+      "title": "जग में सुन्दर हैं दो नाम",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "जग में सुन्दर हैं दो नाम, चाहे कृष्ण कहो या राम ।"
+    },
+    {
+      "file": "content/ram/010-कभी-राम-बनके-कभी-श्याम-बनके.yaml",
+      "section": "ram",
+      "title": "कभी राम बनके कभी श्याम बनके",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 12,
+      "blockCount": 1,
+      "paragraphCount": 11,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "कभी राम बनके कभी श्याम बनके,"
+    },
+    {
+      "file": "content/ram/011-तेरा-रामजी-करेंगे-बेड़ा-पार.yaml",
+      "section": "ram",
+      "title": "तेरा रामजी करेंगे बेड़ा पार",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राम नाम सोहि जानिये, जो रमता सकल जहान"
+    },
+    {
+      "file": "content/ram/012-जानकी-नाथ-सहाय-करें.yaml",
+      "section": "ram",
+      "title": "जानकी नाथ सहाय करें",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "जानकी नाथ सहाय करें जब, कौन बिगाड़ करे नर तेरो"
+    },
+    {
+      "file": "content/ram/013-राम-नाम-के-साबुन-से-जो-मन-का-मैल-भगाएगा.yaml",
+      "section": "ram",
+      "title": "राम नाम के साबुन से जो मन का मैल भगाएगा",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "राम नाम के साबुन से जो मन का मैल भगाएगा,"
+    },
+    {
+      "file": "content/ram/014-सीता-राम-सीता-राम,-सीताराम-कहिये.yaml",
+      "section": "ram",
+      "title": "सीता राम सीता राम, सीताराम कहिये",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 27,
+      "blockCount": 1,
+      "paragraphCount": 26,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "तर्ज: झिलममिल सितारों का"
+    },
+    {
+      "file": "content/ram/015-हे-रोम-रोम-में-बसने-वाले-राम.yaml",
+      "section": "ram",
+      "title": "हे रोम रोम में बसने वाले राम",
+      "score": 65,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [
+        "sthayi-equals-title"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "हे रोम रोम में बसने वाले राम"
+    },
+    {
+      "file": "content/shiv/001-ॐ-नमः-शिवाय-ॐ-नमः-शिवाय.yaml",
+      "section": "shiv",
+      "title": "ॐ नमः शिवाय ॐ नमः शिवाय",
+      "score": 45,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 28,
+      "blockCount": 1,
+      "paragraphCount": 27,
+      "flags": [
+        "many-single-line-paragraphs",
+        "sthayi-equals-title"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "ॐ नमः शिवाय ॐ नमः शिवाय"
+    },
+    {
+      "file": "content/shiv/002-शिव-कैलाशो-के-वासी.yaml",
+      "section": "shiv",
+      "title": "शिव कैलाशो के वासी",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 35,
+      "blockCount": 1,
+      "paragraphCount": 34,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "शिव कैलाशो के वासी,"
+    },
+    {
+      "file": "content/shiv/003-शिव-शंकर-को-जिसने-पूजा.yaml",
+      "section": "shiv",
+      "title": "शिव शंकर को जिसने पूजा",
+      "score": 50,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 37,
+      "blockCount": 1,
+      "paragraphCount": 36,
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "शिव शंकर को जिसने पूजा,"
+    },
+    {
+      "file": "content/shiv/004-आशुतोष-शशाँक-शेखर.yaml",
+      "section": "shiv",
+      "title": "आशुतोष शशाँक शेखर",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 35,
+      "blockCount": 1,
+      "paragraphCount": 34,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "आशुतोष शशाँक शेखर,"
+    },
+    {
+      "file": "content/shiv/005-निर्वाण-षट्कम.yaml",
+      "section": "shiv",
+      "title": "निर्वाण षट्कम",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 24,
+      "blockCount": 1,
+      "paragraphCount": 23,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "मनो-बुद्धि-अहंकार चित्तादि नाहं"
+    },
+    {
+      "file": "content/shiv/006-श्रीरुद्राष्टकम्.yaml",
+      "section": "shiv",
+      "title": "श्रीरुद्राष्टकम्",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 35,
+      "blockCount": 1,
+      "paragraphCount": 34,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "नमामीशमीशान निर्वाणरूपं"
+    },
+    {
+      "file": "content/shiv/007-मेरा-भोला-है-भंडारी.yaml",
+      "section": "shiv",
+      "title": "मेरा भोला है भंडारी",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 35,
+      "blockCount": 1,
+      "paragraphCount": 34,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "मेरा भोला है भंडारी,"
+    },
+    {
+      "file": "content/shiv/008-शंकर-तेरी-जटा-में.yaml",
+      "section": "shiv",
+      "title": "शंकर तेरी जटा में",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 10,
+      "blockCount": 1,
+      "paragraphCount": 9,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "शंकर तेरी जटा में, बहती है गंगधारा ।"
+    },
+    {
+      "file": "content/swarachit/001-हम-तो-है-जपते-रहते.yaml",
+      "section": "swarachit",
+      "title": "हम तो है जपते रहते",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 11,
+      "blockCount": 1,
+      "paragraphCount": 10,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "हम तो है जपते रहते, जगदंब मां भवानी,"
+    },
+    {
+      "file": "content/swarachit/002-अंबे-अंबे-जगदम्बे-माँ.yaml",
+      "section": "swarachit",
+      "title": "अंबे अंबे जगदम्बे माँ",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 35,
+      "blockCount": 1,
+      "paragraphCount": 34,
+      "flags": [
+        "many-single-line-paragraphs"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "अंबे अंबे जगदम्बे माँ, देवों ने पुकारा"
+    },
+    {
+      "file": "content/swarachit/003-अंबे-नाम,-अंबे-नाम,-अंबे-नाम-कहिए.yaml",
+      "section": "swarachit",
+      "title": "अंबे नाम, अंबे नाम, अंबे नाम कहिए",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "अंबे नाम, अंबे नाम, अंबे नाम कहिए,"
+    },
+    {
+      "file": "content/swarachit/004-अम्बे-का-जयकारा.yaml",
+      "section": "swarachit",
+      "title": "अम्बे का जयकारा",
+      "score": 50,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 39,
+      "blockCount": 1,
+      "paragraphCount": 38,
+      "flags": [
+        "many-single-line-paragraphs",
+        "very-long-song"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "अम्बे का जयकारा,"
+    },
+    {
+      "file": "content/swarachit/005-सप्त-मातृका.yaml",
+      "section": "swarachit",
+      "title": "सप्त मातृका",
+      "score": 68,
+      "tier": "medium",
+      "strategy": "first-line-sthayi",
+      "lineCount": 18,
+      "blockCount": 1,
+      "paragraphCount": 17,
+      "flags": [
+        "long-song-many-verses"
+      ],
+      "reasons": [
+        "one-line-per-paragraph"
+      ],
+      "autoFormat": false,
+      "review": true,
+      "manual": false,
+      "sthayiPreview": "सप्त मातृका, महा बलधारी,"
+    },
+    {
+      "file": "content/swarachit/006-अब-अंबे-मैया,-दर्शन-देने.yaml",
+      "section": "swarachit",
+      "title": "अब अंबे मैया, दर्शन देने",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "अब अंबे मैया, दर्शन देने, आ जाओ, आ जाओ।"
+    },
+    {
+      "file": "content/swarachit/007-शक्तिपीठ-वर्णन.yaml",
+      "section": "swarachit",
+      "title": "शक्तिपीठ वर्णन",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 14,
+      "blockCount": 1,
+      "paragraphCount": 13,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "सती अंग धरती गिरें, बने शक्ति के पीठ।"
+    },
+    {
+      "file": "content/swarachit/008-धरी-रूप-नाना,-बहु-विधाना.yaml",
+      "section": "swarachit",
+      "title": "धरी रूप नाना, बहु विधाना",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 16,
+      "blockCount": 1,
+      "paragraphCount": 15,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "धरी रूप नाना, बहु विधाना, जगत पथ दर्शित करि।"
+    },
+    {
+      "file": "content/swarachit/009-अम्बे-माँ,-हम-है-तेरे.yaml",
+      "section": "swarachit",
+      "title": "अम्बे माँ, हम है तेरे",
+      "score": 45,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 9,
+      "blockCount": 1,
+      "paragraphCount": 8,
+      "flags": [
+        "heading-line-in-lyrics"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape",
+        "section-heading-mixed-in"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "अम्बे माँ, हम है तेरे, भक्त बड़े निश्चल ।"
+    },
+    {
+      "file": "content/swarachit/010-मेरे-घर-आओ,-गणपति-आप.yaml",
+      "section": "swarachit",
+      "title": "मेरे घर आओ, गणपति आप",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 6,
+      "blockCount": 1,
+      "paragraphCount": 5,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "मेरे घर आओ, गणपति आप।"
+    },
+    {
+      "file": "content/swarachit/011-आओ-गणपति-आज.yaml",
+      "section": "swarachit",
+      "title": "आओ गणपति आज",
+      "score": 45,
+      "tier": "low",
+      "strategy": "first-line-sthayi",
+      "lineCount": 16,
+      "blockCount": 1,
+      "paragraphCount": 15,
+      "flags": [
+        "heading-line-in-lyrics"
+      ],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape",
+        "section-heading-mixed-in"
+      ],
+      "autoFormat": false,
+      "review": false,
+      "manual": true,
+      "sthayiPreview": "आओ गणपति आज, हमें दर्शन दो,"
+    },
+    {
+      "file": "content/swarachit/012-अब-तू-जाने-रघुनाथ.yaml",
+      "section": "swarachit",
+      "title": "अब तू जाने रघुनाथ",
+      "score": 80,
+      "tier": "high",
+      "strategy": "first-line-sthayi",
+      "lineCount": 7,
+      "blockCount": 1,
+      "paragraphCount": 6,
+      "flags": [],
+      "reasons": [
+        "one-line-per-paragraph",
+        "typical-bhajan-shape"
+      ],
+      "autoFormat": true,
+      "review": false,
+      "manual": false,
+      "sthayiPreview": "अब तू जाने रघुनाथ, अब तू जाने रघुनाथ ॥"
+    }
+  ]
+}

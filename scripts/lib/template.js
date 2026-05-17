@@ -134,14 +134,10 @@ ${blocks}
 
 function renderBhajanCard(b, section, index, showSwarachitBadge) {
   const id = b.id || anchorId(section.slug, b.title, index);
-  const tarz = b.tarz
-    ? `<p class="bhajan-tarz"><span class="label">तर्ज</span> ${escapeHtml(b.tarz)}</p>`
-    : '';
   const sw = showSwarachitBadge && b.swarachit ? '<span class="bhajan-badge">स्वरचित</span>' : '';
   return `<article class="bhajan-card" id="${id}">
   <h3 class="bhajan-card__title">${escapeHtml(b.title)}${sw}</h3>
-  ${tarz}
-  <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics)}</div>
+  <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics, b.tarz)}</div>
 </article>`;
 }
 

@@ -11,6 +11,8 @@
     "add-bhajan": "node scripts/add-bhajan.js",
     "add-section": "node scripts/add-section.js",
     "spellcheck": "node scripts/spellcheck.js",
+    "lyrics-report": "node scripts/lyrics-confidence-report.js",
+    "migrate-lyrics": "node scripts/migrate-lyrics.js",
     "serve": "npx --yes serve docs -l 3000"
   }
 }
