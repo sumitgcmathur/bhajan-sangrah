@@ -13,6 +13,22 @@ const { convertAartiCoupletLyrics, analyzeAartiConversion } = require('./aarti-c
 const RAGA_RE = /^राग\s*[:：\-–—]/i;
 const TARZ_RE = /^तर्ज\s*[:：\-–—]/i;
 const JABANI_RE = /^जबानी\s*[-–—:：]/i;
+
+function isJabaniText(text) {
+  return JABANI_RE.test(String(text || '').trim());
+}
+
+/** Move जबानी narration out of song paragraphs (legacy or mis-grouped). */
+function partitionJabaniParagraphs(paragraphs) {
+  const song = [];
+  const jabaniParts = [];
+  for (const p of paragraphs || []) {
+    if (isJabaniText(p)) jabaniParts.push(String(p).trim());
+    else if (String(p).trim()) song.push(p);
+  }
+  const jabani = jabaniParts.length ? jabaniParts.map(cleanAmbeLine).join('\n\n') : null;
+  return { paragraphs: song, jabani };
+}
 const VISRAM_RE = /^[-:.\s]*विश्राम\s*[-:.\s]*$/i;
 const TER_RE = /(?:॥\s*(?:टेर|तेर)\s*॥?|\|\|\s*(?:टेर|तेर)\s*\|\||\[टेर।?\]?)/i;
 const NUMBERED_END_RE = /(?:॥\s*[०-९0-9]+\s*॥?|\|\|\s*[०-९0-9]+\s*\|\|)\s*$/;
@@ -266,12 +282,15 @@ function migrateAmbikaCharitraDoc(doc) {
   const allParas = [];
   if (proseIntro.length) allParas.push(joinLines(proseIntro));
   allParas.push(...paragraphs.filter(Boolean));
-  if (jabani) allParas.push(cleanAmbeLine(jabani));
+
+  const partitioned = partitionJabaniParagraphs(allParas);
+  const narration = jabani ? cleanAmbeLine(jabani) : partitioned.jabani;
 
   out.lyrics = {
     sthayi: sthayi || '',
     ...(sthayi_marker ? { sthayi_marker } : {}),
-    paragraphs: allParas,
+    paragraphs: partitioned.paragraphs,
+    ...(narration ? { jabani: narration } : {}),
   };
   out._charitraShape = shape;
   return out;
@@ -354,10 +373,33 @@ function analyzeAmbikaCharitraMigration(backupDoc, currentDoc) {
   };
 }
 
+function normalizeJabaniLyrics(lyrics) {
+  if (!lyrics || typeof lyrics === 'string') return lyrics;
+
+  const fixPart = (part) => {
+    if (!part) return part;
+    const { paragraphs, jabani: fromParas } = partitionJabaniParagraphs(part.paragraphs);
+    const out = { ...part, paragraphs };
+    const merged = [part.jabani, fromParas].filter(Boolean).join('\n\n').trim();
+    if (merged) out.jabani = merged;
+    else delete out.jabani;
+    return out;
+  };
+
+  if (lyrics.parts?.length) {
+    return { ...lyrics, parts: lyrics.parts.map(fixPart) };
+  }
+  return fixPart(lyrics);
+}
+
 module.exports = {
   migrateAmbikaCharitraDoc,
   analyzeAmbikaCharitraMigration,
   detectCharitraShape,
   parsePreamble,
   formatTarzField,
+  isJabaniText,
+  partitionJabaniParagraphs,
+  normalizeJabaniLyrics,
+  JABANI_RE,
 };

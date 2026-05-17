@@ -450,6 +450,17 @@ body {
   white-space: nowrap;
 }
 
+/* अंबिका चरित्र — post-song narration (not numbered) */
+.bhajan-lyrics--standard .lyrics-jabani {
+  margin: 1.25rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  line-height: 1.75;
+  font-size: 0.95em;
+  color: var(--muted);
+  font-style: normal;
+}
+
 .stanza-gap {
   height: 0.9rem;
   margin: 0;
