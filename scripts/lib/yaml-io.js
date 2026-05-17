@@ -85,7 +85,7 @@ function parseLyricsObject(lines, startIdx) {
         if (pr.match(/^\s{4}-\s+sthayi:\s*\|\s*$/)) {
           if (part) lyrics.parts.push(part);
           part = { paragraphs: [] };
-          const { text, next } = readIndentedBlock(lines, i + 1, 6);
+          const { text, next } = readIndentedBlock(lines, i + 1, 8);
           part.sthayi = text;
           i = next;
           continue;
@@ -96,7 +96,7 @@ function parseLyricsObject(lines, startIdx) {
           continue;
         }
         if (part && pr.match(/^\s{6}paragraphs:\s*$/)) {
-          const parsed = parseParagraphList(lines, i + 1, 6);
+          const parsed = parseParagraphList(lines, i + 1, 8);
           part.paragraphs = parsed.paragraphs;
           i = parsed.next;
           continue;
@@ -173,7 +173,9 @@ function dumpLiteralBlock(key, text, indent) {
   const pad = ' '.repeat(indent);
   const contentPad = ' '.repeat(indent + 2);
   const out = [`${pad}${key}: |`];
-  for (const line of String(text || '').split('\n')) out.push(`${contentPad}${line}`);
+  for (const line of String(text || '').split('\n')) {
+    out.push(`${contentPad}${line.replace(/^\s+/, '')}`);
+  }
   return out;
 }
 
@@ -183,7 +185,9 @@ function dumpParagraphList(paragraphs, indent) {
   const out = [`${pad}paragraphs:`];
   for (const para of paragraphs || []) {
     out.push(`${itemPad}- |`);
-    for (const line of String(para).split('\n')) out.push(`${itemPad}  ${line}`);
+    for (const line of String(para).split('\n')) {
+      out.push(`${itemPad}  ${line.replace(/^\s+/, '')}`);
+    }
   }
   return out;
 }

@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+/**
+ * Rebuild content/*.yaml from a backup tree.
+ * Output: lyrics.sthayi + lyrics.paragraphs (multiline couplets per block).
+ * Standalone refrain / chorus lines from the backup are omitted.
+ */
 const fs = require('fs');
 const path = require('path');
 const { CONTENT } = require('./lib/paths');

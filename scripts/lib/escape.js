@@ -17,55 +17,110 @@ function formatMarker(n) {
   return `|| ${toDevaNum(n)} ||`;
 }
 
-function renderParagraphHtml(text, index) {
-  const body = String(text || '').trim();
-  if (!body) return '';
-  if (isMultilineParagraph(body)) {
-    const inner = body
-      .split('\n')
-      .map((l) => escapeHtml(l.trim()))
-      .filter(Boolean)
-      .join('<br>\n');
-    const suffix = /॥\s*$/.test(body) ? '' : ' ॥';
-    return `<p class="lyrics-antara lyrics-antara--block">${inner}${suffix ? escapeHtml(suffix) : ''}</p>`;
-  }
-  const marker = index > 0 ? formatMarker(index) : '';
-  return `<p class="lyrics-antara">${escapeHtml(body)}${marker ? ` <span class="lyrics-marker">${escapeHtml(marker)}</span>` : ''}</p>`;
+function formatDandaVerse(n) {
+  return ` ॥${toDevaNum(n)}॥`;
 }
 
-function renderSthayiHtml(sthayi, sthayiMarker) {
+function isRefrainLine(line) {
+  const t = String(line || '').trim();
+  return /\.\.\.\s*॥?\s*$/.test(t) || (t.endsWith('..') && t.length < 48);
+}
+
+function lineWithoutEndDanda(line) {
+  return String(line || '')
+    .trim()
+    .replace(/[।॥]+\s*$/u, '')
+    .trim();
+}
+
+function renderBlockLines(lines, verseNum) {
+  if (!lines.length) return { html: '', nextVerse: verseNum };
+
+  const out = [];
+  let n = verseNum;
+  const couplet = lines.length >= 2;
+
+  for (let i = 0; i < lines.length; i++) {
+    const t = lines[i].trim();
+    if (!t) continue;
+    if (isRefrainLine(t)) {
+      out.push(`<span class="lyrics-refrain">${escapeHtml(t)}</span>`);
+      continue;
+    }
+    const numbered = (couplet && i === lines.length - 1) || (!couplet && i === 0);
+    if (numbered) {
+      const core = lineWithoutEndDanda(t);
+      out.push(
+        `${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(formatDandaVerse(n))}</span>`
+      );
+      n += 1;
+    } else {
+      out.push(escapeHtml(t));
+    }
+  }
+
+  return { html: out.join('<br>\n'), nextVerse: n };
+}
+
+function renderParagraphHtml(text, verseNum) {
+  const body = String(text || '').trim();
+  if (!body) return { html: '', nextVerse: verseNum };
+
+  if (isMultilineParagraph(body)) {
+    const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
+    const { html, nextVerse } = renderBlockLines(lines, verseNum);
+    return {
+      html: `<p class="lyrics-antara lyrics-antara--block">${html}</p>`,
+      nextVerse,
+    };
+  }
+
+  const marker = verseNum > 0 ? formatMarker(verseNum) : '';
+  return {
+    html: `<p class="lyrics-antara">${escapeHtml(body)}${marker ? ` <span class="lyrics-marker">${escapeHtml(marker)}</span>` : ''}</p>`,
+    nextVerse: verseNum > 0 ? verseNum + 1 : verseNum,
+  };
+}
+
+function renderSthayiHtml(sthayi, sthayiMarker, verseNum) {
   const body = String(sthayi || '').trim();
-  if (!body) return '';
-  const inner = isMultilineParagraph(body)
-    ? body
-        .split('\n')
-        .map((l) => escapeHtml(l.trim()))
-        .filter(Boolean)
-        .join('<br>\n')
-    : escapeHtml(body);
+  if (!body) return { html: '', nextVerse: verseNum };
+
+  if (isMultilineParagraph(body)) {
+    const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
+    const { html, nextVerse } = renderBlockLines(lines, verseNum);
+    return { html: `<p class="lyrics-sthayi">${html}</p>`, nextVerse };
+  }
+
   let marker = '';
   if (sthayiMarker === 'टेर') {
     marker = ` <span class="lyrics-marker">|| टेर ||</span>`;
-  } else if (!isMultilineParagraph(body) && !/॥\s*$/.test(body)) {
-    marker = ` <span class="lyrics-marker">॥</span>`;
   }
-  return `<p class="lyrics-sthayi">${inner}${marker}</p>`;
+  return {
+    html: `<p class="lyrics-sthayi">${escapeHtml(body)}${marker}</p>`,
+    nextVerse: verseNum,
+  };
 }
 
 function renderLyricsPart(part, tarzHtml) {
   const chunks = [];
   if (tarzHtml) chunks.push(tarzHtml);
-  if (part.sthayi) chunks.push(renderSthayiHtml(part.sthayi, part.sthayi_marker));
-  let n = 0;
+
+  let verseNum = 1;
+
+  if (part.sthayi) {
+    const { html, nextVerse } = renderSthayiHtml(part.sthayi, part.sthayi_marker, verseNum);
+    if (html) chunks.push(html);
+    verseNum = nextVerse;
+  }
+
   for (const para of part.paragraphs || []) {
     if (!String(para).trim()) continue;
-    if (isMultilineParagraph(para)) {
-      chunks.push(renderParagraphHtml(para, 0));
-    } else {
-      n += 1;
-      chunks.push(renderParagraphHtml(para, n));
-    }
+    const { html, nextVerse } = renderParagraphHtml(para, verseNum);
+    if (html) chunks.push(html);
+    verseNum = nextVerse;
   }
+
   return chunks.filter(Boolean).join('\n');
 }
 

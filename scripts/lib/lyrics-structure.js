@@ -5,6 +5,9 @@ const HEADING_RE =
 
 const DEVA_DIGITS = '०१२३४५६७८९';
 const END_MARKER_RE = /(?:\s*(\|\|\s*[^|]+\s*\|\|)|(\s*॥+))\s*$/u;
+/** Trailing verse numbers, dandas, || markers — stripped from stored YAML */
+const VERSE_TAIL_RE =
+  /(?:\s*\|\|\s*[^|]+\s*\|\||\s*॥+[०-९0-9]*॥*|\s*।\s*[०-९0-9]+\s*।?|\s*[।॥]\s*[०-९0-9]+\s*(?:टेर|तेर)?\s*[।॥]?|\s*॥+)\s*$/u;
 const TARZ_LINE_RE = /^(?:तर्ज|राग)\s*[:：\-]\s*(.+)$/i;
 
 function isHeadingLine(line) {
@@ -33,6 +36,25 @@ function stripEndMarkers(text) {
     .trim();
 }
 
+function stripVerseNumbers(text) {
+  let s = String(text || '').trim();
+  s = s.replace(/[।॥]+\s*[०-९0-9]+\s*[।॥]*/g, '');
+  s = s.replace(/!+[०-९0-9]+!+/g, '');
+  s = s.replace(/\|\|\s*[०-९0-9]+\s*\|\|/g, '');
+  let prev;
+  do {
+    prev = s;
+    s = s.replace(VERSE_TAIL_RE, '').trim();
+  } while (s !== prev);
+  return s.replace(/\s{2,}/g, ' ').trim();
+}
+
+function sanitizeStanzaText(text) {
+  return linesOf(text)
+    .map((l) => stripVerseNumbers(l))
+    .join('\n');
+}
+
 function parseEndMarker(text) {
   const m = String(text || '').match(END_MARKER_RE);
   if (!m) return { body: String(text || '').trim(), marker: null };
@@ -50,7 +72,7 @@ function isStructuredLyrics(lyrics) {
 }
 
 function normalizeBlock(text) {
-  return stripEndMarkers(String(text || '').trim());
+  return sanitizeStanzaText(String(text || '').trim());
 }
 
 function blocksSimilar(a, b) {
@@ -67,53 +89,108 @@ function extractTarzLine(lines) {
   return { tarz: null, lines };
 }
 
-function migrateBlankBlocksToParts(blocks) {
-  const parts = [];
-  let i = 0;
-  while (i < blocks.length) {
-    const sthayi = normalizeBlock(blocks[i]);
-    i += 1;
-    const paragraphs = [];
-    while (i < blocks.length && !blocksSimilar(blocks[i], sthayi)) {
-      paragraphs.push(normalizeBlock(blocks[i]));
-      i += 1;
-    }
-    if (sthayi || paragraphs.length) {
-      const parsed = parseEndMarker(sthayi);
-      parts.push({
-        sthayi: parsed.body,
-        sthayi_marker: parsed.marker === 'टेर' ? 'टेर' : null,
-        paragraphs,
-      });
-    }
-    if (i < blocks.length && blocksSimilar(blocks[i], sthayi)) {
-      continue;
+function normLine(s) {
+  return String(s || '')
+    .replace(/\s+/g, ' ')
+    .replace(/[॥|]/g, '')
+    .trim();
+}
+
+function deriveHookPhrases(lines, title) {
+  const phrases = new Set();
+  const add = (s) => {
+    const t = String(s || '').trim();
+    if (!t) return;
+    phrases.add(t);
+    const comma = t.indexOf(',');
+    if (comma > 0) phrases.add(t.slice(0, comma).trim());
+  };
+  add(title);
+  if (lines[0]) add(lines[0].split(',')[0]);
+  return [...phrases].filter((p) => p.length >= 6);
+}
+
+/** Standalone refrain / chorus repeat — not a तर्ज tail embedded in a verse line */
+function isRefrainOnlyLine(line, hookPhrases) {
+  const t = String(line || '').trim();
+  if (!t) return true;
+  if (/\.\.\./.test(t)) return true;
+
+  const body = stripEndMarkers(t);
+  if (body.includes(',') && body.length > 48) return false;
+
+  const b = normLine(body);
+
+  for (const hook of hookPhrases) {
+    const h = normLine(hook);
+    if (!h) continue;
+    if (b === h) return true;
+    const short = normLine(hook.split(',')[0]);
+    if (short.length >= 8 && b === short) return true;
+    if (short.length >= 10 && b.startsWith(short) && body.length <= hook.length + 10 && !/,/.test(body)) {
+      return true;
     }
   }
-  return parts;
+
+  return false;
+}
+
+function stanzaFromBlock(blockText, hookPhrases) {
+  const kept = linesOf(blockText).filter((l) => !isRefrainOnlyLine(l, hookPhrases));
+  return kept.join('\n').trim();
+}
+
+function isRefrainRepeatBlock(blockText, hookPhrases, openingStanza) {
+  const stanza = stanzaFromBlock(blockText, hookPhrases);
+  if (!stanza) return true;
+  if (openingStanza && blocksSimilar(stanza, openingStanza)) return true;
+  return false;
+}
+
+function migrateBlankBlocksToStanzas(blocks, hookPhrases) {
+  const stanzas = [];
+  let openingStanza = '';
+
+  for (const block of blocks) {
+    const stanza = stanzaFromBlock(block, hookPhrases);
+    if (!stanza) continue;
+    if (openingStanza && isRefrainRepeatBlock(block, hookPhrases, openingStanza)) continue;
+    stanzas.push(stanza);
+    if (!openingStanza) openingStanza = stanza;
+  }
+
+  if (!stanzas.length) return { sthayi: '', paragraphs: [], strategy: 'empty-blocks' };
+
+  let sthayi = stanzas[0];
+  let rest = stanzas.slice(1);
+
+  if (rest.length && !sthayi.includes('\n') && rest[0].includes('\n')) {
+    const antaraLines = rest[0].split('\n').filter((l) => l.trim()).length;
+    if (antaraLines <= 4) {
+      sthayi = `${sthayi}\n${rest[0]}`.trim();
+      rest = rest.slice(1);
+    }
+  }
+
+  const parsed = parseEndMarker(sthayi.split('\n')[0] || sthayi);
+  return {
+    strategy: 'stanza-blocks',
+    sthayi,
+    sthayi_marker: parsed.marker === 'टेर' ? 'टेर' : null,
+    paragraphs: rest,
+  };
 }
 
 function normalizeFromLegacy(text) {
   const cleaned = cleanLyricsText(text);
   const blocks = splitBlocks(cleaned);
   const allLines = linesOf(cleaned);
+  const hookPhrases = deriveHookPhrases(allLines, '');
 
   if (blocks.length >= 2) {
-    const parts = migrateBlankBlocksToParts(blocks);
-    if (parts.length > 1) {
-      return {
-        strategy: 'blank-blocks-parts',
-        parts,
-        lineCount: allLines.length,
-        blockCount: blocks.length,
-      };
-    }
-    const p = parts[0] || { sthayi: '', paragraphs: [] };
+    const stanzaResult = migrateBlankBlocksToStanzas(blocks, hookPhrases);
     return {
-      strategy: 'blank-blocks',
-      sthayi: p.sthayi,
-      sthayi_marker: p.sthayi_marker,
-      paragraphs: p.paragraphs,
+      ...stanzaResult,
       lineCount: allLines.length,
       blockCount: blocks.length,
     };
@@ -125,7 +202,7 @@ function normalizeFromLegacy(text) {
       strategy: 'first-line-sthayi',
       sthayi: parsed.body,
       sthayi_marker: parsed.marker === 'टेर' ? 'टेर' : null,
-      paragraphs: allLines.slice(1).map((l) => stripEndMarkers(l)),
+      paragraphs: allLines.slice(1).map((l) => stripVerseNumbers(l)),
       lineCount: allLines.length,
       blockCount: 1,
     };
@@ -166,18 +243,29 @@ function extractTarzFromText(text) {
   return { tarz: null, rest: text };
 }
 
-/** Convert legacy flat lyrics (+ optional doc.tarz) into structured lyrics object */
+/** Convert legacy flat lyrics (+ optional doc.tarz) into sthayi + paragraphs */
 function migrateDoc(doc) {
   const out = { ...doc };
-  if (isStructuredLyrics(doc.lyrics)) {
-    return out;
-  }
-  const raw = String(doc.lyrics || '');
+  const raw = isStructuredLyrics(doc.lyrics)
+    ? flattenLyricsText(doc.lyrics)
+    : String(doc.lyrics || '');
+
   const { tarz: embeddedTarz, rest } = extractTarzFromText(raw);
   if (embeddedTarz && !out.tarz) out.tarz = embeddedTarz;
 
-  const norm = normalizeFromLegacy(rest);
-  if (norm.strategy === 'empty') {
+  const cleaned = cleanLyricsText(rest);
+  const allLines = linesOf(cleaned);
+  const hookPhrases = deriveHookPhrases(allLines, out.title || doc.title || '');
+  const blocks = splitBlocks(cleaned);
+
+  let norm;
+  if (blocks.length >= 2) {
+    norm = migrateBlankBlocksToStanzas(blocks, hookPhrases);
+  } else {
+    norm = normalizeFromLegacy(rest);
+  }
+
+  if (norm.strategy === 'empty' || norm.strategy === 'empty-blocks') {
     out.lyrics = { sthayi: '', paragraphs: [] };
     return out;
   }
@@ -190,21 +278,10 @@ function migrateDoc(doc) {
       return !isHeadingLine(first);
     });
 
-  if (norm.parts) {
-    out.lyrics = {
-      parts: norm.parts.map((p) => ({
-        sthayi: p.sthayi || '',
-        ...(p.sthayi_marker ? { sthayi_marker: p.sthayi_marker } : {}),
-        paragraphs: cleanParas(p.paragraphs),
-      })),
-    };
-    return out;
-  }
-
   out.lyrics = {
-    sthayi: norm.sthayi || '',
+    sthayi: sanitizeStanzaText(norm.sthayi || ''),
     ...(norm.sthayi_marker ? { sthayi_marker: norm.sthayi_marker } : {}),
-    paragraphs: cleanParas(norm.paragraphs),
+    paragraphs: cleanParas(norm.paragraphs).map(sanitizeStanzaText),
   };
   return out;
 }
@@ -271,15 +348,11 @@ function scoreNormalization(norm, title) {
     return { score: 0, tier: 'low', reasons: ['empty-lyrics'], flags: ['empty'] };
   }
 
-  if (strategy === 'blank-blocks-parts') {
-    score = 58;
-    reasons.push('aarti-style-parts');
-    flags.push('repeated-sthayi-between-blocks');
-  } else if (strategy === 'blank-blocks') {
-    score = 82;
-    reasons.push('blank-line-blocks');
+  if (strategy === 'stanza-blocks') {
+    score = 88;
+    reasons.push('stanza-blocks-no-refrain-lines');
     if (sthayiLines.length <= 4 && paragraphs.length >= 1) {
-      score += 6;
+      score += 4;
       reasons.push('clear-sthayi-block');
     }
   } else if (strategy === 'first-line-sthayi') {
@@ -374,6 +447,8 @@ module.exports = {
   mapLyricsStrings,
   isStructuredLyrics,
   stripEndMarkers,
+  stripVerseNumbers,
+  sanitizeStanzaText,
   parseEndMarker,
   toDevaNum,
   isMultilineParagraph,
