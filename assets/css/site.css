@@ -176,28 +176,61 @@ body {
   background: rgba(255, 255, 255, 0.22);
 }
 
-/* ---- Main content: banner + index (full image, no crop) ---- */
+/* ---- Banner: sharp full image + blurred fill on wide screens ---- */
 .content-banner {
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0.65rem;
+  min-height: min(42vh, 420px);
+  padding: 0.75rem 1rem;
   background: var(--bg-alt);
   border-bottom: 3px solid var(--accent);
   box-shadow: 0 2px 8px var(--accent-glow);
   overflow: hidden;
 }
 
+/* Decorative fill from the same photo (desktop side margins) */
+.content-banner__bg {
+  position: absolute;
+  inset: -12%;
+  width: 124%;
+  height: 124%;
+  object-fit: cover;
+  object-position: center;
+  filter: blur(32px) saturate(1.2);
+  opacity: 0.65;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.content-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(244, 248, 252, 0.35) 0%,
+    rgba(244, 248, 252, 0.08) 40%,
+    rgba(244, 248, 252, 0.08) 60%,
+    rgba(244, 248, 252, 0.35) 100%
+  );
+  pointer-events: none;
+}
+
 .content-banner__img {
+  position: relative;
+  z-index: 2;
   display: block;
   width: auto;
   height: auto;
   max-width: 100%;
-  /* Scale down tall/wide images while keeping the entire photo visible */
   max-height: min(42vh, 420px);
   object-fit: contain;
   object-position: center;
+  filter: drop-shadow(0 4px 20px rgba(13, 71, 161, 0.2));
 }
 
 .content-main {
@@ -360,6 +393,12 @@ body {
 @media (max-width: 767px) {
   html { font-size: 19px; }
 
+  /* Portrait images already fill width; skip blur layer on phones */
+  .content-banner__bg,
+  .content-banner::before {
+    display: none;
+  }
+
   .sidebar-toggle {
     display: flex;
     align-items: center;
@@ -420,17 +459,24 @@ body {
   }
 
   .content-banner {
-    padding: 0.85rem 1.25rem;
+    min-height: min(52vh, 520px);
+    padding: 1rem 1.5rem;
+  }
+
+  .content-banner__bg {
+    filter: blur(40px) saturate(1.25);
+    opacity: 0.72;
   }
 
   .content-banner__img {
-    max-height: min(50vh, 560px);
+    max-height: min(52vh, 600px);
   }
 }
 
 @media (min-width: 1024px) {
   .content-banner {
-    padding: 1rem 2rem;
+    min-height: min(58vh, 640px);
+    padding: 1.15rem 2rem;
   }
 
   .content-banner__img {
@@ -439,7 +485,11 @@ body {
 }
 
 @media (min-width: 1400px) {
+  .content-banner {
+    min-height: min(62vh, 720px);
+  }
+
   .content-banner__img {
-    max-height: min(62vh, 840px);
+    max-height: min(62vh, 860px);
   }
 }
