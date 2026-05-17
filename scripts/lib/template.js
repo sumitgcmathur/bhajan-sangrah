@@ -95,19 +95,22 @@ function renderBhajanIndex(bhajans, section) {
 </nav>`;
 }
 
+function renderBannerBox(src, alt) {
+  return `<div class="content-banner">
+  <img class="content-banner__bg" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+  <img class="content-banner__img" src="${src}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
+</div>`;
+}
+
 function renderHomeBanner(config, base) {
   const src = config.home_banner ? pageUrl(base, config.home_banner) : '';
   if (!src) return '';
-  return `<div class="content-banner">
-  <img class="content-banner__img" src="${src}" alt="${escapeHtml(config.site_title)}" loading="lazy" decoding="async">
-</div>`;
+  return renderBannerBox(src, config.site_title);
 }
 
 function renderSectionBanner(section, base) {
   if (!section.banner) return '';
-  return `<div class="content-banner">
-  <img class="content-banner__img" src="${pageUrl(base, section.banner)}" alt="${escapeHtml(section.title)}" loading="lazy" decoding="async">
-</div>`;
+  return renderBannerBox(pageUrl(base, section.banner), section.title);
 }
 
 function renderIndex(config, sections, base) {
