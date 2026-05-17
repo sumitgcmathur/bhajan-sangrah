@@ -1,0 +1,115 @@
+{
+  "generatedAt": "2026-05-17T20:48:35.310Z",
+  "section": "ganpati",
+  "backup": "C:/Sumit/coding/bhajan-sangrah/content-backup-20260517-123521/ganpati",
+  "total": 6,
+  "summary": {
+    "high": 6,
+    "medium": 0,
+    "low": 0,
+    "manualReview": 0,
+    "strategies": {
+      "refrain-line": 4,
+      "hook-stanzas": 1,
+      "numbered-stanzas": 1
+    }
+  },
+  "files": [
+    {
+      "file": "content/ganpati/001-आजो,-आजो-जी-आजो-गणराज.yaml",
+      "title": "आजो, आजो जी आजो गणराज",
+      "score": 94,
+      "tier": "high",
+      "strategy": "refrain-line",
+      "backupLines": 6,
+      "proposedLines": 6,
+      "sthayiLines": 1,
+      "paragraphCount": 5,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ganpati/002-घुमतड़ा-घर-आवो.yaml",
+      "title": "घुमतड़ा घर आवो",
+      "score": 80,
+      "tier": "high",
+      "strategy": "refrain-line",
+      "backupLines": 8,
+      "proposedLines": 8,
+      "sthayiLines": 1,
+      "paragraphCount": 7,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ganpati/003-घुमतड़ा-घर-आओ२.yaml",
+      "title": "घुमतड़ा घर आओ२",
+      "score": 80,
+      "tier": "high",
+      "strategy": "refrain-line",
+      "backupLines": 11,
+      "proposedLines": 11,
+      "sthayiLines": 1,
+      "paragraphCount": 10,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ganpati/004-नमो-नमो-हिमगिरी-कन्या-कुमार.yaml",
+      "title": "नमो नमो हिमगिरी कन्या कुमार",
+      "score": 80,
+      "tier": "high",
+      "strategy": "refrain-line",
+      "backupLines": 4,
+      "proposedLines": 4,
+      "sthayiLines": 1,
+      "paragraphCount": 3,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ganpati/005-गौरी-के-नन्दन-की,-हम-पूजा-करते-है.yaml",
+      "title": "गौरी के नन्दन की, हम पूजा करते है",
+      "score": 80,
+      "tier": "high",
+      "strategy": "hook-stanzas",
+      "backupLines": 11,
+      "proposedLines": 11,
+      "sthayiLines": 2,
+      "paragraphCount": 3,
+      "tarz": "होठों से छू लो तुम मेरा गीत अमर कर दो",
+      "flags": [
+        "multiline-paragraphs:3"
+      ],
+      "manualReview": false
+    },
+    {
+      "file": "content/ganpati/006-महाराज-गजानन्द-आवोनी.yaml",
+      "title": "महाराज गजानन्द आवोनी",
+      "score": 94,
+      "tier": "high",
+      "strategy": "numbered-stanzas",
+      "backupLines": 6,
+      "proposedLines": 6,
+      "sthayiLines": 1,
+      "paragraphCount": 5,
+      "tarz": null,
+      "flags": [
+        "no-tarz-field"
+      ],
+      "manualReview": false
+    }
+  ]
+}
