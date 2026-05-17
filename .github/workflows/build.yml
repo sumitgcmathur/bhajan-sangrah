@@ -5,9 +5,9 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
-# Allow pushing the built site to gh-pages
 permissions:
   contents: write
+  pages: write
 
 concurrency:
   group: pages
@@ -32,3 +32,24 @@ jobs:
           folder: docs
           branch: gh-pages
           single-commit: true
+
+      - name: Enable GitHub Pages (if not configured yet)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          API="https://api.github.com/repos/${GITHUB_REPOSITORY}/pages"
+          HDR=(-H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
+          CODE=$(curl -s -o /tmp/pages.json -w "%{http_code}" "${HDR[@]}" "$API")
+          echo "Pages API status: $CODE"
+          if [ "$CODE" = "404" ]; then
+            curl -sf -X POST "${HDR[@]}" "$API" \
+              -d '{"build_type":"legacy","source":{"branch":"gh-pages","path":"/"}}'
+            echo "GitHub Pages enabled → https://sumitgcmathur.github.io/bhajan-sangrah/"
+          elif [ "$CODE" = "200" ]; then
+            curl -sf -X PUT "${HDR[@]}" "$API" \
+              -d '{"build_type":"legacy","source":{"branch":"gh-pages","path":"/"}}'
+            echo "GitHub Pages source set to gh-pages / (root)"
+          else
+            cat /tmp/pages.json
+            exit 1
+          fi

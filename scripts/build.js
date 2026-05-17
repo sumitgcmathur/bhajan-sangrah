@@ -34,6 +34,7 @@ function main() {
 
   if (fs.existsSync(DOCS)) rmDir(DOCS);
   fs.mkdirSync(DOCS, { recursive: true });
+  fs.writeFileSync(path.join(DOCS, '.nojekyll'), '', 'utf8');
 
   copyDir(path.join(ASSETS), path.join(DOCS, 'assets'));
 
