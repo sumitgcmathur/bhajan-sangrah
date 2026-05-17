@@ -5,6 +5,8 @@ const {
   normalizeFromLegacy,
 } = require('./lyrics-structure');
 
+const STHAYI_MARKER = ' ॥स्थायी॥';
+
 function escapeHtml(s) {
   return String(s)
     .replace(/&/g, '&amp;')
@@ -33,24 +35,18 @@ function lineWithoutEndDanda(line) {
     .trim();
 }
 
-function renderPlainBlockLines(lines) {
-  return lines
-    .map((l) => {
-      const t = l.trim();
-      if (!t) return '';
-      if (isRefrainLine(t)) return `<span class="lyrics-refrain">${escapeHtml(t)}</span>`;
-      return escapeHtml(t);
-    })
-    .filter(Boolean)
-    .join('<br>\n');
-}
-
-function renderNumberedBlockLines(lines, verseNum) {
-  if (!lines.length) return { html: '', nextVerse: verseNum };
+/**
+ * Render a multiline block like an antara; last line gets endMarker or ॥n॥.
+ * @param {string[]} lines
+ * @param {{ verseNum?: number, endMarker?: string }} opts
+ */
+function renderBlockLines(lines, opts = {}) {
+  if (!lines.length) return { html: '', nextVerse: opts.verseNum ?? 1 };
 
   const out = [];
-  let n = verseNum;
+  let n = opts.verseNum ?? 1;
   const couplet = lines.length >= 2;
+  const fixedMarker = opts.endMarker;
 
   for (let i = 0; i < lines.length; i++) {
     const t = lines[i].trim();
@@ -59,13 +55,17 @@ function renderNumberedBlockLines(lines, verseNum) {
       out.push(`<span class="lyrics-refrain">${escapeHtml(t)}</span>`);
       continue;
     }
-    const numbered = (couplet && i === lines.length - 1) || (!couplet && i === 0);
-    if (numbered) {
+
+    const isLast = i === lines.length - 1;
+    const tagLast = (couplet && isLast) || (!couplet && i === 0);
+
+    if (tagLast) {
       const core = lineWithoutEndDanda(t);
+      const marker = fixedMarker != null ? fixedMarker : formatDandaVerse(n);
       out.push(
-        `${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(formatDandaVerse(n))}</span>`
+        `${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span>`
       );
-      n += 1;
+      if (!fixedMarker) n += 1;
     } else {
       out.push(escapeHtml(t));
     }
@@ -80,17 +80,18 @@ function renderParagraphHtml(text, verseNum) {
 
   if (isMultilineParagraph(body)) {
     const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
-    const { html, nextVerse } = renderNumberedBlockLines(lines, verseNum);
+    const { html, nextVerse } = renderBlockLines(lines, { verseNum });
     return {
       html: `<p class="lyrics-antara lyrics-antara--block">${html}</p>`,
       nextVerse,
     };
   }
 
-  const marker = verseNum > 0 ? formatMarker(verseNum) : '';
+  const core = lineWithoutEndDanda(body);
+  const marker = formatDandaVerse(verseNum);
   return {
-    html: `<p class="lyrics-antara">${escapeHtml(body)}${marker ? ` <span class="lyrics-marker">${escapeHtml(marker)}</span>` : ''}</p>`,
-    nextVerse: verseNum > 0 ? verseNum + 1 : verseNum,
+    html: `<p class="lyrics-antara">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></p>`,
+    nextVerse: verseNum + 1,
   };
 }
 
@@ -98,19 +99,16 @@ function renderSthayiHtml(sthayi, sthayiMarker) {
   const body = String(sthayi || '').trim();
   if (!body) return '';
 
-  const label = `<p class="lyrics-section-label">स्थायी</p>`;
-  let inner;
+  const endMarker = sthayiMarker === 'टेर' ? ' || टेर ||' : STHAYI_MARKER;
+
   if (isMultilineParagraph(body)) {
     const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
-    inner = renderPlainBlockLines(lines);
-  } else {
-    inner = escapeHtml(body);
-    if (sthayiMarker === 'टेर') {
-      inner += ` <span class="lyrics-marker">|| टेर ||</span>`;
-    }
+    const { html } = renderBlockLines(lines, { endMarker });
+    return `<p class="lyrics-antara lyrics-antara--block lyrics-sthayi">${html}</p>`;
   }
 
-  return `${label}\n<p class="lyrics-sthayi">${inner}</p>`;
+  const core = lineWithoutEndDanda(body);
+  return `<p class="lyrics-antara lyrics-sthayi">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(endMarker)}</span></p>`;
 }
 
 function renderLyricsPart(part, tarzHtml) {
