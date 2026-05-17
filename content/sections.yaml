@@ -74,3 +74,4 @@ sections:
     google_path: swarachit
     title: स्वरचित भजन
     banner: assets/icons/Swarachit.jpg
+    grouped: true

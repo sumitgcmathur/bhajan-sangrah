@@ -46,6 +46,7 @@ function dumpBhajanDoc(doc) {
   const out = [];
   out.push(`title: ${doc.title}`);
   if (doc.tarz) out.push(`tarz: ${doc.tarz}`);
+  if (doc.group) out.push(`group: ${doc.group}`);
   if (doc.swarachit) out.push('swarachit: true');
   out.push('lyrics: |');
   for (const line of String(doc.lyrics || '').split('\n')) out.push(`  ${line}`);
@@ -103,6 +104,7 @@ function dumpSectionsDoc(config) {
     out.push(`    google_path: ${s.google_path}`);
     out.push(`    title: ${s.title}`);
     if (s.banner) out.push(`    banner: ${s.banner}`);
+    if (s.grouped) out.push('    grouped: true');
   }
   return out.join('\n') + '\n';
 }

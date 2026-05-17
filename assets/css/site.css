@@ -300,6 +300,47 @@ body {
   padding-left: 1.25rem;
 }
 
+.bhajan-index--grouped {
+  padding: 0.75rem 1rem 1rem;
+}
+
+.index-group {
+  margin: 0 0 1.25rem;
+}
+
+.index-group:last-child {
+  margin-bottom: 0;
+}
+
+.index-group__title {
+  margin: 0 0 0.5rem;
+  padding: 0 0 0.35rem;
+  font-size: clamp(1.2rem, 4vw, 1.4rem);
+  font-weight: 700;
+  color: var(--accent-dark);
+  border-bottom: 2px solid var(--accent-soft);
+}
+
+.content-index--nested {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.bhajan-group {
+  margin-bottom: 2rem;
+}
+
+.bhajan-group__title {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.85rem;
+  font-size: clamp(1.35rem, 4.5vw, 1.6rem);
+  font-weight: 700;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  border-radius: 0.4rem;
+  border-left: 4px solid var(--accent);
+}
+
 /* ---- Bhajan articles ---- */
 .bhajan-list { min-width: 0; }
 
