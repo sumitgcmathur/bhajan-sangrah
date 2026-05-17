@@ -18,7 +18,8 @@ function renderNav(sections, base, currentSlug) {
 
 function renderSidebar(config, sections, base, currentSlug) {
   const home = pageUrl(base, 'index.html');
-  const icon = pageUrl(base, 'assets/icons/veena.svg');
+  const iconSrc = config.site_icon || 'assets/icons/favicon.jpg';
+  const icon = pageUrl(base, iconSrc);
   return `<aside class="site-sidebar" id="site-sidebar" aria-label="साइट मार्गदर्शन">
   <div class="sidebar-brand">
     <a class="sidebar-brand__link" href="${home}">
@@ -37,13 +38,15 @@ function renderFooter() {
   return '<footer class="site-footer"><p>भक्ति भजन संग्रह</p></footer>';
 }
 
-function renderHead(pageTitle, base) {
+function renderHead(pageTitle, base, config) {
   const css = pageUrl(base, 'assets/css/site.css');
+  const iconHref = config?.site_icon ? pageUrl(base, config.site_icon) : '';
+  const favicon = iconHref ? `<link rel="icon" href="${iconHref}">\n` : '';
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#333333">
+<meta name="theme-color" content="#1565c0">
 <title>${escapeHtml(pageTitle)}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${css}">`;
@@ -54,7 +57,7 @@ function renderPage(opts) {
   return `<!DOCTYPE html>
 <html lang="hi">
 <head>
-${renderHead(pageTitle, base)}
+${renderHead(pageTitle, base, config)}
 </head>
 <body class="has-sidebar ${bodyClass}">
 <button type="button" class="sidebar-toggle" aria-expanded="false" aria-controls="site-sidebar">&#9776;</button>
