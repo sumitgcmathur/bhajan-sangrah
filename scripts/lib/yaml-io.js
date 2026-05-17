@@ -101,6 +101,12 @@ function parseLyricsObject(lines, startIdx) {
           i = parsed.next;
           continue;
         }
+        if (part && pr.match(/^\s{6}jabani:\s*\|\s*$/)) {
+          const { text, next } = readIndentedBlock(lines, i + 1, 10);
+          part.jabani = text;
+          i = next;
+          continue;
+        }
         break;
       }
       if (part) lyrics.parts.push(part);
@@ -124,6 +130,13 @@ function parseLyricsObject(lines, startIdx) {
       const parsed = parseParagraphList(lines, i + 1, baseIndent + 2);
       lyrics.paragraphs = parsed.paragraphs;
       i = parsed.next;
+      continue;
+    }
+
+    if (raw.match(/^\s{2}jabani:\s*\|\s*$/)) {
+      const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
+      lyrics.jabani = text;
+      i = next;
       continue;
     }
 
@@ -201,12 +214,14 @@ function dumpLyricsObject(lyrics) {
       for (const line of String(part.sthayi || '').split('\n')) out.push(`        ${line}`);
       if (part.sthayi_marker) out.push(`      sthayi_marker: ${part.sthayi_marker}`);
       out.push(...dumpParagraphList(part.paragraphs, 6));
+      if (part.jabani) out.push(...dumpLiteralBlock('jabani', part.jabani, 6));
     }
     return out;
   }
   out.push(...dumpLiteralBlock('sthayi', lyrics.sthayi, 2));
   if (lyrics.sthayi_marker) out.push(`  sthayi_marker: ${lyrics.sthayi_marker}`);
   out.push(...dumpParagraphList(lyrics.paragraphs, 2));
+  if (lyrics.jabani) out.push(...dumpLiteralBlock('jabani', lyrics.jabani, 2));
   return out;
 }
 

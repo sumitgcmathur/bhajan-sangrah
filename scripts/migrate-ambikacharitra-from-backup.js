@@ -5,6 +5,7 @@
  *
  *   node scripts/migrate-ambikacharitra-from-backup.js           # report only
  *   node scripts/migrate-ambikacharitra-from-backup.js --write   # apply YAML
+ *   node scripts/migrate-ambikacharitra-from-backup.js --fix-jabani  # move जबानी out of paragraphs
  */
 const fs = require('fs');
 const path = require('path');
@@ -14,9 +15,11 @@ const { isStructuredLyrics, flattenLyricsText } = require('./lib/lyrics-structur
 const {
   migrateAmbikaCharitraDoc,
   analyzeAmbikaCharitraMigration,
+  normalizeJabaniLyrics,
 } = require('./lib/ambikacharitra-lyrics');
 
 const write = process.argv.includes('--write');
+const fixJabani = process.argv.includes('--fix-jabani');
 const backupRoot =
   process.argv.find((a) => !a.startsWith('--') && a.includes('content-backup')) ||
   'content-backup-20260517-123521';
@@ -24,7 +27,7 @@ const SECTION = 'ambikacharitra';
 const backupDir = path.join(path.dirname(CONTENT), path.basename(backupRoot), SECTION);
 const outDir = path.join(CONTENT, SECTION);
 
-if (!fs.existsSync(backupDir)) {
+if (!fs.existsSync(backupDir) && !fixJabani) {
   console.error(`Backup folder not found: ${backupDir}`);
   process.exit(1);
 }
@@ -35,10 +38,27 @@ function loadCurrent(name) {
   return loadBhajanDoc(fs.readFileSync(p, 'utf8'));
 }
 
-const files = fs.readdirSync(backupDir).filter((n) => n.endsWith('.yaml')).sort();
+const files = fs.existsSync(backupDir)
+  ? fs.readdirSync(backupDir).filter((n) => n.endsWith('.yaml')).sort()
+  : [];
 const rows = [];
 const byShape = {};
 const byTier = { high: [], medium: [], low: [] };
+
+if (fixJabani) {
+  const yamlFiles = fs.readdirSync(outDir).filter((n) => n.endsWith('.yaml'));
+  let updated = 0;
+  for (const name of yamlFiles) {
+    const p = path.join(outDir, name);
+    const doc = loadBhajanDoc(fs.readFileSync(p, 'utf8'));
+    if (!isStructuredLyrics(doc.lyrics)) continue;
+    const lyrics = normalizeJabaniLyrics(doc.lyrics);
+    if (JSON.stringify(lyrics) === JSON.stringify(doc.lyrics)) continue;
+    fs.writeFileSync(p, dumpBhajanDoc({ ...doc, lyrics }), 'utf8');
+    updated += 1;
+  }
+  console.log(`--fix-jabani: moved जबानी out of paragraphs in ${updated} file(s)`);
+}
 
 for (const name of files) {
   const backupDoc = loadBhajanDoc(fs.readFileSync(path.join(backupDir, name), 'utf8'));
@@ -48,6 +68,7 @@ for (const name of files) {
   if (write) {
     const migrated = migrateAmbikaCharitraDoc({ ...backupDoc });
     delete migrated._charitraShape;
+    migrated.lyrics = normalizeJabaniLyrics(migrated.lyrics);
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(path.join(outDir, name), dumpBhajanDoc(migrated), 'utf8');
   }
@@ -158,3 +179,4 @@ console.log(`  Shapes: ${JSON.stringify(report.summary.shapes)}`);
 console.log(`Wrote ${outJson}`);
 console.log(`Wrote ${path.join(outDir, 'migration-report.md')}`);
 if (!write) console.log('\nDry run — pass --write to update YAML files.');
+if (!fixJabani) console.log('Pass --fix-jabani to move जबानी lines to lyrics.jabani (no verse numbers).');

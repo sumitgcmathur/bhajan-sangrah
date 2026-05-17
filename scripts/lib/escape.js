@@ -6,6 +6,11 @@ const {
 } = require('./lyrics-structure');
 
 const STHAYI_MARKER = ' ॥स्थायी॥';
+const JABANI_RE = /^जबानी\s*[-–—:：]/i;
+
+function isJabaniText(text) {
+  return JABANI_RE.test(String(text || '').trim());
+}
 
 function escapeHtml(s) {
   return String(s)
@@ -111,6 +116,18 @@ function renderSthayiHtml(sthayi, sthayiMarker) {
   return `<p class="lyrics-antara lyrics-sthayi">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(endMarker)}</span></p>`;
 }
 
+function renderJabaniHtml(jabani) {
+  const body = String(jabani || '').trim();
+  if (!body) return '';
+
+  if (isMultilineParagraph(body)) {
+    const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
+    const html = lines.map((l) => escapeHtml(l)).join('<br>\n');
+    return `<p class="lyrics-jabani">${html}</p>`;
+  }
+  return `<p class="lyrics-jabani">${escapeHtml(body)}</p>`;
+}
+
 function renderLyricsPart(part, tarzHtml) {
   const chunks = [];
   if (tarzHtml) chunks.push(tarzHtml);
@@ -121,12 +138,20 @@ function renderLyricsPart(part, tarzHtml) {
   }
 
   let paraNum = 1;
+  let jabaniText = part.jabani || '';
   for (const para of part.paragraphs || []) {
     if (!String(para).trim()) continue;
+    if (isJabaniText(para)) {
+      if (!jabaniText) jabaniText = String(para).trim();
+      continue;
+    }
     const { html, nextVerse } = renderParagraphHtml(para, paraNum);
     if (html) chunks.push(html);
     paraNum = nextVerse;
   }
+
+  const jabaniHtml = renderJabaniHtml(jabaniText);
+  if (jabaniHtml) chunks.push(jabaniHtml);
 
   return chunks.filter(Boolean).join('\n');
 }
