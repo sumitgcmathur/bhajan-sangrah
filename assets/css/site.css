@@ -15,8 +15,8 @@
   --accent-dark: #0d47a1;
   --accent-soft: #e3f2fd;
   --accent-glow: rgba(21, 101, 192, 0.12);
-  --lyrics-odd: #5a85a8;
-  --lyrics-even: #3a6d94;
+  --lyrics-odd: #6a9ec8;
+  --lyrics-even: #2a5f8f;
   --heading-gradient: linear-gradient(135deg, #0d47a1 0%, #1976d2 50%, #42a5f5 100%);
   --font: "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
   --sidebar-w: 230px;
@@ -447,7 +447,6 @@ body {
 .bhajan-card__lyrics {
   font-size: clamp(1.1rem, 3.5vw, 1.2rem);
   line-height: 1.9;
-  color: var(--text);
 }
 
 .bhajan-card__lyrics p {
@@ -472,14 +471,19 @@ body {
   line-height: 1.85;
 }
 
-/* स्थायी = para 0 (even); ॥१॥ odd, ॥२॥ even, … — blues lighter than heading */
-.bhajan-lyrics--standard .lyrics-antara--odd {
+/*
+ * Verse stripes: heading #0d47a1 (darkest) > even #2a5f8f > odd #6a9ec8 (lightest).
+ * स्थायी counts as para 0 (even).
+ */
+.bhajan-card__lyrics .bhajan-lyrics--standard p.lyrics-antara--odd {
   color: var(--lyrics-odd);
+  font-weight: 400;
 }
 
-.bhajan-lyrics--standard .lyrics-antara--even,
-.bhajan-lyrics--standard .lyrics-sthayi {
+.bhajan-card__lyrics .bhajan-lyrics--standard p.lyrics-antara--even,
+.bhajan-card__lyrics .bhajan-lyrics--standard p.lyrics-sthayi {
   color: var(--lyrics-even);
+  font-weight: 500;
 }
 
 .bhajan-lyrics--standard .lyrics-antara--block {
