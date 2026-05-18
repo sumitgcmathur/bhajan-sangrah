@@ -67,7 +67,7 @@ function normalizeLineEndings(line) {
 
 /** Final pass on sthayi/paragraph blocks: no `,,` / `,।` / `,॥`; each line ends in । or ॥. */
 function sanitizeLyricBlock(text) {
-  let s = String(text || '');
+  let s = decodeHtmlEntities(text);
   s = s.replace(/\|\|/g, '॥');
   s = s.replace(/,{2,}/g, ',');
   s = s.replace(/,\s*([।॥])/g, '$1');
