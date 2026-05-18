@@ -96,8 +96,6 @@ ${renderHead(pageTitle, base, config)}
 </head>
 <body class="has-sidebar ${bodyClass}" data-site-base="${escapeHtml(base)}">
 <button type="button" class="sidebar-toggle" aria-expanded="false" aria-controls="site-sidebar">&#9776;</button>
-<button type="button" class="search-toggle" aria-expanded="false" aria-controls="bhajan-search-panel" aria-label="भजन खोजें">&#128269;</button>
-${renderSearchPanel()}
 <div class="site-shell">
 ${renderSidebar(config, sections, base, currentSlug)}
 <div class="site-content">
@@ -105,6 +103,8 @@ ${body}
 ${renderFooter()}
 </div>
 </div>
+<button type="button" class="search-toggle" aria-expanded="false" aria-controls="bhajan-search-panel" aria-label="भजन खोजें"><span class="search-toggle__icon" aria-hidden="true">&#128269;</span></button>
+${renderSearchPanel()}
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/search.js')}"></script>
 </body>
