@@ -516,25 +516,31 @@ body {
 @media (max-width: 767px) {
   html { font-size: 19px; }
 
-  :root {
-    --banner-h: min(52vh, 500px);
-    --banner-img-max-h: min(50vh, 480px);
-    --banner-img-max-w: 100%;
-  }
-
-  /* Portrait images fill width; skip blur/vignette on phones */
+  /* Mobile: full-width hero like Google Sites (width 100%, natural height, no letterboxing) */
   .content-banner__bg,
   .content-banner::before {
     display: none;
   }
 
   .content-banner {
-    padding: 0.35rem 0.5rem;
+    display: block;
+    min-height: 0;
+    padding: 0;
+    line-height: 0;
+    background: var(--bg-alt);
+    box-shadow: none;
+    border-bottom-width: 2px;
   }
 
   .content-banner__img {
-    max-width: 100%;
-    border-radius: 4px;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    height: auto;
+    object-fit: initial;
+    border-radius: 0;
+    filter: none;
+    vertical-align: top;
   }
 
   .sidebar-toggle {
