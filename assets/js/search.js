@@ -32,15 +32,25 @@
       .toLowerCase();
   }
 
-  function queryKeys(query) {
-    var q = norm(query);
-    if (!q) return [];
-    var keys = [q];
-    if (q.length >= 3) keys.push(q.slice(0, -1));
-    if (q.length >= 4) keys.push(q.slice(0, -2));
-    return keys.filter(function (k, i, arr) {
-      return k.length >= 2 && arr.indexOf(k) === i;
-    });
+  function parseQuery(query) {
+    var words = norm(query)
+      .split(' ')
+      .filter(function (w) {
+        return w.length > 0;
+      });
+    return words.length ? { words: words } : null;
+  }
+
+  function tokenize(text) {
+    return norm(text).split(/[\s,;।॥:!?\-—]+/).filter(Boolean);
+  }
+
+  function allWordsInText(text, words) {
+    var tokens = tokenize(text);
+    for (var i = 0; i < words.length; i++) {
+      if (tokens.indexOf(words[i]) === -1) return false;
+    }
+    return true;
   }
 
   function itemLines(item) {
@@ -56,30 +66,23 @@
     return [];
   }
 
-  function hayContains(hay, keys) {
-    for (var i = 0; i < keys.length; i++) {
-      if (hay.indexOf(keys[i]) !== -1) return true;
-    }
-    return false;
+  function textMatchesQuery(text, words) {
+    return allWordsInText(text, words);
   }
 
-  function lineMatches(line, keys) {
-    return hayContains(norm(line), keys);
-  }
-
-  function firstMatchingLine(item, keys) {
+  function firstMatchingLine(item, words) {
     var lines = itemLines(item);
     for (var i = 0; i < lines.length; i++) {
-      if (lineMatches(lines[i], keys)) return lines[i];
+      if (textMatchesQuery(lines[i], words)) return lines[i];
     }
     return '';
   }
 
-  function matchesItem(item, keys) {
-    if (hayContains(norm(item.title || ''), keys)) return true;
+  function matchesItem(item, words) {
+    if (textMatchesQuery(item.title || '', words)) return true;
     var lines = itemLines(item);
     for (var i = 0; i < lines.length; i++) {
-      if (lineMatches(lines[i], keys)) return true;
+      if (textMatchesQuery(lines[i], words)) return true;
     }
     return false;
   }
@@ -110,15 +113,16 @@
   }
 
   function filterItems(query) {
-    var keys = queryKeys(query);
-    if (!keys.length) return [];
+    var parsed = parseQuery(query);
+    if (!parsed) return [];
+    var words = parsed.words;
     var out = [];
     for (var i = 0; i < index.length && out.length < MAX_RESULTS; i++) {
       var item = index[i];
-      if (!matchesItem(item, keys)) continue;
+      if (!matchesItem(item, words)) continue;
       out.push({
         item: item,
-        snippet: truncateSnippet(firstMatchingLine(item, keys)),
+        snippet: truncateSnippet(firstMatchingLine(item, words)),
       });
     }
     return out;
