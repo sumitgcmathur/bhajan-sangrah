@@ -56,8 +56,29 @@ body {
 
 /* ---- Shell: fixed sidebar + main content ---- */
 .site-shell {
+  position: relative;
+  z-index: 1;
   display: flex;
   min-height: 100vh;
+}
+
+/* Fixed to viewport (direct child of body), not inside scrolling column */
+.page-banner-fixed {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body.has-page-banner .site-content {
+  background: transparent;
+}
+
+body.has-page-banner .content-main {
+  background: transparent;
+  box-shadow: none;
 }
 
 .site-sidebar {
@@ -205,12 +226,12 @@ body {
   visibility: hidden;
 }
 
+.page-banner-fixed .content-banner {
+  width: 100%;
+}
+
 .content-banner {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 0;
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -647,8 +668,9 @@ body {
 
   html { font-size: 18px; }
 
-  .content-banner {
+  .page-banner-fixed {
     left: var(--sidebar-w);
+    right: 0;
     width: auto;
   }
 
@@ -699,8 +721,13 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .content-banner {
+  .page-banner-fixed {
     display: none;
+  }
+
+  body.has-page-banner .site-content,
+  body.has-page-banner .content-main {
+    background: var(--bg);
   }
 
   .content-banner-spacer__img {
