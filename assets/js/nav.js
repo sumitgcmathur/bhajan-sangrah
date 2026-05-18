@@ -10,6 +10,7 @@
     if (!searchPanel) return;
     searchPanel.classList.remove("is-open");
     searchPanel.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("search-panel-open");
     if (searchToggle) searchToggle.setAttribute("aria-expanded", "false");
     if (searchBackdrop) searchBackdrop.hidden = true;
   }

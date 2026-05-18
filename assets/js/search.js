@@ -135,13 +135,14 @@
   function setPanelOpen(open) {
     panel.classList.toggle('is-open', open);
     panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.body.classList.toggle('search-panel-open', open);
     if (searchToggle) searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     if (backdrop) backdrop.hidden = !open;
     if (open) {
       closeSidebar();
       window.setTimeout(function () {
         input.focus();
-      }, 80);
+      }, 120);
     } else {
       hideResults();
       input.blur();
