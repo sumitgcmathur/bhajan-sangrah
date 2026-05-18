@@ -54,6 +54,7 @@ function main() {
       group: b.group,
       swarachit: b.swarachit,
       lyrics: b.lyrics,
+      shlok: b.shlok,
       jabani: b.jabani,
       id: b.id || anchorId(section.slug, b.title, i),
     }));
