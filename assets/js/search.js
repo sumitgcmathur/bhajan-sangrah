@@ -1,14 +1,19 @@
 (function () {
   var input = document.getElementById('bhajan-search');
   var list = document.getElementById('bhajan-search-results');
+  var panel = document.getElementById('bhajan-search-panel');
+  var backdrop = document.getElementById('bhajan-search-backdrop');
+  var searchToggle = document.querySelector('.search-toggle');
+  var closeBtn = document.querySelector('.bhajan-search-panel__close');
   var sidebar = document.getElementById('site-sidebar');
-  var toggle = document.querySelector('.sidebar-toggle');
-  if (!input || !list) return;
+  var sidebarToggle = document.querySelector('.sidebar-toggle');
+  if (!input || !list || !panel) return;
 
   var index = null;
   var indexPromise = null;
   var activeIndex = -1;
   var MAX_RESULTS = 15;
+  var SNIPPET_MAX = 100;
 
   function siteBase() {
     var base = document.body.getAttribute('data-site-base') || '/';
@@ -27,7 +32,6 @@
       .toLowerCase();
   }
 
-  /** भोले also matches भोला, भोल (drop trailing matra for Hindi prefix search). */
   function queryKeys(query) {
     var q = norm(query);
     if (!q) return [];
@@ -39,16 +43,51 @@
     });
   }
 
-  function itemHaystack(item) {
-    return norm((item.title || '') + ' ' + (item.section || '') + ' ' + (item.text || ''));
+  function itemLines(item) {
+    if (Array.isArray(item.lines) && item.lines.length) return item.lines;
+    if (item.text) {
+      return String(item.text)
+        .split('\n')
+        .map(function (line) {
+          return line.replace(/\s+/g, ' ').trim();
+        })
+        .filter(Boolean);
+    }
+    return [];
   }
 
-  function matchesItem(item, keys) {
-    var hay = itemHaystack(item);
+  function hayContains(hay, keys) {
     for (var i = 0; i < keys.length; i++) {
       if (hay.indexOf(keys[i]) !== -1) return true;
     }
     return false;
+  }
+
+  function lineMatches(line, keys) {
+    return hayContains(norm(line), keys);
+  }
+
+  function firstMatchingLine(item, keys) {
+    var lines = itemLines(item);
+    for (var i = 0; i < lines.length; i++) {
+      if (lineMatches(lines[i], keys)) return lines[i];
+    }
+    return '';
+  }
+
+  function matchesItem(item, keys) {
+    if (hayContains(norm(item.title || ''), keys)) return true;
+    var lines = itemLines(item);
+    for (var i = 0; i < lines.length; i++) {
+      if (lineMatches(lines[i], keys)) return true;
+    }
+    return false;
+  }
+
+  function truncateSnippet(s) {
+    var t = String(s).trim();
+    if (t.length <= SNIPPET_MAX) return t;
+    return t.slice(0, SNIPPET_MAX - 1) + '…';
   }
 
   function loadIndex() {
@@ -75,24 +114,45 @@
     if (!keys.length) return [];
     var out = [];
     for (var i = 0; i < index.length && out.length < MAX_RESULTS; i++) {
-      if (matchesItem(index[i], keys)) out.push(index[i]);
+      var item = index[i];
+      if (!matchesItem(item, keys)) continue;
+      out.push({
+        item: item,
+        snippet: truncateSnippet(firstMatchingLine(item, keys)),
+      });
     }
     return out;
   }
 
-  function closeSidebarOnMobile() {
-    if (!sidebar || !toggle) return;
+  function closeSidebar() {
+    if (!sidebar || !sidebarToggle) return;
     if (sidebar.classList.contains('is-open')) {
       sidebar.classList.remove('is-open');
-      toggle.setAttribute('aria-expanded', 'false');
+      sidebarToggle.setAttribute('aria-expanded', 'false');
     }
   }
 
-  function go(item) {
-    closeSidebarOnMobile();
+  function setPanelOpen(open) {
+    panel.classList.toggle('is-open', open);
+    panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if (searchToggle) searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (backdrop) backdrop.hidden = !open;
+    if (open) {
+      closeSidebar();
+      window.setTimeout(function () {
+        input.focus();
+      }, 80);
+    } else {
+      hideResults();
+      input.blur();
+    }
+  }
+
+  function go(entry) {
+    setPanelOpen(false);
     input.value = '';
     hideResults();
-    window.location.href = item.href;
+    window.location.href = entry.item.href;
   }
 
   function hideResults() {
@@ -102,30 +162,31 @@
     activeIndex = -1;
   }
 
-  function showResults(items) {
+  function showResults(entries) {
     list.innerHTML = '';
-    if (!items.length) {
+    if (!entries.length) {
       var empty = document.createElement('li');
-      empty.className = 'sidebar-search__empty';
+      empty.className = 'bhajan-search__empty';
       empty.textContent = 'कोई भजन नहीं मिला';
       empty.setAttribute('role', 'presentation');
       list.appendChild(empty);
     } else {
-      items.forEach(function (item, i) {
+      entries.forEach(function (entry, i) {
+        var item = entry.item;
         var li = document.createElement('li');
-        li.className = 'sidebar-search__item';
+        li.className = 'bhajan-search__item';
         li.setAttribute('role', 'option');
         li.id = 'bhajan-search-opt-' + i;
         var a = document.createElement('a');
         a.href = item.href;
-        a.innerHTML =
-          escapeHtml(item.title) +
-          '<span class="sidebar-search__meta">' +
-          escapeHtml(item.section) +
-          '</span>';
+        var html = escapeHtml(item.title);
+        if (entry.snippet) {
+          html += '<span class="bhajan-search__meta">' + escapeHtml(entry.snippet) + '</span>';
+        }
+        a.innerHTML = html;
         a.addEventListener('click', function (e) {
           e.preventDefault();
-          go(item);
+          go(entry);
         });
         li.appendChild(a);
         list.appendChild(li);
@@ -133,7 +194,7 @@
     }
     list.hidden = false;
     input.setAttribute('aria-expanded', 'true');
-    activeIndex = items.length ? 0 : -1;
+    activeIndex = entries.length ? 0 : -1;
     updateActiveOption();
   }
 
@@ -146,7 +207,7 @@
   }
 
   function visibleOptions() {
-    return list.querySelectorAll('.sidebar-search__item a');
+    return list.querySelectorAll('.bhajan-search__item a');
   }
 
   function updateActiveOption() {
@@ -172,6 +233,24 @@
     });
   }
 
+  if (searchToggle) {
+    searchToggle.addEventListener('click', function () {
+      setPanelOpen(!panel.classList.contains('is-open'));
+    });
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function () {
+      setPanelOpen(false);
+    });
+  }
+
+  if (backdrop) {
+    backdrop.addEventListener('click', function () {
+      setPanelOpen(false);
+    });
+  }
+
   var debounceTimer;
   input.addEventListener('input', function () {
     clearTimeout(debounceTimer);
@@ -187,8 +266,11 @@
   input.addEventListener('keydown', function (e) {
     var links = visibleOptions();
     if (e.key === 'Escape') {
-      hideResults();
-      input.blur();
+      if (!list.hidden) {
+        hideResults();
+      } else {
+        setPanelOpen(false);
+      }
       return;
     }
     if (!links.length || list.hidden) {
@@ -207,12 +289,13 @@
       links[activeIndex].scrollIntoView({ block: 'nearest' });
     } else if (e.key === 'Enter' && activeIndex >= 0) {
       e.preventDefault();
-      var item = filterItems(input.value)[activeIndex];
-      if (item) go(item);
+      var entry = filterItems(input.value)[activeIndex];
+      if (entry) go(entry);
     }
   });
 
   document.addEventListener('click', function (e) {
-    if (!e.target.closest('.sidebar-search')) hideResults();
+    if (panel.contains(e.target) || (searchToggle && searchToggle.contains(e.target))) return;
+    if (!list.hidden && !e.target.closest('.bhajan-search__results')) hideResults();
   });
 })();

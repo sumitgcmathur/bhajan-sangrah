@@ -186,88 +186,169 @@ body {
   background: rgba(255, 255, 255, 0.22);
 }
 
-.sidebar-search {
-  margin-top: auto;
-  padding: 0.85rem 0.9rem 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
+/* ---- Bhajan search (right slide-in panel) ---- */
+.search-toggle {
+  position: fixed;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: 1.15rem;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: var(--sidebar-bg-solid);
+  color: #fff;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(13, 71, 161, 0.35);
 }
 
-.sidebar-search__label {
-  display: block;
-  margin: 0 0 0.4rem;
-  font-size: 0.88rem;
-  font-weight: 600;
+.bhajan-search-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 340;
+  background: rgba(13, 71, 161, 0.35);
+}
+
+.bhajan-search-backdrop[hidden] {
+  display: none;
+}
+
+.bhajan-search-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 350;
+  width: min(92vw, 340px);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: -4px 0 24px rgba(13, 71, 161, 0.28);
+  transform: translateX(100%);
+  transition: transform 0.2s ease;
+}
+
+.bhajan-search-panel.is-open {
+  transform: translateX(0);
+}
+
+.bhajan-search-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  background: var(--sidebar-bg-solid);
+  background-image: var(--sidebar-bg);
   color: var(--sidebar-active);
-  opacity: 0.95;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.sidebar-search__input {
+.bhajan-search-panel__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.bhajan-search-panel__close {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: 0.35rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.bhajan-search-panel__close:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.bhajan-search-panel__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0.85rem 1rem 1rem;
+  overflow: hidden;
+}
+
+.bhajan-search__input {
   width: 100%;
   box-sizing: border-box;
-  padding: 0.5rem 0.65rem;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 0.35rem;
-  background: rgba(255, 255, 255, 0.96);
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: #fff;
   color: var(--text);
   font-family: var(--font);
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.4;
 }
 
-.sidebar-search__input::placeholder {
+.bhajan-search__input::placeholder {
   color: var(--muted);
   opacity: 0.85;
 }
 
-.sidebar-search__input:focus {
-  outline: 2px solid #90caf9;
+.bhajan-search__input:focus {
+  outline: 2px solid var(--accent);
   outline-offset: 1px;
-  border-color: #fff;
+  border-color: var(--accent);
 }
 
-.sidebar-search__results {
+.bhajan-search__results {
   list-style: none;
-  margin: 0.4rem 0 0;
-  padding: 0.25rem 0;
-  max-height: min(52vh, 300px);
+  margin: 0.5rem 0 0;
+  padding: 0.2rem 0;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  background: #fff;
-  border-radius: 0.35rem;
-  box-shadow: 0 6px 20px rgba(13, 71, 161, 0.28);
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--bg);
 }
 
-.sidebar-search__results[hidden] {
+.bhajan-search__results[hidden] {
   display: none;
 }
 
-.sidebar-search__item a {
+.bhajan-search__item a {
   display: block;
-  padding: 0.45rem 0.7rem;
+  padding: 0.5rem 0.75rem;
   color: var(--text);
   text-decoration: none;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   line-height: 1.35;
   border-left: 3px solid transparent;
 }
 
-.sidebar-search__item a:hover,
-.sidebar-search__item a.is-active {
+.bhajan-search__item a:hover,
+.bhajan-search__item a.is-active {
   background: var(--accent-soft);
   color: var(--accent-dark);
   border-left-color: var(--accent);
 }
 
-.sidebar-search__meta {
+.bhajan-search__meta {
   display: block;
-  margin-top: 0.12rem;
-  font-size: 0.78rem;
+  margin-top: 0.15rem;
+  font-size: 0.82rem;
   color: var(--muted);
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
-.sidebar-search__empty {
-  padding: 0.55rem 0.7rem;
-  font-size: 0.88rem;
+.bhajan-search__empty {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
   color: var(--muted);
 }
 
@@ -671,7 +752,7 @@ body {
   }
 
   .content-main {
-    padding: 3.5rem 1rem 2.5rem;
+    padding: 3.5rem 3.25rem 2.5rem 1rem;
   }
 
   .sidebar-link {
