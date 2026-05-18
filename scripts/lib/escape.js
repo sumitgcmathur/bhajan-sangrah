@@ -180,22 +180,19 @@ function lyricsStructureToHtml(lyrics, tarz) {
   return `<div class="bhajan-lyrics bhajan-lyrics--standard">${html}</div>`;
 }
 
-function renderShlokHtml(shlok) {
-  const body = String(shlok || '').trim();
+function renderDhvaniHtml(dhvani) {
+  const body = String(dhvani || '').trim();
   if (!body) return '';
 
   const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
   const html = lines.map((l) => escapeHtml(l)).join('<br>\n');
-  return `<p class="lyrics-shlok">${html}</p>`;
+  return `<p class="lyrics-dhvani">${html}</p>`;
 }
 
-function shlokToHtml(shlok) {
-  const body = renderShlokHtml(shlok);
+function dhvaniToHtml(dhvani) {
+  const body = renderDhvaniHtml(dhvani);
   if (!body) return '';
-  return `<div class="bhajan-card__shlok" aria-label="श्लोक">
-  <p class="bhajan-card__shlok-label">श्लोक</p>
-  ${body}
-</div>`;
+  return `<div class="bhajan-card__dhvani" aria-label="ध्वनि">${body}</div>`;
 }
 
 function jabaniToHtml(jabani) {
@@ -211,4 +208,4 @@ function lyricsToHtml(lyrics, tarz) {
   return '';
 }
 
-module.exports = { escapeHtml, lyricsToHtml, jabaniToHtml, shlokToHtml, lyricsStructureToHtml };
+module.exports = { escapeHtml, lyricsToHtml, jabaniToHtml, dhvaniToHtml, lyricsStructureToHtml };

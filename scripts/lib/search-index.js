@@ -32,7 +32,7 @@ function collectLyricsText(lyrics) {
 
 /** Searchable lyric lines (one per physical line, markers stripped lightly). */
 function collectLyricLines(b) {
-  const raw = [b.tarz, collectLyricsText(b.lyrics), b.shlok].filter(Boolean).join('\n');
+  const raw = [b.tarz, collectLyricsText(b.lyrics), b.dhvani].filter(Boolean).join('\n');
   return raw
     .split('\n')
     .map((line) => line.replace(/\s*॥[^॥]*॥\s*$/u, '').replace(/\s+/g, ' ').trim())
