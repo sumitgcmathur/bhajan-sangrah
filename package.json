@@ -3,21 +3,11 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "scrape": "node scripts/scraper.js",
-    "scrape:cache": "node scripts/scraper.js --cache-only",
-    "download-banners": "node scripts/download-banners.js",
     "clean-content": "node scripts/clean-content.js",
     "build": "node scripts/build.js",
     "add-bhajan": "node scripts/add-bhajan.js",
     "add-section": "node scripts/add-section.js",
-    "spellcheck": "node scripts/spellcheck.js",
-    "spellcheck-ui": "node scripts/spellcheck-ui.js",
-    "apply-spellcheck": "node scripts/apply-spellcheck-changes.js",
-    "lyrics-report": "node scripts/lyrics-confidence-report.js",
-    "migrate-lyrics": "node scripts/migrate-lyrics.js",
-    "migrate-from-backup": "node scripts/remigrate-from-backup.js",
-    "convert-aarti": "node scripts/convert-aarti-couplet.js",
-    "migrate-ambe": "node scripts/migrate-ambe-from-backup.js",
+    "fix-danda": "node scripts/fix-danda.js",
     "serve": "npx --yes serve docs -l 3000"
   }
 }
