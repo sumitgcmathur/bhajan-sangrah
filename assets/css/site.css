@@ -536,22 +536,6 @@ body {
     display: none;
   }
 
-  .content-banner-spacer {
-    display: block;
-    min-height: 0;
-    padding: 0;
-    line-height: 0;
-  }
-
-  .content-banner-spacer__img {
-    width: 100%;
-    max-width: none;
-    max-height: none;
-    height: auto;
-    margin: 0;
-    object-fit: initial;
-  }
-
   .content-banner {
     display: block;
     min-height: 0;
@@ -628,12 +612,6 @@ body {
 
   html { font-size: 18px; }
 
-  .page-banner-fixed {
-    left: var(--sidebar-w);
-    right: 0;
-    width: auto;
-  }
-
   .content-main {
     padding: 1.75rem 2rem 2.5rem;
   }
@@ -644,8 +622,7 @@ body {
     --banner-img-max-w: min(96vw, 880px);
   }
 
-  .content-banner,
-  .content-banner-spacer {
+  .content-banner {
     padding: 0.65rem 1.25rem;
   }
 
@@ -666,8 +643,7 @@ body {
     --banner-img-max-w: min(94vw, 960px);
   }
 
-  .content-banner,
-  .content-banner-spacer {
+  .content-banner {
     padding: 0.75rem 1.5rem;
   }
 }
@@ -680,17 +656,3 @@ body {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .page-banner-fixed {
-    display: none;
-  }
-
-  body.has-page-banner .site-content,
-  body.has-page-banner .content-main {
-    background: var(--bg);
-  }
-
-  .content-banner-spacer__img {
-    visibility: visible;
-  }
-}
