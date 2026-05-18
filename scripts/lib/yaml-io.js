@@ -191,9 +191,9 @@ function loadBhajanDoc(text) {
       i += 1;
       continue;
     }
-    if (line.match(/^shlok:\s*\|\s*$/)) {
+    if (line.match(/^dhvani:\s*\|\s*$/) || line.match(/^shlok:\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, 2);
-      doc.shlok = text;
+      doc.dhvani = text;
       i = next;
       continue;
     }
@@ -281,7 +281,7 @@ function dumpBhajanDoc(doc) {
     out.push('lyrics: |');
     for (const line of String(doc.lyrics || '').split('\n')) out.push(`  ${line}`);
   }
-  if (doc.shlok) out.push(...dumpLiteralBlock('shlok', doc.shlok, 0));
+  if (doc.dhvani) out.push(...dumpLiteralBlock('dhvani', doc.dhvani, 0));
   if (doc.jabani) out.push(...dumpLiteralBlock('jabani', doc.jabani, 0));
   return out.join('\n') + '\n';
 }
