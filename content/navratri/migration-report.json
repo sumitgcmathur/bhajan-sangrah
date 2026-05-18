@@ -1,17 +1,18 @@
 {
-  "generatedAt": "2026-05-17T21:20:13.876Z",
+  "generatedAt": "2026-05-18T00:22:56.019Z",
   "section": "navratri",
   "backup": "C:/Sumit/coding/bhajan-sangrah/content-backup-20260517-123521/navratri",
   "total": 8,
   "summary": {
-    "high": 4,
-    "medium": 4,
-    "low": 0,
-    "manualReview": 7,
+    "high": 1,
+    "medium": 5,
+    "low": 2,
+    "manualReview": 8,
     "strategies": {
-      "numbered-stanzas": 5,
-      "hook-stanzas": 1,
-      "ellipsis-stanzas": 1,
+      "numbered-couplets": 4,
+      "numbered-stanzas": 1,
+      "verse-end-stanzas": 1,
+      "tail-refrain": 1,
       "single": 1
     }
   },
@@ -19,17 +20,17 @@
     {
       "file": "content/navratri/001-राजभोग.yaml",
       "title": "राजभोग",
-      "score": 74,
-      "tier": "medium",
-      "strategy": "numbered-stanzas",
+      "score": 54,
+      "tier": "low",
+      "strategy": "numbered-couplets",
       "backupLines": 25,
-      "proposedLines": 25,
-      "sthayiLines": 2,
-      "paragraphCount": 10,
+      "proposedLines": 13,
+      "sthayiLines": 1,
+      "paragraphCount": 12,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:9"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
@@ -55,11 +56,11 @@
       "title": "जय अम्बे गौरी",
       "score": 60,
       "tier": "medium",
-      "strategy": "hook-stanzas",
+      "strategy": "verse-end-stanzas",
       "backupLines": 35,
-      "proposedLines": 35,
-      "sthayiLines": 3,
-      "paragraphCount": 10,
+      "proposedLines": 31,
+      "sthayiLines": 2,
+      "paragraphCount": 20,
       "tarz": null,
       "flags": [
         "no-tarz-field",
@@ -70,69 +71,71 @@
     {
       "file": "content/navratri/004-पुष्पांजलि.yaml",
       "title": "पुष्पांजलि",
-      "score": 68,
-      "tier": "medium",
-      "strategy": "numbered-stanzas",
+      "score": 48,
+      "tier": "low",
+      "strategy": "numbered-couplets",
       "backupLines": 20,
-      "proposedLines": 20,
-      "sthayiLines": 2,
-      "paragraphCount": 5,
+      "proposedLines": 10,
+      "sthayiLines": 1,
+      "paragraphCount": 9,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:5"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/navratri/005-परिक्रमा.yaml",
       "title": "परिक्रमा",
-      "score": 80,
-      "tier": "high",
-      "strategy": "numbered-stanzas",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "numbered-couplets",
       "backupLines": 10,
-      "proposedLines": 10,
-      "sthayiLines": 2,
+      "proposedLines": 5,
+      "sthayiLines": 1,
       "paragraphCount": 4,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:4"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/navratri/006-तोरी-शरण-में.yaml",
       "title": "तोरी शरण में",
-      "score": 80,
-      "tier": "high",
-      "strategy": "ellipsis-stanzas",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "tail-refrain",
       "backupLines": 9,
-      "proposedLines": 7,
+      "proposedLines": 5,
       "sthayiLines": 1,
       "paragraphCount": 2,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:2"
+        "multiline-paragraphs:2",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/navratri/007-मेहंदी.yaml",
       "title": "मेहंदी",
-      "score": 80,
-      "tier": "high",
-      "strategy": "numbered-stanzas",
+      "score": 60,
+      "tier": "medium",
+      "strategy": "numbered-couplets",
       "backupLines": 5,
-      "proposedLines": 5,
-      "sthayiLines": 2,
-      "paragraphCount": 3,
+      "proposedLines": 3,
+      "sthayiLines": 1,
+      "paragraphCount": 2,
       "tarz": null,
       "flags": [
-        "no-tarz-field"
+        "no-tarz-field",
+        "possible-content-loss"
       ],
-      "manualReview": false
+      "manualReview": true
     },
     {
       "file": "content/navratri/008-ध्वनि.yaml",
