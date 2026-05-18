@@ -73,15 +73,13 @@ ${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 }
 
 function renderPage(opts) {
-  const { pageTitle, body, config, sections, base, currentSlug, bodyClass = '', bannerFixed = '' } = opts;
-  const bannerClass = bannerFixed ? ' has-page-banner' : '';
+  const { pageTitle, body, config, sections, base, currentSlug, bodyClass = '' } = opts;
   return `<!DOCTYPE html>
 <html lang="hi">
 <head>
 ${renderHead(pageTitle, base, config)}
 </head>
-<body class="has-sidebar${bannerClass} ${bodyClass}">
-${bannerFixed}
+<body class="has-sidebar ${bodyClass}">
 <button type="button" class="sidebar-toggle" aria-expanded="false" aria-controls="site-sidebar">&#9776;</button>
 <div class="site-shell">
 ${renderSidebar(config, sections, base, currentSlug)}
@@ -195,8 +193,7 @@ function renderSectionBanner(section, base) {
 }
 
 function renderIndex(config, sections, base) {
-  const banner = renderHomeBanner(config, base);
-  const body = `${banner.spacer}
+  const body = `${renderHomeBanner(config, base)}
 <main class="content-main content-main--home">
   <h1 class="visually-hidden">${escapeHtml(config.site_title)}</h1>
   ${renderSectionIndexList(sections, base)}
@@ -205,7 +202,6 @@ function renderIndex(config, sections, base) {
   return renderPage({
     pageTitle: config.site_title,
     body,
-    bannerFixed: banner.fixed,
     config,
     sections,
     base,
@@ -243,8 +239,7 @@ function renderSectionPage(section, bhajans, config, sections, base) {
       .join('\n')}</div>`;
   }
 
-  const banner = renderSectionBanner(section, base);
-  const body = `${banner.spacer}
+  const body = `${renderSectionBanner(section, base)}
 <main class="content-main content-main--section">
   <h1 class="section-title">${escapeHtml(section.title)}</h1>
   ${indexHtml}
@@ -254,7 +249,6 @@ function renderSectionPage(section, bhajans, config, sections, base) {
   return renderPage({
     pageTitle: section.title,
     body,
-    bannerFixed: banner.fixed,
     config,
     sections,
     base,
