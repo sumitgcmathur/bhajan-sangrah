@@ -140,24 +140,34 @@ function sectionUsesGroups(section, bhajans) {
   return section.grouped === true || section.grouped === 'true' || bhajans.some((b) => b.group);
 }
 
+function bhajanNumberLabel(num) {
+  return `${num}.`;
+}
+
 function renderBhajanIndex(bhajans, section) {
   const items = bhajans
     .map((b, i) => {
       const id = b.id || anchorId(section.slug, b.title, i);
-      return `<li><a href="#${id}">${escapeHtml(b.title)}</a></li>`;
+      const num = i + 1;
+      return `<li><a href="#${id}"><span class="bhajan-index__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}</a></li>`;
     })
     .join('\n');
-  return `<nav class="bhajan-index" aria-label="भजन सूची">
+  return `<nav class="bhajan-index" id="bhajan-index" aria-label="भजन सूची">
   <ul class="content-index">${items}</ul>
 </nav>`;
 }
 
 function renderGroupedBhajanIndex(groups) {
+  let num = 1;
   const blocks = groups
     .filter((g) => g.title)
     .map((g) => {
       const items = g.items
-        .map((b) => `<li><a href="#${b.id}">${escapeHtml(b.title)}</a></li>`)
+        .map((b) => {
+          const label = bhajanNumberLabel(num);
+          num += 1;
+          return `<li><a href="#${b.id}"><span class="bhajan-index__num">${label}</span> ${escapeHtml(b.title)}</a></li>`;
+        })
         .join('\n');
       return `<section class="index-group">
   <h2 class="index-group__title">${escapeHtml(g.title)}</h2>
@@ -165,16 +175,20 @@ function renderGroupedBhajanIndex(groups) {
 </section>`;
     })
     .join('\n');
-  return `<nav class="bhajan-index bhajan-index--grouped" aria-label="भजन सूची">
+  return `<nav class="bhajan-index bhajan-index--grouped" id="bhajan-index" aria-label="भजन सूची">
 ${blocks}
 </nav>`;
 }
 
 function renderBhajanCard(b, section, index, showSwarachitBadge) {
   const id = b.id || anchorId(section.slug, b.title, index);
+  const num = index + 1;
   const sw = showSwarachitBadge && b.swarachit ? '<span class="bhajan-badge">स्वरचित</span>' : '';
   return `<article class="bhajan-card" id="${id}">
-  <h3 class="bhajan-card__title">${escapeHtml(b.title)}${sw}</h3>
+  <header class="bhajan-card__head">
+    <h3 class="bhajan-card__title"><span class="bhajan-card__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}${sw}</h3>
+    <a class="bhajan-card__to-index" href="#bhajan-index">सूची ↑</a>
+  </header>
   <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics, b.tarz)}</div>
   ${jabaniToHtml(b.jabani)}
 </article>`;
