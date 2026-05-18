@@ -62,25 +62,6 @@ body {
   min-height: 100vh;
 }
 
-/* Fixed to viewport (direct child of body), not inside scrolling column */
-.page-banner-fixed {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-body.has-page-banner .site-content {
-  background: transparent;
-}
-
-body.has-page-banner .content-main {
-  background: transparent;
-  box-shadow: none;
-}
-
 .site-sidebar {
   position: fixed;
   top: 0;
@@ -200,36 +181,7 @@ body.has-page-banner .content-main {
   background: rgba(255, 255, 255, 0.22);
 }
 
-/* ---- Banner: in-flow spacer reserves height; fixed layer stays behind scrolling content ---- */
-.content-banner-spacer {
-  position: relative;
-  z-index: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  min-height: var(--banner-h);
-  padding: 0.5rem 0.75rem;
-  line-height: 0;
-  box-sizing: border-box;
-}
-
-.content-banner-spacer__img {
-  display: block;
-  width: auto;
-  height: auto;
-  max-width: var(--banner-img-max-w);
-  max-height: var(--banner-img-max-h);
-  margin: 0 auto;
-  object-fit: contain;
-  object-position: center;
-  visibility: hidden;
-}
-
-.page-banner-fixed .content-banner {
-  width: 100%;
-}
-
+/* ---- Banner: in-flow hero (scrolls with page) ---- */
 .content-banner {
   position: relative;
   width: 100%;
@@ -513,23 +465,18 @@ body.has-page-banner .content-main {
   font-weight: 500;
 }
 
-.bhajan-lyrics--standard .lyrics-sthayi {
-  margin-bottom: 1.1rem;
-  color: var(--accent-dark);
-  font-weight: 500;
-}
-
 .bhajan-lyrics--standard .lyrics-antara {
   margin: 0 0 1rem;
   line-height: 1.85;
+}
+
+/* स्थायी = para 0 (even); ॥१॥ odd, ॥२॥ even, … */
+.bhajan-lyrics--standard .lyrics-antara--odd {
   color: var(--text);
 }
 
-.bhajan-lyrics--standard .lyrics-antara--odd:not(.lyrics-sthayi) {
-  color: #243747;
-}
-
-.bhajan-lyrics--standard .lyrics-antara--even:not(.lyrics-sthayi) {
+.bhajan-lyrics--standard .lyrics-antara--even,
+.bhajan-lyrics--standard .lyrics-sthayi {
   color: var(--muted);
 }
 
@@ -544,9 +491,8 @@ body.has-page-banner .content-main {
 
 .bhajan-lyrics--standard .lyrics-marker {
   white-space: nowrap;
-  color: var(--accent);
-  font-weight: 500;
-  font-size: 0.92em;
+  color: inherit;
+  font-weight: inherit;
 }
 
 /* अंबिका चरित्र — जबानी (narration after bhajan, not part of lyrics) */

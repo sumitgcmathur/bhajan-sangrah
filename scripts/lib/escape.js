@@ -115,11 +115,11 @@ function renderSthayiHtml(sthayi, sthayiMarker) {
   if (isMultilineParagraph(body)) {
     const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
     const { html } = renderBlockLines(lines, { endMarker });
-    return `<p class="lyrics-antara lyrics-antara--block lyrics-sthayi">${html}</p>`;
+    return `<p class="lyrics-antara lyrics-antara--block lyrics-sthayi lyrics-antara--even">${html}</p>`;
   }
 
   const core = lineWithoutEndDanda(body);
-  return `<p class="lyrics-antara lyrics-sthayi">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(endMarker)}</span></p>`;
+  return `<p class="lyrics-antara lyrics-sthayi lyrics-antara--even">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(endMarker)}</span></p>`;
 }
 
 function renderJabaniHtml(jabani) {
