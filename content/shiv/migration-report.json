@@ -1,19 +1,18 @@
 {
-  "generatedAt": "2026-05-17T21:20:13.819Z",
+  "generatedAt": "2026-05-18T00:07:24.277Z",
   "section": "shiv",
   "backup": "C:/Sumit/coding/bhajan-sangrah/content-backup-20260517-123521/shiv",
   "total": 8,
   "summary": {
     "high": 1,
-    "medium": 5,
-    "low": 2,
+    "medium": 0,
+    "low": 7,
     "manualReview": 8,
     "strategies": {
-      "refrain-blocks": 2,
-      "ellipsis-stanzas": 1,
-      "hook-stanzas": 2,
-      "numbered-stanzas": 2,
-      "pairs": 1
+      "refrain-blocks": 1,
+      "verse-end-stanzas": 4,
+      "numbered-couplets": 2,
+      "hook-split": 1
     }
   },
   "files": [
@@ -37,102 +36,104 @@
     {
       "file": "content/shiv/002-शिव-कैलाशो-के-वासी.yaml",
       "title": "शिव कैलाशो के वासी",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "refrain-blocks",
+      "score": 40,
+      "tier": "low",
+      "strategy": "verse-end-stanzas",
       "backupLines": 35,
-      "proposedLines": 35,
+      "proposedLines": 5,
       "sthayiLines": 1,
-      "paragraphCount": 3,
+      "paragraphCount": 4,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:3"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/shiv/003-शिव-शंकर-को-जिसने-पूजा.yaml",
       "title": "शिव शंकर को जिसने पूजा",
-      "score": 50,
+      "score": 30,
       "tier": "low",
-      "strategy": "ellipsis-stanzas",
+      "strategy": "verse-end-stanzas",
       "backupLines": 37,
-      "proposedLines": 34,
-      "sthayiLines": 1,
-      "paragraphCount": 9,
+      "proposedLines": 16,
+      "sthayiLines": 2,
+      "paragraphCount": 5,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:9"
+        "multiline-paragraphs:4",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/shiv/004-आशुतोष-शशाँक-शेखर.yaml",
       "title": "आशुतोष शशाँक शेखर",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "hook-stanzas",
+      "score": 40,
+      "tier": "low",
+      "strategy": "verse-end-stanzas",
       "backupLines": 35,
-      "proposedLines": 35,
-      "sthayiLines": 4,
-      "paragraphCount": 3,
+      "proposedLines": 9,
+      "sthayiLines": 1,
+      "paragraphCount": 8,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:1"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/shiv/005-निर्वाण-षट्कम.yaml",
       "title": "निर्वाण षट्कम",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "numbered-stanzas",
+      "score": 40,
+      "tier": "low",
+      "strategy": "numbered-couplets",
       "backupLines": 24,
-      "proposedLines": 24,
-      "sthayiLines": 2,
-      "paragraphCount": 6,
+      "proposedLines": 12,
+      "sthayiLines": 1,
+      "paragraphCount": 11,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:6"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/shiv/006-श्रीरुद्राष्टकम्.yaml",
       "title": "श्रीरुद्राष्टकम्",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "numbered-stanzas",
+      "score": 40,
+      "tier": "low",
+      "strategy": "numbered-couplets",
       "backupLines": 35,
-      "proposedLines": 35,
-      "sthayiLines": 2,
-      "paragraphCount": 9,
+      "proposedLines": 18,
+      "sthayiLines": 1,
+      "paragraphCount": 17,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:9"
+        "possible-content-loss"
       ],
       "manualReview": true
     },
     {
       "file": "content/shiv/007-मेरा-भोला-है-भंडारी.yaml",
       "title": "मेरा भोला है भंडारी",
-      "score": 60,
-      "tier": "medium",
-      "strategy": "hook-stanzas",
+      "score": 40,
+      "tier": "low",
+      "strategy": "hook-split",
       "backupLines": 35,
-      "proposedLines": 35,
-      "sthayiLines": 4,
-      "paragraphCount": 9,
+      "proposedLines": 15,
+      "sthayiLines": 9,
+      "paragraphCount": 5,
       "tarz": null,
       "flags": [
         "no-tarz-field",
-        "multiline-paragraphs:5"
+        "multiline-paragraphs:1",
+        "possible-content-loss"
       ],
       "manualReview": true
     },
@@ -141,11 +142,11 @@
       "title": "शंकर तेरी जटा में",
       "score": 80,
       "tier": "high",
-      "strategy": "pairs",
+      "strategy": "verse-end-stanzas",
       "backupLines": 10,
       "proposedLines": 10,
-      "sthayiLines": 1,
-      "paragraphCount": 5,
+      "sthayiLines": 2,
+      "paragraphCount": 4,
       "tarz": null,
       "flags": [
         "no-tarz-field",
