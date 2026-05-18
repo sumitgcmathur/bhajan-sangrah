@@ -179,9 +179,38 @@ body {
   background: rgba(255, 255, 255, 0.22);
 }
 
-/* ---- Banner: full-shape image (contain), blur only in side gutters ---- */
-.content-banner {
+/* ---- Banner: in-flow spacer reserves height; fixed layer stays behind scrolling content ---- */
+.content-banner-spacer {
   position: relative;
+  z-index: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: var(--banner-h);
+  padding: 0.5rem 0.75rem;
+  line-height: 0;
+  box-sizing: border-box;
+}
+
+.content-banner-spacer__img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: var(--banner-img-max-w);
+  max-height: var(--banner-img-max-h);
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center;
+  visibility: hidden;
+}
+
+.content-banner {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -192,6 +221,7 @@ body {
   border-bottom: 3px solid var(--accent);
   box-shadow: 0 2px 12px var(--accent-glow);
   overflow: hidden;
+  pointer-events: none;
 }
 
 /* Blurred fill in letterbox margins only (not over the sharp image) */
@@ -265,9 +295,12 @@ body {
 }
 
 .content-main {
+  position: relative;
+  z-index: 1;
   flex: 1;
   padding: 1.5rem 1.25rem 2.5rem;
   background: var(--bg);
+  box-shadow: 0 -4px 24px rgba(26, 43, 60, 0.06);
 }
 
 .content-index {
@@ -522,6 +555,22 @@ body {
     display: none;
   }
 
+  .content-banner-spacer {
+    display: block;
+    min-height: 0;
+    padding: 0;
+    line-height: 0;
+  }
+
+  .content-banner-spacer__img {
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    height: auto;
+    margin: 0;
+    object-fit: initial;
+  }
+
   .content-banner {
     display: block;
     min-height: 0;
@@ -598,6 +647,11 @@ body {
 
   html { font-size: 18px; }
 
+  .content-banner {
+    left: var(--sidebar-w);
+    width: auto;
+  }
+
   .content-main {
     padding: 1.75rem 2rem 2.5rem;
   }
@@ -608,7 +662,8 @@ body {
     --banner-img-max-w: min(96vw, 880px);
   }
 
-  .content-banner {
+  .content-banner,
+  .content-banner-spacer {
     padding: 0.65rem 1.25rem;
   }
 
@@ -629,7 +684,8 @@ body {
     --banner-img-max-w: min(94vw, 960px);
   }
 
-  .content-banner {
+  .content-banner,
+  .content-banner-spacer {
     padding: 0.75rem 1.5rem;
   }
 }
@@ -639,5 +695,15 @@ body {
     --banner-h: min(68vh, 760px);
     --banner-img-max-h: min(66vh, 740px);
     --banner-img-max-w: min(92vw, 1040px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content-banner {
+    display: none;
+  }
+
+  .content-banner-spacer__img {
+    visibility: visible;
   }
 }

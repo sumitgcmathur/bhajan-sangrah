@@ -163,7 +163,10 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
 }
 
 function renderBannerBox(src, alt) {
-  return `<div class="content-banner">
+  return `<div class="content-banner-spacer" aria-hidden="true">
+  <img class="content-banner-spacer__img" src="${src}" alt="" decoding="async">
+</div>
+<div class="content-banner" aria-hidden="true">
   <img class="content-banner__bg" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async">
   <img class="content-banner__img" src="${src}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
 </div>`;
