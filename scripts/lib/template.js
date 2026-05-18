@@ -31,6 +31,11 @@ function renderSidebar(config, sections, base, currentSlug) {
     <p class="sidebar-nav__label">${escapeHtml(config.site_title)}</p>
     <ul class="sidebar-nav__list">${renderNav(sections, base, currentSlug)}</ul>
   </nav>
+  <div class="sidebar-search">
+    <label class="sidebar-search__label" for="bhajan-search">भजन खोजें</label>
+    <input type="search" id="bhajan-search" class="sidebar-search__input" placeholder="भजन खोजें…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="bhajan-search-results" aria-autocomplete="list">
+    <ul id="bhajan-search-results" class="sidebar-search__results" role="listbox" hidden></ul>
+  </div>
 </aside>`;
 }
 
@@ -79,7 +84,7 @@ function renderPage(opts) {
 <head>
 ${renderHead(pageTitle, base, config)}
 </head>
-<body class="has-sidebar ${bodyClass}">
+<body class="has-sidebar ${bodyClass}" data-site-base="${escapeHtml(base)}">
 <button type="button" class="sidebar-toggle" aria-expanded="false" aria-controls="site-sidebar">&#9776;</button>
 <div class="site-shell">
 ${renderSidebar(config, sections, base, currentSlug)}
@@ -89,6 +94,7 @@ ${renderFooter()}
 </div>
 </div>
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
+<script src="${pageUrl(base, 'assets/js/search.js')}"></script>
 </body>
 </html>`;
 }

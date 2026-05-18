@@ -5,6 +5,7 @@ const { DOCS, ASSETS } = require('./lib/paths');
 const { loadSections, sectionFolder, listBhajanFiles, loadBhajan } = require('./lib/sections');
 const { renderIndex, renderSectionPage } = require('./lib/template');
 const { anchorId } = require('./lib/slug');
+const { buildSearchIndex, writeSearchIndex } = require('./lib/search-index');
 
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) return;
@@ -65,7 +66,11 @@ function main() {
     console.log(`${section.slug}: ${enriched.length} bhajans`);
   }
 
+  const searchItems = buildSearchIndex(sections, base);
+  writeSearchIndex(path.join(DOCS, 'assets', 'search-index.json'), searchItems);
+
   console.log(`Built ${sections.length} sections, ${total} bhajans → ${DOCS}`);
+  console.log(`Search index: ${searchItems.length} entries`);
 }
 
 main();
