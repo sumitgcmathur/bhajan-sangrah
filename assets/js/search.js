@@ -23,7 +23,32 @@
     return String(s)
       .replace(/\u200c|\u200d/g, '')
       .replace(/\s+/g, ' ')
-      .trim();
+      .trim()
+      .toLowerCase();
+  }
+
+  /** भोले also matches भोला, भोल (drop trailing matra for Hindi prefix search). */
+  function queryKeys(query) {
+    var q = norm(query);
+    if (!q) return [];
+    var keys = [q];
+    if (q.length >= 3) keys.push(q.slice(0, -1));
+    if (q.length >= 4) keys.push(q.slice(0, -2));
+    return keys.filter(function (k, i, arr) {
+      return k.length >= 2 && arr.indexOf(k) === i;
+    });
+  }
+
+  function itemHaystack(item) {
+    return norm((item.title || '') + ' ' + (item.section || '') + ' ' + (item.text || ''));
+  }
+
+  function matchesItem(item, keys) {
+    var hay = itemHaystack(item);
+    for (var i = 0; i < keys.length; i++) {
+      if (hay.indexOf(keys[i]) !== -1) return true;
+    }
+    return false;
   }
 
   function loadIndex() {
@@ -46,14 +71,11 @@
   }
 
   function filterItems(query) {
-    var q = norm(query);
-    if (!q) return [];
+    var keys = queryKeys(query);
+    if (!keys.length) return [];
     var out = [];
     for (var i = 0; i < index.length && out.length < MAX_RESULTS; i++) {
-      var item = index[i];
-      if (norm(item.title).indexOf(q) !== -1 || norm(item.section).indexOf(q) !== -1) {
-        out.push(item);
-      }
+      if (matchesItem(index[i], keys)) out.push(index[i]);
     }
     return out;
   }

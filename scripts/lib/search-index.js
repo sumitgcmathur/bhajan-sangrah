@@ -8,6 +8,28 @@ function pageUrl(base, page) {
   return `${base || './'}${page}`;
 }
 
+function collectLyricsText(lyrics) {
+  if (!lyrics) return '';
+  if (typeof lyrics === 'string') return lyrics;
+
+  const chunks = [];
+  const addPart = (p) => {
+    if (!p) return;
+    if (p.sthayi) chunks.push(String(p.sthayi));
+    for (const para of p.paragraphs || []) {
+      const body = String(para).trim();
+      if (body) chunks.push(body);
+    }
+  };
+
+  if (Array.isArray(lyrics.parts)) {
+    for (const p of lyrics.parts) addPart(p);
+  } else {
+    addPart(lyrics);
+  }
+  return chunks.join('\n');
+}
+
 function buildSearchIndex(sections, base) {
   const items = [];
   for (const section of sections) {
@@ -15,12 +37,14 @@ function buildSearchIndex(sections, base) {
     files.forEach((f, i) => {
       const b = loadBhajan(path.join(sectionFolder(section), f));
       const id = b.id || anchorId(section.slug, b.title, i);
+      const lyricsText = collectLyricsText(b.lyrics);
       items.push({
-        title: b.title,
+        title: b.title || '',
         section: section.title,
         slug: section.slug,
         id,
-        href: `${pageUrl(base, `${section.slug}.html`)}#${encodeURIComponent(id)}`,
+        text: [b.title, b.tarz, lyricsText].filter(Boolean).join('\n'),
+        href: `${pageUrl(base, `${section.slug}.html`)}#${id}`,
       });
     });
   }
@@ -32,4 +56,4 @@ function writeSearchIndex(destPath, items) {
   fs.writeFileSync(destPath, JSON.stringify(items), 'utf8');
 }
 
-module.exports = { buildSearchIndex, writeSearchIndex };
+module.exports = { buildSearchIndex, writeSearchIndex, collectLyricsText };
