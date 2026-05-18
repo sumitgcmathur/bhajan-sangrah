@@ -79,15 +79,21 @@ function renderBlockLines(lines, opts = {}) {
   return { html: out.join('<br>\n'), nextVerse: n };
 }
 
+function lyricsAntaraStripeClass(verseNum) {
+  return verseNum % 2 === 1 ? 'lyrics-antara--odd' : 'lyrics-antara--even';
+}
+
 function renderParagraphHtml(text, verseNum) {
   const body = String(text || '').trim();
   if (!body) return { html: '', nextVerse: verseNum };
+
+  const stripe = lyricsAntaraStripeClass(verseNum);
 
   if (isMultilineParagraph(body)) {
     const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
     const { html, nextVerse } = renderBlockLines(lines, { verseNum });
     return {
-      html: `<p class="lyrics-antara lyrics-antara--block">${html}</p>`,
+      html: `<p class="lyrics-antara lyrics-antara--block ${stripe}">${html}</p>`,
       nextVerse,
     };
   }
@@ -95,7 +101,7 @@ function renderParagraphHtml(text, verseNum) {
   const core = lineWithoutEndDanda(body);
   const marker = formatDandaVerse(verseNum);
   return {
-    html: `<p class="lyrics-antara">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></p>`,
+    html: `<p class="lyrics-antara ${stripe}">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></p>`,
     nextVerse: verseNum + 1,
   };
 }
