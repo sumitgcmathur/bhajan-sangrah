@@ -1,5 +1,8 @@
 node_modules/
 docs/
+.spellcheck/
+spellcheck-report.txt
+spellcheck-changes.json
 scrape-cache/
 _sample*.html
 scripts/_test-parse.js
