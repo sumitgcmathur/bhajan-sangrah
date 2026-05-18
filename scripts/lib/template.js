@@ -73,13 +73,15 @@ ${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 }
 
 function renderPage(opts) {
-  const { pageTitle, body, config, sections, base, currentSlug, bodyClass = '' } = opts;
+  const { pageTitle, body, config, sections, base, currentSlug, bodyClass = '', bannerFixed = '' } = opts;
+  const bannerClass = bannerFixed ? ' has-page-banner' : '';
   return `<!DOCTYPE html>
 <html lang="hi">
 <head>
 ${renderHead(pageTitle, base, config)}
 </head>
-<body class="has-sidebar ${bodyClass}">
+<body class="has-sidebar${bannerClass} ${bodyClass}">
+${bannerFixed}
 <button type="button" class="sidebar-toggle" aria-expanded="false" aria-controls="site-sidebar">&#9776;</button>
 <div class="site-shell">
 ${renderSidebar(config, sections, base, currentSlug)}
@@ -162,29 +164,39 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
 </article>`;
 }
 
-function renderBannerBox(src, alt) {
+function renderBannerSpacer(src) {
   return `<div class="content-banner-spacer" aria-hidden="true">
   <img class="content-banner-spacer__img" src="${src}" alt="" decoding="async">
-</div>
-<div class="content-banner" aria-hidden="true">
+</div>`;
+}
+
+function renderBannerFixed(src, alt) {
+  return `<div class="page-banner-fixed" aria-hidden="true">
+  <div class="content-banner">
   <img class="content-banner__bg" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async">
   <img class="content-banner__img" src="${src}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
+</div>
 </div>`;
+}
+
+function renderPageBanner(src, alt) {
+  if (!src) return { spacer: '', fixed: '' };
+  return { spacer: renderBannerSpacer(src), fixed: renderBannerFixed(src, alt) };
 }
 
 function renderHomeBanner(config, base) {
   const src = config.home_banner ? pageUrl(base, config.home_banner) : '';
-  if (!src) return '';
-  return renderBannerBox(src, config.site_title);
+  return renderPageBanner(src, config.site_title);
 }
 
 function renderSectionBanner(section, base) {
-  if (!section.banner) return '';
-  return renderBannerBox(pageUrl(base, section.banner), section.title);
+  if (!section.banner) return { spacer: '', fixed: '' };
+  return renderPageBanner(pageUrl(base, section.banner), section.title);
 }
 
 function renderIndex(config, sections, base) {
-  const body = `${renderHomeBanner(config, base)}
+  const banner = renderHomeBanner(config, base);
+  const body = `${banner.spacer}
 <main class="content-main content-main--home">
   <h1 class="visually-hidden">${escapeHtml(config.site_title)}</h1>
   ${renderSectionIndexList(sections, base)}
@@ -193,6 +205,7 @@ function renderIndex(config, sections, base) {
   return renderPage({
     pageTitle: config.site_title,
     body,
+    bannerFixed: banner.fixed,
     config,
     sections,
     base,
@@ -230,7 +243,8 @@ function renderSectionPage(section, bhajans, config, sections, base) {
       .join('\n')}</div>`;
   }
 
-  const body = `${renderSectionBanner(section, base)}
+  const banner = renderSectionBanner(section, base);
+  const body = `${banner.spacer}
 <main class="content-main content-main--section">
   <h1 class="section-title">${escapeHtml(section.title)}</h1>
   ${indexHtml}
@@ -240,6 +254,7 @@ function renderSectionPage(section, bhajans, config, sections, base) {
   return renderPage({
     pageTitle: section.title,
     body,
+    bannerFixed: banner.fixed,
     config,
     sections,
     base,
