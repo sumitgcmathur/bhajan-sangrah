@@ -62,14 +62,38 @@ body {
   min-height: 100vh;
 }
 
-/* Fixed to viewport (direct child of body), not inside scrolling column */
+/* Fixed to viewport (direct child of body): soft blur only, not the sharp portrait */
 .page-banner-fixed {
   position: fixed;
   top: 0;
   right: 0;
+  bottom: 0;
   left: 0;
   z-index: 0;
   pointer-events: none;
+}
+
+.page-banner-fixed .content-banner--backdrop {
+  min-height: 100%;
+  height: 100%;
+  padding: 0;
+  border-bottom: none;
+  box-shadow: none;
+  background: var(--bg-alt);
+}
+
+.page-banner-fixed .content-banner__bg {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: blur(44px) saturate(1.2) brightness(1.04);
+  opacity: 0.42;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.page-banner-fixed .content-banner::before {
+  display: none;
 }
 
 body.has-page-banner .site-content {
@@ -77,8 +101,10 @@ body.has-page-banner .site-content {
 }
 
 body.has-page-banner .content-main {
-  background: transparent;
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.93);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 0 1px rgba(197, 217, 237, 0.5);
 }
 
 .site-sidebar {
@@ -223,6 +249,11 @@ body.has-page-banner .content-main {
   margin: 0 auto;
   object-fit: contain;
   object-position: center;
+  border-radius: 6px;
+  filter: drop-shadow(0 8px 28px rgba(13, 71, 161, 0.28));
+}
+
+body:not(.has-page-banner) .content-banner-spacer__img {
   visibility: hidden;
 }
 
@@ -590,27 +621,14 @@ body.has-page-banner .content-main {
     height: auto;
     margin: 0;
     object-fit: initial;
-  }
-
-  .content-banner {
-    display: block;
-    min-height: 0;
-    padding: 0;
-    line-height: 0;
-    background: var(--bg-alt);
-    box-shadow: none;
-    border-bottom-width: 2px;
-  }
-
-  .content-banner__img {
-    width: 100%;
-    max-width: none;
-    max-height: none;
-    height: auto;
-    object-fit: initial;
     border-radius: 0;
     filter: none;
-    vertical-align: top;
+  }
+
+  .page-banner-fixed .content-banner__bg {
+    display: block;
+    opacity: 0.35;
+    filter: blur(32px) saturate(1.15);
   }
 
   .sidebar-toggle {
@@ -728,9 +746,8 @@ body.has-page-banner .content-main {
   body.has-page-banner .site-content,
   body.has-page-banner .content-main {
     background: var(--bg);
-  }
-
-  .content-banner-spacer__img {
-    visibility: visible;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
   }
 }

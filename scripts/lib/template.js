@@ -170,18 +170,17 @@ function renderBannerSpacer(src) {
 </div>`;
 }
 
-function renderBannerFixed(src, alt) {
+function renderBannerFixed(src) {
   return `<div class="page-banner-fixed" aria-hidden="true">
-  <div class="content-banner">
+  <div class="content-banner content-banner--backdrop">
   <img class="content-banner__bg" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async">
-  <img class="content-banner__img" src="${src}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
 </div>
 </div>`;
 }
 
 function renderPageBanner(src, alt) {
   if (!src) return { spacer: '', fixed: '' };
-  return { spacer: renderBannerSpacer(src), fixed: renderBannerFixed(src, alt) };
+  return { spacer: renderBannerSpacer(src), fixed: renderBannerFixed(src) };
 }
 
 function renderHomeBanner(config, base) {
