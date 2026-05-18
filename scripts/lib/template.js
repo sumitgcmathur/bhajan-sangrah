@@ -162,24 +162,12 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
 </article>`;
 }
 
-function renderBannerSpacer(src) {
-  return `<div class="content-banner-spacer" aria-hidden="true">
-  <img class="content-banner-spacer__img" src="${src}" alt="" decoding="async">
-</div>`;
-}
-
-function renderBannerFixed(src, alt) {
-  return `<div class="page-banner-fixed" aria-hidden="true">
-  <div class="content-banner">
+function renderPageBanner(src, alt) {
+  if (!src) return '';
+  return `<div class="content-banner">
   <img class="content-banner__bg" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async">
   <img class="content-banner__img" src="${src}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
-</div>
 </div>`;
-}
-
-function renderPageBanner(src, alt) {
-  if (!src) return { spacer: '', fixed: '' };
-  return { spacer: renderBannerSpacer(src), fixed: renderBannerFixed(src, alt) };
 }
 
 function renderHomeBanner(config, base) {
@@ -188,7 +176,7 @@ function renderHomeBanner(config, base) {
 }
 
 function renderSectionBanner(section, base) {
-  if (!section.banner) return { spacer: '', fixed: '' };
+  if (!section.banner) return '';
   return renderPageBanner(pageUrl(base, section.banner), section.title);
 }
 
