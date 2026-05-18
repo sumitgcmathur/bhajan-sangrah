@@ -1,4 +1,4 @@
-const { escapeHtml, lyricsToHtml, jabaniToHtml } = require('./escape');
+const { escapeHtml, lyricsToHtml, jabaniToHtml, shlokToHtml } = require('./escape');
 const { anchorId } = require('./slug');
 
 function pageUrl(base, page) {
@@ -190,6 +190,7 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
     <a class="bhajan-card__to-index" href="#bhajan-index">सूची ↑</a>
   </header>
   <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics, b.tarz)}</div>
+  ${shlokToHtml(b.shlok)}
   ${jabaniToHtml(b.jabani)}
 </article>`;
 }
