@@ -31,10 +31,20 @@ function renderSidebar(config, sections, base, currentSlug) {
     <p class="sidebar-nav__label">${escapeHtml(config.site_title)}</p>
     <ul class="sidebar-nav__list">${renderNav(sections, base, currentSlug)}</ul>
   </nav>
-  <div class="sidebar-search">
-    <label class="sidebar-search__label" for="bhajan-search">भजन खोजें</label>
-    <input type="search" id="bhajan-search" class="sidebar-search__input" placeholder="भजन खोजें…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="bhajan-search-results" aria-autocomplete="list">
-    <ul id="bhajan-search-results" class="sidebar-search__results" role="listbox" hidden></ul>
+</aside>`;
+}
+
+function renderSearchPanel() {
+  return `<div id="bhajan-search-backdrop" class="bhajan-search-backdrop" hidden></div>
+<aside id="bhajan-search-panel" class="bhajan-search-panel" aria-label="भजन खोजें" aria-hidden="true">
+  <div class="bhajan-search-panel__head">
+    <h2 class="bhajan-search-panel__title">भजन खोजें</h2>
+    <button type="button" class="bhajan-search-panel__close" aria-label="बंद करें">&times;</button>
+  </div>
+  <div class="bhajan-search-panel__body">
+    <label class="visually-hidden" for="bhajan-search">भजन खोजें</label>
+    <input type="search" id="bhajan-search" class="bhajan-search__input" placeholder="भजन खोजें…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="bhajan-search-results" aria-autocomplete="list">
+    <ul id="bhajan-search-results" class="bhajan-search__results" role="listbox" hidden></ul>
   </div>
 </aside>`;
 }
@@ -86,6 +96,8 @@ ${renderHead(pageTitle, base, config)}
 </head>
 <body class="has-sidebar ${bodyClass}" data-site-base="${escapeHtml(base)}">
 <button type="button" class="sidebar-toggle" aria-expanded="false" aria-controls="site-sidebar">&#9776;</button>
+<button type="button" class="search-toggle" aria-expanded="false" aria-controls="bhajan-search-panel" aria-label="भजन खोजें">&#128269;</button>
+${renderSearchPanel()}
 <div class="site-shell">
 ${renderSidebar(config, sections, base, currentSlug)}
 <div class="site-content">

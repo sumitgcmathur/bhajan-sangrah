@@ -30,6 +30,15 @@ function collectLyricsText(lyrics) {
   return chunks.join('\n');
 }
 
+/** Searchable lyric lines (one per physical line, markers stripped lightly). */
+function collectLyricLines(b) {
+  const raw = [b.tarz, collectLyricsText(b.lyrics)].filter(Boolean).join('\n');
+  return raw
+    .split('\n')
+    .map((line) => line.replace(/\s*॥[^॥]*॥\s*$/u, '').replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
+}
+
 function buildSearchIndex(sections, base) {
   const items = [];
   for (const section of sections) {
@@ -37,13 +46,12 @@ function buildSearchIndex(sections, base) {
     files.forEach((f, i) => {
       const b = loadBhajan(path.join(sectionFolder(section), f));
       const id = b.id || anchorId(section.slug, b.title, i);
-      const lyricsText = collectLyricsText(b.lyrics);
       items.push({
         title: b.title || '',
         section: section.title,
         slug: section.slug,
         id,
-        text: [b.title, b.tarz, lyricsText].filter(Boolean).join('\n'),
+        lines: collectLyricLines(b),
         href: `${pageUrl(base, `${section.slug}.html`)}#${id}`,
       });
     });
@@ -56,4 +64,4 @@ function writeSearchIndex(destPath, items) {
   fs.writeFileSync(destPath, JSON.stringify(items), 'utf8');
 }
 
-module.exports = { buildSearchIndex, writeSearchIndex, collectLyricsText };
+module.exports = { buildSearchIndex, writeSearchIndex, collectLyricsText, collectLyricLines };
