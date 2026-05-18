@@ -15,9 +15,9 @@
   --accent-dark: #0d47a1;
   --accent-soft: #e3f2fd;
   --accent-glow: rgba(21, 101, 192, 0.12);
-  /* Verse body: neutral ink (heading keeps accent blue) */
-  --lyrics-odd: #5f6f7d;
-  --lyrics-even: #24303a;
+  /* Verse stripes: odd = title blue, even = index link blue */
+  --lyrics-odd: var(--accent-dark);
+  --lyrics-even: var(--link);
   --heading-gradient: linear-gradient(135deg, #0d47a1 0%, #1976d2 50%, #42a5f5 100%);
   --font: "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
   --sidebar-w: 230px;
@@ -473,7 +473,7 @@ body {
 }
 
 /*
- * Verse stripes: title = accent blue; even = dark ink; odd = lighter slate.
+ * Verse stripes: odd = heading (--accent-dark); even = index links (--link).
  * स्थायी counts as para 0 (even).
  */
 .bhajan-card__lyrics .bhajan-lyrics--standard p.lyrics-antara--odd {
