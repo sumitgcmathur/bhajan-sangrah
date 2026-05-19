@@ -145,6 +145,30 @@ function decodeDestName(name) {
   }
 }
 
+function normalizeId(id) {
+  return id.normalize('NFC');
+}
+
+function destNameKeys(id) {
+  const n = normalizeId(id);
+  const keys = [n];
+  try {
+    keys.push(encodeURIComponent(n));
+  } catch {
+    /* ignore */
+  }
+  return keys;
+}
+
+async function destRefToPage(doc, destRef) {
+  if (!destRef) return null;
+  try {
+    return (await doc.getPageIndex(destRef)) + 1;
+  } catch {
+    return null;
+  }
+}
+
 function mapsEqual(a, b, ids) {
   return ids.every((id) => a[id] === b[id] && a[id] != null);
 }
@@ -154,6 +178,7 @@ async function mapIdsToPagesFromPdfBuffer(pdfBuffer, ids) {
   const pdfjsLib = loadPdfJs();
   const doc = await pdfjsLib.getDocument({ data: new Uint8Array(pdfBuffer) }).promise;
   const map = {};
+  const normalizedIds = ids.map(normalizeId);
 
   let catalogDests = {};
   try {
@@ -162,41 +187,59 @@ async function mapIdsToPagesFromPdfBuffer(pdfBuffer, ids) {
     /* no named dests */
   }
 
-  const idSet = new Set(ids);
+  const idSet = new Set(normalizedIds);
+  const catalogById = new Map();
   for (const [rawName, destRef] of Object.entries(catalogDests)) {
-    const name = decodeDestName(rawName);
-    if (!idSet.has(name) || map[name]) continue;
-    try {
-      const pageIndex = await doc.getPageIndex(destRef);
-      map[name] = pageIndex + 1;
-    } catch {
-      /* skip */
-    }
+    const decoded = normalizeId(decodeDestName(rawName));
+    if (idSet.has(decoded)) catalogById.set(decoded, destRef);
+    if (idSet.has(rawName)) catalogById.set(rawName, destRef);
   }
 
-  for (const id of ids) {
+  for (const id of normalizedIds) {
     if (map[id]) continue;
-    try {
-      const dest = await doc.getDestination(id);
-      if (!dest) continue;
-      const pageIndex = await doc.getPageIndex(dest);
-      map[id] = pageIndex + 1;
-    } catch {
-      /* unknown destination */
+    let destRef = catalogById.get(id);
+    if (!destRef) {
+      for (const key of destNameKeys(id)) {
+        if (catalogDests[key]) {
+          destRef = catalogDests[key];
+          break;
+        }
+      }
+    }
+    const page = await destRefToPage(doc, destRef);
+    if (page) map[id] = page;
+  }
+
+  for (const id of normalizedIds) {
+    if (map[id]) continue;
+    for (const key of destNameKeys(id)) {
+      try {
+        const dest = await doc.getDestination(key);
+        const page = await destRefToPage(doc, dest);
+        if (page) {
+          map[id] = page;
+          break;
+        }
+      } catch {
+        /* try next key variant */
+      }
     }
   }
 
-  const missing = ids.filter((id) => !map[id]);
+  const missing = normalizedIds.filter((id) => !map[id]);
   if (missing.length > 0) {
-    await mapIdsFromLinkAnnotations(doc, missing, map);
+    await mapIdsFromLinkDestinations(doc, missing, map);
   }
 
   await doc.destroy();
   return map;
 }
 
-/** Fallback: internal link annotations (#id) on each page. */
-async function mapIdsFromLinkAnnotations(doc, ids, map) {
+/**
+ * Resolve link targets via annotation.dest (target page), NOT the page where the
+ * index link is drawn (that caused TOC pages ~18 for content on page 110).
+ */
+async function mapIdsFromLinkDestinations(doc, ids, map) {
   const wanted = new Set(ids.filter((id) => !map[id]));
   if (wanted.size === 0) return;
 
@@ -205,31 +248,60 @@ async function mapIdsFromLinkAnnotations(doc, ids, map) {
     const annots = await page.getAnnotations();
     for (const annot of annots) {
       if (annot.subtype !== 'Link') continue;
+
       const raw =
         (annot.unsafeUrl && annot.unsafeUrl.startsWith('#') && annot.unsafeUrl.slice(1)) ||
         (annot.url && annot.url.includes('#') && annot.url.slice(annot.url.indexOf('#') + 1)) ||
         '';
-      const hash = raw ? decodeDestName(raw) : '';
+      const hash = raw ? normalizeId(decodeDestName(raw)) : '';
       if (!hash || !wanted.has(hash) || map[hash]) continue;
-      map[hash] = pageNum;
+
+      let pageNo = await destRefToPage(doc, annot.dest);
+      if (!pageNo) {
+        for (const key of destNameKeys(hash)) {
+          try {
+            const dest = await doc.getDestination(key);
+            pageNo = await destRefToPage(doc, dest);
+            if (pageNo) break;
+          } catch {
+            /* try next */
+          }
+        }
+      }
+      if (!pageNo) continue;
+
+      map[hash] = pageNo;
       wanted.delete(hash);
       if (wanted.size === 0) return;
     }
   }
 }
 
-async function applyPageMap(page, map) {
+function mapForDom(map, ids) {
+  const out = {};
+  for (const id of ids) {
+    const n = normalizeId(id);
+    if (map[n] != null) out[id] = map[n];
+    else if (map[id] != null) out[id] = map[id];
+  }
+  return out;
+}
+
+async function applyPageMap(page, map, ids) {
+  const domMap = mapForDom(map, ids);
   await page.evaluate((pageMap) => {
     document.querySelectorAll('.pdf-index__pagenum').forEach((span) => {
       const id = span.getAttribute('data-target');
-      if (id && pageMap[id]) span.textContent = String(pageMap[id]);
+      if (!id) return;
+      const num = pageMap[id];
+      if (num != null) span.textContent = String(num);
     });
-  }, map);
+  }, domMap);
 }
 
 /**
- * Two-pass (or more) until index digits stop shifting pagination.
- * Filling the TOC changes page breaks; iterate until stable.
+ * Iterative draft PDFs until index page numbers stabilize.
+ * Index uses "000" placeholders so the first draft matches final pagination.
  */
 async function fillIndexPageNumbers(page) {
   const ids = await page.evaluate(() =>
@@ -237,44 +309,50 @@ async function fillIndexPageNumbers(page) {
       .map((s) => s.getAttribute('data-target'))
       .filter(Boolean)
   );
+  const normIds = ids.map(normalizeId);
 
-  let map = {};
   let prevMap = null;
+  let stableStreak = 0;
 
-  for (let pass = 1; pass <= 5; pass++) {
+  for (let pass = 1; pass <= 8; pass++) {
     const draftBuffer = await page.pdf({ ...PDF_PAGE_OPTS });
     const newMap = await mapIdsToPagesFromPdfBuffer(Buffer.from(draftBuffer), ids);
 
-    const missing = ids.filter((id) => !newMap[id]);
+    const missing = normIds.filter((id) => newMap[id] == null);
     if (missing.length > 0) {
-      console.warn(`pdf.js missing ${missing.length}/${ids.length} destinations (pass ${pass})`);
-    }
-    const simMap = await page.evaluate((helperSrc) => {
-      // eslint-disable-next-line no-eval
-      eval(helperSrc);
-      return fillIndexPageNumbersSimulator();
-    }, HELPER_SRC);
-    for (const id of ids) {
-      if (!newMap[id] && simMap[id]) newMap[id] = simMap[id];
-    }
-
-    await applyPageMap(page, newMap);
-
-    if (prevMap && mapsEqual(prevMap, newMap, ids)) {
-      console.log(
-        `Index page numbers: ${Object.keys(newMap).length}/${ids.length} stable after ${pass} pass(es)`
+      throw new Error(
+        `pdf.js could not resolve ${missing.length}/${ids.length} destinations (pass ${pass}). ` +
+          `First missing: ${missing[0]}`
       );
-      return newMap;
+    }
+
+    await applyPageMap(page, newMap, ids);
+
+    if (prevMap && mapsEqual(prevMap, newMap, normIds)) {
+      stableStreak += 1;
+    } else {
+      stableStreak = 0;
+    }
+
+    if (stableStreak >= 2) {
+      const finalBuffer = await page.pdf({ ...PDF_PAGE_OPTS });
+      const finalMap = await mapIdsToPagesFromPdfBuffer(Buffer.from(finalBuffer), ids);
+      await applyPageMap(page, finalMap, ids);
+
+      const lastId = normIds[normIds.length - 1];
+      console.log(
+        `Index page numbers: ${ids.length}/${ids.length} stable after ${pass} pass(es); ` +
+          `last entry → page ${finalMap[lastId]}`
+      );
+      return finalMap;
     }
 
     prevMap = { ...newMap };
-    map = newMap;
   }
 
-  console.warn(
-    `Index page numbers: ${Object.keys(map).length}/${ids.length} (did not fully stabilize — check output)`
+  throw new Error(
+    `Index page numbers did not stabilize in 8 passes (last entry page ${prevMap?.[normIds[normIds.length - 1]]})`
   );
-  return map;
 }
 
 module.exports = {
