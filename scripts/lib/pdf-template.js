@@ -1,6 +1,6 @@
 const path = require('path');
 const { ROOT } = require('./paths');
-const { escapeHtml, anchorId, bhajanNumberLabel, bhajansByGroup, sectionUsesGroups, renderBhajanCard } = require('./template');
+const { escapeHtml, bhajanNumberLabel, bhajansByGroup, sectionUsesGroups, renderBhajanCard } = require('./template');
 const { FILL_INDEX_PAGE_NUMBERS_JS } = require('./pdf-print');
 
 function sectionAnchorId(slug) {
@@ -30,24 +30,16 @@ function renderPdfIndexItem(hrefId, labelHtml) {
 function assignBhajanIds(section, bhajans) {
   const grouped = sectionUsesGroups(section, bhajans);
   if (grouped && bhajansByGroup(bhajans).some((g) => g.title)) {
-    let i = 0;
     const out = [];
     for (const g of bhajansByGroup(bhajans)) {
       if (!g.title) continue;
       for (const b of g.items) {
-        out.push({
-          ...b,
-          id: b.id || anchorId(section.slug, b.title, i),
-        });
-        i += 1;
+        out.push({ ...b, id: b.id });
       }
     }
     return out;
   }
-  return bhajans.map((b, i) => ({
-    ...b,
-    id: b.id || anchorId(section.slug, b.title, i),
-  }));
+  return bhajans.map((b) => ({ ...b, id: b.id }));
 }
 
 function renderPdfIndexItemsForSection(section, bhajans, globalNumRef) {
@@ -151,12 +143,8 @@ function renderPdfSection(section, bhajans, resolveAsset) {
       .map((g) => ({
         title: g.title,
         items: g.items.map((b) => {
-          const item = {
-            ...b,
-            id: b.id || anchorId(section.slug, b.title, bhajanIndex),
-          };
           bhajanIndex += 1;
-          return item;
+          return { ...b, id: b.id };
         }),
       }));
     bhajanIndex = 0;
@@ -172,10 +160,7 @@ function renderPdfSection(section, bhajans, resolveAsset) {
       })
       .join('\n');
   } else {
-    const withIds = bhajans.map((b, i) => ({
-      ...b,
-      id: b.id || anchorId(section.slug, b.title, i),
-    }));
+    const withIds = bhajans.map((b) => ({ ...b, id: b.id }));
     articlesHtml = `<div class="bhajan-list pdf-bhajan-list">${withIds
       .map((b, i) => renderPdfBhajanCard(b, section, i, showSwarachitBadge))
       .join('\n')}</div>`;
