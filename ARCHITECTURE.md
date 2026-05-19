@@ -149,32 +149,29 @@ Anchor IDs are stable: `{slug}-{title-slug}-{NN}` (see `scripts/lib/slug.js`).
 
 ## PDF export
 
-**On the live site:** **Export PDF** on the home page opens `print.html?print=1`, which shows the full printable book and triggers the browser print dialog (Save as PDF). No headless Chrome runs on deploy.
+The live site has **no PDF button**. PDFs are generated only on demand.
 
-**CI deploy** only runs `node scripts/build.js` (fast). PDF generation is not part of every push.
+**GitHub Actions:** **Actions → Export PDF → Run workflow** → download artifact **bhajan-sangrah-pdf** (`bhajan-sangrah.pdf`). Not part of the site build/deploy.
 
-**Optional high-quality PDF** (accurate index page numbers via two-pass Puppeteer):
+**Locally:**
 
 ```bash
 npm install
-npm run export-pdf   # → output/bhajan-sangrah.pdf
+npm run export-pdf   # → output/bhajan-sangrah.pdf (+ output/pdf-export.html preview)
 ```
 
-Or run the **Export PDF** workflow manually (Actions → Export PDF) to download an artifact.
+**CI deploy** runs only `node scripts/build.js` (no Puppeteer, no PDF).
 
-`npm run build` always writes `docs/print.html` for browser export; it does not copy a pre-built PDF into `docs/assets/`.
-
-One printable HTML document lists every bhajan in a single **भजन सूची** (grouped by section) with **page numbers**. Section banners use `banner:` in `sections.yaml`.
+One printable document lists every bhajan in **भजन सूची** (grouped by section) with page numbers. Section banners use `banner:` in `sections.yaml`.
 
 | File | Role |
 |------|------|
+| `.github/workflows/export-pdf.yml` | Manual workflow; uploads PDF artifact |
 | `scripts/export-pdf.js` | Loads YAML, writes HTML, fills page numbers, prints PDF |
 | `scripts/lib/pdf-template.js` | Single-document HTML (cover, master index, sections) |
 | `assets/css/pdf-export.css` | A4 `@page`, index rows, typography |
 
-**Browser export (`print.html`):** index page numbers use CSS `target-counter(attr(href url), page)` in `@media print`, so they match the footer `counter(page)` (the print engine resolves both). The on-screen simulator is approximate only.
-
-**`npm run export-pdf`:** iterative draft PDFs until index digits stabilize (filling the TOC shifts pagination), with `pdf.js` named destinations / link annotations. Page footer uses CSS `@page` counters (`N / total`).
+**`npm run export-pdf`:** iterative draft PDFs until index digits stabilize (filling the TOC shifts pagination), with `pdf.js` named destinations / link annotations. Page footer uses CSS `@page` counters (`N / total`). Check the log for `Index page numbers: … stable after N pass(es)`.
 
 ---
 

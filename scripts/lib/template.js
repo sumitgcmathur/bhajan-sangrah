@@ -111,13 +111,6 @@ ${renderSearchPanel()}
 </html>`;
 }
 
-function renderHomePdfActions(base) {
-  const printHref = pageUrl(base, 'print.html?print=1');
-  return `<div class="home-pdf-actions">
-  <a class="home-pdf-actions__btn home-pdf-actions__btn--primary" href="${printHref}" target="_blank" rel="noopener noreferrer">Export PDF</a>
-</div>`;
-}
-
 function renderSectionIndexList(sections, base) {
   const items = sections
     .map((s) => {
@@ -224,7 +217,6 @@ function renderIndex(config, sections, base) {
   const body = `${renderHomeBanner(config, base)}
 <main class="content-main content-main--home">
   <h1 class="visually-hidden">${escapeHtml(config.site_title)}</h1>
-  ${renderHomePdfActions(base)}
   ${renderSectionIndexList(sections, base)}
 </main>`;
 

@@ -1,5 +1,5 @@
-# Optional: generate bhajan-sangrah.pdf (slow — not part of normal deploy).
-# Run manually: Actions → Export PDF → Run workflow
+# Generate bhajan-sangrah.pdf on demand (not part of site deploy).
+# GitHub → Actions → Export PDF → Run workflow → download artifact "bhajan-sangrah-pdf".
 
 name: Export PDF
 
@@ -9,12 +9,14 @@ on:
 jobs:
   export-pdf:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: npm
 
       - name: Install dependencies
         run: npm install
@@ -26,7 +28,23 @@ jobs:
       - name: Export PDF
         run: node scripts/export-pdf.js
 
+      - name: Verify PDF output
+        run: |
+          test -f output/bhajan-sangrah.pdf
+          ls -lh output/bhajan-sangrah.pdf
+
       - uses: actions/upload-artifact@v4
         with:
           name: bhajan-sangrah-pdf
           path: output/bhajan-sangrah.pdf
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Download instructions
+        run: |
+          echo "## PDF ready" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "1. Open this workflow run on GitHub." >> "$GITHUB_STEP_SUMMARY"
+          echo "2. Under **Artifacts**, download **bhajan-sangrah-pdf** (contains \`bhajan-sangrah.pdf\`)." >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Re-run after content changes. Site deploy does not build the PDF." >> "$GITHUB_STEP_SUMMARY"

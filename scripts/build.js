@@ -4,8 +4,6 @@ const path = require('path');
 const { ROOT, DOCS, ASSETS } = require('./lib/paths');
 const { loadSections, sectionFolder, listBhajanFiles, loadBhajan } = require('./lib/sections');
 const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
-const { renderPdfDocument } = require('./lib/pdf-template');
-const { loadAllSectionPayloads } = require('./lib/pdf-payloads');
 const { anchorId } = require('./lib/slug');
 const { buildSearchIndex, writeSearchIndex } = require('./lib/search-index');
 
@@ -71,15 +69,6 @@ function main() {
 
   const searchItems = buildSearchIndex(sections, base);
   writeSearchIndex(path.join(DOCS, 'assets', 'search-index.json'), searchItems);
-
-  const payloads = loadAllSectionPayloads(config);
-  const printHtml = renderPdfDocument(config, payloads, {
-    resolveAsset: (rel) => pageUrl(base, rel.replace(/^\//, '')),
-    cssHref: pageUrl(base, 'assets/css/pdf-export.css'),
-    showPrintToolbar: true,
-  });
-  fs.writeFileSync(path.join(DOCS, 'print.html'), printHtml, 'utf8');
-  console.log('Print/PDF view: docs/print.html (Export PDF button on home)');
 
   console.log(`Built ${sections.length} sections, ${total} bhajans → ${DOCS}`);
   console.log(`Search index: ${searchItems.length} entries`);
