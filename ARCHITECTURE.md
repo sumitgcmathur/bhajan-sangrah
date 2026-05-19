@@ -172,7 +172,7 @@ One printable HTML document lists every bhajan in a single **भजन सूच
 | `scripts/lib/pdf-template.js` | Single-document HTML (cover, master index, sections) |
 | `assets/css/pdf-export.css` | A4 `@page`, index rows, typography |
 
-Index page numbers are filled via JavaScript before `page.pdf()`, using the same printable height as the PDF margins. Do not use Puppeteer `displayHeaderFooter` for the footer — it shrinks each page and makes index numbers wrong. Page footer uses CSS `@page` counters (`N / total`).
+Index page numbers use a **two-pass** export: a draft PDF is generated, `pdf.js` reads each bhajan `id` as a named destination and its real page, then the index is filled and the final PDF is printed. Page footer uses CSS `@page` counters (`N / total`).
 
 ---
 
