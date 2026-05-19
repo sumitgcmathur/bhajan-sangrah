@@ -68,15 +68,15 @@ function renderBlockLines(lines, opts = {}) {
       const core = lineWithoutEndDanda(t);
       const marker = fixedMarker != null ? fixedMarker : formatDandaVerse(n);
       out.push(
-        `${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span>`
+        `<span class="lyrics-line">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></span>`
       );
       if (!fixedMarker) n += 1;
     } else {
-      out.push(escapeHtml(t));
+      out.push(`<span class="lyrics-line">${escapeHtml(t)}</span>`);
     }
   }
 
-  return { html: out.join('<br>\n'), nextVerse: n };
+  return { html: out.join('\n'), nextVerse: n };
 }
 
 function lyricsAntaraStripeClass(verseNum) {
@@ -128,7 +128,7 @@ function renderJabaniHtml(jabani) {
 
   if (isMultilineParagraph(body)) {
     const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
-    const html = lines.map((l) => escapeHtml(l)).join('<br>\n');
+    const html = lines.map((l) => `<span class="lyrics-line">${escapeHtml(l)}</span>`).join('\n');
     return `<p class="lyrics-jabani">${html}</p>`;
   }
   return `<p class="lyrics-jabani">${escapeHtml(body)}</p>`;
@@ -185,7 +185,7 @@ function renderDhvaniHtml(dhvani) {
   if (!body) return '';
 
   const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
-  const html = lines.map((l) => escapeHtml(l)).join('<br>\n');
+  const html = lines.map((l) => `<span class="lyrics-line">${escapeHtml(l)}</span>`).join('\n');
   return `<p class="lyrics-dhvani">${html}</p>`;
 }
 
