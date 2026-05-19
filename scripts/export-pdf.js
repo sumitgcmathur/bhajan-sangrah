@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * Export full site content to a single PDF with page numbers in indexes.
  * Usage: node scripts/export-pdf.js [--out path/to/file.pdf]
@@ -13,6 +13,7 @@ const { loadSections } = require('./lib/sections');
 const { renderPdfDocument, pathToFileURL } = require('./lib/pdf-template');
 const { loadAllSectionPayloads } = require('./lib/pdf-payloads');
 const { createEmbeddedAssetResolver } = require('./lib/pdf-assets');
+const { PDF_PAGE_OPTS, fillIndexPageNumbers } = require('./lib/pdf-print');
 
 const OUT_DIR = path.join(ROOT, 'output');
 const DEFAULT_HTML = path.join(OUT_DIR, 'pdf-export.html');
@@ -57,26 +58,6 @@ function findChrome() {
   return null;
 }
 
-async function fillIndexPageNumbers(page) {
-  await page.evaluate(() => {
-    const probe = document.createElement('div');
-    probe.style.cssText =
-      'position:absolute;visibility:hidden;height:calc(297mm - 16mm - 20mm);width:1px;';
-    document.body.appendChild(probe);
-    const pageHeight = probe.offsetHeight;
-    probe.remove();
-    if (!pageHeight) return;
-
-    document.querySelectorAll('.pdf-index__pagenum').forEach((span) => {
-      const id = span.getAttribute('data-target');
-      const el = id ? document.getElementById(id) : null;
-      if (!el) return;
-      const page = Math.max(1, Math.floor(el.offsetTop / pageHeight) + 1);
-      span.textContent = String(page);
-    });
-  });
-}
-
 async function exportPdfWithPuppeteer(htmlPath, pdfPath) {
   const puppeteer = require('puppeteer');
   const fileUrl = pathToFileURL(htmlPath);
@@ -95,18 +76,7 @@ async function exportPdfWithPuppeteer(htmlPath, pdfPath) {
     fs.writeFileSync(htmlPath, await page.content(), 'utf8');
 
     fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
-    await page.pdf({
-      path: pdfPath,
-      format: 'A4',
-      printBackground: true,
-      preferCSSPageSize: true,
-      margin: { top: '16mm', bottom: '20mm', left: '14mm', right: '14mm' },
-      displayHeaderFooter: true,
-      headerTemplate: '<div></div>',
-      footerTemplate:
-        '<div style="font-size:9pt;width:100%;text-align:center;color:#4a6278;font-family:Arial,sans-serif">' +
-        '<span class="pageNumber"></span> / <span class="totalPages"></span></div>',
-    });
+    await page.pdf({ path: pdfPath, ...PDF_PAGE_OPTS });
 
     console.log(`PDF written: ${pdfPath}`);
   } finally {
@@ -154,18 +124,7 @@ async function exportPdfWithSystemChrome(htmlPath, pdfPath) {
     fs.writeFileSync(htmlPath, await page.content(), 'utf8');
 
     fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
-    await page.pdf({
-      path: pdfPath,
-      format: 'A4',
-      printBackground: true,
-      preferCSSPageSize: true,
-      margin: { top: '16mm', bottom: '20mm', left: '14mm', right: '14mm' },
-      displayHeaderFooter: true,
-      headerTemplate: '<div></div>',
-      footerTemplate:
-        '<div style="font-size:9pt;width:100%;text-align:center;color:#4a6278;font-family:Arial,sans-serif">' +
-        '<span class="pageNumber"></span> / <span class="totalPages"></span></div>',
-    });
+    await page.pdf({ path: pdfPath, ...PDF_PAGE_OPTS });
     console.log(`PDF written: ${pdfPath} (via system Chrome + puppeteer-core)`);
   } finally {
     await browser.close();

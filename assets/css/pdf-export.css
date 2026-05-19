@@ -2,9 +2,16 @@
 
 @page {
   size: A4;
-  margin: 16mm 14mm 20mm 14mm;
+  margin: 16mm 14mm 24mm 14mm;
   border: 1.25pt solid #c9a227;
   background: #f4f8fc;
+
+  @bottom-center {
+    content: counter(page) ' / ' counter(pages);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9pt;
+    color: #4a6278;
+  }
 }
 
 :root {
