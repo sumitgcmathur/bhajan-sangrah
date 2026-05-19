@@ -21,36 +21,93 @@ function renderPdfIndexItem(hrefId, labelHtml) {
   <a href="#${hrefId}" class="pdf-index__link">
     <span class="pdf-index__label">${labelHtml}</span>
     <span class="pdf-index__leaders" aria-hidden="true"></span>
-    <span class="pdf-index__pagenum" data-target="${hrefId}"></span>
   </a>
 </li>`;
 }
 
+function assignBhajanIds(section, bhajans) {
+  const grouped = sectionUsesGroups(section, bhajans);
+  if (grouped && bhajansByGroup(bhajans).some((g) => g.title)) {
+    let i = 0;
+    const out = [];
+    for (const g of bhajansByGroup(bhajans)) {
+      if (!g.title) continue;
+      for (const b of g.items) {
+        out.push({
+          ...b,
+          id: b.id || anchorId(section.slug, b.title, i),
+        });
+        i += 1;
+      }
+    }
+    return out;
+  }
+  return bhajans.map((b, i) => ({
+    ...b,
+    id: b.id || anchorId(section.slug, b.title, i),
+  }));
+}
+
+function renderPdfIndexItemsForSection(section, bhajans, globalNumRef) {
+  const showSwarachitBadge = section.slug !== 'swarachit';
+  const withIds = assignBhajanIds(section, bhajans);
+  const grouped = sectionUsesGroups(section, bhajans);
+  const groups = grouped ? bhajansByGroup(withIds) : [];
+
+  if (grouped && groups.some((g) => g.title)) {
+    return groups
+      .filter((g) => g.title)
+      .map((g) => {
+        const items = g.items
+          .map((b) => {
+            const num = bhajanNumberLabel(globalNumRef.n++);
+            const sw =
+              showSwarachitBadge && b.swarachit
+                ? ' <span class="pdf-index__badge">स्वरचित</span>'
+                : '';
+            return renderPdfIndexItem(
+              b.id,
+              `<span class="bhajan-index__num">${num}</span> ${escapeHtml(b.title)}${sw}`
+            );
+          })
+          .join('\n');
+        return `<section class="pdf-index__group">
+  <h3 class="pdf-index__group-title">${escapeHtml(g.title)}</h3>
+  <ul class="pdf-index__list">${items}</ul>
+</section>`;
+      })
+      .join('\n');
+  }
+
+  return `<ul class="pdf-index__list">${withIds
+    .map((b) => {
+      const num = bhajanNumberLabel(globalNumRef.n++);
+      const sw =
+        showSwarachitBadge && b.swarachit
+          ? ' <span class="pdf-index__badge">स्वरचित</span>'
+          : '';
+      return renderPdfIndexItem(
+        b.id,
+        `<span class="bhajan-index__num">${num}</span> ${escapeHtml(b.title)}${sw}`
+      );
+    })
+    .join('\n')}</ul>`;
+}
+
 /** One combined index for the whole book, grouped by section. */
 function renderCompleteBhajanIndex(sectionPayloads) {
-  let globalNum = 1;
+  const globalNumRef = { n: 1 };
   const blocks = sectionPayloads
     .map(({ section, bhajans }) => {
       if (!bhajans.length) return '';
-      const items = bhajans
-        .map((b, i) => {
-          const id = b.id || anchorId(section.slug, b.title, i);
-          const num = bhajanNumberLabel(globalNum++);
-          const sw =
-            section.slug !== 'swarachit' && b.swarachit
-              ? ' <span class="pdf-index__badge">स्वरचित</span>'
-              : '';
-          return renderPdfIndexItem(
-            id,
-            `<span class="bhajan-index__num">${num}</span> ${escapeHtml(b.title)}${sw}`
-          );
-        })
-        .join('\n');
-      return `<section class="pdf-index__section">
+      const indexBody = renderPdfIndexItemsForSection(section, bhajans, globalNumRef);
+      const grouped =
+        sectionUsesGroups(section, bhajans) && bhajansByGroup(bhajans).some((g) => g.title);
+      return `<section class="pdf-index__section${grouped ? ' pdf-index__section--grouped' : ''}">
   <h2 class="pdf-index__section-title">
     <a href="#${sectionAnchorId(section.slug)}" class="pdf-index__section-link">${escapeHtml(section.title)}</a>
   </h2>
-  <ul class="pdf-index__list">${items}</ul>
+  ${indexBody}
 </section>`;
     })
     .join('\n');
@@ -131,43 +188,6 @@ function renderPdfSection(section, bhajans, resolveAsset) {
 </section>`;
 }
 
-const PAGE_NUMBER_SCRIPT = `
-(function () {
-  function fillIndexPageNumbers() {
-    var probe = document.createElement('div');
-    probe.style.cssText =
-      'position:absolute;visibility:hidden;height:var(--pdf-page-body-height);width:1px;';
-    document.body.appendChild(probe);
-    var contentHeight = probe.offsetHeight;
-    probe.remove();
-    if (!contentHeight) return;
-
-    var docTop = document.documentElement.getBoundingClientRect().top;
-    function pageNum(el) {
-      var top = el.getBoundingClientRect().top - docTop + window.scrollY;
-      return Math.max(1, Math.floor(top / contentHeight) + 2);
-    }
-
-    document.querySelectorAll('.pdf-index__pagenum').forEach(function (span) {
-      var id = span.getAttribute('data-target');
-      var target = id ? document.getElementById(id) : null;
-      span.textContent = target ? String(pageNum(target)) : '';
-    });
-  }
-  function run() {
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(fillIndexPageNumbers);
-    } else {
-      fillIndexPageNumbers();
-    }
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', run);
-  } else {
-    run();
-  }
-})();
-`;
 
 const PRINT_TOOLBAR = `<div class="pdf-print-toolbar no-print" role="region" aria-label="मुद्रण">
   <a class="pdf-print-toolbar__back" href="index.html">← मुख पृष्ठ</a>
@@ -219,7 +239,6 @@ ${toolbar}
 </section>
 ${renderCompleteBhajanIndex(sectionPayloads)}
 ${sectionsHtml}
-<script>${PAGE_NUMBER_SCRIPT}</script>
 ${toolbarScript}
 </body>
 </html>`;

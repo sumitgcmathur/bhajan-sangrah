@@ -151,8 +151,8 @@ Anchor IDs are stable: `{slug}-{title-slug}-{NN}` (see `scripts/lib/slug.js`).
 
 The live site cannot run headless Chrome in the browser (static GitHub Pages). PDFs are built on the machine or in CI, then published with the site.
 
-- **Home page:** **PDF डाउनलोड** → `assets/bhajan-sangrah.pdf` (after export + build).
-- **मुद्रण / PDF सहेजें** → `print.html` (full book in the browser; use the toolbar or Ctrl+P).
+- **Home page:** **Export PDF** → `assets/bhajan-sangrah.pdf` (after export + build).
+- Optional: `print.html` (browser print preview with toolbar).
 
 Maintainer workflow:
 
@@ -172,7 +172,7 @@ One printable HTML document lists every bhajan in a single **भजन सूच
 | `scripts/lib/pdf-template.js` | Single-document HTML (cover, master index, sections) |
 | `assets/css/pdf-export.css` | A4 `@page`, index rows, typography |
 
-Page numbers are adjusted (+1) so they match printed sheets after the cover page.
+Index page numbers use CSS `target-counter` so they match the printed PDF. Footer shows `N / total` only (Arial, no Devanagari in the Puppeteer footer).
 
 ---
 
