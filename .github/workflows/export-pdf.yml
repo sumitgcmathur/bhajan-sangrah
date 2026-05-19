@@ -1,0 +1,32 @@
+# Optional: generate bhajan-sangrah.pdf (slow — not part of normal deploy).
+# Run manually: Actions → Export PDF → Run workflow
+
+name: Export PDF
+
+on:
+  workflow_dispatch:
+
+jobs:
+  export-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Strip UTF-8 BOM from scripts
+        run: |
+          node -e "const fs=require('fs');for(const p of['scripts/export-pdf.js']){const b=fs.readFileSync(p);if(b[0]===0xef&&b[1]===0xbb&&b[2]===0xbf){fs.writeFileSync(p,b.subarray(3));console.log('Stripped BOM:',p);}}"
+
+      - name: Export PDF
+        run: node scripts/export-pdf.js
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bhajan-sangrah-pdf
+          path: output/bhajan-sangrah.pdf

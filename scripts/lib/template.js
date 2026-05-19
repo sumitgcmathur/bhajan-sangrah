@@ -112,9 +112,9 @@ ${renderSearchPanel()}
 }
 
 function renderHomePdfActions(base) {
-  const pdfHref = pageUrl(base, 'assets/bhajan-sangrah.pdf');
+  const printHref = pageUrl(base, 'print.html?print=1');
   return `<div class="home-pdf-actions">
-  <a class="home-pdf-actions__btn home-pdf-actions__btn--primary" href="${pdfHref}" download>Export PDF</a>
+  <a class="home-pdf-actions__btn home-pdf-actions__btn--primary" href="${printHref}" target="_blank" rel="noopener noreferrer">Export PDF</a>
 </div>`;
 }
 
