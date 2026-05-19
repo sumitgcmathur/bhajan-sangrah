@@ -194,7 +194,7 @@ function renderPdfSection(section, bhajans, resolveAsset) {
 const PRINT_TOOLBAR = `<div class="pdf-print-toolbar no-print" role="region" aria-label="मुद्रण">
   <a class="pdf-print-toolbar__back" href="index.html">← मुख पृष्ठ</a>
   <button type="button" class="pdf-print-toolbar__btn" id="pdf-print-btn">Save as PDF</button>
-  <p class="pdf-print-toolbar__hint">In the print dialog, enable &ldquo;Background graphics&rdquo;.</p>
+  <p class="pdf-print-toolbar__hint">Use Chrome or Edge. Enable &ldquo;Background graphics&rdquo;. Index page numbers are filled by the browser at print time.</p>
 </div>`;
 
 const PRINT_TOOLBAR_SCRIPT = `

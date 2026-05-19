@@ -1,9 +1,12 @@
 /**
- * PDF print layout + index page numbers via two-pass PDF (pdf.js reads real destinations).
+ * PDF print layout + index page numbers.
+ * - Browser print: CSS target-counter (resolved by the print engine).
+ * - Puppeteer export: iterative draft PDF + pdf.js named destinations.
  */
 
 const PDF_MARGINS = { top: '16mm', bottom: '24mm', left: '14mm', right: '14mm' };
-const PDF_PAGE_CONTENT_HEIGHT = 'calc(297mm - 16mm - 24mm)';
+/** Must match --pdf-page-body-height in pdf-export.css */
+const PDF_PAGE_CONTENT_HEIGHT = '255mm';
 
 const PDF_PAGE_OPTS = {
   format: 'A4',
@@ -16,7 +19,7 @@ const PDF_PAGE_OPTS = {
 function paginationHelperSource(pageContentHeight) {
   return `
 function measurePrintPageHeight() {
-  var probe = document.createElement('motion');
+  var probe = document.createElement('d' + 'iv');
   probe.style.cssText = 'position:absolute;visibility:hidden;height:${pageContentHeight};width:1px;';
   document.body.appendChild(probe);
   var h = probe.offsetHeight;
@@ -82,19 +85,35 @@ function fillIndexPageNumbersSimulator() {
   });
   return map;
 }
-`.replace(/createElement\('motion'\)/g, "createElement('div')");
+`;
 }
 
 const HELPER_SRC = paginationHelperSource(PDF_PAGE_CONTENT_HEIGHT);
 
+/** Screen preview only — print uses CSS target-counter (see pdf-export.css). */
 const FILL_INDEX_PAGE_NUMBERS_JS = `(function () {
 ${HELPER_SRC}
-  function schedule() {
+  function isPrintMedia() {
+    return window.matchMedia && window.matchMedia('print').matches;
+  }
+  function screenPreview() {
+    if (isPrintMedia()) return;
     fillIndexPageNumbersSimulator();
-    setTimeout(fillIndexPageNumbersSimulator, 200);
+  }
+  function schedule() {
+    screenPreview();
+    setTimeout(screenPreview, 200);
   }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
   else schedule();
+  if (window.matchMedia) {
+    var mq = window.matchMedia('print');
+    if (mq.addEventListener) {
+      mq.addEventListener('change', function (e) {
+        if (!e.matches) schedule();
+      });
+    }
+  }
 })();`;
 
 function loadPdfJs() {
@@ -108,13 +127,35 @@ function loadPdfJs() {
   return pdfjsLib;
 }
 
-/** Read named destinations from a draft PDF (matches Chromium pagination). */
+function mapsEqual(a, b, ids) {
+  return ids.every((id) => a[id] === b[id] && a[id] != null);
+}
+
+/** Resolve named destinations from a draft PDF (Chromium pagination). */
 async function mapIdsToPagesFromPdfBuffer(pdfBuffer, ids) {
   const pdfjsLib = loadPdfJs();
   const doc = await pdfjsLib.getDocument({ data: new Uint8Array(pdfBuffer) }).promise;
   const map = {};
 
+  let catalogDests = {};
+  try {
+    catalogDests = await doc.getDestinations();
+  } catch {
+    /* no named dests */
+  }
+
   for (const id of ids) {
+    if (map[id]) continue;
+    const fromCatalog = catalogDests[id];
+    if (fromCatalog) {
+      try {
+        const pageIndex = await doc.getPageIndex(fromCatalog);
+        map[id] = pageIndex + 1;
+        continue;
+      } catch {
+        /* try next */
+      }
+    }
     try {
       const dest = await doc.getDestination(id);
       if (!dest) continue;
@@ -125,8 +166,32 @@ async function mapIdsToPagesFromPdfBuffer(pdfBuffer, ids) {
     }
   }
 
+  const missing = ids.filter((id) => !map[id]);
+  if (missing.length > 0) {
+    await mapIdsFromLinkAnnotations(doc, missing, map);
+  }
+
   await doc.destroy();
   return map;
+}
+
+/** Fallback: internal link annotations (#id) on each page. */
+async function mapIdsFromLinkAnnotations(doc, ids, map) {
+  const wanted = new Set(ids.filter((id) => !map[id]));
+  if (wanted.size === 0) return;
+
+  for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
+    const page = await doc.getPage(pageNum);
+    const annots = await page.getAnnotations();
+    for (const annot of annots) {
+      if (annot.subtype !== 'Link' || !annot.url) continue;
+      const hash = annot.url.includes('#') ? annot.url.slice(annot.url.indexOf('#') + 1) : '';
+      if (!hash || !wanted.has(hash) || map[hash]) continue;
+      map[hash] = pageNum;
+      wanted.delete(hash);
+      if (wanted.size === 0) return;
+    }
+  }
 }
 
 async function applyPageMap(page, map) {
@@ -138,6 +203,10 @@ async function applyPageMap(page, map) {
   }, map);
 }
 
+/**
+ * Two-pass (or more) until index digits stop shifting pagination.
+ * Filling the TOC changes page breaks; iterate until stable.
+ */
 async function fillIndexPageNumbers(page) {
   const ids = await page.evaluate(() =>
     [...document.querySelectorAll('.pdf-index__pagenum')]
@@ -145,24 +214,42 @@ async function fillIndexPageNumbers(page) {
       .filter(Boolean)
   );
 
-  const draftBuffer = await page.pdf({ ...PDF_PAGE_OPTS });
-  let map = await mapIdsToPagesFromPdfBuffer(Buffer.from(draftBuffer), ids);
+  let map = {};
+  let prevMap = null;
 
-  const missing = ids.filter((id) => !map[id]);
-  if (missing.length > 0) {
-    console.warn(`pdf.js missing ${missing.length}/${ids.length} destinations — layout fallback`);
-    const simMap = await page.evaluate((helperSrc) => {
-      // eslint-disable-next-line no-eval
-      eval(helperSrc);
-      return fillIndexPageNumbersSimulator();
-    }, HELPER_SRC);
-    for (const id of missing) {
-      if (simMap[id]) map[id] = simMap[id];
+  for (let pass = 1; pass <= 5; pass++) {
+    const draftBuffer = await page.pdf({ ...PDF_PAGE_OPTS });
+    const newMap = await mapIdsToPagesFromPdfBuffer(Buffer.from(draftBuffer), ids);
+
+    const missing = ids.filter((id) => !newMap[id]);
+    if (missing.length > 0) {
+      console.warn(`pdf.js missing ${missing.length}/${ids.length} destinations (pass ${pass})`);
+      const simMap = await page.evaluate((helperSrc) => {
+        // eslint-disable-next-line no-eval
+        eval(helperSrc);
+        return fillIndexPageNumbersSimulator();
+      }, HELPER_SRC);
+      for (const id of missing) {
+        if (simMap[id]) newMap[id] = simMap[id];
+      }
     }
+
+    await applyPageMap(page, newMap);
+
+    if (prevMap && mapsEqual(prevMap, newMap, ids)) {
+      console.log(
+        `Index page numbers: ${Object.keys(newMap).length}/${ids.length} stable after ${pass} pass(es)`
+      );
+      return newMap;
+    }
+
+    prevMap = { ...newMap };
+    map = newMap;
   }
 
-  console.log(`Index page numbers: ${Object.keys(map).length}/${ids.length} from PDF destinations`);
-  await applyPageMap(page, map);
+  console.warn(
+    `Index page numbers: ${Object.keys(map).length}/${ids.length} (did not fully stabilize — check output)`
+  );
   return map;
 }
 

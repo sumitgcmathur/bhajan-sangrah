@@ -214,13 +214,31 @@ body.pdf-export {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
   color: var(--pdf-muted);
-  min-width: 3ch;
+  min-width: 4ch;
   font-feature-settings: 'tnum';
 }
 
 .pdf-index__pagenum:empty::before {
   content: '…';
   font-weight: 400;
+  color: var(--pdf-muted);
+}
+
+/* Real page numbers when printing / Save as PDF (same engine as footer counter) */
+@media print {
+  .pdf-index__pagenum {
+    display: none;
+  }
+
+  .pdf-index__link::after {
+    content: target-counter(attr(href url), page);
+    grid-column: 3;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--pdf-muted);
+    font-feature-settings: 'tnum';
+  }
 }
 
 .pdf-index--grouped .index-group {
