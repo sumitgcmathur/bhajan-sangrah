@@ -2,16 +2,24 @@
 
 @page {
   size: A4;
-  margin: 18mm 16mm;
+  margin: 16mm 14mm 20mm 14mm;
+  border: 1.25pt solid #c9a227;
+  background: #f4f8fc;
 }
 
 :root {
   --pdf-font: 'Noto Sans Devanagari', 'Nirmala UI', 'Mangal', sans-serif;
-  /* Printable body height per sheet (A4 minus top/bottom @page margins) */
-  --pdf-page-body-height: 261mm;
-  --pdf-text: #1a1a1a;
-  --pdf-muted: #555;
+  --pdf-bg: #f4f8fc;
+  --pdf-surface: #ffffff;
+  --pdf-text: #1a2b3c;
+  --pdf-muted: #4a6278;
   --pdf-accent: #1565c0;
+  --pdf-accent-dark: #0d47a1;
+  --pdf-link: #1565c0;
+  --pdf-border: #c5d9ed;
+  --pdf-lyrics-odd: #0d47a1;
+  --pdf-lyrics-even: #1565c0;
+  --pdf-page-body-height: 255mm;
 }
 
 * {
@@ -27,6 +35,7 @@ body.pdf-export {
   padding: 0;
   font-family: var(--pdf-font);
   color: var(--pdf-text);
+  background: var(--pdf-bg);
   line-height: 1.55;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -70,13 +79,21 @@ body.pdf-export {
 .pdf-banner__img {
   display: block;
   width: 100%;
-  max-height: 52mm;
-  object-fit: cover;
-  border-radius: 4px;
+  max-height: 56mm;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 6px;
+  border: 1px solid var(--pdf-border);
+  background: var(--pdf-surface);
 }
 
 .pdf-master-index {
   page-break-after: always;
+  padding: 0.75rem 0.85rem;
+  background: var(--pdf-surface);
+  border: 1px solid var(--pdf-border);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(21, 101, 192, 0.08);
 }
 
 .pdf-index__sections {
@@ -103,6 +120,17 @@ body.pdf-export {
   color: var(--pdf-muted);
 }
 
+.pdf-index__group {
+  margin: 0.35rem 0 0.15rem;
+}
+
+.pdf-index__group-title {
+  margin: 0.35rem 0 0.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--pdf-accent-dark);
+}
+
 .pdf-master-index__title,
 .pdf-section__title {
   font-size: 1.45rem;
@@ -113,6 +141,9 @@ body.pdf-export {
 
 .pdf-section {
   page-break-before: always;
+  padding: 0.5rem 0.65rem 1rem;
+  background: var(--pdf-surface);
+  border-radius: 4px;
 }
 
 .pdf-section:first-of-type {
@@ -128,8 +159,8 @@ body.pdf-export {
 .pdf-index {
   margin: 0 0 1.25rem;
   padding: 0.65rem 0.75rem;
-  background: #f5f7fa;
-  border: 1px solid #dde3ea;
+  background: var(--pdf-bg);
+  border: 1px solid var(--pdf-border);
   border-radius: 4px;
   page-break-inside: avoid;
 }
@@ -170,17 +201,13 @@ body.pdf-export {
   min-height: 1em;
 }
 
-.pdf-index__pagenum {
+.pdf-index__link::after {
   grid-column: 3;
   text-align: right;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
   color: var(--pdf-muted);
-}
-
-.pdf-index__pagenum:empty::before {
-  content: '…';
-  font-weight: 400;
+  content: target-counter(attr(href url), page);
 }
 
 .pdf-index--grouped .index-group {
@@ -211,11 +238,33 @@ body.pdf-export {
   page-break-after: avoid;
 }
 
+.pdf-bhajan-list .bhajan-card {
+  padding: 0.5rem 0.35rem;
+  border-bottom: 1px solid var(--pdf-border);
+}
+
 .pdf-bhajan-list .bhajan-card__title {
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0;
   color: var(--pdf-accent);
+}
+
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-antara--odd {
+  color: var(--pdf-lyrics-odd);
+}
+
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-antara--even,
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-sthayi {
+  color: var(--pdf-lyrics-even);
+}
+
+.pdf-bhajan-list .bhajan-tarz {
+  margin: 0 0 0.65rem;
+  padding: 0.5rem 0.65rem;
+  background: #e8f1fa;
+  border-left: 3px solid var(--pdf-accent);
+  color: var(--pdf-muted);
 }
 
 .pdf-bhajan-list .bhajan-card__num {
@@ -237,10 +286,12 @@ body.pdf-export {
   margin: 0.4rem 0;
 }
 
-.pdf-bhajan-list .dhvani {
+.pdf-bhajan-list .dhvani,
+.pdf-bhajan-list .bhajan-card__dhvani {
   margin-top: 0.65rem;
   padding: 0.5rem 0.65rem;
-  border-left: 3px solid #c5cae9;
+  border-left: 3px solid var(--pdf-accent);
+  background: #e8f1fa;
   font-size: 0.95em;
   color: var(--pdf-muted);
 }
@@ -350,9 +401,5 @@ body.pdf-export {
 @media print {
   .no-print {
     display: none !important;
-  }
-
-  .pdf-index__pagenum:empty::before {
-    content: '';
   }
 }

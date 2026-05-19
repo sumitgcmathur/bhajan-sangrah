@@ -12,6 +12,7 @@ const { ROOT } = require('./lib/paths');
 const { loadSections } = require('./lib/sections');
 const { renderPdfDocument, pathToFileURL } = require('./lib/pdf-template');
 const { loadAllSectionPayloads } = require('./lib/pdf-payloads');
+const { createEmbeddedAssetResolver } = require('./lib/pdf-assets');
 
 const OUT_DIR = path.join(ROOT, 'output');
 const DEFAULT_HTML = path.join(OUT_DIR, 'pdf-export.html');
@@ -56,34 +57,6 @@ function findChrome() {
   return null;
 }
 
-async function measurePageContentHeight(page) {
-  return page.evaluate(() => {
-    const probe = document.createElement('di' + 'v');
-    probe.style.cssText =
-      'position:absolute;visibility:hidden;height:var(--pdf-page-body-height);width:1px;';
-    document.body.appendChild(probe);
-    const h = probe.offsetHeight;
-    probe.remove();
-    return h;
-  });
-}
-
-async function fillIndexPageNumbers(page, contentHeightPx) {
-  await page.evaluate((contentHeight) => {
-    const docTop = document.documentElement.getBoundingClientRect().top;
-    const pageNum = (el) => {
-      const top = el.getBoundingClientRect().top - docTop + window.scrollY;
-      return Math.max(1, Math.floor(top / contentHeight) + 2);
-    };
-
-    document.querySelectorAll('.pdf-index__pagenum').forEach((span) => {
-      const id = span.getAttribute('data-target');
-      const target = id ? document.getElementById(id) : null;
-      span.textContent = target ? String(pageNum(target)) : '';
-    });
-  }, contentHeightPx);
-}
-
 async function exportPdfWithPuppeteer(htmlPath, pdfPath) {
   const puppeteer = require('puppeteer');
   const fileUrl = pathToFileURL(htmlPath);
@@ -99,21 +72,18 @@ async function exportPdfWithPuppeteer(htmlPath, pdfPath) {
     await page.evaluateHandle(() => document.fonts.ready);
     await page.emulateMediaType('print');
 
-    const contentHeight = await measurePageContentHeight(page);
-    await fillIndexPageNumbers(page, contentHeight);
-
     fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
     await page.pdf({
       path: pdfPath,
       format: 'A4',
       printBackground: true,
       preferCSSPageSize: true,
-      margin: { top: '18mm', bottom: '18mm', left: '16mm', right: '16mm' },
+      margin: { top: '16mm', bottom: '20mm', left: '14mm', right: '14mm' },
       displayHeaderFooter: true,
       headerTemplate: '<div></div>',
       footerTemplate:
-        '<div style="font-size:8px;width:100%;text-align:center;color:#666;font-family:sans-serif;padding:0 16mm">' +
-        'पृष्ठ <span class="pageNumber"></span> / <span class="totalPages"></span></div>',
+        '<div style="font-size:9pt;width:100%;text-align:center;color:#4a6278;font-family:Arial,sans-serif">' +
+        '<span class="pageNumber"></span> / <span class="totalPages"></span></div>',
     });
 
     console.log(`PDF written: ${pdfPath}`);
@@ -186,7 +156,7 @@ async function main() {
   const payloads = loadAllSectionPayloads(config);
 
   const html = renderPdfDocument(config, payloads, {
-    resolveAsset: (rel) => pathToFileURL(path.join(ROOT, rel.replace(/^\//, ''))),
+    resolveAsset: createEmbeddedAssetResolver(),
   });
   fs.mkdirSync(OUT_DIR, { recursive: true });
   fs.writeFileSync(DEFAULT_HTML, html, 'utf8');
