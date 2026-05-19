@@ -88,23 +88,24 @@ function fillIndexPageNumbersSimulator() {
 function fillIndexPageNumbersCalibrated(pdfPageCount) {
   var maxY = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
   if (!pdfPageCount || pdfPageCount < 1 || maxY < 1) return {};
-  var lo = 50;
-  var hi = maxY;
-  while (lo < hi - 1) {
-    var mid = Math.floor((lo + hi) / 2);
-    var n = buildPageRanges(mid).length;
-    if (n > pdfPageCount) lo = mid;
-    else hi = mid;
-  }
-  var pageHeight = hi;
-  var ranges = buildPageRanges(pageHeight);
+  var firstSection = document.querySelector('.pdf-section');
+  var contentStartY = firstSection ? firstSection.offsetTop : 0;
+  var firstContentPage = firstSection
+    ? Math.min(pdfPageCount, Math.max(1, Math.floor((contentStartY / maxY) * pdfPageCount) + 1))
+    : 1;
+  var contentPages = Math.max(1, pdfPageCount - firstContentPage + 1);
+  var contentHeight = Math.max(1, maxY - contentStartY);
   var map = {};
   document.querySelectorAll('.pdf-index__pagenum').forEach(function (span) {
     var id = span.getAttribute('data-target');
     var el = id ? document.getElementById(id) : null;
     if (!el) return;
-    var top = el.getBoundingClientRect().top + window.scrollY;
-    map[id] = pageNumberAtY(top, ranges);
+    var top = el.getBoundingClientRect().top + window.scrollY - contentStartY;
+    if (top < 0) top = 0;
+    var page = firstContentPage + Math.floor((top / contentHeight) * contentPages);
+    if (page < 1) page = 1;
+    if (page > pdfPageCount) page = pdfPageCount;
+    map[id] = page;
   });
   return map;
 }
@@ -220,6 +221,14 @@ async function resolveAnnotDestPage(doc, annot) {
   return null;
 }
 
+async function getPdfPageCount(pdfBuffer) {
+  const pdfjsLib = loadPdfJs();
+  const doc = await pdfjsLib.getDocument({ data: new Uint8Array(pdfBuffer) }).promise;
+  const numPages = doc.numPages;
+  await doc.destroy();
+  return numPages;
+}
+
 /** Resolve named destinations + link targets from a draft PDF (Chromium pagination). */
 async function mapIdsToPagesFromPdfBuffer(pdfBuffer, ids) {
   const pdfjsLib = loadPdfJs();
@@ -329,11 +338,7 @@ async function mergeLayoutPageMap(page, pdfPageCount, ids, map, normIds) {
       filled += 1;
     }
   }
-  if (filled > 0) {
-    console.log(
-      `Layout calibration filled ${filled} entries using ${pdfPageCount} PDF pages`
-    );
-  }
+  console.log(`Index page map: ${filled}/${ids.length} entries (${pdfPageCount} PDF pages, layout)`);
 }
 
 function mapForDom(map, ids) {
@@ -375,13 +380,9 @@ async function fillIndexPageNumbers(page) {
 
   for (let pass = 1; pass <= 8; pass++) {
     const draftBuffer = await page.pdf({ ...PDF_PAGE_OPTS });
-    const { map: pdfMap, numPages } = await mapIdsToPagesFromPdfBuffer(Buffer.from(draftBuffer), ids);
-    const newMap = { ...pdfMap };
-
-    const missing = normIds.filter((id) => newMap[id] == null);
-    if (missing.length > 0) {
-      await mergeLayoutPageMap(page, numPages, ids, newMap, normIds);
-    }
+    const numPages = await getPdfPageCount(Buffer.from(draftBuffer));
+    const newMap = {};
+    await mergeLayoutPageMap(page, numPages, ids, newMap, normIds);
 
     const stillMissing = normIds.filter((id) => newMap[id] == null);
     if (stillMissing.length > 0) {
@@ -401,15 +402,9 @@ async function fillIndexPageNumbers(page) {
 
     if (stableStreak >= 2) {
       const finalBuffer = await page.pdf({ ...PDF_PAGE_OPTS });
-      const { map: finalPdfMap, numPages } = await mapIdsToPagesFromPdfBuffer(
-        Buffer.from(finalBuffer),
-        ids
-      );
-      const finalMap = { ...finalPdfMap };
-      const finalMissing = normIds.filter((id) => finalMap[id] == null);
-      if (finalMissing.length > 0) {
-        await mergeLayoutPageMap(page, numPages, ids, finalMap, normIds);
-      }
+      const numPages = await getPdfPageCount(Buffer.from(finalBuffer));
+      const finalMap = {};
+      await mergeLayoutPageMap(page, numPages, ids, finalMap, normIds);
       await applyPageMap(page, finalMap, ids);
 
       const lastId = normIds[normIds.length - 1];

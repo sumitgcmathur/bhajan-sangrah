@@ -875,17 +875,6 @@ body.search-panel-open {
     font-size: 1.15rem;
     line-height: 1.95;
   }
-
-  /* Keep each YAML line on one row; scroll horizontally if the line is very long */
-  .bhajan-lyrics--standard .lyrics-line,
-  .bhajan-card__dhvani .lyrics-line,
-  .bhajan-card__jabani .lyrics-line {
-    white-space: nowrap;
-    overflow-x: auto;
-    max-width: 100%;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-  }
 }
 
 @media (min-width: 768px) {
