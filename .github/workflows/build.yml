@@ -22,6 +22,12 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Install dependencies
+        run: npm install
+
+      - name: Export PDF
+        run: node scripts/export-pdf.js
+
       - name: Build static site
         run: node scripts/build.js
 

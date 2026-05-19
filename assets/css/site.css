@@ -464,6 +464,50 @@ body.search-panel-open {
   box-shadow: 0 -4px 24px rgba(26, 43, 60, 0.06);
 }
 
+.home-pdf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  align-items: center;
+  margin: 0 0 1.35rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.home-pdf-actions__btn {
+  display: inline-block;
+  padding: 0.5rem 1.1rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.home-pdf-actions__btn--primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.home-pdf-actions__btn--primary:hover {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.home-pdf-actions__btn--secondary {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  border: 1px solid var(--border);
+}
+
+.home-pdf-actions__btn--secondary:hover {
+  background: #fff;
+  color: var(--link-hover);
+}
+
 .content-index {
   margin: 0;
   padding-left: 1.35rem;

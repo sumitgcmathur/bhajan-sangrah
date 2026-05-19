@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-const { DOCS, ASSETS } = require('./lib/paths');
+const { ROOT, DOCS, ASSETS } = require('./lib/paths');
 const { loadSections, sectionFolder, listBhajanFiles, loadBhajan } = require('./lib/sections');
-const { renderIndex, renderSectionPage } = require('./lib/template');
+const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
+const { renderPdfDocument } = require('./lib/pdf-template');
+const { loadAllSectionPayloads } = require('./lib/pdf-payloads');
 const { anchorId } = require('./lib/slug');
 const { buildSearchIndex, writeSearchIndex } = require('./lib/search-index');
 
@@ -69,6 +71,23 @@ function main() {
 
   const searchItems = buildSearchIndex(sections, base);
   writeSearchIndex(path.join(DOCS, 'assets', 'search-index.json'), searchItems);
+
+  const payloads = loadAllSectionPayloads(config);
+  const printHtml = renderPdfDocument(config, payloads, {
+    resolveAsset: (rel) => pageUrl(base, rel.replace(/^\//, '')),
+    cssHref: pageUrl(base, 'assets/css/pdf-export.css'),
+    showPrintToolbar: true,
+  });
+  fs.writeFileSync(path.join(DOCS, 'print.html'), printHtml, 'utf8');
+
+  const pdfSrc = path.join(ROOT, 'output', 'bhajan-sangrah.pdf');
+  const pdfDest = path.join(DOCS, 'assets', 'bhajan-sangrah.pdf');
+  if (fs.existsSync(pdfSrc)) {
+    fs.copyFileSync(pdfSrc, pdfDest);
+    console.log('Copied PDF → docs/assets/bhajan-sangrah.pdf');
+  } else {
+    console.warn('No output/bhajan-sangrah.pdf — run: node scripts/export-pdf.js, then rebuild');
+  }
 
   console.log(`Built ${sections.length} sections, ${total} bhajans → ${DOCS}`);
   console.log(`Search index: ${searchItems.length} entries`);

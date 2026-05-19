@@ -143,6 +143,36 @@ Anchor IDs are stable: `{slug}-{title-slug}-{NN}` (see `scripts/lib/slug.js`).
 | `npm run clean-content` | Strip junk lines from all YAML |
 | `npm run fix-danda` | Normalize danda (।) in lyrics |
 | `npm run serve` | Serve `docs/` locally (after build) |
+| `npm run export-pdf` | Full-site PDF → `output/bhajan-sangrah.pdf` |
+
+---
+
+## PDF export
+
+The live site cannot run headless Chrome in the browser (static GitHub Pages). PDFs are built on the machine or in CI, then published with the site.
+
+- **Home page:** **PDF डाउनलोड** → `assets/bhajan-sangrah.pdf` (after export + build).
+- **मुद्रण / PDF सहेजें** → `print.html` (full book in the browser; use the toolbar or Ctrl+P).
+
+Maintainer workflow:
+
+```bash
+npm install          # puppeteer (optional; else Chrome headless)
+npm run export-pdf   # → output/bhajan-sangrah.pdf
+npm run build        # → docs/print.html + copies PDF into docs/assets/
+```
+
+CI runs `export-pdf` then `build` on each deploy so the download button stays current.
+
+One printable HTML document lists every bhajan in a single **भजन सूची** (grouped by section) with **page numbers**. Section banners use `banner:` in `sections.yaml`.
+
+| File | Role |
+|------|------|
+| `scripts/export-pdf.js` | Loads YAML, writes HTML, fills page numbers, prints PDF |
+| `scripts/lib/pdf-template.js` | Single-document HTML (cover, master index, sections) |
+| `assets/css/pdf-export.css` | A4 `@page`, index rows, typography |
+
+Page numbers are adjusted (+1) so they match printed sheets after the cover page.
 
 ---
 
