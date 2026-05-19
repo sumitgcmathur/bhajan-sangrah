@@ -64,7 +64,10 @@ async function writePdfWithFilledIndex(page, htmlPath, pdfPath) {
 
   const { filled, total } = await page.evaluate(() => {
     const spans = [...document.querySelectorAll('.pdf-index__pagenum')];
-    const filledCount = spans.filter((s) => /^\d+$/.test((s.textContent || '').trim())).length;
+    const filledCount = spans.filter((s) => {
+      const t = (s.textContent || '').trim();
+      return /^\d+$/.test(t) && t !== '000';
+    }).length;
     return { filled: filledCount, total: spans.length };
   });
   if (filled < total) {

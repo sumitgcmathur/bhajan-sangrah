@@ -22,7 +22,7 @@ function renderPdfIndexItem(hrefId, labelHtml) {
   <a href="#${hrefId}" class="pdf-index__link">
     <span class="pdf-index__label">${labelHtml}</span>
     <span class="pdf-index__leaders" aria-hidden="true"></span>
-    <span class="pdf-index__pagenum" data-target="${hrefId}"></span>
+    <span class="pdf-index__pagenum" data-target="${hrefId}">000</span>
   </a>
 </li>`;
 }

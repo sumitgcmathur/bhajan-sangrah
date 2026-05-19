@@ -214,7 +214,7 @@ body.pdf-export {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
   color: var(--pdf-muted);
-  min-width: 4ch;
+  min-width: 3ch;
   font-feature-settings: 'tnum';
 }
 
