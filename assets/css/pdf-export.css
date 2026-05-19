@@ -201,13 +201,18 @@ body.pdf-export {
   min-height: 1em;
 }
 
-.pdf-index__link::after {
+.pdf-index__pagenum {
   grid-column: 3;
   text-align: right;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
   color: var(--pdf-muted);
-  content: target-counter(attr(href url), page);
+  min-width: 2ch;
+}
+
+.pdf-index__pagenum:empty::before {
+  content: '…';
+  font-weight: 400;
 }
 
 .pdf-index--grouped .index-group {
