@@ -193,14 +193,27 @@ function renderPdfSection(section, bhajans, resolveAsset) {
 
 const PRINT_TOOLBAR = `<div class="pdf-print-toolbar no-print" role="region" aria-label="मुद्रण">
   <a class="pdf-print-toolbar__back" href="index.html">← मुख पृष्ठ</a>
-  <button type="button" class="pdf-print-toolbar__btn" id="pdf-print-btn">PDF के रूप में सहेजें…</button>
-  <p class="pdf-print-toolbar__hint">मुद्रण संवाद में &ldquo;पृष्ठभूमि ग्राफ़िक्स&rdquo; चालू रखें।</p>
+  <button type="button" class="pdf-print-toolbar__btn" id="pdf-print-btn">Save as PDF</button>
+  <p class="pdf-print-toolbar__hint">In the print dialog, enable &ldquo;Background graphics&rdquo;.</p>
 </div>`;
 
 const PRINT_TOOLBAR_SCRIPT = `
-document.getElementById('pdf-print-btn')?.addEventListener('click', function () {
-  window.print();
-});
+(function () {
+  function doPrint() {
+    window.print();
+  }
+  document.getElementById('pdf-print-btn')?.addEventListener('click', doPrint);
+  if (new URLSearchParams(window.location.search).get('print') === '1') {
+    function schedule() {
+      setTimeout(doPrint, 600);
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(schedule);
+    } else {
+      schedule();
+    }
+  }
+})();
 `;
 
 function renderPdfDocument(config, sectionPayloads, options = {}) {

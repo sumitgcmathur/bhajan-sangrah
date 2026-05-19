@@ -149,20 +149,20 @@ Anchor IDs are stable: `{slug}-{title-slug}-{NN}` (see `scripts/lib/slug.js`).
 
 ## PDF export
 
-The live site cannot run headless Chrome in the browser (static GitHub Pages). PDFs are built on the machine or in CI, then published with the site.
+**On the live site:** **Export PDF** on the home page opens `print.html?print=1`, which shows the full printable book and triggers the browser print dialog (Save as PDF). No headless Chrome runs on deploy.
 
-- **Home page:** **Export PDF** → `assets/bhajan-sangrah.pdf` (after export + build).
-- Optional: `print.html` (browser print preview with toolbar).
+**CI deploy** only runs `node scripts/build.js` (fast). PDF generation is not part of every push.
 
-Maintainer workflow:
+**Optional high-quality PDF** (accurate index page numbers via two-pass Puppeteer):
 
 ```bash
-npm install          # puppeteer (optional; else Chrome headless)
+npm install
 npm run export-pdf   # → output/bhajan-sangrah.pdf
-npm run build        # → docs/print.html + copies PDF into docs/assets/
 ```
 
-CI runs `export-pdf` then `build` on each deploy so the download button stays current.
+Or run the **Export PDF** workflow manually (Actions → Export PDF) to download an artifact.
+
+`npm run build` always writes `docs/print.html` for browser export; it does not copy a pre-built PDF into `docs/assets/`.
 
 One printable HTML document lists every bhajan in a single **भजन सूची** (grouped by section) with **page numbers**. Section banners use `banner:` in `sections.yaml`.
 

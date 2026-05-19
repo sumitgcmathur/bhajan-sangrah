@@ -79,15 +79,7 @@ function main() {
     showPrintToolbar: true,
   });
   fs.writeFileSync(path.join(DOCS, 'print.html'), printHtml, 'utf8');
-
-  const pdfSrc = path.join(ROOT, 'output', 'bhajan-sangrah.pdf');
-  const pdfDest = path.join(DOCS, 'assets', 'bhajan-sangrah.pdf');
-  if (fs.existsSync(pdfSrc)) {
-    fs.copyFileSync(pdfSrc, pdfDest);
-    console.log('Copied PDF → docs/assets/bhajan-sangrah.pdf');
-  } else {
-    console.warn('No output/bhajan-sangrah.pdf — run: node scripts/export-pdf.js, then rebuild');
-  }
+  console.log('Print/PDF view: docs/print.html (Export PDF button on home)');
 
   console.log(`Built ${sections.length} sections, ${total} bhajans → ${DOCS}`);
   console.log(`Search index: ${searchItems.length} entries`);
