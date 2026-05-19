@@ -5,9 +5,13 @@
   "scripts": {
     "clean-content": "node scripts/clean-content.js",
     "build": "node scripts/build.js",
+    "export-pdf": "node scripts/export-pdf.js",
     "add-bhajan": "node scripts/add-bhajan.js",
     "add-section": "node scripts/add-section.js",
     "fix-danda": "node scripts/fix-danda.js",
     "serve": "npx --yes serve docs -l 3000"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.0.0"
   }
 }

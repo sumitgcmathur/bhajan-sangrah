@@ -111,6 +111,15 @@ ${renderSearchPanel()}
 </html>`;
 }
 
+function renderHomePdfActions(base) {
+  const pdfHref = pageUrl(base, 'assets/bhajan-sangrah.pdf');
+  const printHref = pageUrl(base, 'print.html');
+  return `<div class="home-pdf-actions">
+  <a class="home-pdf-actions__btn home-pdf-actions__btn--primary" href="${pdfHref}" download>PDF डाउनलोड</a>
+  <a class="home-pdf-actions__btn home-pdf-actions__btn--secondary" href="${printHref}" target="_blank" rel="noopener noreferrer">मुद्रण / PDF सहेजें</a>
+</div>`;
+}
+
 function renderSectionIndexList(sections, base) {
   const items = sections
     .map((s) => {
@@ -217,6 +226,7 @@ function renderIndex(config, sections, base) {
   const body = `${renderHomeBanner(config, base)}
 <main class="content-main content-main--home">
   <h1 class="visually-hidden">${escapeHtml(config.site_title)}</h1>
+  ${renderHomePdfActions(base)}
   ${renderSectionIndexList(sections, base)}
 </main>`;
 
@@ -278,4 +288,17 @@ function renderSectionPage(section, bhajans, config, sections, base) {
   });
 }
 
-module.exports = { pageUrl, renderPage, renderIndex, renderSectionPage, anchorId };
+module.exports = {
+  pageUrl,
+  renderPage,
+  renderIndex,
+  renderSectionPage,
+  anchorId,
+  escapeHtml,
+  bhajanNumberLabel,
+  bhajansByGroup,
+  sectionUsesGroups,
+  renderBhajanIndex,
+  renderGroupedBhajanIndex,
+  renderBhajanCard,
+};

@@ -1,5 +1,8 @@
 node_modules/
 docs/
+output/*
+!output/.gitignore
+spellcheck-report.txt
 scrape-cache/
 _sample*.html
 scripts/_test-parse.js
