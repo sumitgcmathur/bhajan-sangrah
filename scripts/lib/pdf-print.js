@@ -85,6 +85,29 @@ function fillIndexPageNumbersSimulator() {
   });
   return map;
 }
+function fillIndexPageNumbersCalibrated(pdfPageCount) {
+  var maxY = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  if (!pdfPageCount || pdfPageCount < 1 || maxY < 1) return {};
+  var lo = 50;
+  var hi = maxY;
+  while (lo < hi - 1) {
+    var mid = Math.floor((lo + hi) / 2);
+    var n = buildPageRanges(mid).length;
+    if (n > pdfPageCount) lo = mid;
+    else hi = mid;
+  }
+  var pageHeight = hi;
+  var ranges = buildPageRanges(pageHeight);
+  var map = {};
+  document.querySelectorAll('.pdf-index__pagenum').forEach(function (span) {
+    var id = span.getAttribute('data-target');
+    var el = id ? document.getElementById(id) : null;
+    if (!el) return;
+    var top = el.getBoundingClientRect().top + window.scrollY;
+    map[id] = pageNumberAtY(top, ranges);
+  });
+  return map;
+}
 `;
 }
 
@@ -173,12 +196,39 @@ function mapsEqual(a, b, ids) {
   return ids.every((id) => a[id] === b[id] && a[id] != null);
 }
 
-/** Resolve named destinations from a draft PDF (Chromium pagination). */
+function hashFromAnnotUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  const idx = url.lastIndexOf('#');
+  if (idx === -1) return '';
+  return normalizeId(decodeDestName(url.slice(idx + 1)));
+}
+
+async function resolveAnnotDestPage(doc, annot) {
+  if (annot.dest) {
+    if (typeof annot.dest === 'string') {
+      try {
+        const named = await doc.getDestination(annot.dest);
+        const page = await destRefToPage(doc, named);
+        if (page) return page;
+      } catch {
+        /* try as ref below */
+      }
+    }
+    const page = await destRefToPage(doc, annot.dest);
+    if (page) return page;
+  }
+  return null;
+}
+
+/** Resolve named destinations + link targets from a draft PDF (Chromium pagination). */
 async function mapIdsToPagesFromPdfBuffer(pdfBuffer, ids) {
   const pdfjsLib = loadPdfJs();
   const doc = await pdfjsLib.getDocument({ data: new Uint8Array(pdfBuffer) }).promise;
   const map = {};
   const normalizedIds = ids.map(normalizeId);
+  const idSet = new Set(normalizedIds);
+
+  await mapIdsFromLinkDestinations(doc, normalizedIds, map);
 
   let catalogDests = {};
   try {
@@ -187,27 +237,11 @@ async function mapIdsToPagesFromPdfBuffer(pdfBuffer, ids) {
     /* no named dests */
   }
 
-  const idSet = new Set(normalizedIds);
-  const catalogById = new Map();
   for (const [rawName, destRef] of Object.entries(catalogDests)) {
     const decoded = normalizeId(decodeDestName(rawName));
-    if (idSet.has(decoded)) catalogById.set(decoded, destRef);
-    if (idSet.has(rawName)) catalogById.set(rawName, destRef);
-  }
-
-  for (const id of normalizedIds) {
-    if (map[id]) continue;
-    let destRef = catalogById.get(id);
-    if (!destRef) {
-      for (const key of destNameKeys(id)) {
-        if (catalogDests[key]) {
-          destRef = catalogDests[key];
-          break;
-        }
-      }
-    }
+    if (!idSet.has(decoded) || map[decoded]) continue;
     const page = await destRefToPage(doc, destRef);
-    if (page) map[id] = page;
+    if (page) map[decoded] = page;
   }
 
   for (const id of normalizedIds) {
@@ -226,20 +260,16 @@ async function mapIdsToPagesFromPdfBuffer(pdfBuffer, ids) {
     }
   }
 
-  const missing = normalizedIds.filter((id) => !map[id]);
-  if (missing.length > 0) {
-    await mapIdsFromLinkDestinations(doc, missing, map);
-  }
-
-  const resolved = ids.filter((id) => map[normalizeId(id)] != null).length;
+  const resolved = normalizedIds.filter((id) => map[id] != null).length;
   if (resolved < ids.length) {
     console.warn(`pdf.js resolved ${resolved}/${ids.length} destination pages`);
   } else {
     console.log(`pdf.js resolved ${resolved}/${ids.length} destination pages`);
   }
 
+  const numPages = doc.numPages;
   await doc.destroy();
-  return map;
+  return { map, numPages };
 }
 
 /**
@@ -256,14 +286,10 @@ async function mapIdsFromLinkDestinations(doc, ids, map) {
     for (const annot of annots) {
       if (annot.subtype !== 'Link') continue;
 
-      const raw =
-        (annot.unsafeUrl && annot.unsafeUrl.startsWith('#') && annot.unsafeUrl.slice(1)) ||
-        (annot.url && annot.url.includes('#') && annot.url.slice(annot.url.indexOf('#') + 1)) ||
-        '';
-      const hash = raw ? normalizeId(decodeDestName(raw)) : '';
+      const hash = hashFromAnnotUrl(annot.unsafeUrl || annot.url || '');
       if (!hash || !wanted.has(hash) || map[hash]) continue;
 
-      let pageNo = await destRefToPage(doc, annot.dest);
+      let pageNo = await resolveAnnotDestPage(doc, annot);
       if (!pageNo) {
         for (const key of destNameKeys(hash)) {
           try {
@@ -281,6 +307,32 @@ async function mapIdsFromLinkDestinations(doc, ids, map) {
       wanted.delete(hash);
       if (wanted.size === 0) return;
     }
+  }
+}
+
+async function mergeLayoutPageMap(page, pdfPageCount, ids, map, normIds) {
+  const layoutMap = await page.evaluate(
+    (helperSrc, numPages) => {
+      // eslint-disable-next-line no-eval
+      eval(helperSrc);
+      return fillIndexPageNumbersCalibrated(numPages);
+    },
+    HELPER_SRC,
+    pdfPageCount
+  );
+
+  let filled = 0;
+  for (const id of ids) {
+    const n = normalizeId(id);
+    if (map[n] == null && layoutMap[id] != null) {
+      map[n] = layoutMap[id];
+      filled += 1;
+    }
+  }
+  if (filled > 0) {
+    console.log(
+      `Layout calibration filled ${filled} entries using ${pdfPageCount} PDF pages`
+    );
   }
 }
 
@@ -323,13 +375,19 @@ async function fillIndexPageNumbers(page) {
 
   for (let pass = 1; pass <= 8; pass++) {
     const draftBuffer = await page.pdf({ ...PDF_PAGE_OPTS });
-    const newMap = await mapIdsToPagesFromPdfBuffer(Buffer.from(draftBuffer), ids);
+    const { map: pdfMap, numPages } = await mapIdsToPagesFromPdfBuffer(Buffer.from(draftBuffer), ids);
+    const newMap = { ...pdfMap };
 
     const missing = normIds.filter((id) => newMap[id] == null);
     if (missing.length > 0) {
+      await mergeLayoutPageMap(page, numPages, ids, newMap, normIds);
+    }
+
+    const stillMissing = normIds.filter((id) => newMap[id] == null);
+    if (stillMissing.length > 0) {
       throw new Error(
-        `pdf.js could not resolve ${missing.length}/${ids.length} destinations (pass ${pass}). ` +
-          `First missing: ${missing[0]}`
+        `Could not resolve ${stillMissing.length}/${ids.length} index pages (pass ${pass}). ` +
+          `First missing: ${stillMissing[0]}`
       );
     }
 
@@ -343,7 +401,15 @@ async function fillIndexPageNumbers(page) {
 
     if (stableStreak >= 2) {
       const finalBuffer = await page.pdf({ ...PDF_PAGE_OPTS });
-      const finalMap = await mapIdsToPagesFromPdfBuffer(Buffer.from(finalBuffer), ids);
+      const { map: finalPdfMap, numPages } = await mapIdsToPagesFromPdfBuffer(
+        Buffer.from(finalBuffer),
+        ids
+      );
+      const finalMap = { ...finalPdfMap };
+      const finalMissing = normIds.filter((id) => finalMap[id] == null);
+      if (finalMissing.length > 0) {
+        await mergeLayoutPageMap(page, numPages, ids, finalMap, normIds);
+      }
       await applyPageMap(page, finalMap, ids);
 
       const lastId = normIds[normIds.length - 1];
