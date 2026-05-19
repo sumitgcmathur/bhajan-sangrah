@@ -117,14 +117,32 @@ ${HELPER_SRC}
 })();`;
 
 function loadPdfJs() {
-  const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+  let pdfjsLib;
   try {
-    const worker = require('pdfjs-dist/legacy/build/pdf.worker.js');
+    pdfjsLib = require('pdfjs-dist/legacy/build/pdf.mjs');
+  } catch {
+    pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+  }
+  try {
+    const worker = require('pdfjs-dist/legacy/build/pdf.worker.mjs');
     pdfjsLib.GlobalWorkerOptions.workerSrc = worker;
   } catch {
-    /* optional worker */
+    try {
+      const worker = require('pdfjs-dist/legacy/build/pdf.worker.js');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = worker;
+    } catch {
+      /* optional worker */
+    }
   }
   return pdfjsLib;
+}
+
+function decodeDestName(name) {
+  try {
+    return decodeURIComponent(name);
+  } catch {
+    return name;
+  }
 }
 
 function mapsEqual(a, b, ids) {
@@ -144,18 +162,20 @@ async function mapIdsToPagesFromPdfBuffer(pdfBuffer, ids) {
     /* no named dests */
   }
 
+  const idSet = new Set(ids);
+  for (const [rawName, destRef] of Object.entries(catalogDests)) {
+    const name = decodeDestName(rawName);
+    if (!idSet.has(name) || map[name]) continue;
+    try {
+      const pageIndex = await doc.getPageIndex(destRef);
+      map[name] = pageIndex + 1;
+    } catch {
+      /* skip */
+    }
+  }
+
   for (const id of ids) {
     if (map[id]) continue;
-    const fromCatalog = catalogDests[id];
-    if (fromCatalog) {
-      try {
-        const pageIndex = await doc.getPageIndex(fromCatalog);
-        map[id] = pageIndex + 1;
-        continue;
-      } catch {
-        /* try next */
-      }
-    }
     try {
       const dest = await doc.getDestination(id);
       if (!dest) continue;
@@ -184,8 +204,12 @@ async function mapIdsFromLinkAnnotations(doc, ids, map) {
     const page = await doc.getPage(pageNum);
     const annots = await page.getAnnotations();
     for (const annot of annots) {
-      if (annot.subtype !== 'Link' || !annot.url) continue;
-      const hash = annot.url.includes('#') ? annot.url.slice(annot.url.indexOf('#') + 1) : '';
+      if (annot.subtype !== 'Link') continue;
+      const raw =
+        (annot.unsafeUrl && annot.unsafeUrl.startsWith('#') && annot.unsafeUrl.slice(1)) ||
+        (annot.url && annot.url.includes('#') && annot.url.slice(annot.url.indexOf('#') + 1)) ||
+        '';
+      const hash = raw ? decodeDestName(raw) : '';
       if (!hash || !wanted.has(hash) || map[hash]) continue;
       map[hash] = pageNum;
       wanted.delete(hash);
@@ -224,14 +248,14 @@ async function fillIndexPageNumbers(page) {
     const missing = ids.filter((id) => !newMap[id]);
     if (missing.length > 0) {
       console.warn(`pdf.js missing ${missing.length}/${ids.length} destinations (pass ${pass})`);
-      const simMap = await page.evaluate((helperSrc) => {
-        // eslint-disable-next-line no-eval
-        eval(helperSrc);
-        return fillIndexPageNumbersSimulator();
-      }, HELPER_SRC);
-      for (const id of missing) {
-        if (simMap[id]) newMap[id] = simMap[id];
-      }
+    }
+    const simMap = await page.evaluate((helperSrc) => {
+      // eslint-disable-next-line no-eval
+      eval(helperSrc);
+      return fillIndexPageNumbersSimulator();
+    }, HELPER_SRC);
+    for (const id of ids) {
+      if (!newMap[id] && simMap[id]) newMap[id] = simMap[id];
     }
 
     await applyPageMap(page, newMap);

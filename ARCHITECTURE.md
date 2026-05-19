@@ -171,7 +171,7 @@ One printable document lists every bhajan in **भजन सूची** (grouped
 | `scripts/lib/pdf-template.js` | Single-document HTML (cover, master index, sections) |
 | `assets/css/pdf-export.css` | A4 `@page`, index rows, typography |
 
-**`npm run export-pdf`:** iterative draft PDFs until index digits stabilize (filling the TOC shifts pagination), with `pdf.js` named destinations / link annotations. Page footer uses CSS `@page` counters (`N / total`). Check the log for `Index page numbers: … stable after N pass(es)`.
+**`npm run export-pdf`:** iterative draft PDFs until index digits stabilize; page numbers are written into `.pdf-index__pagenum` (must stay visible in print CSS — not `display: none`). Uses `pdf.js` destinations with layout fallback. Fails if any index row is left blank. Check the log for `Index page numbers: … stable after N pass(es)`.
 
 ---
 

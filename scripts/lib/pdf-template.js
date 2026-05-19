@@ -254,7 +254,7 @@ ${toolbar}
 </section>
 ${renderCompleteBhajanIndex(sectionPayloads)}
 ${sectionsHtml}
-<script>${FILL_INDEX_PAGE_NUMBERS_JS}</script>
+${options.includeFillScript === false ? '' : `<script>${FILL_INDEX_PAGE_NUMBERS_JS}</script>`}
 ${toolbarScript}
 </body>
 </html>`;

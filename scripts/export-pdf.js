@@ -58,6 +58,28 @@ function findChrome() {
   return null;
 }
 
+async function writePdfWithFilledIndex(page, htmlPath, pdfPath) {
+  await page.emulateMediaType('print');
+  await fillIndexPageNumbers(page);
+
+  const { filled, total } = await page.evaluate(() => {
+    const spans = [...document.querySelectorAll('.pdf-index__pagenum')];
+    const filledCount = spans.filter((s) => /^\d+$/.test((s.textContent || '').trim())).length;
+    return { filled: filledCount, total: spans.length };
+  });
+  if (filled < total) {
+    throw new Error(
+      `Index page numbers incomplete: ${filled}/${total} filled. Check export log for pdf.js errors.`
+    );
+  }
+  console.log(`Index entries with page numbers: ${filled}/${total}`);
+
+  fs.writeFileSync(htmlPath, await page.content(), 'utf8');
+  fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
+  await page.pdf({ path: pdfPath, ...PDF_PAGE_OPTS });
+  console.log(`PDF written: ${pdfPath}`);
+}
+
 async function exportPdfWithPuppeteer(htmlPath, pdfPath) {
   const puppeteer = require('puppeteer');
   const fileUrl = pathToFileURL(htmlPath);
@@ -71,14 +93,7 @@ async function exportPdfWithPuppeteer(htmlPath, pdfPath) {
     const page = await browser.newPage();
     await page.goto(fileUrl, { waitUntil: 'networkidle0', timeout: 120000 });
     await page.evaluateHandle(() => document.fonts.ready);
-    await page.emulateMediaType('print');
-    await fillIndexPageNumbers(page);
-    fs.writeFileSync(htmlPath, await page.content(), 'utf8');
-
-    fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
-    await page.pdf({ path: pdfPath, ...PDF_PAGE_OPTS });
-
-    console.log(`PDF written: ${pdfPath}`);
+    await writePdfWithFilledIndex(page, htmlPath, pdfPath);
   } finally {
     await browser.close();
   }
@@ -119,13 +134,8 @@ async function exportPdfWithSystemChrome(htmlPath, pdfPath) {
     const page = await browser.newPage();
     await page.goto(fileUrl, { waitUntil: 'networkidle0', timeout: 120000 });
     await page.evaluateHandle(() => document.fonts.ready);
-    await page.emulateMediaType('print');
-    await fillIndexPageNumbers(page);
-    fs.writeFileSync(htmlPath, await page.content(), 'utf8');
-
-    fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
-    await page.pdf({ path: pdfPath, ...PDF_PAGE_OPTS });
-    console.log(`PDF written: ${pdfPath} (via system Chrome + puppeteer-core)`);
+    await writePdfWithFilledIndex(page, htmlPath, pdfPath);
+    console.log('(via system Chrome + puppeteer-core)');
   } finally {
     await browser.close();
   }
@@ -196,6 +206,7 @@ async function main() {
 
   const html = renderPdfDocument(config, payloads, {
     resolveAsset: createEmbeddedAssetResolver(),
+    includeFillScript: false,
   });
   fs.mkdirSync(OUT_DIR, { recursive: true });
   fs.writeFileSync(DEFAULT_HTML, html, 'utf8');
