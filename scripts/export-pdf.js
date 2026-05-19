@@ -29,10 +29,23 @@ function parseArgs() {
   return { pdfPath: out };
 }
 
+function chromiumLaunchArgs() {
+  const args = ['--font-render-hinting=none'];
+  if (process.env.CI || process.platform === 'linux') {
+    args.push('--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage');
+  }
+  return args;
+}
+
 function findChrome() {
   const candidates = [
     process.env.CHROME_PATH,
     process.env.EDGE_PATH,
+    process.env.PUPPETEER_EXECUTABLE_PATH,
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser',
     'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
     'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
     'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
@@ -77,7 +90,7 @@ async function exportPdfWithPuppeteer(htmlPath, pdfPath) {
 
   const browser = await puppeteer.launch({
     headless: true,
-    args: ['--font-render-hinting=none'],
+    args: chromiumLaunchArgs(),
   });
 
   try {
@@ -130,6 +143,7 @@ async function exportPdfWithChrome(htmlPath, pdfPath) {
       '--virtual-time-budget=25000',
       '--print-background',
       '--no-pdf-header-footer',
+      ...chromiumLaunchArgs(),
       `--print-to-pdf=${pdfAbs}`,
       fileUrl,
     ],
@@ -143,17 +157,27 @@ async function exportPdfWithChrome(htmlPath, pdfPath) {
 }
 
 async function exportPdf(htmlPath, pdfPath) {
+  let usePuppeteer = false;
   try {
     require.resolve('puppeteer');
-    await exportPdfWithPuppeteer(htmlPath, pdfPath);
+    usePuppeteer = true;
   } catch (e) {
-    if (e.code === 'MODULE_NOT_FOUND') {
-      console.log('Puppeteer not installed — using Chrome headless…');
-      await exportPdfWithChrome(htmlPath, pdfPath);
-      return;
-    }
-    throw e;
+    if (e.code !== 'MODULE_NOT_FOUND') throw e;
   }
+
+  if (usePuppeteer) {
+    try {
+      await exportPdfWithPuppeteer(htmlPath, pdfPath);
+      return;
+    } catch (e) {
+      console.warn(`Puppeteer failed: ${e.message}`);
+      console.log('Trying system Chrome headless…');
+    }
+  } else {
+    console.log('Puppeteer not installed — using Chrome headless…');
+  }
+
+  await exportPdfWithChrome(htmlPath, pdfPath);
 }
 
 async function main() {
