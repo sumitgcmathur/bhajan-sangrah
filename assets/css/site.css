@@ -714,6 +714,13 @@ body.search-panel-open {
   margin-bottom: 1rem;
 }
 
+/* One display row per YAML line (see renderBlockLines in escape.js) */
+.bhajan-lyrics--standard .lyrics-line,
+.bhajan-card__dhvani .lyrics-line,
+.bhajan-card__jabani .lyrics-line {
+  display: block;
+}
+
 .bhajan-lyrics--standard .lyrics-refrain {
   color: var(--muted);
   font-size: 0.92em;
@@ -867,6 +874,17 @@ body.search-panel-open {
   .bhajan-card__lyrics {
     font-size: 1.15rem;
     line-height: 1.95;
+  }
+
+  /* Keep each YAML line on one row; scroll horizontally if the line is very long */
+  .bhajan-lyrics--standard .lyrics-line,
+  .bhajan-card__dhvani .lyrics-line,
+  .bhajan-card__jabani .lyrics-line {
+    white-space: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
 }
 

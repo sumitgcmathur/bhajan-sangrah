@@ -319,6 +319,10 @@ body.pdf-export {
   margin: 0 0 0.45rem;
 }
 
+.pdf-bhajan-list .lyrics-line {
+  display: block;
+}
+
 .pdf-bhajan-list .lyrics-tarz {
   margin: 0 0 0.5rem;
   font-style: italic;
