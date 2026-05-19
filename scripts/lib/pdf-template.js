@@ -1,6 +1,7 @@
 const path = require('path');
 const { ROOT } = require('./paths');
 const { escapeHtml, anchorId, bhajanNumberLabel, bhajansByGroup, sectionUsesGroups, renderBhajanCard } = require('./template');
+const { FILL_INDEX_PAGE_NUMBERS_JS } = require('./pdf-print');
 
 function sectionAnchorId(slug) {
   return `pdf-section-${slug}`;
@@ -25,45 +26,6 @@ function renderPdfIndexItem(hrefId, labelHtml) {
   </a>
 </li>`;
 }
-
-/** Fills index page numbers (target-counter does not work in headless PDF). */
-const PAGE_NUMBER_SCRIPT = `
-(function () {
-  function fillIndexPageNumbers() {
-    var probe = document.createElement('div');
-    probe.style.cssText =
-      'position:absolute;visibility:hidden;height:calc(297mm - 16mm - 20mm);width:1px;';
-    document.body.appendChild(probe);
-    var pageHeight = probe.offsetHeight;
-    probe.remove();
-    if (!pageHeight) return;
-
-    document.querySelectorAll('.pdf-index__pagenum').forEach(function (span) {
-      var id = span.getAttribute('data-target');
-      var el = id ? document.getElementById(id) : null;
-      if (!el) return;
-      var page = Math.max(1, Math.floor(el.offsetTop / pageHeight) + 1);
-      span.textContent = String(page);
-    });
-  }
-  function run() {
-    function schedule() {
-      fillIndexPageNumbers();
-      setTimeout(fillIndexPageNumbers, 150);
-    }
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(schedule);
-    } else {
-      schedule();
-    }
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', run);
-  } else {
-    run();
-  }
-})();
-`;
 
 function assignBhajanIds(section, bhajans) {
   const grouped = sectionUsesGroups(section, bhajans);
@@ -279,7 +241,7 @@ ${toolbar}
 </section>
 ${renderCompleteBhajanIndex(sectionPayloads)}
 ${sectionsHtml}
-<script>${PAGE_NUMBER_SCRIPT}</script>
+<script>${FILL_INDEX_PAGE_NUMBERS_JS}</script>
 ${toolbarScript}
 </body>
 </html>`;
@@ -290,5 +252,4 @@ module.exports = {
   sectionAnchorId,
   pathToFileURL,
   assetFileURL,
-  PAGE_NUMBER_SCRIPT,
 };
