@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env node
+#!/usr/bin/env node
 /**
  * Export full site content to a single PDF with page numbers in indexes.
  * Usage: node scripts/export-pdf.js [--out path/to/file.pdf]
