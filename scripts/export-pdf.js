@@ -175,31 +175,31 @@ async function exportPdfWithChromeCli(htmlPath, pdfPath) {
 }
 
 async function exportPdf(htmlPath, pdfPath) {
-  let hasPuppeteer = false;
+  const errors = [];
+
   try {
     require.resolve('puppeteer');
-    hasPuppeteer = true;
-  } catch (e) {
-    if (e.code !== 'MODULE_NOT_FOUND') throw e;
-  }
-
-  if (hasPuppeteer) {
     try {
       await exportPdfWithPuppeteer(htmlPath, pdfPath);
       return;
     } catch (e) {
-      console.warn(`Puppeteer export failed: ${e.message}`);
+      errors.push(`Puppeteer: ${e.message}`);
     }
+  } catch (e) {
+    if (e.code !== 'MODULE_NOT_FOUND') throw e;
+    errors.push('Puppeteer: package not installed');
   }
 
   try {
     await exportPdfWithSystemChrome(htmlPath, pdfPath);
     return;
   } catch (e) {
-    console.warn(`System Chrome export failed: ${e.message}`);
+    errors.push(`Chrome + puppeteer-core: ${e.message}`);
   }
 
-  await exportPdfWithChromeCli(htmlPath, pdfPath);
+  throw new Error(
+    `PDF export failed (index page numbers require Puppeteer):\n${errors.map((x) => `  - ${x}`).join('\n')}`
+  );
 }
 
 async function main() {

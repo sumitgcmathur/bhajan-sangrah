@@ -231,6 +231,13 @@ async function mapIdsToPagesFromPdfBuffer(pdfBuffer, ids) {
     await mapIdsFromLinkDestinations(doc, missing, map);
   }
 
+  const resolved = ids.filter((id) => map[normalizeId(id)] != null).length;
+  if (resolved < ids.length) {
+    console.warn(`pdf.js resolved ${resolved}/${ids.length} destination pages`);
+  } else {
+    console.log(`pdf.js resolved ${resolved}/${ids.length} destination pages`);
+  }
+
   await doc.destroy();
   return map;
 }
