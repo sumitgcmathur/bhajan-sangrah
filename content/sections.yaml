@@ -15,31 +15,6 @@ sections:
     google_path: shiv
     title: शिव भजन
     banner: assets/icons/lord_shiva.jpg
-  - slug: ram
-    folder: ram
-    google_path: ram
-    title: राम भजन
-    banner: assets/icons/ShriRam.jpg
-  - slug: krishna
-    folder: krishna
-    google_path: krishna
-    title: कृष्ण भजन
-    banner: assets/icons/ShriKrishna.jpg
-  - slug: ambe
-    folder: ambe
-    google_path: ambe
-    title: अम्बे भजन
-    banner: assets/icons/Ambe.jpg
-  - slug: ambikacharitra
-    folder: ambikacharitra
-    google_path: AmbikaCharitra
-    title: अंबिका चरित्र (शुंभ निशुंभ वध कथा)
-    banner: assets/icons/AmbikaCharitra.jpg
-  - slug: bhairav
-    folder: bhairav
-    google_path: bhairav
-    title: भैरव गान
-    banner: assets/icons/KalBhairav.jpg
   - slug: hanuman
     folder: hanuman
     google_path: hanuman
@@ -50,28 +25,53 @@ sections:
     google_path: ganpati
     title: गणपति भजन
     banner: assets/icons/Ganpati.jpg
-  - slug: horiya
-    folder: horiya
-    google_path: horiya
-    title: होरिया
-    banner: assets/icons/Horiya.jpg
   - slug: misc
     folder: misc
     google_path: misc
     title: विविध भजन
     banner: assets/icons/Vividh.jpg
-  - slug: navratri
-    folder: navratri
-    google_path: navratri
-    title: नवरात्री पूजन
-    banner: assets/icons/Navratri.jpg
-  - slug: mooltatva
-    folder: mooltatva
-    google_path: mooltatva
-    title: मूल तत्त्व भजन
+  - slug: ambe
+    folder: ambe
+    google_path: ambe
+    title: अम्बे भजन
+    banner: assets/icons/Ambe.jpg
+  - slug: krishna
+    folder: krishna
+    google_path: krishna
+    title: कृष्ण भजन
+    banner: assets/icons/ShriKrishna.jpg
+  - slug: ram
+    folder: ram
+    google_path: ram
+    title: राम भजन
+    banner: assets/icons/ShriRam.jpg
   - slug: swarachit
     folder: swarachit
     google_path: swarachit
     title: स्वरचित भजन
     banner: assets/icons/Swarachit.jpg
     grouped: true
+  - slug: mooltatva
+    folder: mooltatva
+    google_path: mooltatva
+    title: मूल तत्त्व भजन
+  - slug: horiya
+    folder: horiya
+    google_path: horiya
+    title: होरिया
+    banner: assets/icons/Horiya.jpg
+  - slug: navratri
+    folder: navratri
+    google_path: navratri
+    title: नवरात्री पूजन
+    banner: assets/icons/Navratri.jpg
+  - slug: ambikacharitra
+    folder: ambikacharitra
+    google_path: AmbikaCharitra
+    title: अंबिका चरित्र (शुंभ निशुंभ वध कथा)
+    banner: assets/icons/AmbikaCharitra.jpg
+  - slug: bhairav
+    folder: bhairav
+    google_path: bhairav
+    title: भैरव गान
+    banner: assets/icons/KalBhairav.jpg
