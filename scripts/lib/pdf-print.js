@@ -88,21 +88,16 @@ function fillIndexPageNumbersSimulator() {
 function fillIndexPageNumbersCalibrated(pdfPageCount) {
   var maxY = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
   if (!pdfPageCount || pdfPageCount < 1 || maxY < 1) return {};
-  var firstSection = document.querySelector('.pdf-section');
-  var contentStartY = firstSection ? firstSection.offsetTop : 0;
-  var firstContentPage = firstSection
-    ? Math.min(pdfPageCount, Math.max(1, Math.floor((contentStartY / maxY) * pdfPageCount) + 1))
-    : 1;
-  var contentPages = Math.max(1, pdfPageCount - firstContentPage + 1);
-  var contentHeight = Math.max(1, maxY - contentStartY);
+  var slice = maxY / pdfPageCount;
   var map = {};
   document.querySelectorAll('.pdf-index__pagenum').forEach(function (span) {
     var id = span.getAttribute('data-target');
     var el = id ? document.getElementById(id) : null;
     if (!el) return;
-    var top = el.getBoundingClientRect().top + window.scrollY - contentStartY;
-    if (top < 0) top = 0;
-    var page = firstContentPage + Math.floor((top / contentHeight) * contentPages);
+    var top = el.getBoundingClientRect().top + window.scrollY;
+    var adjusted = top - slice * 0.5;
+    if (adjusted < 0) adjusted = 0;
+    var page = Math.floor((adjusted / maxY) * pdfPageCount) + 1;
     if (page < 1) page = 1;
     if (page > pdfPageCount) page = pdfPageCount;
     map[id] = page;
@@ -205,19 +200,33 @@ function hashFromAnnotUrl(url) {
 }
 
 async function resolveAnnotDestPage(doc, annot) {
-  if (annot.dest) {
-    if (typeof annot.dest === 'string') {
-      try {
-        const named = await doc.getDestination(annot.dest);
-        const page = await destRefToPage(doc, named);
-        if (page) return page;
-      } catch {
-        /* try as ref below */
-      }
+  if (!annot.dest) return null;
+
+  if (typeof annot.dest === 'string') {
+    try {
+      const named = await doc.getDestination(annot.dest);
+      const page = await destRefToPage(doc, named);
+      if (page) return page;
+    } catch {
+      /* fall through */
     }
+  }
+
+  try {
     const page = await destRefToPage(doc, annot.dest);
     if (page) return page;
+  } catch {
+    /* fall through */
   }
+
+  if (Array.isArray(annot.dest) && annot.dest[0]) {
+    try {
+      return (await doc.getPageIndex(annot.dest[0])) + 1;
+    } catch {
+      /* unresolved */
+    }
+  }
+
   return null;
 }
 
@@ -286,8 +295,7 @@ async function mapIdsToPagesFromPdfBuffer(pdfBuffer, ids) {
  * index link is drawn (that caused TOC pages ~18 for content on page 110).
  */
 async function mapIdsFromLinkDestinations(doc, ids, map) {
-  const wanted = new Set(ids.filter((id) => !map[id]));
-  if (wanted.size === 0) return;
+  const idSet = new Set(ids.map((id) => normalizeId(id)));
 
   for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
     const page = await doc.getPage(pageNum);
@@ -296,7 +304,7 @@ async function mapIdsFromLinkDestinations(doc, ids, map) {
       if (annot.subtype !== 'Link') continue;
 
       const hash = hashFromAnnotUrl(annot.unsafeUrl || annot.url || '');
-      if (!hash || !wanted.has(hash) || map[hash]) continue;
+      if (!hash || !idSet.has(hash)) continue;
 
       let pageNo = await resolveAnnotDestPage(doc, annot);
       if (!pageNo) {
@@ -313,14 +321,12 @@ async function mapIdsFromLinkDestinations(doc, ids, map) {
       if (!pageNo) continue;
 
       map[hash] = pageNo;
-      wanted.delete(hash);
-      if (wanted.size === 0) return;
     }
   }
 }
 
-async function mergeLayoutPageMap(page, pdfPageCount, ids, map, normIds) {
-  const layoutMap = await page.evaluate(
+async function computeLayoutPageMap(page, pdfPageCount, ids) {
+  return page.evaluate(
     (helperSrc, numPages) => {
       // eslint-disable-next-line no-eval
       eval(helperSrc);
@@ -329,16 +335,49 @@ async function mergeLayoutPageMap(page, pdfPageCount, ids, map, normIds) {
     HELPER_SRC,
     pdfPageCount
   );
+}
 
-  let filled = 0;
-  for (const id of ids) {
-    const n = normalizeId(id);
-    if (map[n] == null && layoutMap[id] != null) {
-      map[n] = layoutMap[id];
-      filled += 1;
+async function resolvePageMapFromDraft(page, draftBuffer, ids, normIds) {
+  const buf = Buffer.from(draftBuffer);
+  const { map: pdfMap, numPages } = await mapIdsToPagesFromPdfBuffer(buf, ids);
+  const layoutMap = await computeLayoutPageMap(page, numPages, ids);
+
+  const pdfHits = normIds.filter((id) => pdfMap[id] != null).length;
+  const out = {};
+
+  if (pdfHits >= normIds.length * 0.9) {
+    console.log(`Index: pdf.js destinations ${pdfHits}/${ids.length} (${numPages} pages)`);
+    for (const id of normIds) out[id] = pdfMap[id];
+    return out;
+  }
+
+  const anchorId = normIds[0];
+  const anchorPdf = pdfMap[anchorId];
+  const anchorLayout = layoutMap[ids[0]] ?? layoutMap[anchorId];
+  let delta = 0;
+  if (anchorPdf != null && anchorLayout != null) {
+    delta = anchorPdf - anchorLayout;
+  }
+
+  for (let i = 0; i < normIds.length; i++) {
+    const n = normIds[i];
+    const raw = ids[i];
+    if (pdfMap[n] != null) {
+      out[n] = pdfMap[n];
+    } else {
+      const layoutVal = layoutMap[raw] ?? layoutMap[n];
+      let v = layoutVal != null ? layoutVal + delta : null;
+      if (v != null) {
+        v = Math.min(numPages, Math.max(1, v));
+      }
+      out[n] = v;
     }
   }
-  console.log(`Index page map: ${filled}/${ids.length} entries (${pdfPageCount} PDF pages, layout)`);
+
+  console.log(
+    `Index: pdf.js ${pdfHits}/${ids.length}, layout+bias (Δ${delta}) → ${numPages} pages`
+  );
+  return out;
 }
 
 function mapForDom(map, ids) {
@@ -380,9 +419,7 @@ async function fillIndexPageNumbers(page) {
 
   for (let pass = 1; pass <= 8; pass++) {
     const draftBuffer = await page.pdf({ ...PDF_PAGE_OPTS });
-    const numPages = await getPdfPageCount(Buffer.from(draftBuffer));
-    const newMap = {};
-    await mergeLayoutPageMap(page, numPages, ids, newMap, normIds);
+    const newMap = await resolvePageMapFromDraft(page, draftBuffer, ids, normIds);
 
     const stillMissing = normIds.filter((id) => newMap[id] == null);
     if (stillMissing.length > 0) {
@@ -402,15 +439,14 @@ async function fillIndexPageNumbers(page) {
 
     if (stableStreak >= 2) {
       const finalBuffer = await page.pdf({ ...PDF_PAGE_OPTS });
-      const numPages = await getPdfPageCount(Buffer.from(finalBuffer));
-      const finalMap = {};
-      await mergeLayoutPageMap(page, numPages, ids, finalMap, normIds);
+      const finalMap = await resolvePageMapFromDraft(page, finalBuffer, ids, normIds);
       await applyPageMap(page, finalMap, ids);
 
       const lastId = normIds[normIds.length - 1];
+      const firstId = normIds[0];
       console.log(
         `Index page numbers: ${ids.length}/${ids.length} stable after ${pass} pass(es); ` +
-          `last entry → page ${finalMap[lastId]}`
+          `first → page ${finalMap[firstId]}, last → page ${finalMap[lastId]}`
       );
       return finalMap;
     }
