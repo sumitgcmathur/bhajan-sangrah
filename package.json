@@ -12,7 +12,6 @@
     "serve": "npx --yes serve docs -l 3000"
   },
   "devDependencies": {
-    "pdfjs-dist": "^4.10.38",
     "puppeteer": "^24.0.0",
     "puppeteer-core": "^24.0.0"
   }
