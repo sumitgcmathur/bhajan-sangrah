@@ -290,6 +290,20 @@ body.pdf-export {
   margin: 0.4rem 0;
 }
 
+.pdf-bhajan-list .bhajan-card__pre-shlok {
+  margin-bottom: 0.65rem;
+  padding: 0.5rem 0.65rem;
+  border-left: 3px solid var(--pdf-accent);
+  background: #e8f1fa;
+  font-size: 0.95em;
+  color: var(--pdf-muted);
+  text-align: center;
+}
+
+.pdf-bhajan-list .lyrics-pre-shlok {
+  margin: 0;
+}
+
 .pdf-bhajan-list .dhvani,
 .pdf-bhajan-list .bhajan-card__dhvani {
   margin-top: 0.65rem;
@@ -342,6 +356,7 @@ body.pdf-export {
   font-style: italic;
 }
 
+.pdf-bhajan-list .bhajan-card__pre-shlok,
 .pdf-bhajan-list .bhajan-card__dhvani,
 .pdf-bhajan-list .bhajan-card__jabani {
   margin-top: 0.65rem;

@@ -127,6 +127,13 @@ function parseLyricsObject(lines, startIdx) {
       continue;
     }
 
+    if (raw.match(/^\s{2}pre_shlok:\s*\|\s*$/)) {
+      const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
+      lyrics._legacyPreShlok = text;
+      i = next;
+      continue;
+    }
+
     if (raw.match(/^\s{2}jabani:\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
       lyrics._legacyJabani = text;
@@ -138,6 +145,46 @@ function parseLyricsObject(lines, startIdx) {
   }
 
   return { lyrics, next: i };
+}
+
+/** Opening shloka before lyrics (legacy: nested under lyrics). */
+function hoistPreShlok(doc) {
+  if (!doc?.lyrics || typeof doc.lyrics === 'string') return doc;
+
+  const pieces = doc.pre_shlok ? [doc.pre_shlok] : [];
+
+  const stripFromPart = (part) => {
+    if (!part) return;
+    if (part._legacyPreShlok) {
+      pieces.push(part._legacyPreShlok);
+      delete part._legacyPreShlok;
+    }
+    if (part.pre_shlok) {
+      pieces.push(part.pre_shlok);
+      delete part.pre_shlok;
+    }
+  };
+
+  if (doc.lyrics._legacyPreShlok) {
+    pieces.push(doc.lyrics._legacyPreShlok);
+    delete doc.lyrics._legacyPreShlok;
+  }
+  if (doc.lyrics.pre_shlok) {
+    pieces.push(doc.lyrics.pre_shlok);
+    delete doc.lyrics.pre_shlok;
+  }
+  if (doc.lyrics.parts?.length) {
+    for (const part of doc.lyrics.parts) stripFromPart(part);
+  }
+
+  const pre_shlok = pieces
+    .map((p) => String(p).trim())
+    .filter(Boolean)
+    .join('\n\n');
+  const out = { ...doc };
+  if (pre_shlok) out.pre_shlok = pre_shlok;
+  else delete out.pre_shlok;
+  return out;
 }
 
 /** Narration after the song — not part of lyrics (legacy: nested under lyrics). */
@@ -191,6 +238,12 @@ function loadBhajanDoc(text) {
       i += 1;
       continue;
     }
+    if (line.match(/^pre_shlok:\s*\|\s*$/)) {
+      const { text, next } = readIndentedBlock(lines, i + 1, 2);
+      doc.pre_shlok = text;
+      i = next;
+      continue;
+    }
     if (line.match(/^dhvani:\s*\|\s*$/) || line.match(/^shlok:\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, 2);
       doc.dhvani = text;
@@ -225,7 +278,7 @@ function loadBhajanDoc(text) {
     if (p) doc[p.key] = p.value;
     i += 1;
   }
-  return hoistJabani(doc);
+  return hoistJabani(hoistPreShlok(doc));
 }
 
 function dumpLiteralBlock(key, text, indent) {
@@ -275,6 +328,7 @@ function dumpBhajanDoc(doc) {
   if (doc.tarz) out.push(`tarz: ${doc.tarz}`);
   if (doc.group) out.push(`group: ${doc.group}`);
   if (doc.swarachit) out.push('swarachit: true');
+  if (doc.pre_shlok) out.push(...dumpLiteralBlock('pre_shlok', doc.pre_shlok, 0));
   if (isStructuredLyrics(doc.lyrics)) {
     out.push(...dumpLyricsObject(doc.lyrics));
   } else {

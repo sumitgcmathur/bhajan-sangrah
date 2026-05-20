@@ -716,6 +716,7 @@ body.search-panel-open {
 
 /* One display row per YAML line (see renderBlockLines in escape.js) */
 .bhajan-lyrics--standard .lyrics-line,
+.bhajan-card__pre-shlok .lyrics-line,
 .bhajan-card__dhvani .lyrics-line,
 .bhajan-card__jabani .lyrics-line {
   display: block;
@@ -732,7 +733,22 @@ body.search-panel-open {
   font-weight: inherit;
 }
 
-/* Post-aarti ध्वनि (optional; set dhvani: in YAML) */
+/* Opening shloka before main lyrics (optional; set pre_shlok: in YAML) */
+.bhajan-card__pre-shlok {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  line-height: 1.75;
+  font-size: 0.98em;
+  color: var(--muted);
+}
+
+.bhajan-card__pre-shlok .lyrics-pre-shlok {
+  margin: 0;
+}
+
+/* Post-aarti ध्वनि (optional; set dhvani: or shlok: in YAML) */
 .bhajan-card__dhvani {
   margin-top: 1.25rem;
   padding-top: 1rem;
