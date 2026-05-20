@@ -162,16 +162,16 @@ npm run export-pdf   # → output/bhajan-sangrah.pdf (+ output/pdf-export.html p
 
 **CI deploy** runs only `node scripts/build.js` (no Puppeteer, no PDF).
 
-One printable document lists every bhajan in **भजन सूची** (grouped by section) with page numbers. Section banners use `banner:` in `sections.yaml`.
+One printable document lists every bhajan in **भजन सूची** (grouped by section; titles and dotted leaders only, no page numbers). Section banners use `banner:` in `sections.yaml`.
 
 | File | Role |
 |------|------|
 | `.github/workflows/export-pdf.yml` | Manual workflow; uploads PDF artifact |
-| `scripts/export-pdf.js` | Loads YAML, writes HTML, fills page numbers, prints PDF |
+| `scripts/export-pdf.js` | Loads YAML, writes HTML, prints PDF via Puppeteer |
 | `scripts/lib/pdf-template.js` | Single-document HTML (cover, master index, sections) |
 | `assets/css/pdf-export.css` | A4 `@page`, index rows, typography |
 
-**`npm run export-pdf`:** iterative draft PDFs until index digits stabilize. Bhajan anchors use short PDF ids (`b001`…`b199`) because Hindi slug ids exceed PDF named-destination length limits. Check the log for `pdf.js resolved 199/199` and `Index page numbers: … stable after N pass(es)`. The workflow fails (no silent fallback) if Puppeteer cannot fill the index.
+**`npm run export-pdf`:** one-pass PDF export. Index links still jump to each bhajan (`b001`…`b199` anchors). Footer shows `page / total` on each sheet only.
 
 ---
 

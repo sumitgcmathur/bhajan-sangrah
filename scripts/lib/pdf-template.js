@@ -1,8 +1,6 @@
 const path = require('path');
 const { ROOT } = require('./paths');
 const { escapeHtml, bhajanNumberLabel, bhajansByGroup, sectionUsesGroups, renderBhajanCard } = require('./template');
-const { FILL_INDEX_PAGE_NUMBERS_JS } = require('./pdf-print');
-
 function sectionAnchorId(slug) {
   return `pdf-section-${slug}`;
 }
@@ -22,7 +20,6 @@ function renderPdfIndexItem(hrefId, labelHtml) {
   <a href="#${hrefId}" class="pdf-index__link">
     <span class="pdf-index__label">${labelHtml}</span>
     <span class="pdf-index__leaders" aria-hidden="true"></span>
-    <span class="pdf-index__pagenum" data-target="${hrefId}">000</span>
   </a>
 </li>`;
 }
@@ -179,7 +176,7 @@ function renderPdfSection(section, bhajans, resolveAsset) {
 const PRINT_TOOLBAR = `<div class="pdf-print-toolbar no-print" role="region" aria-label="मुद्रण">
   <a class="pdf-print-toolbar__back" href="index.html">← मुख पृष्ठ</a>
   <button type="button" class="pdf-print-toolbar__btn" id="pdf-print-btn">Save as PDF</button>
-  <p class="pdf-print-toolbar__hint">Use Chrome or Edge. Enable &ldquo;Background graphics&rdquo;. Index page numbers are filled by the browser at print time.</p>
+  <p class="pdf-print-toolbar__hint">Use Chrome or Edge. Enable &ldquo;Background graphics&rdquo;.</p>
 </div>`;
 
 const PRINT_TOOLBAR_SCRIPT = `
@@ -239,7 +236,6 @@ ${toolbar}
 </section>
 ${renderCompleteBhajanIndex(sectionPayloads)}
 ${sectionsHtml}
-${options.includeFillScript === false ? '' : `<script>${FILL_INDEX_PAGE_NUMBERS_JS}</script>`}
 ${toolbarScript}
 </body>
 </html>`;
