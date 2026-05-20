@@ -180,13 +180,27 @@ function lyricsStructureToHtml(lyrics, tarz) {
   return `<div class="bhajan-lyrics bhajan-lyrics--standard">${html}</div>`;
 }
 
-function renderDhvaniHtml(dhvani) {
-  const body = String(dhvani || '').trim();
+function renderShlokBlockHtml(text, className) {
+  const body = String(text || '').trim();
   if (!body) return '';
 
   const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
   const html = lines.map((l) => `<span class="lyrics-line">${escapeHtml(l)}</span>`).join('\n');
-  return `<p class="lyrics-dhvani">${html}</p>`;
+  return `<p class="${className}">${html}</p>`;
+}
+
+function renderDhvaniHtml(dhvani) {
+  return renderShlokBlockHtml(dhvani, 'lyrics-dhvani');
+}
+
+function renderPreShlokHtml(preShlok) {
+  return renderShlokBlockHtml(preShlok, 'lyrics-pre-shlok');
+}
+
+function preShlokToHtml(preShlok) {
+  const body = renderPreShlokHtml(preShlok);
+  if (!body) return '';
+  return `<div class="bhajan-card__pre-shlok" aria-label="प्रारंभिक श्लोक">${body}</div>`;
 }
 
 function dhvaniToHtml(dhvani) {
@@ -208,4 +222,4 @@ function lyricsToHtml(lyrics, tarz) {
   return '';
 }
 
-module.exports = { escapeHtml, lyricsToHtml, jabaniToHtml, dhvaniToHtml, lyricsStructureToHtml };
+module.exports = { escapeHtml, lyricsToHtml, jabaniToHtml, dhvaniToHtml, preShlokToHtml, lyricsStructureToHtml };

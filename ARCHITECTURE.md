@@ -81,7 +81,8 @@ sections:
 | `title` | yes | Display title |
 | `lyrics` | yes | Structured object (preferred) or plain multiline string |
 | `tarz` | no | Tune / style line shown above lyrics |
-| `dhvani` | no | Shloka / closing verse after lyrics (subtle styling) |
+| `pre_shlok` | no | Opening doha / shloka before main lyrics (not स्थायी; e.g. Hanuman Chalisa invocations) |
+| `dhvani` | no | Post-shloka after lyrics (`shlok:` is an alias; subtle styling) |
 | `jabani` | no | Prose explanation (e.g. charitra) |
 | `group` | no | Sub-section name when section has `grouped: true` |
 | `swarachit: true` | no | Shows “स्वरचित” badge (except on `swarachit` section page) |
@@ -103,7 +104,8 @@ dhvani: |
   वक्रतुण्ड महाकाय…॥
 ```
 
-- **`sthayi`** — refrain / main hook (rendered first).
+- **`pre_shlok`** — opening verses before the song body (dohas, invocations); rendered above lyrics, without स्थायी markers.
+- **`sthayi`** — refrain / main hook (rendered at start of lyrics).
 - **`paragraphs`** — list of stanzas; each item is a `|` block.
 - **`sthayi_marker`** — optional text in lyrics that triggers repeating the sthayi between paragraphs (advanced).
 - **`parts`** — for multi-part bhajans (e.g. long charitra): array of `{ sthayi, paragraphs, sthayi_marker? }`.
@@ -125,7 +127,7 @@ Every public page shares:
 1. Optional banner image.
 2. Section title.
 3. Numbered **भजन सूची** (anchor index).
-4. **Bhajan cards** — title, lyrics HTML, optional dhvani / jabani, “सूची ↑” back to index.
+4. **Bhajan cards** — title, optional pre_shlok, lyrics HTML, optional dhvani / jabani, “सूची ↑” back to index.
 
 **Home** (`index.html`): home banner + list of section links.
 
@@ -305,7 +307,7 @@ Change `renderIndex()` in `scripts/lib/template.js` or `home_banner` / `site_tit
 | `scripts/lib/sections.js` | Load/save `sections.yaml`, list bhajan files |
 | `scripts/lib/yaml-io.js` | Parse/write bhajan + sections YAML |
 | `scripts/lib/lyrics-structure.js` | Structured lyrics helpers; used by `escape.js` |
-| `scripts/lib/escape.js` | `lyricsToHtml`, `dhvaniToHtml`, `jabaniToHtml` |
+| `scripts/lib/escape.js` | `lyricsToHtml`, `preShlokToHtml`, `dhvaniToHtml`, `jabaniToHtml` |
 | `scripts/lib/template.js` | HTML shell, sidebar, section/home pages |
 | `scripts/lib/search-index.js` | JSON search index |
 | `scripts/lib/slug.js` | Filename + anchor id generation |
