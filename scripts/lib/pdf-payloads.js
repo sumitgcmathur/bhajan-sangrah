@@ -22,8 +22,6 @@ function loadAllSectionPayloads(config) {
         group: data.group,
         swarachit: data.swarachit,
         lyrics: data.lyrics,
-        pre_shlok: data.pre_shlok,
-        dhvani: data.dhvani,
         jabani: data.jabani,
         id,
       };

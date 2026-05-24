@@ -42,6 +42,7 @@ function parseParagraphList(lines, startIdx, baseIndent) {
     }
     const indent = raw.match(/^(\s*)/)[1].length;
     if (indent < baseIndent) break;
+
     const listMatch = raw.match(/^(\s*)-\s+\|\s*$/);
     if (listMatch) {
       const itemIndent = listMatch[1].length + 2;
@@ -50,6 +51,16 @@ function parseParagraphList(lines, startIdx, baseIndent) {
       i = next;
       continue;
     }
+
+    const commentaryMatch = raw.match(/^(\s*)-\s+commentary:\s*\|\s*$/);
+    if (commentaryMatch) {
+      const itemIndent = commentaryMatch[1].length + 2;
+      const { text, next } = readIndentedBlock(lines, i + 1, itemIndent);
+      paragraphs.push({ commentary: text });
+      i = next;
+      continue;
+    }
+
     if (/^[a-zA-Z_][\w-]*:\s/.test(raw) && indent === baseIndent) break;
     break;
   }
@@ -129,7 +140,14 @@ function parseLyricsObject(lines, startIdx) {
 
     if (raw.match(/^\s{2}pre_shlok:\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
-      lyrics._legacyPreShlok = text;
+      lyrics.pre_shlok = text;
+      i = next;
+      continue;
+    }
+
+    if (raw.match(/^\s{2}(?:dhvani|shlok):\s*\|\s*$/)) {
+      const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
+      lyrics.dhvani = text;
       i = next;
       continue;
     }
@@ -147,43 +165,22 @@ function parseLyricsObject(lines, startIdx) {
   return { lyrics, next: i };
 }
 
-/** Opening shloka before lyrics (legacy: nested under lyrics). */
-function hoistPreShlok(doc) {
-  if (!doc?.lyrics || typeof doc.lyrics === 'string') return doc;
+/** Keep pre_shlok / dhvani under lyrics; merge legacy top-level fields. */
+function normalizeLyricsDoc(doc) {
+  let out = hoistJabani(doc);
+  if (typeof out.lyrics !== 'object' || !out.lyrics) return out;
 
-  const pieces = doc.pre_shlok ? [doc.pre_shlok] : [];
-
-  const stripFromPart = (part) => {
-    if (!part) return;
-    if (part._legacyPreShlok) {
-      pieces.push(part._legacyPreShlok);
-      delete part._legacyPreShlok;
-    }
-    if (part.pre_shlok) {
-      pieces.push(part.pre_shlok);
-      delete part.pre_shlok;
-    }
-  };
-
-  if (doc.lyrics._legacyPreShlok) {
-    pieces.push(doc.lyrics._legacyPreShlok);
-    delete doc.lyrics._legacyPreShlok;
-  }
-  if (doc.lyrics.pre_shlok) {
-    pieces.push(doc.lyrics.pre_shlok);
-    delete doc.lyrics.pre_shlok;
-  }
-  if (doc.lyrics.parts?.length) {
-    for (const part of doc.lyrics.parts) stripFromPart(part);
+  const lyrics = { ...out.lyrics };
+  if (out.pre_shlok && !lyrics.pre_shlok) lyrics.pre_shlok = out.pre_shlok;
+  if (out.dhvani && !lyrics.dhvani) lyrics.dhvani = out.dhvani;
+  if (lyrics._legacyPreShlok) {
+    if (!lyrics.pre_shlok) lyrics.pre_shlok = lyrics._legacyPreShlok;
+    delete lyrics._legacyPreShlok;
   }
 
-  const pre_shlok = pieces
-    .map((p) => String(p).trim())
-    .filter(Boolean)
-    .join('\n\n');
-  const out = { ...doc };
-  if (pre_shlok) out.pre_shlok = pre_shlok;
-  else delete out.pre_shlok;
+  out = { ...out, lyrics };
+  delete out.pre_shlok;
+  delete out.dhvani;
   return out;
 }
 
@@ -278,7 +275,7 @@ function loadBhajanDoc(text) {
     if (p) doc[p.key] = p.value;
     i += 1;
   }
-  return hoistJabani(hoistPreShlok(doc));
+  return normalizeLyricsDoc(doc);
 }
 
 function dumpLiteralBlock(key, text, indent) {
@@ -296,6 +293,13 @@ function dumpParagraphList(paragraphs, indent) {
   const itemPad = ' '.repeat(indent + 2);
   const out = [`${pad}paragraphs:`];
   for (const para of paragraphs || []) {
+    if (para && typeof para === 'object' && para.commentary != null) {
+      out.push(`${itemPad}- commentary: |`);
+      for (const line of String(para.commentary).split('\n')) {
+        out.push(`${itemPad}  ${line.replace(/^\s+/, '')}`);
+      }
+      continue;
+    }
     out.push(`${itemPad}- |`);
     for (const line of String(para).split('\n')) {
       out.push(`${itemPad}  ${line.replace(/^\s+/, '')}`);
@@ -316,9 +320,11 @@ function dumpLyricsObject(lyrics) {
     }
     return out;
   }
-  out.push(...dumpLiteralBlock('sthayi', lyrics.sthayi, 2));
+  if (lyrics.pre_shlok) out.push(...dumpLiteralBlock('pre_shlok', lyrics.pre_shlok, 2));
+  if (lyrics.sthayi) out.push(...dumpLiteralBlock('sthayi', lyrics.sthayi, 2));
   if (lyrics.sthayi_marker) out.push(`  sthayi_marker: ${lyrics.sthayi_marker}`);
-  out.push(...dumpParagraphList(lyrics.paragraphs, 2));
+  if (lyrics.paragraphs?.length) out.push(...dumpParagraphList(lyrics.paragraphs, 2));
+  if (lyrics.dhvani) out.push(...dumpLiteralBlock('dhvani', lyrics.dhvani, 2));
   return out;
 }
 
@@ -328,14 +334,12 @@ function dumpBhajanDoc(doc) {
   if (doc.tarz) out.push(`tarz: ${doc.tarz}`);
   if (doc.group) out.push(`group: ${doc.group}`);
   if (doc.swarachit) out.push('swarachit: true');
-  if (doc.pre_shlok) out.push(...dumpLiteralBlock('pre_shlok', doc.pre_shlok, 0));
   if (isStructuredLyrics(doc.lyrics)) {
     out.push(...dumpLyricsObject(doc.lyrics));
   } else {
     out.push('lyrics: |');
     for (const line of String(doc.lyrics || '').split('\n')) out.push(`  ${line}`);
   }
-  if (doc.dhvani) out.push(...dumpLiteralBlock('dhvani', doc.dhvani, 0));
   if (doc.jabani) out.push(...dumpLiteralBlock('jabani', doc.jabani, 0));
   return out.join('\n') + '\n';
 }

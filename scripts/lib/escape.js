@@ -134,9 +134,36 @@ function renderJabaniHtml(jabani) {
   return `<p class="lyrics-jabani">${escapeHtml(body)}</p>`;
 }
 
+function isCommentaryItem(item) {
+  return item && typeof item === 'object' && item.commentary != null;
+}
+
+function paragraphText(item) {
+  if (typeof item === 'string') return item;
+  if (isCommentaryItem(item)) return item.commentary;
+  return '';
+}
+
+function renderLyricsAsideHtml(text, kind) {
+  const className =
+    kind === 'pre-shlok' ? 'lyrics-pre-shlok' : kind === 'commentary' ? 'lyrics-commentary' : 'lyrics-dhvani';
+  const inner = renderShlokBlockHtml(text, className);
+  if (!inner) return '';
+  const labels = {
+    'pre-shlok': 'प्रारंभिक श्लोक',
+    commentary: 'टीका',
+    dhvani: 'ध्वनि',
+  };
+  return `<div class="lyrics-aside lyrics-aside--${kind}" aria-label="${labels[kind] || kind}">${inner}</div>`;
+}
+
 function renderLyricsPart(part, tarzHtml) {
   const chunks = [];
   if (tarzHtml) chunks.push(tarzHtml);
+
+  if (part.pre_shlok) {
+    chunks.push(renderLyricsAsideHtml(part.pre_shlok, 'pre-shlok'));
+  }
 
   if (part.sthayi) {
     const sthayiHtml = renderSthayiHtml(part.sthayi, part.sthayi_marker);
@@ -144,12 +171,22 @@ function renderLyricsPart(part, tarzHtml) {
   }
 
   let paraNum = 1;
-  for (const para of part.paragraphs || []) {
+  for (const item of part.paragraphs || []) {
+    if (isCommentaryItem(item)) {
+      const commentaryHtml = renderLyricsAsideHtml(item.commentary, 'commentary');
+      if (commentaryHtml) chunks.push(commentaryHtml);
+      continue;
+    }
+    const para = paragraphText(item);
     if (!String(para).trim()) continue;
     if (isJabaniText(para)) continue;
     const { html, nextVerse } = renderParagraphHtml(para, paraNum);
     if (html) chunks.push(html);
     paraNum = nextVerse;
+  }
+
+  if (part.dhvani) {
+    chunks.push(renderLyricsAsideHtml(part.dhvani, 'dhvani'));
   }
 
   return chunks.filter(Boolean).join('\n');
@@ -166,7 +203,13 @@ function lyricsStructureToHtml(lyrics, tarz) {
   if (typeof lyrics === 'string') {
     const norm = normalizeFromLegacy(lyrics);
     if (norm.parts) parts = norm.parts;
-    else parts = [{ sthayi: norm.sthayi, sthayi_marker: norm.sthayi_marker, paragraphs: norm.paragraphs }];
+    else parts = [{
+      pre_shlok: norm.pre_shlok,
+      sthayi: norm.sthayi,
+      sthayi_marker: norm.sthayi_marker,
+      paragraphs: norm.paragraphs,
+      dhvani: norm.dhvani,
+    }];
   } else if (lyrics.parts?.length) {
     parts = lyrics.parts;
   } else if (isStructuredLyrics(lyrics)) {

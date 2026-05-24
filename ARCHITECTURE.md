@@ -81,8 +81,9 @@ sections:
 | `title` | yes | Display title |
 | `lyrics` | yes | Structured object (preferred) or plain multiline string |
 | `tarz` | no | Tune / style line shown above lyrics |
-| `pre_shlok` | no | Opening doha / shloka before main lyrics (not स्थायी; e.g. Hanuman Chalisa invocations) |
-| `dhvani` | no | Post-shloka after lyrics (`shlok:` is an alias; subtle styling) |
+| `pre_shlok` | no | Opening doha / shloka before main lyrics (inside `lyrics:`; not स्थायी) |
+| `commentary` | no | Inline टीका blocks in `paragraphs` (styled like pre_shlok/dhvani, no verse numbers) |
+| `dhvani` / `shlok` | no | Post-shloka after lyrics (inside `lyrics:`) |
 | `jabani` | no | Prose explanation (e.g. charitra) |
 | `group` | no | Sub-section name when section has `grouped: true` |
 | `swarachit: true` | no | Shows “स्वरचित” badge (except on `swarachit` section page) |
@@ -100,13 +101,15 @@ lyrics:
       एक दंत दयावंत, चार भुजा धारी…
     - |
       अंधन को आंख देत…
-dhvani: |
-  वक्रतुण्ड महाकाय…॥
+  dhvani: |
+    वक्रतुण्ड महाकाय…॥
 ```
 
-- **`pre_shlok`** — opening verses before the song body (dohas, invocations); rendered above lyrics, without स्थायी markers.
-- **`sthayi`** — refrain / main hook (rendered at start of lyrics).
-- **`paragraphs`** — list of stanzas; each item is a `|` block.
+- **`pre_shlok`** — opening verses before the song body (inside `lyrics:`); no स्थायी markers.
+- **`commentary`** — `- commentary: |` in `paragraphs`; टीका blocks (no verse numbers).
+- **`sthayi`** — refrain / main hook (rendered at start of numbered lyrics).
+- **`paragraphs`** — antaras (`- |`) and optional `- commentary: |` entries, in order.
+- **`dhvani`** / **`shlok`** — closing shloka after lyrics (inside `lyrics:`).
 - **`sthayi_marker`** — optional text in lyrics that triggers repeating the sthayi between paragraphs (advanced).
 - **`parts`** — for multi-part bhajans (e.g. long charitra): array of `{ sthayi, paragraphs, sthayi_marker? }`.
 
@@ -127,7 +130,7 @@ Every public page shares:
 1. Optional banner image.
 2. Section title.
 3. Numbered **भजन सूची** (anchor index).
-4. **Bhajan cards** — title, optional pre_shlok, lyrics HTML, optional dhvani / jabani, “सूची ↑” back to index.
+4. **Bhajan cards** — title, lyrics HTML (pre_shlok, sthayi, antaras, commentary, dhvani), optional jabani, “सूची ↑” back to index.
 
 **Home** (`index.html`): home banner + list of section links.
 

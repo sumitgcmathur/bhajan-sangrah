@@ -15,11 +15,17 @@ function collectLyricsText(lyrics) {
   const chunks = [];
   const addPart = (p) => {
     if (!p) return;
+    if (p.pre_shlok) chunks.push(String(p.pre_shlok));
     if (p.sthayi) chunks.push(String(p.sthayi));
     for (const para of p.paragraphs || []) {
+      if (para && typeof para === 'object' && para.commentary != null) {
+        chunks.push(String(para.commentary));
+        continue;
+      }
       const body = String(para).trim();
       if (body) chunks.push(body);
     }
+    if (p.dhvani) chunks.push(String(p.dhvani));
   };
 
   if (Array.isArray(lyrics.parts)) {
@@ -32,9 +38,7 @@ function collectLyricsText(lyrics) {
 
 /** Searchable lyric lines (one per physical line, markers stripped lightly). */
 function collectLyricLines(b) {
-  const raw = [b.tarz, b.pre_shlok, collectLyricsText(b.lyrics), b.dhvani]
-    .filter(Boolean)
-    .join('\n');
+  const raw = [b.tarz, collectLyricsText(b.lyrics)].filter(Boolean).join('\n');
   return raw
     .split('\n')
     .map((line) => line.replace(/\s*॥[^॥]*॥\s*$/u, '').replace(/\s+/g, ' ').trim())
