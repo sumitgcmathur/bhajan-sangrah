@@ -121,7 +121,7 @@ function parseLyricsObject(lines, startIdx) {
     }
 
     if (raw.match(/^\s{2}paragraphs:\s*$/)) {
-      const parsed = parseParagraphList(lines, i + 1, baseIndent + 2);
+      const parsed = parseParagraphList(lines, i + 1, baseIndent);
       lyrics.paragraphs = parsed.paragraphs;
       i = parsed.next;
       continue;
