@@ -733,7 +733,27 @@ body.search-panel-open {
   font-weight: inherit;
 }
 
-/* Opening shloka before main lyrics (optional; set pre_shlok: in YAML) */
+/* Aside blocks inside lyrics: pre-shlok, commentary, dhvani */
+.bhajan-lyrics--standard .lyrics-aside {
+  margin: 1.1rem 0;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  line-height: 1.75;
+  font-size: 0.98em;
+  color: var(--muted);
+}
+
+.bhajan-lyrics--standard .lyrics-aside p {
+  margin: 0;
+}
+
+.bhajan-lyrics--standard .lyrics-aside .lyrics-line {
+  display: block;
+}
+
+/* Opening shloka before main lyrics (legacy card wrapper — prefer lyrics.pre_shlok) */
 .bhajan-card__pre-shlok {
   margin-bottom: 1.25rem;
   padding-bottom: 1rem;

@@ -363,8 +363,16 @@ function flattenLyricsText(lyrics) {
   if (typeof lyrics === 'string') return lyrics;
   const chunks = [];
   const renderPart = (p) => {
+    if (p.pre_shlok) chunks.push(p.pre_shlok);
     if (p.sthayi) chunks.push(p.sthayi);
-    for (const para of p.paragraphs || []) chunks.push(para);
+    for (const para of p.paragraphs || []) {
+      if (para && typeof para === 'object' && para.commentary != null) {
+        chunks.push(para.commentary);
+        continue;
+      }
+      chunks.push(para);
+    }
+    if (p.dhvani) chunks.push(p.dhvani);
   };
   if (lyrics.parts) {
     for (const p of lyrics.parts) renderPart(p);
