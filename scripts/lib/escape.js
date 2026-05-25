@@ -90,14 +90,30 @@ function isSthayiConnectEnabled(part) {
   return Boolean(String(part?.sthayi_connect_text || '').trim());
 }
 
-/** First N words of sthayi for inline refrain; longer sthayi gets trailing ... */
-function sthayiConnectSuffixFromSthayi(sthayi) {
-  const flat = String(sthayi || '')
+/** Strip trailing/leading punctuation from a connect word (commas, danda, etc.). */
+function stripConnectWordPunctuation(word) {
+  return String(word || '')
+    .replace(/^[,;:.!?\-–—]+/u, '')
+    .replace(/[,;:.!?\-–—]+$/u, '')
+    .replace(/[।॥]+/g, '')
+    .trim();
+}
+
+function normalizeConnectWords(text) {
+  const flat = String(text || '')
     .replace(/\n+/g, ' ')
     .replace(/\s*[।॥]+\s*/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  const words = flat.split(/\s+/).filter(Boolean);
+  return flat
+    .split(/\s+/)
+    .map(stripConnectWordPunctuation)
+    .filter(Boolean);
+}
+
+/** First N words of sthayi for inline refrain; longer sthayi gets trailing ... */
+function sthayiConnectSuffixFromSthayi(sthayi) {
+  const words = normalizeConnectWords(sthayi);
   if (words.length <= STHAYI_CONNECT_MAX_WORDS) return words.join(' ');
   return `${words.slice(0, STHAYI_CONNECT_MAX_WORDS).join(' ')}...`;
 }
@@ -106,33 +122,36 @@ function sthayiConnectSuffixFromSthayi(sthayi) {
 function resolveSthayiConnectSuffix(part) {
   const explicit = String(part?.sthayi_connect_text || '').trim();
   if (explicit) {
-    return explicit
-      .replace(/\n+/g, ' ')
-      .replace(/\s*[।॥]+\s*$/u, '')
-      .trim();
+    return normalizeConnectWords(explicit).join(' ');
   }
   if (!isSthayiConnectEnabled(part) || !part.sthayi) return null;
   return sthayiConnectSuffixFromSthayi(part.sthayi);
 }
 
-function appendSthayiConnectToLines(lines, suffix) {
-  if (!suffix || !lines.length) return lines;
-  const out = lines.map((l) => l.trim()).filter(Boolean);
-  const last = out.length - 1;
-  out[last] = lineWithoutEndDanda(out[last]) + STHAYI_CONNECT_TAIL + suffix;
-  return out;
+function appendSthayiConnectToParagraph(text, suffix) {
+  if (!suffix) return String(text || '').trim();
+  const tail = `${STHAYI_CONNECT_TAIL}${suffix}`;
+  const body = String(text || '').trim();
+  if (isMultilineParagraph(body)) {
+    const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
+    if (!lines.length) return body;
+    const last = lines.length - 1;
+    lines[last] = lineWithoutEndDanda(lines[last]) + tail;
+    return lines.join('\n');
+  }
+  return lineWithoutEndDanda(body) + tail;
 }
 
 function renderParagraphHtml(text, verseNum, opts = {}) {
-  const body = String(text || '').trim();
+  const body = opts.sthayiSuffix
+    ? appendSthayiConnectToParagraph(text, opts.sthayiSuffix)
+    : String(text || '').trim();
   if (!body) return { html: '', nextVerse: verseNum };
 
   const stripe = lyricsAntaraStripeClass(verseNum);
-  const suffix = opts.sthayiSuffix || null;
 
   if (isMultilineParagraph(body)) {
-    let lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
-    if (suffix) lines = appendSthayiConnectToLines(lines, suffix);
+    const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
     const { html, nextVerse } = renderBlockLines(lines, { verseNum });
     return {
       html: `<p class="lyrics-antara lyrics-antara--block ${stripe}">${html}</p>`,
@@ -140,10 +159,10 @@ function renderParagraphHtml(text, verseNum, opts = {}) {
     };
   }
 
-  const lineText = suffix ? lineWithoutEndDanda(body) + STHAYI_CONNECT_TAIL + suffix : lineWithoutEndDanda(body);
+  const core = lineWithoutEndDanda(body);
   const marker = formatDandaVerse(verseNum);
   return {
-    html: `<p class="lyrics-antara ${stripe}">${escapeHtml(lineText)}<span class="lyrics-marker">${escapeHtml(marker)}</span></p>`,
+    html: `<p class="lyrics-antara ${stripe}">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></p>`,
     nextVerse: verseNum + 1,
   };
 }
