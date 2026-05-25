@@ -108,6 +108,7 @@ lyrics:
 - **`pre_shlok`** — opening verses before the song body (inside `lyrics:`); no स्थायी markers.
 - **`commentary`** — `- commentary: |` in `paragraphs`; टीका blocks (no verse numbers).
 - **`sthayi`** — refrain / main hook (rendered at start of numbered lyrics).
+- **`sthayi_connect`** — on section (`sections.yaml`) or `lyrics:` / bhajan: when true, antaras end with `....` + first 5 words of sthayi (longer sthayi → `...`); no separate स्थायी block (used for आरती).
 - **`paragraphs`** — antaras (`- |`) and optional `- commentary: |` entries, in order.
 - **`dhvani`** / **`shlok`** — closing shloka after lyrics (inside `lyrics:`).
 - **`sthayi_marker`** — optional text in lyrics that triggers repeating the sthayi between paragraphs (advanced).

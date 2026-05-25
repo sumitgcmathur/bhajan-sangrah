@@ -499,8 +499,24 @@ function analyzeBhajanLyrics(lyricsText, title) {
   };
 }
 
+function isTruthyFlag(value) {
+  return value === true || value === 'true';
+}
+
+/** Apply section/doc flags onto structured lyrics (e.g. aarti sthayi_connect). */
+function enrichBhajanLyrics(lyrics, section, doc = {}) {
+  if (!lyrics || typeof lyrics !== 'object') return lyrics;
+  const connect =
+    isTruthyFlag(lyrics.sthayi_connect) ||
+    isTruthyFlag(doc?.sthayi_connect) ||
+    isTruthyFlag(section?.sthayi_connect);
+  if (!connect) return lyrics;
+  return { ...lyrics, sthayi_connect: true };
+}
+
 module.exports = {
   analyzeBhajanLyrics,
+  enrichBhajanLyrics,
   migrateDoc,
   extractTarzFromText,
   normalizeFromLegacy,

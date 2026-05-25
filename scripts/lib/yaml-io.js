@@ -138,6 +138,13 @@ function parseLyricsObject(lines, startIdx) {
       continue;
     }
 
+    if (raw.match(/^\s{2}sthayi_connect:\s/)) {
+      const v = raw.replace(/^\s{2}sthayi_connect:\s*/, '').trim();
+      lyrics.sthayi_connect = v === 'true';
+      i += 1;
+      continue;
+    }
+
     if (raw.match(/^\s{2}pre_shlok:\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
       lyrics.pre_shlok = text;
@@ -323,6 +330,7 @@ function dumpLyricsObject(lyrics) {
   if (lyrics.pre_shlok) out.push(...dumpLiteralBlock('pre_shlok', lyrics.pre_shlok, 2));
   if (lyrics.sthayi) out.push(...dumpLiteralBlock('sthayi', lyrics.sthayi, 2));
   if (lyrics.sthayi_marker) out.push(`  sthayi_marker: ${lyrics.sthayi_marker}`);
+  if (lyrics.sthayi_connect) out.push('  sthayi_connect: true');
   if (lyrics.paragraphs?.length) out.push(...dumpParagraphList(lyrics.paragraphs, 2));
   if (lyrics.dhvani) out.push(...dumpLiteralBlock('dhvani', lyrics.dhvani, 2));
   return out;
@@ -396,6 +404,7 @@ function dumpSectionsDoc(config) {
     out.push(`    title: ${s.title}`);
     if (s.banner) out.push(`    banner: ${s.banner}`);
     if (s.grouped) out.push('    grouped: true');
+    if (s.sthayi_connect) out.push('    sthayi_connect: true');
   }
   return out.join('\n') + '\n';
 }

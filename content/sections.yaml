@@ -10,6 +10,7 @@ sections:
     google_path: Aarti
     title: आरती
     banner: assets/icons/aarti.jpg
+    sthayi_connect: true
   - slug: shiv
     folder: shiv
     google_path: shiv
