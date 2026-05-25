@@ -187,7 +187,6 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
   return `<article class="bhajan-card" id="${id}">
   <header class="bhajan-card__head">
     <h3 class="bhajan-card__title"><span class="bhajan-card__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}${sw}</h3>
-    <a class="bhajan-card__to-index" href="#bhajan-index">सूची ↑</a>
   </header>
   <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics, b.tarz)}</div>
   ${jabaniToHtml(b.jabani)}
