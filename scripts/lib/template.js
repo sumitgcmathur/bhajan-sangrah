@@ -264,6 +264,7 @@ function renderSectionPage(section, bhajans, config, sections, base) {
   <h1 class="section-title">${escapeHtml(section.title)}</h1>
   ${indexHtml}
   ${articlesHtml}
+  <a href="#bhajan-index" class="bhajan-index-fab" aria-label="भजन सूची पर जाएँ">सूची ↑</a>
 </main>`;
 
   return renderPage({
