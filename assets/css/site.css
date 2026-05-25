@@ -768,11 +768,6 @@ body.search-panel-open {
   font-weight: inherit;
 }
 
-.bhajan-lyrics--standard .lyrics-sthayi-connect {
-  color: var(--muted);
-  font-weight: 500;
-}
-
 /* Aside blocks inside lyrics: pre-shlok, commentary, dhvani */
 .bhajan-lyrics--standard .lyrics-aside {
   margin: 0.85rem 0;

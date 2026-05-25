@@ -86,11 +86,12 @@ function lyricsAntaraStripeClass(verseNum) {
 }
 
 function isSthayiConnectEnabled(part) {
-  return part?.sthayi_connect === true || part?.sthayi_connect === 'true';
+  if (part?.sthayi_connect === true || part?.sthayi_connect === 'true') return true;
+  return Boolean(String(part?.sthayi_connect_text || '').trim());
 }
 
 /** First N words of sthayi for inline refrain; longer sthayi gets trailing ... */
-function sthayiConnectSuffix(sthayi) {
+function sthayiConnectSuffixFromSthayi(sthayi) {
   const flat = String(sthayi || '')
     .replace(/\n+/g, ' ')
     .replace(/\s*[।॥]+\s*/g, ' ')
@@ -101,53 +102,37 @@ function sthayiConnectSuffix(sthayi) {
   return `${words.slice(0, STHAYI_CONNECT_MAX_WORDS).join(' ')}...`;
 }
 
-function appendSthayiConnectToParagraph(text, suffix) {
-  if (!suffix) return String(text || '').trim();
-  const tail = `${STHAYI_CONNECT_TAIL}${suffix}`;
-  const body = String(text || '').trim();
-  if (isMultilineParagraph(body)) {
-    const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
-    if (!lines.length) return body;
-    const last = lines.length - 1;
-    lines[last] = lineWithoutEndDanda(lines[last]) + tail;
-    return lines.join('\n');
+/** Explicit YAML `sthayi_connect_text`, else truncated sthayi. */
+function resolveSthayiConnectSuffix(part) {
+  const explicit = String(part?.sthayi_connect_text || '').trim();
+  if (explicit) {
+    return explicit
+      .replace(/\n+/g, ' ')
+      .replace(/\s*[।॥]+\s*$/u, '')
+      .trim();
   }
-  return lineWithoutEndDanda(body) + tail;
+  if (!isSthayiConnectEnabled(part) || !part.sthayi) return null;
+  return sthayiConnectSuffixFromSthayi(part.sthayi);
 }
 
-function renderLyricsLineHtml(line, { connectedTail = false } = {}) {
-  const t = String(line || '').trim();
-  if (!t) return '';
-  if (!connectedTail || !t.includes(STHAYI_CONNECT_TAIL)) {
-    return `<span class="lyrics-line">${escapeHtml(t)}</span>`;
-  }
-  const idx = t.indexOf(STHAYI_CONNECT_TAIL);
-  const core = t.slice(0, idx);
-  const tail = t.slice(idx);
-  return `<span class="lyrics-line">${escapeHtml(core)}<span class="lyrics-sthayi-connect">${escapeHtml(tail)}</span></span>`;
+function appendSthayiConnectToLines(lines, suffix) {
+  if (!suffix || !lines.length) return lines;
+  const out = lines.map((l) => l.trim()).filter(Boolean);
+  const last = out.length - 1;
+  out[last] = lineWithoutEndDanda(out[last]) + STHAYI_CONNECT_TAIL + suffix;
+  return out;
 }
 
 function renderParagraphHtml(text, verseNum, opts = {}) {
-  const body = opts.sthayiSuffix
-    ? appendSthayiConnectToParagraph(text, opts.sthayiSuffix)
-    : String(text || '').trim();
+  const body = String(text || '').trim();
   if (!body) return { html: '', nextVerse: verseNum };
 
   const stripe = lyricsAntaraStripeClass(verseNum);
-  const connected = Boolean(opts.sthayiSuffix);
+  const suffix = opts.sthayiSuffix || null;
 
   if (isMultilineParagraph(body)) {
-    const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
-    if (connected) {
-      const html = lines
-        .map((l, i) => renderLyricsLineHtml(l, { connectedTail: i === lines.length - 1 }))
-        .filter(Boolean)
-        .join('\n');
-      return {
-        html: `<p class="lyrics-antara lyrics-antara--block ${stripe}">${html}</p>`,
-        nextVerse: verseNum + 1,
-      };
-    }
+    let lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
+    if (suffix) lines = appendSthayiConnectToLines(lines, suffix);
     const { html, nextVerse } = renderBlockLines(lines, { verseNum });
     return {
       html: `<p class="lyrics-antara lyrics-antara--block ${stripe}">${html}</p>`,
@@ -155,17 +140,10 @@ function renderParagraphHtml(text, verseNum, opts = {}) {
     };
   }
 
-  if (connected) {
-    return {
-      html: `<p class="lyrics-antara ${stripe}">${renderLyricsLineHtml(body, { connectedTail: true })}</p>`,
-      nextVerse: verseNum + 1,
-    };
-  }
-
-  const core = lineWithoutEndDanda(body);
+  const lineText = suffix ? lineWithoutEndDanda(body) + STHAYI_CONNECT_TAIL + suffix : lineWithoutEndDanda(body);
   const marker = formatDandaVerse(verseNum);
   return {
-    html: `<p class="lyrics-antara ${stripe}">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></p>`,
+    html: `<p class="lyrics-antara ${stripe}">${escapeHtml(lineText)}<span class="lyrics-marker">${escapeHtml(marker)}</span></p>`,
     nextVerse: verseNum + 1,
   };
 }
@@ -229,10 +207,9 @@ function renderLyricsPart(part, tarzHtml) {
     chunks.push(renderLyricsAsideHtml(part.pre_shlok, 'pre-shlok'));
   }
 
-  const sthayiSuffix =
-    isSthayiConnectEnabled(part) && part.sthayi ? sthayiConnectSuffix(part.sthayi) : null;
+  const sthayiSuffix = resolveSthayiConnectSuffix(part);
 
-  if (part.sthayi && !sthayiSuffix) {
+  if (part.sthayi) {
     const sthayiHtml = renderSthayiHtml(part.sthayi, part.sthayi_marker);
     if (sthayiHtml) chunks.push(sthayiHtml);
   }
@@ -286,6 +263,7 @@ function lyricsStructureToHtml(lyrics, tarz) {
         sthayi: lyrics.sthayi,
         sthayi_marker: lyrics.sthayi_marker,
         sthayi_connect: lyrics.sthayi_connect,
+        sthayi_connect_text: lyrics.sthayi_connect_text,
         paragraphs: lyrics.paragraphs,
         dhvani: lyrics.dhvani,
       },
