@@ -525,17 +525,6 @@ body.search-panel-open {
   scroll-margin-top: 3.75rem;
 }
 
-/* Section pages: index stays on screen while scrolling the list */
-.page-section .bhajan-index {
-  position: sticky;
-  top: max(0.35rem, env(safe-area-inset-top, 0px));
-  z-index: 45;
-  max-height: min(45vh, 18rem);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-}
-
 /* Always-visible jump to index (section pages only) */
 .page-section .bhajan-index-fab {
   position: fixed;
@@ -636,10 +625,6 @@ body.search-panel-open {
 }
 
 .bhajan-card__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem 1rem;
   margin-bottom: 0.9rem;
   padding-bottom: 0.55rem;
   border-bottom: 2px solid var(--bg-alt);
@@ -946,8 +931,6 @@ body.search-panel-open {
 
   .bhajan-index {
     padding: 0.85rem var(--card-pad-x) 1rem;
-    top: 3.15rem;
-    max-height: min(40vh, 16rem);
   }
 
   .page-section .bhajan-index-fab {
