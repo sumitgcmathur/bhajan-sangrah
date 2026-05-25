@@ -510,8 +510,18 @@ function enrichBhajanLyrics(lyrics, section, doc = {}) {
     isTruthyFlag(lyrics.sthayi_connect) ||
     isTruthyFlag(doc?.sthayi_connect) ||
     isTruthyFlag(section?.sthayi_connect);
-  if (!connect) return lyrics;
-  return { ...lyrics, sthayi_connect: true };
+  if (!connect && !String(lyrics.sthayi_connect_text || doc?.sthayi_connect_text || '').trim()) {
+    return lyrics;
+  }
+  return {
+    ...lyrics,
+    sthayi_connect: true,
+    ...(lyrics.sthayi_connect_text
+      ? {}
+      : doc?.sthayi_connect_text
+        ? { sthayi_connect_text: doc.sthayi_connect_text }
+        : {}),
+  };
 }
 
 module.exports = {

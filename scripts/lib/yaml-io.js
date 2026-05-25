@@ -145,6 +145,19 @@ function parseLyricsObject(lines, startIdx) {
       continue;
     }
 
+    if (raw.match(/^\s{2}sthayi_connect_text:\s*\|\s*$/)) {
+      const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
+      lyrics.sthayi_connect_text = text.replace(/\n+/g, ' ').trim();
+      i = next;
+      continue;
+    }
+
+    if (raw.match(/^\s{2}sthayi_connect_text:\s/)) {
+      lyrics.sthayi_connect_text = raw.replace(/^\s{2}sthayi_connect_text:\s*/, '').trim();
+      i += 1;
+      continue;
+    }
+
     if (raw.match(/^\s{2}pre_shlok:\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
       lyrics.pre_shlok = text;
@@ -331,6 +344,9 @@ function dumpLyricsObject(lyrics) {
   if (lyrics.sthayi) out.push(...dumpLiteralBlock('sthayi', lyrics.sthayi, 2));
   if (lyrics.sthayi_marker) out.push(`  sthayi_marker: ${lyrics.sthayi_marker}`);
   if (lyrics.sthayi_connect) out.push('  sthayi_connect: true');
+  if (lyrics.sthayi_connect_text) {
+    out.push(`  sthayi_connect_text: ${lyrics.sthayi_connect_text}`);
+  }
   if (lyrics.paragraphs?.length) out.push(...dumpParagraphList(lyrics.paragraphs, 2));
   if (lyrics.dhvani) out.push(...dumpLiteralBlock('dhvani', lyrics.dhvani, 2));
   return out;
