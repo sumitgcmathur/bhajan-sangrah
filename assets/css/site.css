@@ -27,6 +27,9 @@
   --banner-h: min(48vh, 440px);
   --banner-img-max-h: min(46vh, 420px);
   --banner-img-max-w: 100%;
+  --content-pad-x: 1rem;
+  --content-pad-y: 1.5rem;
+  --card-pad-x: 1rem;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -459,7 +462,7 @@ body.search-panel-open {
   position: relative;
   z-index: 1;
   flex: 1;
-  padding: 1.5rem 1.25rem 2.5rem;
+  padding: var(--content-pad-y) var(--content-pad-x) 2.5rem;
   background: var(--bg);
   box-shadow: 0 -4px 24px rgba(26, 43, 60, 0.06);
 }
@@ -522,6 +525,52 @@ body.search-panel-open {
   scroll-margin-top: 3.75rem;
 }
 
+/* Section pages: index stays on screen while scrolling the list */
+.page-section .bhajan-index {
+  position: sticky;
+  top: max(0.35rem, env(safe-area-inset-top, 0px));
+  z-index: 45;
+  max-height: min(45vh, 18rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Always-visible jump to index (section pages only) */
+.page-section .bhajan-index-fab {
+  position: fixed;
+  right: max(0.65rem, env(safe-area-inset-right, 0px));
+  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  z-index: 490;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: var(--font);
+  color: var(--link);
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: 2rem;
+  box-shadow: 0 4px 16px rgba(13, 71, 161, 0.22);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.page-section .bhajan-index-fab:hover {
+  color: var(--link-hover);
+  background: var(--accent-soft);
+}
+
+.page-section .bhajan-index-fab:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .bhajan-index__num {
   font-weight: 600;
   color: var(--muted);
@@ -580,7 +629,7 @@ body.search-panel-open {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
-  padding: 1.35rem 1.25rem 1.6rem;
+  padding: 1.2rem var(--card-pad-x) 1.45rem;
   margin-bottom: 1.5rem;
   scroll-margin-top: 3.75rem;
   box-shadow: 0 2px 10px var(--accent-glow);
@@ -683,6 +732,7 @@ body.search-panel-open {
 .bhajan-lyrics--standard {
   text-align: left;
   max-width: 42rem;
+  width: 100%;
 }
 
 .bhajan-lyrics--standard .lyrics-tarz {
@@ -711,7 +761,7 @@ body.search-panel-open {
 }
 
 .bhajan-lyrics--standard .lyrics-antara--block {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 /* One display row per YAML line (see renderBlockLines in escape.js) */
@@ -735,11 +785,11 @@ body.search-panel-open {
 
 /* Aside blocks inside lyrics: pre-shlok, commentary, dhvani */
 .bhajan-lyrics--standard .lyrics-aside {
-  margin: 1.1rem 0;
-  padding: 0.85rem 0;
+  margin: 0.85rem 0;
+  padding: 0.65rem 0;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-  text-align: center;
+  text-align: left;
   line-height: 1.75;
   font-size: 0.98em;
   color: var(--muted);
@@ -755,10 +805,10 @@ body.search-panel-open {
 
 /* Opening shloka before main lyrics (legacy card wrapper — prefer lyrics.pre_shlok) */
 .bhajan-card__pre-shlok {
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);
-  text-align: center;
+  text-align: left;
   line-height: 1.75;
   font-size: 0.98em;
   color: var(--muted);
@@ -770,10 +820,10 @@ body.search-panel-open {
 
 /* Post-aarti ध्वनि (optional; set dhvani: or shlok: in YAML) */
 .bhajan-card__dhvani {
-  margin-top: 1.25rem;
-  padding-top: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
   border-top: 1px solid var(--border);
-  text-align: center;
+  text-align: left;
   line-height: 1.75;
   font-size: 0.98em;
   color: var(--muted);
@@ -885,7 +935,29 @@ body.search-panel-open {
   }
 
   .content-main {
-    padding: 3.5rem 3.25rem 2.5rem 1rem;
+    --content-pad-x: 0.65rem;
+    --card-pad-x: 0.7rem;
+    padding: 3.25rem var(--content-pad-x) 2rem;
+  }
+
+  .section-title {
+    padding: 0.85rem var(--card-pad-x) 0.95rem;
+  }
+
+  .bhajan-index {
+    padding: 0.85rem var(--card-pad-x) 1rem;
+    top: 3.15rem;
+    max-height: min(40vh, 16rem);
+  }
+
+  .page-section .bhajan-index-fab {
+    bottom: max(0.85rem, env(safe-area-inset-bottom, 0px));
+    font-size: 1rem;
+    padding: 0.6rem 0.95rem;
+  }
+
+  .bhajan-index--grouped {
+    padding: 0.65rem var(--card-pad-x) 0.85rem;
   }
 
   .sidebar-link {
@@ -899,17 +971,30 @@ body.search-panel-open {
     display: inline-block;
   }
 
-  .section-title {
-    padding: 1rem 1rem 1.05rem;
+  .bhajan-card {
+    padding: 1rem var(--card-pad-x) 1.25rem;
   }
 
-  .bhajan-card {
-    padding: 1.4rem 1.15rem 1.65rem;
+  .bhajan-card__head {
+    margin-bottom: 0.65rem;
+    padding-bottom: 0.45rem;
   }
 
   .bhajan-card__lyrics {
     font-size: 1.15rem;
-    line-height: 1.95;
+    line-height: 1.9;
+  }
+
+  .bhajan-lyrics--standard {
+    max-width: none;
+  }
+
+  .bhajan-lyrics--standard .lyrics-antara {
+    margin-bottom: 0.75rem;
+  }
+
+  .bhajan-lyrics--standard .lyrics-antara--block {
+    margin-bottom: 0.55rem;
   }
 }
 
@@ -919,7 +1004,8 @@ body.search-panel-open {
   html { font-size: 18px; }
 
   .content-main {
-    padding: 1.75rem 2rem 2.5rem;
+    --content-pad-x: 1.25rem;
+    padding: 1.75rem var(--content-pad-x) 2.5rem;
   }
 
   :root {
