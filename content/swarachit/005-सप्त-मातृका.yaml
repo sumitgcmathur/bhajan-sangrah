@@ -3,6 +3,7 @@ tarz: मंगल भवन अमंगल हारी
 group: अम्बे भजन
 swarachit: true
 lyrics:
+  sthayi_connect: false
   sthayi: |
     सप्त मातृका, महा बलधारी।
     करे शिव संग, अंधक संहारी।
