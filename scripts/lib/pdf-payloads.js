@@ -22,7 +22,7 @@ function loadAllSectionPayloads(config) {
         tarz: data.tarz,
         group: data.group,
         swarachit: data.swarachit,
-        lyrics: enrichBhajanLyrics(data.lyrics, section, data),
+        lyrics: enrichBhajanLyrics(data.lyrics, section, data, config),
         jabani: data.jabani,
         id,
       };

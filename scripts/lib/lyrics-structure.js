@@ -503,15 +503,32 @@ function isTruthyFlag(value) {
   return value === true || value === 'true';
 }
 
-/** Apply section/doc flags onto structured lyrics (e.g. aarti sthayi_connect). */
-function enrichBhajanLyrics(lyrics, section, doc = {}) {
+function isFalsyFlag(value) {
+  return value === false || value === 'false';
+}
+
+/**
+ * Site default is sthayi_connect on (sections.yaml). Opt out at section, bhajan, or lyrics level.
+ * Most specific explicit false wins; explicit true re-enables after a broader false.
+ */
+function resolveSthayiConnect(lyrics, section, doc, config) {
+  const levels = [config, section, doc, lyrics];
+  for (let i = levels.length - 1; i >= 0; i -= 1) {
+    if (levels[i] && isFalsyFlag(levels[i].sthayi_connect)) return false;
+  }
+  for (let i = levels.length - 1; i >= 0; i -= 1) {
+    if (levels[i] && isTruthyFlag(levels[i].sthayi_connect)) return true;
+  }
+  return true;
+}
+
+/** Apply site/section/doc flags onto structured lyrics (sthayi_connect default on). */
+function enrichBhajanLyrics(lyrics, section, doc = {}, config = {}) {
   if (!lyrics || typeof lyrics !== 'object') return lyrics;
-  const connect =
-    isTruthyFlag(lyrics.sthayi_connect) ||
-    isTruthyFlag(doc?.sthayi_connect) ||
-    isTruthyFlag(section?.sthayi_connect);
-  if (!connect && !String(lyrics.sthayi_connect_text || doc?.sthayi_connect_text || '').trim()) {
-    return lyrics;
+  if (!resolveSthayiConnect(lyrics, section, doc, config)) {
+    const out = { ...lyrics };
+    delete out.sthayi_connect;
+    return out;
   }
   return {
     ...lyrics,

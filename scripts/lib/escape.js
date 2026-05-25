@@ -88,8 +88,9 @@ function lyricsAntaraStripeClass(verseNum) {
 }
 
 function isSthayiConnectEnabled(part) {
+  if (part?.sthayi_connect === false || part?.sthayi_connect === 'false') return false;
   if (part?.sthayi_connect === true || part?.sthayi_connect === 'true') return true;
-  return Boolean(String(part?.sthayi_connect_text || '').trim());
+  return false;
 }
 
 /** Strip trailing/leading punctuation from a connect word (commas, danda, etc.). */
