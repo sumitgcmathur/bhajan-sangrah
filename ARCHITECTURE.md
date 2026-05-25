@@ -109,7 +109,7 @@ lyrics:
 - **`commentary`** — `- commentary: |` in `paragraphs`; टीका blocks (no verse numbers).
 - **`sthayi`** — refrain / main hook (rendered at start of numbered lyrics).
 - **`sthayi_connect`** — **on by default** (`sthayi_connect: true` in `sections.yaml`). Each antara’s last line also ends with `....` + refrain; the full `sthayi` block with `॥स्थायी॥` still prints first. Disable per bhajan with `sthayi_connect: false` under `lyrics:` (or top-level on the bhajan file), or per section in `sections.yaml`.
-- **`sthayi_connect_text`** — optional exact refrain string under `lyrics:` (e.g. `ॐ जय शिव ओंकारा`). If omitted, first 5 words of `sthayi` are used (longer → `...`).
+- **`sthayi_connect_text`** — optional exact refrain string under `lyrics:` (e.g. `ॐ जय शिव ओंकारा`). If omitted, first 3 words of `sthayi` are used (longer → `...`).
 - **`paragraphs`** — antaras (`- |`) and optional `- commentary: |` entries, in order.
 - **`dhvani`** / **`shlok`** — closing shloka after lyrics (inside `lyrics:`).
 - **`sthayi_marker`** — optional text in lyrics that triggers repeating the sthayi between paragraphs (advanced).
