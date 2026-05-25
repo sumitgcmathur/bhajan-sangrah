@@ -7,7 +7,7 @@ const {
 
 const STHAYI_MARKER = ' ॥स्थायी॥';
 const STHAYI_CONNECT_TAIL = '....';
-const STHAYI_CONNECT_MAX_WORDS = 5;
+const STHAYI_CONNECT_MAX_WORDS = 3;
 const JABANI_RE = /^जबानी\s*[-–—:：]/i;
 
 function isJabaniText(text) {
