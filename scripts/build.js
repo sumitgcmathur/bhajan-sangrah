@@ -54,7 +54,7 @@ function main() {
       tarz: b.tarz,
       group: b.group,
       swarachit: b.swarachit,
-      lyrics: enrichBhajanLyrics(b.lyrics, section, b),
+      lyrics: enrichBhajanLyrics(b.lyrics, section, b, config),
       jabani: b.jabani,
       id: b.id || anchorId(section.slug, b.title, i),
     }));

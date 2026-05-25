@@ -3,6 +3,9 @@ base_url: /bhajan-sangrah/
 site_title: भजन संग्रह
 site_icon: assets/icons/favicon.jpg
 home_banner: assets/icons/LandingPage.jpg
+# Default: each antara ends with .... + refrain (first 5 words of sthayi, or sthayi_connect_text).
+# Per bhajan: `sthayi_connect: false` under lyrics: (or top-level) to disable; `sthayi_connect_text:` for custom refrain.
+sthayi_connect: true
 
 sections:
   - slug: aarti
@@ -10,7 +13,6 @@ sections:
     google_path: Aarti
     title: आरती
     banner: assets/icons/aarti.jpg
-    sthayi_connect: true
   - slug: shiv
     folder: shiv
     google_path: shiv

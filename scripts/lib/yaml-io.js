@@ -140,7 +140,8 @@ function parseLyricsObject(lines, startIdx) {
 
     if (raw.match(/^\s{2}sthayi_connect:\s/)) {
       const v = raw.replace(/^\s{2}sthayi_connect:\s*/, '').trim();
-      lyrics.sthayi_connect = v === 'true';
+      if (v === 'true') lyrics.sthayi_connect = true;
+      else if (v === 'false') lyrics.sthayi_connect = false;
       i += 1;
       continue;
     }
@@ -343,7 +344,8 @@ function dumpLyricsObject(lyrics) {
   if (lyrics.pre_shlok) out.push(...dumpLiteralBlock('pre_shlok', lyrics.pre_shlok, 2));
   if (lyrics.sthayi) out.push(...dumpLiteralBlock('sthayi', lyrics.sthayi, 2));
   if (lyrics.sthayi_marker) out.push(`  sthayi_marker: ${lyrics.sthayi_marker}`);
-  if (lyrics.sthayi_connect) out.push('  sthayi_connect: true');
+  if (lyrics.sthayi_connect === false) out.push('  sthayi_connect: false');
+  else if (lyrics.sthayi_connect === true) out.push('  sthayi_connect: true');
   if (lyrics.sthayi_connect_text) {
     out.push(`  sthayi_connect_text: ${lyrics.sthayi_connect_text}`);
   }
@@ -411,6 +413,8 @@ function dumpSectionsDoc(config) {
   out.push(`site_title: ${config.site_title || 'भजन संग्रह'}`);
   if (config.site_icon) out.push(`site_icon: ${config.site_icon}`);
   if (config.home_banner) out.push(`home_banner: ${config.home_banner}`);
+  if (config.sthayi_connect === true) out.push('sthayi_connect: true');
+  else if (config.sthayi_connect === false) out.push('sthayi_connect: false');
   out.push('');
   out.push('sections:');
   for (const s of config.sections) {
@@ -420,7 +424,8 @@ function dumpSectionsDoc(config) {
     out.push(`    title: ${s.title}`);
     if (s.banner) out.push(`    banner: ${s.banner}`);
     if (s.grouped) out.push('    grouped: true');
-    if (s.sthayi_connect) out.push('    sthayi_connect: true');
+    if (s.sthayi_connect === true) out.push('    sthayi_connect: true');
+    else if (s.sthayi_connect === false) out.push('    sthayi_connect: false');
   }
   return out.join('\n') + '\n';
 }
