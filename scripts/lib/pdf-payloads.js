@@ -1,5 +1,6 @@
 const path = require('path');
 const { sectionFolder, listBhajanFiles, loadBhajan } = require('./sections');
+const { enrichBhajanLyrics } = require('./lyrics-structure');
 
 /** Short id for PDF named destinations (PDF spec limits name length; Hindi slugs are too long). */
 function pdfBhajanId(index) {
@@ -21,7 +22,7 @@ function loadAllSectionPayloads(config) {
         tarz: data.tarz,
         group: data.group,
         swarachit: data.swarachit,
-        lyrics: data.lyrics,
+        lyrics: enrichBhajanLyrics(data.lyrics, section, data),
         jabani: data.jabani,
         id,
       };

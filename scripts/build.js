@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { ROOT, DOCS, ASSETS } = require('./lib/paths');
 const { loadSections, sectionFolder, listBhajanFiles, loadBhajan } = require('./lib/sections');
+const { enrichBhajanLyrics } = require('./lib/lyrics-structure');
 const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
 const { anchorId } = require('./lib/slug');
 const { buildSearchIndex, writeSearchIndex } = require('./lib/search-index');
@@ -53,7 +54,7 @@ function main() {
       tarz: b.tarz,
       group: b.group,
       swarachit: b.swarachit,
-      lyrics: b.lyrics,
+      lyrics: enrichBhajanLyrics(b.lyrics, section, b),
       jabani: b.jabani,
       id: b.id || anchorId(section.slug, b.title, i),
     }));
