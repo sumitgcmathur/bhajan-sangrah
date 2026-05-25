@@ -32,6 +32,8 @@ function formatDandaVerse(n) {
 
 function isRefrainLine(line) {
   const t = String(line || '').trim();
+  // Inline sthayi-connect tails end with ... but are full antara lines, not standalone refrains.
+  if (t.includes(STHAYI_CONNECT_TAIL)) return false;
   return /\.\.\.\s*॥?\s*$/.test(t) || (t.endsWith('..') && t.length < 48);
 }
 
