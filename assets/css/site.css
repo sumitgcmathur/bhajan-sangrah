@@ -27,6 +27,7 @@
   --banner-h: min(48vh, 440px);
   --banner-img-max-h: min(32vh, 280px);
   --banner-img-max-w: 100%;
+  --banner-card-h: min(22vw, 168px);
   --content-pad-x: 1rem;
   --content-pad-y: 1.5rem;
   --card-pad-x: 1rem;
@@ -648,26 +649,29 @@ body.search-panel-open {
 .section-card__media {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
   background: var(--bg-alt);
 }
 
-.section-card__img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  display: block;
-  background: var(--bg-alt);
-}
-
-.section-card__img--placeholder {
-  display: block;
-  width: 100%;
-  height: 100%;
+.section-card__media--empty {
   min-height: 4.5rem;
   background: var(--accent-soft);
+}
+
+/* Same banner treatment as section hero (scaled for grid cards) */
+.section-card .content-banner--card {
+  margin: 0;
+  border-bottom: none;
+  box-shadow: none;
+  min-height: var(--banner-card-h);
+  padding: 0.35rem 0.45rem;
+  pointer-events: none;
+}
+
+.section-card .content-banner--card .content-banner__img {
+  max-width: 100%;
+  max-height: calc(var(--banner-card-h) - 0.7rem);
+  object-fit: contain;
+  object-position: center center;
 }
 
 /* Section page: full viewport hero (image or index), content below on scroll */
@@ -1324,28 +1328,32 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     left: 0;
   }
 
-  /* Home banner: full width crop */
+  /* Home + section cards: full width, natural height (pre–UI-enhancement hero) */
   .page-home .content-banner__bg,
-  .page-home .content-banner::before {
+  .page-home .content-banner::before,
+  .section-card .content-banner--card .content-banner__bg,
+  .section-card .content-banner--card.content-banner::before {
     display: none;
   }
 
-  .page-home .content-banner {
+  .page-home .content-banner,
+  .section-card .content-banner--card {
     display: block;
     min-height: 0;
     padding: 0;
     line-height: 0;
     background: var(--bg-alt);
     box-shadow: none;
-    border-bottom-width: 1px;
+    border-bottom: none;
   }
 
-  .page-home .content-banner__img {
+  .page-home .content-banner__img,
+  .section-card .content-banner--card .content-banner__img {
     width: 100%;
     max-width: none;
-    max-height: var(--banner-img-max-h);
+    max-height: none;
     height: auto;
-    object-fit: cover;
+    object-fit: initial;
     object-position: top center;
     border-radius: 0;
     filter: none;
@@ -1529,6 +1537,17 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     --banner-h: min(58vh, 560px);
     --banner-img-max-h: min(56vh, 540px);
     --banner-img-max-w: min(96vw, 880px);
+    --banner-card-h: min(20vh, 220px);
+  }
+
+  .section-card .content-banner--card .content-banner__bg,
+  .section-card .content-banner--card.content-banner::before {
+    display: block;
+  }
+
+  .section-card .content-banner--card {
+    display: flex;
+    padding: 0.4rem 0.5rem;
   }
 
   .content-banner {

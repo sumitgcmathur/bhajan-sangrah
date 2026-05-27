@@ -154,16 +154,23 @@ function sectionCardImage(section, base, config) {
   return '';
 }
 
+function renderSectionCardBanner(src, alt) {
+  if (!src) {
+    return '<div class="section-card__media section-card__media--empty" aria-hidden="true"></div>';
+  }
+  return `<div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__bg" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+  <img class="content-banner__img" src="${src}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
+</div>`;
+}
+
 function renderSectionGrid(sections, base, config) {
   const cards = sections
     .map((s) => {
       const href = pageUrl(base, `${s.slug}.html`);
       const img = sectionCardImage(s, base, config);
-      const imgHtml = img
-        ? `<div class="section-card__media"><img class="section-card__img" src="${img}" alt="" loading="lazy" decoding="async"></div>`
-        : '<div class="section-card__media"><span class="section-card__img section-card__img--placeholder" aria-hidden="true"></span></div>';
       return `<a class="section-card" href="${href}">
-  ${imgHtml}
+  ${renderSectionCardBanner(img, s.title)}
   <span class="section-card__title">${escapeHtml(s.title)}</span>
 </a>`;
     })
