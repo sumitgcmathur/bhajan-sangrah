@@ -4,6 +4,9 @@ output/*
 !output/.gitignore
 spellcheck-report.txt
 scrape-cache/
+admin/node_modules/
+admin/.env.local
+admin/.vercel
 _sample*.html
 scripts/_test-parse.js
 scripts/_probe-parse.js

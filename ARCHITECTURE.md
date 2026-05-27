@@ -152,6 +152,10 @@ Anchor IDs are stable: `{slug}-{title-slug}-{NN}` (see `scripts/lib/slug.js`).
 | `npm run serve` | Serve `docs/` locally (after build) |
 | `npm run export-pdf` | Full-site PDF → `output/bhajan-sangrah.pdf` |
 
+### Admin editor (Vercel)
+
+Separate deploy under `admin/` — GitHub OAuth, allowlisted user, commits to `main`. See [admin/README.md](admin/README.md).
+
 ---
 
 ## PDF export
