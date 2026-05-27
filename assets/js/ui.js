@@ -136,6 +136,7 @@
       } catch (e) {}
     }
     setSectionHeroIndexMode(showIndex);
+    syncHeroPagerLayout();
 
     btn.addEventListener('click', function () {
       setSectionHeroIndexMode(!hero.classList.contains('is-index'));
@@ -251,6 +252,15 @@
       .join('');
   }
 
+  function syncHeroPagerLayout() {
+    var hero = document.getElementById('section-hero');
+    var pager = document.getElementById('bhajan-pager');
+    if (!hero || !isMobile()) return;
+    var pastHero = hero.getBoundingClientRect().bottom <= window.innerHeight * 0.88;
+    document.body.classList.toggle('pager-visible', pastHero);
+    if (pager) pager.hidden = !pastHero;
+  }
+
   function initSectionScrollUi() {
     var nav = parseBhajanNav();
     if (!nav.length) return;
@@ -275,9 +285,8 @@
         progress.textContent = toDevaNum(item.num) + ' / ' + toDevaNum(nav.length);
         header.hidden = false;
       }
-      if (pager && prevLink && nextLink) {
-        pager.hidden = false;
-        var hasPrev = index > 0;
+    if (pager && prevLink && nextLink) {
+      var hasPrev = index > 0;
         var hasNext = index < nav.length - 1;
         prevLink.href = hasPrev ? '#' + nav[index - 1].id : '#';
         nextLink.href = hasNext ? '#' + nav[index + 1].id : '#';
@@ -313,6 +322,19 @@
     cards.forEach(function (card) {
       scrollObserver.observe(card);
     });
+
+    if (document.getElementById('section-hero')) {
+      syncHeroPagerLayout();
+      window.addEventListener(
+        'scroll',
+        syncHeroPagerLayout,
+        { passive: true }
+      );
+      window.addEventListener('resize', syncHeroPagerLayout);
+    } else if (pager) {
+      document.body.classList.add('pager-visible');
+      pager.hidden = false;
+    }
 
     if (window.location.hash) {
       var hashId = window.location.hash.slice(1);
@@ -351,6 +373,7 @@
     }
 
     if (pager) {
+      pager.hidden = false;
       pager.addEventListener('click', function (e) {
         var a = e.target.closest('.bhajan-pager__link');
         if (!a || a.classList.contains('is-disabled')) {
