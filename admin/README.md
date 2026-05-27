@@ -61,6 +61,20 @@ cp .env.example .env.local
 npx vercel dev
 ```
 
+## Troubleshooting OAuth / 404 after GitHub
+
+1. **GitHub OAuth app** (separate from Vercel): [Developer settings → your app](https://github.com/settings/developers) → **Authorization callback URL** must be exactly  
+   `https://bhajan-sangrah-admin.vercel.app/api/auth/callback`  
+   Changing only `ADMIN_BASE_URL` in Vercel does **not** update GitHub.
+
+2. **Vercel env scope**: each variable must apply to **Production** (not Preview only), then **Redeploy**.
+
+3. **Use the production URL** in the browser — not the deploy URL (`…-k4z0usdv2-….vercel.app`).
+
+4. After login, if you see `/?error=…` on `bhajan-sangrah-admin.vercel.app`, the callback worked; read the error (`not_allowed`, `invalid_state`, etc.).
+
+5. **`sm-bhajan-editor.vercel.app`**: Vercel assigns `bhajan-sangrah-admin.vercel.app` from the project name. To use another hostname: **Settings → Domains → Add** `sm-bhajan-editor.vercel.app`, then update GitHub callback + `ADMIN_BASE_URL` to match.
+
 ## Security
 
 - Login is checked against `ALLOWED_GITHUB_USER` on the server.  
