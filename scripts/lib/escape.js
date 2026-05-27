@@ -44,6 +44,13 @@ function lineWithoutEndDanda(line) {
     .trim();
 }
 
+/** Wrap inline sthayi-connect tail for responsive line breaks. */
+function formatLineCoreHtml(core) {
+  const idx = String(core || '').indexOf(STHAYI_CONNECT_TAIL);
+  if (idx === -1) return escapeHtml(core);
+  return `${escapeHtml(core.slice(0, idx))}<span class="lyrics-sthayi-connect">${escapeHtml(core.slice(idx))}</span>`;
+}
+
 /**
  * Render a multiline block like an antara; last line gets endMarker or ॥n॥.
  * @param {string[]} lines
@@ -72,7 +79,7 @@ function renderBlockLines(lines, opts = {}) {
       const core = lineWithoutEndDanda(t);
       const marker = fixedMarker != null ? fixedMarker : formatDandaVerse(n);
       out.push(
-        `<span class="lyrics-line">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></span>`
+        `<span class="lyrics-line">${formatLineCoreHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></span>`
       );
       if (!fixedMarker) n += 1;
     } else {
@@ -165,7 +172,7 @@ function renderParagraphHtml(text, verseNum, opts = {}) {
   const core = lineWithoutEndDanda(body);
   const marker = formatDandaVerse(verseNum);
   return {
-    html: `<p class="lyrics-antara ${stripe}">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></p>`,
+    html: `<p class="lyrics-antara ${stripe}">${formatLineCoreHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></p>`,
     nextVerse: verseNum + 1,
   };
 }

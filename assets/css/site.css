@@ -1,35 +1,59 @@
 :root {
-  --bg: #f4f8fc;
-  --bg-alt: #e8f1fa;
-  --surface: #ffffff;
-  --text: #1a2b3c;
-  --muted: #4a6278;
-  --link: #1565c0;
-  --link-hover: #0d47a1;
-  --sidebar-bg: linear-gradient(180deg, #0d47a1 0%, #1565c0 45%, #1976d2 100%);
-  --sidebar-bg-solid: #1565c0;
-  --sidebar-text: #e3f2fd;
+  --bg: #faf6f0;
+  --bg-alt: #f0e8dc;
+  --surface: #fffdf9;
+  --text: #2c1810;
+  --muted: #5c4a42;
+  --link: #9b2d4a;
+  --link-hover: #7a1f38;
+  --sidebar-bg: linear-gradient(180deg, #5c1f32 0%, #8b3a4a 50%, #a64d5c 100%);
+  --sidebar-bg-solid: #8b3a4a;
+  --sidebar-text: #fce8ec;
   --sidebar-active: #ffffff;
-  --border: #c5d9ed;
-  --accent: #1565c0;
-  --accent-dark: #0d47a1;
-  --accent-soft: #e3f2fd;
-  --accent-glow: rgba(21, 101, 192, 0.12);
-  /* Verse stripes: odd = title blue, even = index link blue */
-  --lyrics-odd: var(--accent-dark);
-  --lyrics-even: var(--link);
-  --heading-gradient: linear-gradient(135deg, #0d47a1 0%, #1976d2 50%, #42a5f5 100%);
+  --border: #e0d0c4;
+  --accent: #9b2d4a;
+  --accent-dark: #6b1f32;
+  --accent-soft: #f5e6ea;
+  --accent-glow: rgba(155, 45, 74, 0.1);
+  --lyrics-odd: var(--text);
+  --lyrics-even: var(--text);
+  --lyrics-marker: #7a6258;
+  --heading-gradient: linear-gradient(135deg, #6b1f32 0%, #9b2d4a 55%, #c45a6a 100%);
   --font: "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
   --sidebar-w: 230px;
   --text-base: 1.125rem;
   --text-lg: 1.25rem;
   --leading: 1.85;
   --banner-h: min(48vh, 440px);
-  --banner-img-max-h: min(46vh, 420px);
+  --banner-img-max-h: min(32vh, 280px);
   --banner-img-max-w: 100%;
   --content-pad-x: 1rem;
   --content-pad-y: 1.5rem;
   --card-pad-x: 1rem;
+  --mobile-bar-h: 3.35rem;
+  --scroll-header-h: 2.5rem;
+  --pager-h: 2.65rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1210;
+    --bg-alt: #261a16;
+    --surface: #2a1e1a;
+    --text: #f5ebe6;
+    --muted: #c4b0a8;
+    --link: #e8a0b0;
+    --link-hover: #f5c4d0;
+    --sidebar-bg: linear-gradient(180deg, #2a1218 0%, #4a2030 50%, #5c2838 100%);
+    --sidebar-bg-solid: #4a2030;
+    --sidebar-text: #f5e0e6;
+    --border: #3d2e28;
+    --accent: #d47890;
+    --accent-dark: #e8a0b0;
+    --accent-soft: #3a2828;
+    --accent-glow: rgba(212, 120, 144, 0.15);
+    --lyrics-marker: #a89088;
+  }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -94,21 +118,42 @@ body {
   background: var(--bg);
 }
 
-.sidebar-toggle {
-  display: none;
-  position: fixed;
-  top: 0.65rem;
-  left: 0.65rem;
-  z-index: 400;
-  width: 2.75rem;
-  height: 2.75rem;
-  font-size: 1.4rem;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  background: var(--sidebar-bg-solid);
-  color: #fff;
-  border-radius: 0.5rem;
+.sidebar-tools {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.sidebar-search-open,
+.reading-mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 0.4rem;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--sidebar-active);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(13, 71, 161, 0.35);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sidebar-search-open:hover,
+.reading-mode-toggle:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.reading-mode-toggle[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: #fff;
 }
 
 .sidebar-brand {
@@ -189,39 +234,52 @@ body {
   background: rgba(255, 255, 255, 0.22);
 }
 
-/* ---- Bhajan search (right slide-in panel) ---- */
-.search-toggle {
-  position: fixed;
-  top: max(0.65rem, env(safe-area-inset-top, 0px));
-  right: max(0.65rem, env(safe-area-inset-right, 0px));
-  z-index: 500;
+/* ---- Mobile bottom bar ---- */
+.mobile-bar {
+  display: none;
+}
+
+.mobile-bar__btn {
+  flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  padding: 0;
-  font-size: 1.15rem;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  background: var(--sidebar-bg-solid);
-  color: #fff;
-  border-radius: 0.5rem;
+  gap: 0.1rem;
+  min-height: var(--mobile-bar-h);
+  padding: 0.25rem 0.15rem;
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  background: transparent;
+  border: none;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(13, 71, 161, 0.35);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
-.search-toggle__icon {
+.mobile-bar__icon {
+  font-size: 1.15rem;
   line-height: 1;
-  pointer-events: none;
 }
+
+.mobile-bar__label {
+  line-height: 1.1;
+}
+
+.mobile-bar__btn[aria-pressed="true"] {
+  color: var(--accent);
+}
+
+/* ---- Bhajan search (right slide-in panel) ---- */
 
 .bhajan-search-backdrop {
   position: fixed;
   inset: 0;
   z-index: 340;
-  background: rgba(13, 71, 161, 0.35);
+  background: rgba(44, 24, 16, 0.45);
 }
 
 .bhajan-search-backdrop[hidden] {
@@ -240,7 +298,7 @@ body {
   flex-direction: column;
   background: var(--surface);
   color: var(--text);
-  box-shadow: -4px 0 24px rgba(13, 71, 161, 0.28);
+  box-shadow: -4px 0 24px rgba(44, 24, 16, 0.25);
   transform: translate3d(100%, 0, 0);
   transition: transform 0.2s ease;
   pointer-events: none;
@@ -455,7 +513,7 @@ body.search-panel-open {
   object-fit: contain;
   object-position: center;
   border-radius: 6px;
-  filter: drop-shadow(0 8px 28px rgba(13, 71, 161, 0.28));
+  filter: drop-shadow(0 6px 20px rgba(44, 24, 16, 0.2));
 }
 
 .content-main {
@@ -515,6 +573,221 @@ body.search-panel-open {
   background: var(--heading-gradient);
 }
 
+/* Home landing */
+.home-title {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.5rem, 5vw, 1.85rem);
+  font-weight: 700;
+  color: var(--accent-dark);
+  text-align: center;
+}
+
+.home-lead {
+  margin: 0 0 1.1rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 1.02rem;
+}
+
+.continue-reading {
+  margin: 0 0 1.15rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--accent-soft);
+  border-radius: 0.45rem;
+  border-left: 4px solid var(--accent);
+}
+
+.continue-reading__link {
+  color: var(--link);
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1.02rem;
+}
+
+.continue-reading__link:hover {
+  text-decoration: underline;
+}
+
+.section-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.section-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 4px var(--accent-glow);
+  touch-action: manipulation;
+}
+
+.section-card__img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  background: var(--bg-alt);
+}
+
+.section-card__img--placeholder {
+  min-height: 4.5rem;
+  background: var(--accent-soft);
+}
+
+.section-card__title {
+  padding: 0.55rem 0.5rem 0.65rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+  text-align: center;
+  line-height: 1.35;
+}
+
+.section-card:hover .section-card__title {
+  color: var(--link);
+}
+
+/* Collapsible bhajan index */
+.bhajan-index--collapsible {
+  padding: 0;
+  overflow: hidden;
+}
+
+.bhajan-index__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-family: var(--font);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+  background: var(--surface);
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.bhajan-index__count {
+  font-weight: 600;
+  color: var(--muted);
+  margin-left: 0.35rem;
+}
+
+.bhajan-index__panel {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.bhajan-index__panel[hidden] {
+  display: none;
+}
+
+.bhajan-index__grouped {
+  padding-top: 0.5rem;
+}
+
+/* Sticky section progress (mobile) */
+.section-scroll-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 480;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: var(--scroll-header-h);
+  padding: 0.4rem max(0.65rem, env(safe-area-inset-right)) 0.4rem max(0.65rem, env(safe-area-inset-left));
+  padding-top: max(0.4rem, env(safe-area-inset-top));
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 10px var(--accent-glow);
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.section-scroll-header.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.section-scroll-header__title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.section-scroll-header__progress {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Prev / next bhajan pager */
+.bhajan-pager {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 470;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  min-height: var(--pager-h);
+  padding: 0.35rem max(0.5rem, env(safe-area-inset-right)) 0.35rem max(0.5rem, env(safe-area-inset-left));
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -2px 10px var(--accent-glow);
+}
+
+.bhajan-pager[hidden] {
+  display: none;
+}
+
+.bhajan-pager__link {
+  flex-shrink: 0;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--link);
+  text-decoration: none;
+  border-radius: 0.35rem;
+  touch-action: manipulation;
+}
+
+.bhajan-pager__link.is-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.bhajan-pager__status {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .bhajan-index {
   margin-bottom: 1.75rem;
   padding: 1rem 1.1rem 1.15rem;
@@ -523,41 +796,6 @@ body.search-panel-open {
   border: 1px solid var(--border);
   box-shadow: 0 1px 6px var(--accent-glow);
   scroll-margin-top: 3.75rem;
-}
-
-/* Always-visible jump to index (section pages only) */
-.page-section .bhajan-index-fab {
-  position: fixed;
-  right: max(0.65rem, env(safe-area-inset-right, 0px));
-  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
-  z-index: 490;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.2rem;
-  padding: 0.55rem 0.85rem;
-  font-size: 0.95rem;
-  font-weight: 700;
-  font-family: var(--font);
-  color: var(--link);
-  text-decoration: none;
-  white-space: nowrap;
-  background: var(--surface);
-  border: 2px solid var(--accent);
-  border-radius: 2rem;
-  box-shadow: 0 4px 16px rgba(13, 71, 161, 0.22);
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.page-section .bhajan-index-fab:hover {
-  color: var(--link-hover);
-  background: var(--accent-soft);
-}
-
-.page-section .bhajan-index-fab:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
 }
 
 .bhajan-index__num {
@@ -638,7 +876,7 @@ body.search-panel-open {
   bottom: -2px;
   width: 3rem;
   height: 2px;
-  background: var(--heading-gradient);
+  background: var(--accent);
   border-radius: 1px;
 }
 
@@ -764,8 +1002,15 @@ body.search-panel-open {
 
 .bhajan-lyrics--standard .lyrics-marker {
   white-space: nowrap;
-  color: inherit;
-  font-weight: inherit;
+  color: var(--lyrics-marker);
+  font-weight: 500;
+  font-size: 0.92em;
+}
+
+.bhajan-lyrics--standard .lyrics-sthayi-connect {
+  display: inline;
+  font-weight: 500;
+  color: var(--muted);
 }
 
 /* Aside blocks inside lyrics: pre-shlok, commentary, dhvani */
@@ -849,11 +1094,99 @@ body.search-panel-open {
   border-top: 2px solid var(--border);
 }
 
-/* ---- Mobile: collapsible sidebar + larger touch targets ---- */
+/* ---- Reading mode ---- */
+body.reading-mode {
+  --bg: #fffef8;
+  --surface: #fffef8;
+  --text: #1a1008;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.reading-mode {
+    --bg: #14100e;
+    --surface: #14100e;
+    --text: #f8f0ea;
+  }
+}
+
+body.reading-mode .bhajan-card {
+  box-shadow: none;
+  border-color: transparent;
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+body.reading-mode .bhajan-card__head {
+  border-bottom-width: 1px;
+  border-bottom-color: var(--border);
+}
+
+body.reading-mode .bhajan-card__head::after {
+  display: none;
+}
+
+body.reading-mode .section-title {
+  box-shadow: none;
+  border-left-width: 3px;
+}
+
+body.reading-mode .section-title::after {
+  display: none;
+}
+
+body.reading-mode .bhajan-index {
+  box-shadow: none;
+}
+
+body.reading-mode .bhajan-card__lyrics {
+  font-size: 1.2rem;
+  line-height: 2;
+}
+
+body.reading-mode .bhajan-lyrics--standard p.lyrics-antara--odd,
+body.reading-mode .bhajan-lyrics--standard p.lyrics-antara--even,
+body.reading-mode .bhajan-lyrics--standard p.lyrics-sthayi {
+  color: var(--text);
+}
+
+body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
+  margin-bottom: 1.15rem;
+}
+
+body.reading-mode .bhajan-lyrics--standard .lyrics-sthayi-connect {
+  display: block;
+  margin-top: 0.35rem;
+  padding-left: 0.5rem;
+  font-size: 0.95em;
+  line-height: 1.65;
+}
+
+/* ---- Mobile: bottom bar, collapsible sidebar ---- */
 @media (max-width: 767px) {
   html { font-size: 19px; }
 
-  /* Mobile: full-width hero like Google Sites (width 100%, natural height, no letterboxing) */
+  body.has-sidebar {
+    padding-bottom: calc(var(--mobile-bar-h) + env(safe-area-inset-bottom, 0px));
+  }
+
+  body.page-section.has-sidebar {
+    padding-bottom: calc(var(--mobile-bar-h) + var(--pager-h) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-bar {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 500;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -2px 12px var(--accent-glow);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
   .content-banner__bg,
   .content-banner::before {
     display: none;
@@ -866,31 +1199,26 @@ body.search-panel-open {
     line-height: 0;
     background: var(--bg-alt);
     box-shadow: none;
-    border-bottom-width: 2px;
+    border-bottom-width: 1px;
   }
 
   .content-banner__img {
     width: 100%;
     max-width: none;
-    max-height: none;
+    max-height: var(--banner-img-max-h);
     height: auto;
-    object-fit: initial;
+    object-fit: cover;
+    object-position: center top;
     border-radius: 0;
     filter: none;
     vertical-align: top;
-  }
-
-  .sidebar-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .site-sidebar {
     transform: translate3d(-100%, 0, 0);
     -webkit-transform: translate3d(-100%, 0, 0);
     transition: transform 0.2s ease;
-    box-shadow: 4px 0 20px rgba(13, 71, 161, 0.35);
+    box-shadow: 4px 0 20px rgba(44, 24, 16, 0.35);
     width: min(85vw, 280px);
     pointer-events: none;
   }
@@ -922,25 +1250,44 @@ body.search-panel-open {
   .content-main {
     --content-pad-x: 0.65rem;
     --card-pad-x: 0.7rem;
-    padding: 3.25rem var(--content-pad-x) 2rem;
+    padding: 1rem var(--content-pad-x) 1.25rem;
+  }
+
+  .content-main--section {
+    padding-bottom: 0.5rem;
   }
 
   .section-title {
-    padding: 0.85rem var(--card-pad-x) 0.95rem;
+    padding: 0.75rem var(--card-pad-x) 0.85rem;
+    box-shadow: none;
   }
 
-  .bhajan-index {
-    padding: 0.85rem var(--card-pad-x) 1rem;
+  .section-title::after {
+    display: none;
   }
 
-  .page-section .bhajan-index-fab {
-    bottom: max(0.85rem, env(safe-area-inset-bottom, 0px));
-    font-size: 1rem;
-    padding: 0.6rem 0.95rem;
+  .bhajan-card {
+    box-shadow: none;
+    padding: 1rem var(--card-pad-x) 1.25rem;
   }
 
-  .bhajan-index--grouped {
-    padding: 0.65rem var(--card-pad-x) 0.85rem;
+  .bhajan-card__head::after {
+    width: 2rem;
+  }
+
+  .bhajan-pager {
+    bottom: calc(var(--mobile-bar-h) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .section-scroll-header {
+    display: flex;
+  }
+
+  .bhajan-lyrics--standard .lyrics-sthayi-connect {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.94em;
+    line-height: 1.6;
   }
 
   .sidebar-link {
@@ -954,18 +1301,9 @@ body.search-panel-open {
     display: inline-block;
   }
 
-  .bhajan-card {
-    padding: 1rem var(--card-pad-x) 1.25rem;
-  }
-
-  .bhajan-card__head {
-    margin-bottom: 0.65rem;
-    padding-bottom: 0.45rem;
-  }
-
   .bhajan-card__lyrics {
     font-size: 1.15rem;
-    line-height: 1.9;
+    line-height: 1.95;
   }
 
   .bhajan-lyrics--standard {
@@ -973,18 +1311,38 @@ body.search-panel-open {
   }
 
   .bhajan-lyrics--standard .lyrics-antara {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.85rem;
   }
 
-  .bhajan-lyrics--standard .lyrics-antara--block {
-    margin-bottom: 0.55rem;
+  .section-grid {
+    gap: 0.65rem;
   }
 }
 
 @media (min-width: 768px) {
-  .sidebar-toggle { display: none; }
+  .section-scroll-header,
+  .bhajan-pager {
+    display: none !important;
+  }
+
+  .bhajan-index--collapsible .bhajan-index__panel {
+    display: block !important;
+  }
+
+  .bhajan-index--collapsible .bhajan-index__toggle {
+    display: none;
+  }
+
+  .bhajan-index--collapsible {
+    padding: 1rem 1.1rem 1.15rem;
+  }
 
   html { font-size: 18px; }
+
+  .section-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
 
   .content-main {
     --content-pad-x: 1.25rem;
@@ -1028,6 +1386,22 @@ body.search-panel-open {
     --banner-h: min(68vh, 760px);
     --banner-img-max-h: min(66vh, 740px);
     --banner-img-max-w: min(92vw, 1040px);
+  }
+
+  .section-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .site-sidebar,
+  .bhajan-search-panel,
+  .section-scroll-header {
+    transition: none;
   }
 }
 

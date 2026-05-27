@@ -129,10 +129,12 @@
   }
 
   function closeSidebar() {
-    if (!sidebar || !sidebarToggle) return;
+    if (!sidebar) return;
     if (sidebar.classList.contains('is-open')) {
       sidebar.classList.remove('is-open');
-      sidebarToggle.setAttribute('aria-expanded', 'false');
+      document.querySelectorAll('.sidebar-toggle').forEach(function (btn) {
+        btn.setAttribute('aria-expanded', 'false');
+      });
     }
   }
 
@@ -140,7 +142,9 @@
     panel.classList.toggle('is-open', open);
     panel.setAttribute('aria-hidden', open ? 'false' : 'true');
     document.body.classList.toggle('search-panel-open', open);
-    if (searchToggle) searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.querySelectorAll('.search-toggle').forEach(function (btn) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
     if (backdrop) backdrop.hidden = !open;
     if (open) {
       closeSidebar();
@@ -238,11 +242,11 @@
     });
   }
 
-  if (searchToggle) {
-    searchToggle.addEventListener('click', function () {
+  document.querySelectorAll('.search-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
       setPanelOpen(!panel.classList.contains('is-open'));
     });
-  }
+  });
 
   if (closeBtn) {
     closeBtn.addEventListener('click', function () {
@@ -300,7 +304,7 @@
   });
 
   document.addEventListener('click', function (e) {
-    if (panel.contains(e.target) || (searchToggle && searchToggle.contains(e.target))) return;
+    if (panel.contains(e.target) || e.target.closest('.search-toggle')) return;
     if (!list.hidden && !e.target.closest('.bhajan-search__results')) hideResults();
   });
 })();
