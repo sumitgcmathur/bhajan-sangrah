@@ -4,12 +4,16 @@ Mobile-friendly editor that commits `content/*.yaml` to **main** via GitHub API.
 
 ## This deployment
 
+**Use the Production domain** from Vercel → Project → **Settings → Domains** (not the per-deploy URL like `…-k4z0usdv2-….vercel.app`).
+
 | Setting | Value |
 |---------|--------|
-| Admin URL | https://sm-bhajan-editor.vercel.app |
-| OAuth callback | https://sm-bhajan-editor.vercel.app/api/auth/callback |
+| Admin URL | `https://bhajan-sangrah-admin.vercel.app` |
+| OAuth callback | `https://bhajan-sangrah-admin.vercel.app/api/auth/callback` |
 | Allowed user | `sumitgcmathur` |
 | Target repo | `sumitgcmathur/bhajan-sangrah` |
+
+Optional: add alias `sm-bhajan-editor.vercel.app` under **Domains**, then use that URL everywhere instead.
 
 ## Setup
 
@@ -18,8 +22,8 @@ Mobile-friendly editor that commits `content/*.yaml` to **main** via GitHub API.
 [GitHub → Settings → Developer settings → OAuth Apps → New](https://github.com/settings/applications/new)
 
 - **Application name:** e.g. `Bhajan Sangrah Admin`  
-- **Homepage URL:** `https://sm-bhajan-editor.vercel.app`  
-- **Callback URL:** `https://sm-bhajan-editor.vercel.app/api/auth/callback`
+- **Homepage URL:** your **production** domain (e.g. `https://bhajan-sangrah-admin.vercel.app`)  
+- **Callback URL:** same host + `/api/auth/callback`
 
 Note **Client ID** and generate **Client secret**.
 
@@ -39,7 +43,7 @@ The OAuth app owner must have **write access** to `GITHUB_OWNER/GITHUB_REPO`.
 | `GITHUB_OWNER` | `sumitgcmathur` |
 | `GITHUB_REPO` | `bhajan-sangrah` |
 | `SESSION_SECRET` | run `openssl rand -hex 32` |
-| `ADMIN_BASE_URL` | `https://sm-bhajan-editor.vercel.app` |
+| `ADMIN_BASE_URL` | production domain, e.g. `https://bhajan-sangrah-admin.vercel.app` |
 
 4. Deploy. Open the admin URL → **GitHub से लॉगिन**.
 
