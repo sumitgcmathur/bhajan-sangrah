@@ -61,6 +61,16 @@ cp .env.example .env.local
 npx vercel dev
 ```
 
+## Vercel shows failed `gh-pages` deployments
+
+GitHub Actions pushes the **built site** to the `gh-pages` branch. Vercel must **not** deploy that branch (only `main` with Root Directory `admin`).
+
+`admin/vercel.json` sets `"gh-pages": false` under `git.deploymentEnabled`. After merging, failed `gh-pages` preview rows should stop.
+
+Optional in Vercel → **Settings → Git**: Production Branch = `main` only.
+
+Your public site is on **GitHub Pages**, not Vercel. Vercel is only for this admin app.
+
 ## Troubleshooting OAuth / 404 after GitHub
 
 1. **GitHub OAuth app** (separate from Vercel): [Developer settings → your app](https://github.com/settings/developers) → **Authorization callback URL** must be exactly  
