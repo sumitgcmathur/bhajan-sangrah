@@ -1175,12 +1175,6 @@ body.search-panel-open {
   font-size: 0.92em;
 }
 
-.bhajan-lyrics--standard .lyrics-sthayi-connect {
-  display: inline;
-  font-weight: 500;
-  color: var(--muted);
-}
-
 /* Aside blocks inside lyrics: pre-shlok, commentary, dhvani */
 .bhajan-lyrics--standard .lyrics-aside {
   margin: 0.85rem 0;
@@ -1320,14 +1314,6 @@ body.reading-mode .bhajan-lyrics--standard p.lyrics-sthayi {
 
 body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
   margin-bottom: 1.15rem;
-}
-
-body.reading-mode .bhajan-lyrics--standard .lyrics-sthayi-connect {
-  display: block;
-  margin-top: 0.35rem;
-  padding-left: 0.5rem;
-  font-size: 0.95em;
-  line-height: 1.65;
 }
 
 /* ---- Mobile: bottom bar, collapsible sidebar ---- */
@@ -1475,13 +1461,6 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-sthayi-connect {
 
   .section-scroll-header {
     display: flex;
-  }
-
-  .bhajan-lyrics--standard .lyrics-sthayi-connect {
-    display: block;
-    margin-top: 0.3rem;
-    font-size: 0.94em;
-    line-height: 1.6;
   }
 
   .sidebar-link {
