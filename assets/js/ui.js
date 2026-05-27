@@ -94,9 +94,64 @@
     document.querySelectorAll('[data-action="index"]').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         if (!isMobile()) return;
+        if (document.getElementById('section-hero')) return;
         e.preventDefault();
         setOpen(true);
         nav.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+      });
+    });
+  }
+
+  /* ---- Section hero: banner ↔ index ---- */
+  function setSectionHeroIndexMode(showIndex) {
+    var hero = document.getElementById('section-hero');
+    var btn = document.getElementById('section-hero-toggle');
+    if (!hero) return;
+    hero.classList.toggle('is-index', showIndex);
+    var indexView = hero.querySelector('.section-hero__view--index');
+    if (indexView) indexView.hidden = !showIndex;
+    if (btn) {
+      btn.setAttribute('aria-expanded', showIndex ? 'true' : 'false');
+      var whenBanner = btn.querySelector('.section-hero__toggle-when-banner');
+      var whenIndex = btn.querySelector('.section-hero__toggle-when-index');
+      if (whenBanner) whenBanner.hidden = showIndex;
+      if (whenIndex) whenIndex.hidden = !showIndex;
+    }
+    try {
+      localStorage.setItem('bhajan-sangrah-hero-index', showIndex ? '1' : '0');
+    } catch (e) {}
+  }
+
+  function initSectionHeroToggle() {
+    var hero = document.getElementById('section-hero');
+    var btn = document.getElementById('section-hero-toggle');
+    if (!hero || !btn) return;
+
+    var showIndex = false;
+    if (window.location.hash && hero.querySelector('a[href="' + window.location.hash + '"]')) {
+      showIndex = false;
+    } else {
+      try {
+        showIndex = localStorage.getItem('bhajan-sangrah-hero-index') === '1';
+      } catch (e) {}
+    }
+    setSectionHeroIndexMode(showIndex);
+
+    btn.addEventListener('click', function () {
+      setSectionHeroIndexMode(!hero.classList.contains('is-index'));
+    });
+
+    hero.querySelectorAll('a[href^="#"]').forEach(function (link) {
+      link.addEventListener('click', function () {
+        if (isMobile()) setSectionHeroIndexMode(false);
+      });
+    });
+
+    document.querySelectorAll('[data-action="index"]').forEach(function (barBtn) {
+      barBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        setSectionHeroIndexMode(true);
+        hero.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
       });
     });
   }
@@ -310,6 +365,8 @@
     document.addEventListener('click', function (e) {
       var a = e.target.closest('a[href="#bhajan-index"]');
       if (!a || a.getAttribute('data-action') === 'index') return;
+      var hero = document.getElementById('section-hero');
+      if (hero) return;
       var nav = document.getElementById('bhajan-index');
       if (!nav) return;
       e.preventDefault();
@@ -319,6 +376,7 @@
 
   initReadingMode();
   initCollapsibleIndex();
+  initSectionHeroToggle();
   initContinueReading();
   initSectionScrollUi();
   initIndexAnchorScroll();

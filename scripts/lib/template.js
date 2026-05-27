@@ -160,8 +160,8 @@ function renderSectionGrid(sections, base, config) {
       const href = pageUrl(base, `${s.slug}.html`);
       const img = sectionCardImage(s, base, config);
       const imgHtml = img
-        ? `<img class="section-card__img" src="${img}" alt="" loading="lazy" decoding="async">`
-        : '<span class="section-card__img section-card__img--placeholder" aria-hidden="true"></span>';
+        ? `<div class="section-card__media"><img class="section-card__img" src="${img}" alt="" loading="lazy" decoding="async"></div>`
+        : '<div class="section-card__media"><span class="section-card__img section-card__img--placeholder" aria-hidden="true"></span></div>';
       return `<a class="section-card" href="${href}">
   ${imgHtml}
   <span class="section-card__title">${escapeHtml(s.title)}</span>
@@ -210,7 +210,7 @@ function wrapCollapsibleBhajanIndex(innerHtml, count) {
 </nav>`;
 }
 
-function renderBhajanIndex(bhajans, section) {
+function renderBhajanIndexList(bhajans, section) {
   const items = bhajans
     .map((b, i) => {
       const id = b.id || anchorId(section.slug, b.title, i);
@@ -218,11 +218,10 @@ function renderBhajanIndex(bhajans, section) {
       return `<li><a href="#${id}"><span class="bhajan-index__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}</a></li>`;
     })
     .join('\n');
-  const inner = `<ul class="content-index">${items}</ul>`;
-  return wrapCollapsibleBhajanIndex(inner, bhajans.length);
+  return `<ul class="content-index">${items}</ul>`;
 }
 
-function renderGroupedBhajanIndex(groups) {
+function renderGroupedBhajanIndexList(groups) {
   let num = 1;
   const blocks = groups
     .filter((g) => g.title)
@@ -240,9 +239,31 @@ function renderGroupedBhajanIndex(groups) {
 </section>`;
     })
     .join('\n');
-  const inner = `<div class="bhajan-index__grouped">${blocks}</div>`;
+  return `<div class="bhajan-index__grouped">${blocks}</div>`;
+}
+
+function renderBhajanIndex(bhajans, section) {
+  return wrapCollapsibleBhajanIndex(renderBhajanIndexList(bhajans, section), bhajans.length);
+}
+
+function renderGroupedBhajanIndex(groups) {
   const total = groups.reduce((n, g) => n + (g.title ? g.items.length : 0), 0);
-  return wrapCollapsibleBhajanIndex(inner, total);
+  return wrapCollapsibleBhajanIndex(renderGroupedBhajanIndexList(groups), total);
+}
+
+function renderSectionHero(section, base, indexPanelHtml) {
+  const banner = renderSectionBanner(section, base);
+  if (!banner) return '';
+  return `<div class="section-hero" id="section-hero">
+  <div class="section-hero__view section-hero__view--banner">${banner}</div>
+  <nav class="section-hero__view section-hero__view--index bhajan-index" id="bhajan-index" hidden aria-label="भजन सूची">
+    <div class="section-hero__index-scroll">${indexPanelHtml}</div>
+  </nav>
+  <button type="button" class="section-hero__toggle" id="section-hero-toggle" aria-expanded="false" aria-controls="bhajan-index">
+    <span class="section-hero__toggle-when-banner">सूची</span>
+    <span class="section-hero__toggle-when-index" hidden>चित्र</span>
+  </button>
+</div>`;
 }
 
 function flattenBhajansForNav(bhajans, section, grouped, groups) {
@@ -323,9 +344,21 @@ function renderSectionPage(section, bhajans, config, sections, base) {
   const groups = grouped ? bhajansByGroup(bhajans) : [];
 
   let indexHtml;
+  let heroHtml;
   let articlesHtml;
-  if (grouped && groups.some((g) => g.title)) {
+  const indexPanel =
+    grouped && groups.some((g) => g.title)
+      ? renderGroupedBhajanIndexList(groups)
+      : renderBhajanIndexList(bhajans, section);
+  if (section.banner) {
+    heroHtml = renderSectionHero(section, base, indexPanel);
+    indexHtml = '';
+  } else if (grouped && groups.some((g) => g.title)) {
     indexHtml = renderGroupedBhajanIndex(groups);
+  } else {
+    indexHtml = renderBhajanIndex(bhajans, section);
+  }
+  if (grouped && groups.some((g) => g.title)) {
     let bhajanIndex = 0;
     articlesHtml = groups
       .filter((g) => g.title)
@@ -340,7 +373,6 @@ function renderSectionPage(section, bhajans, config, sections, base) {
       })
       .join('\n');
   } else {
-    indexHtml = renderBhajanIndex(bhajans, section);
     articlesHtml = `<div class="bhajan-list">${bhajans
       .map((b, i) => renderBhajanCard(b, section, i, showSwarachitBadge))
       .join('\n')}</div>`;
@@ -348,7 +380,7 @@ function renderSectionPage(section, bhajans, config, sections, base) {
 
   const navList = flattenBhajansForNav(bhajans, section, grouped, groups);
   const navJson = escapeHtml(JSON.stringify(navList));
-  const body = `${renderSectionBanner(section, base)}
+  const body = `${heroHtml || ''}
 ${renderSectionScrollHeader(section.title, navList.length)}
 <main class="content-main content-main--section" data-section-title="${escapeHtml(section.title)}" data-section-slug="${escapeHtml(section.slug)}" data-bhajan-nav="${navJson}">
   <h1 class="section-title">${escapeHtml(section.title)}</h1>
@@ -381,5 +413,8 @@ module.exports = {
   sectionUsesGroups,
   renderBhajanIndex,
   renderGroupedBhajanIndex,
+  renderBhajanIndexList,
+  renderGroupedBhajanIndexList,
+  renderSectionHero,
   renderBhajanCard,
 };
