@@ -1,6 +1,5 @@
 (function () {
   var STORAGE_READING = 'bhajan-sangrah-reading-mode';
-  var STORAGE_LAST = 'bhajan-sangrah-last';
   var STORAGE_INDEX_OPEN = 'bhajan-sangrah-index-open';
 
   function prefersReducedMotion() {
@@ -11,23 +10,46 @@
     return window.matchMedia('(max-width: 767px)').matches;
   }
 
-  function siteBase() {
-    var base = document.body.getAttribute('data-site-base') || '/';
-    return base.endsWith('/') ? base : base + '/';
+  function scrollToBhajanElement(el) {
+    if (!el) return;
+    el.scrollIntoView({
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+      block: 'start',
+    });
   }
 
-  function resolveHref(href) {
-    try {
-      return new URL(href, window.location.href).href;
-    } catch (e) {
-      return href;
+  function scrollToBhajanById(hashId, delayMs) {
+    var target = document.getElementById(hashId);
+    if (!target) return;
+    if (delayMs) {
+      window.setTimeout(function () {
+        scrollToBhajanElement(target);
+      }, delayMs);
+    } else {
+      scrollToBhajanElement(target);
     }
   }
 
-  /* ---- Reading mode ---- */
+  function collapseSectionHeroIndex() {
+    var hero = document.getElementById('section-hero');
+    if (!hero) return;
+    hero.classList.remove('is-index');
+    var indexView = hero.querySelector('.section-hero__view--index');
+    if (indexView) indexView.hidden = true;
+    var btn = document.getElementById('section-hero-toggle');
+    if (btn) {
+      btn.setAttribute('aria-expanded', 'false');
+      var whenBanner = btn.querySelector('.section-hero__toggle-when-banner');
+      var whenIndex = btn.querySelector('.section-hero__toggle-when-index');
+      if (whenBanner) whenBanner.hidden = false;
+      if (whenIndex) whenIndex.hidden = true;
+    }
+  }
+
+  /* ---- Reading mode (bottom bar only) ---- */
   function setReadingMode(on) {
     document.body.classList.toggle('reading-mode', on);
-    var buttons = document.querySelectorAll('[data-action="reading-mode"], .reading-mode-toggle');
+    var buttons = document.querySelectorAll('[data-action="reading-mode"]');
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].setAttribute('aria-pressed', on ? 'true' : 'false');
     }
@@ -43,7 +65,7 @@
     } catch (e) {}
     setReadingMode(on);
     document.addEventListener('click', function (e) {
-      var btn = e.target.closest('[data-action="reading-mode"], .reading-mode-toggle');
+      var btn = e.target.closest('[data-action="reading-mode"]');
       if (!btn) return;
       setReadingMode(!document.body.classList.contains('reading-mode'));
     });
@@ -86,8 +108,17 @@
 
     var indexLinks = panel.querySelectorAll('a[href^="#"]');
     for (var i = 0; i < indexLinks.length; i++) {
-      indexLinks[i].addEventListener('click', function () {
+      indexLinks[i].addEventListener('click', function (e) {
+        var href = e.currentTarget.getAttribute('href');
+        if (!href || href.charAt(0) !== '#') return;
+        var id = href.slice(1);
+        var target = document.getElementById(id);
+        if (!target || !target.classList.contains('bhajan-card')) return;
+        e.preventDefault();
         if (isMobile()) setOpen(false);
+        if (document.getElementById('section-hero')) collapseSectionHeroIndex();
+        history.pushState(null, '', href);
+        scrollToBhajanById(id);
       });
     }
 
@@ -124,7 +155,6 @@
     var btn = document.getElementById('section-hero-toggle');
     if (!hero || !btn) return;
 
-    /* Always open on section image; list only via सूची toggle */
     setSectionHeroIndexMode(false);
     window.scrollTo(0, 0);
     syncHeroPagerLayout();
@@ -134,8 +164,16 @@
     });
 
     hero.querySelectorAll('a[href^="#"]').forEach(function (link) {
-      link.addEventListener('click', function () {
+      link.addEventListener('click', function (e) {
+        var href = link.getAttribute('href');
+        if (!href || href.charAt(0) !== '#') return;
+        var id = href.slice(1);
+        var target = document.getElementById(id);
+        if (!target || !target.classList.contains('bhajan-card')) return;
+        e.preventDefault();
         if (isMobile()) setSectionHeroIndexMode(false);
+        history.pushState(null, '', href);
+        scrollToBhajanById(id);
       });
     });
 
@@ -146,83 +184,6 @@
         hero.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
       });
     });
-  }
-
-  /* ---- Continue reading ---- */
-  function bhajanPageHref(bhajanId) {
-    var base = window.location.href.split('#')[0];
-    return bhajanId ? base + '#' + bhajanId : base;
-  }
-
-  function saveLastRead(entry) {
-    if (!entry || !entry.href) return;
-    try {
-      localStorage.setItem(STORAGE_LAST, JSON.stringify(entry));
-    } catch (e) {}
-    renderContinueReading();
-  }
-
-  function loadLastRead() {
-    try {
-      var raw = localStorage.getItem(STORAGE_LAST);
-      return raw ? JSON.parse(raw) : null;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function renderContinueReading() {
-    var box = document.getElementById('continue-reading');
-    var link = document.getElementById('continue-reading-link');
-    if (!box || !link) return;
-    var last = loadLastRead();
-    if (!last || !last.href) {
-      box.hidden = true;
-      return;
-    }
-    if (resolveHref(window.location.href) === resolveHref(last.href)) {
-      box.hidden = true;
-      return;
-    }
-    var label = last.bhajanTitle || last.sectionTitle || 'पिछला स्थान';
-    link.href = last.href;
-    link.textContent = 'जहाँ छोड़ा था: ' + label;
-    box.hidden = false;
-  }
-
-  function initContinueReading() {
-    renderContinueReading();
-    window.addEventListener('pagehide', function () {
-      if (typeof window.__bhajanSaveLastRead === 'function') {
-        window.__bhajanSaveLastRead();
-      }
-    });
-  }
-
-  function trackContinueReading(nav, sectionTitle) {
-    if (!nav.length) return;
-    var lastSavedIndex = -1;
-
-    function persistIndex(index) {
-      if (index < 0 || index >= nav.length || index === lastSavedIndex) return;
-      var item = nav[index];
-      if (!item || !item.id) return;
-      lastSavedIndex = index;
-      saveLastRead({
-        href: bhajanPageHref(item.id),
-        sectionTitle: sectionTitle,
-        bhajanTitle: item.title,
-        ts: Date.now(),
-      });
-    }
-
-    window.__bhajanSaveLastRead = function () {
-      if (typeof window.__bhajanCurrentIndex === 'number') {
-        persistIndex(window.__bhajanCurrentIndex);
-      }
-    };
-
-    return persistIndex;
   }
 
   /* ---- Section sticky header + pager ---- */
@@ -272,20 +233,17 @@
     sectionTitle = sectionTitle ? sectionTitle.getAttribute('data-section-title') : '';
 
     var currentIndex = 0;
-    var persistContinue = trackContinueReading(nav, sectionTitle || '');
 
-    function updateUi(index, opts) {
+    function updateUi(index) {
       if (index < 0 || index >= nav.length) return;
       currentIndex = index;
-      window.__bhajanCurrentIndex = index;
       var item = nav[index];
-      if (persistContinue && (!opts || opts.persist !== false)) persistContinue(index);
       if (progress && header) {
         progress.textContent = toDevaNum(item.num) + ' / ' + toDevaNum(nav.length);
         header.hidden = false;
       }
-    if (pager && prevLink && nextLink) {
-      var hasPrev = index > 0;
+      if (pager && prevLink && nextLink) {
+        var hasPrev = index > 0;
         var hasNext = index < nav.length - 1;
         prevLink.href = hasPrev ? '#' + nav[index - 1].id : '#';
         nextLink.href = hasNext ? '#' + nav[index + 1].id : '#';
@@ -324,23 +282,11 @@
 
     if (document.getElementById('section-hero')) {
       syncHeroPagerLayout();
-      window.addEventListener(
-        'scroll',
-        syncHeroPagerLayout,
-        { passive: true }
-      );
+      window.addEventListener('scroll', syncHeroPagerLayout, { passive: true });
       window.addEventListener('resize', syncHeroPagerLayout);
     } else if (pager) {
       document.body.classList.add('pager-visible');
       pager.hidden = false;
-    }
-
-    function scrollToBhajan(hashId, delayMs) {
-      var target = document.getElementById(hashId);
-      if (!target) return;
-      window.setTimeout(function () {
-        target.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
-      }, delayMs);
     }
 
     if (window.location.hash) {
@@ -353,13 +299,13 @@
         }
       }
       if (hashIdx >= 0) {
-        updateUi(hashIdx, { persist: true });
-        scrollToBhajan(hashId, document.getElementById('section-hero') ? 200 : 80);
+        updateUi(hashIdx);
+        scrollToBhajanById(hashId, document.getElementById('section-hero') ? 220 : 50);
       } else if (cards.length) {
-        updateUi(0, { persist: false });
+        updateUi(0);
       }
     } else if (cards.length) {
-      updateUi(0, { persist: false });
+      updateUi(0);
     }
 
     var mainTitle = document.querySelector('.section-title');
@@ -380,7 +326,14 @@
         var a = e.target.closest('.bhajan-pager__link');
         if (!a || a.classList.contains('is-disabled')) {
           e.preventDefault();
+          return;
         }
+        var href = a.getAttribute('href');
+        if (!href || href.charAt(0) !== '#') return;
+        e.preventDefault();
+        var id = href.slice(1);
+        history.pushState(null, '', href);
+        scrollToBhajanById(id);
       });
     }
   }
@@ -402,7 +355,6 @@
   initReadingMode();
   initCollapsibleIndex();
   initSectionHeroToggle();
-  initContinueReading();
   initSectionScrollUi();
   initIndexAnchorScroll();
 })();

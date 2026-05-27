@@ -32,7 +32,6 @@ function renderSidebar(config, sections, base, currentSlug) {
       <span class="sidebar-search-open__icon" aria-hidden="true">⌕</span>
       <span>भजन खोजें</span>
     </button>
-    <button type="button" class="reading-mode-toggle" data-action="reading-mode" aria-pressed="false">पढ़ने का मोड</button>
   </div>
   <nav class="sidebar-nav" aria-label="विभाग">
     <p class="sidebar-nav__label">विभाग</p>
@@ -176,12 +175,6 @@ function renderSectionGrid(sections, base, config) {
     })
     .join('\n');
   return `<div class="section-grid">${cards}</div>`;
-}
-
-function renderContinueReadingPlaceholder() {
-  return `<div class="continue-reading" id="continue-reading" hidden>
-  <a class="continue-reading__link" id="continue-reading-link" href="#"></a>
-</div>`;
 }
 
 function bhajansByGroup(bhajans) {
@@ -329,8 +322,6 @@ function renderIndex(config, sections, base) {
   const body = `${renderHomeBanner(config, base)}
 <main class="content-main content-main--home">
   <h1 class="home-title">${escapeHtml(config.site_title)}</h1>
-  <p class="home-lead">भक्ति भजन संग्रह — अपना विभाग चुनें</p>
-  ${renderContinueReadingPlaceholder()}
   ${renderSectionGrid(sections, base, config)}
 </main>`;
 
@@ -391,7 +382,6 @@ function renderSectionPage(section, bhajans, config, sections, base) {
 ${renderSectionScrollHeader(section.title, navList.length)}
 <main class="content-main content-main--section" data-section-title="${escapeHtml(section.title)}" data-section-slug="${escapeHtml(section.slug)}" data-bhajan-nav="${navJson}">
   <h1 class="section-title">${escapeHtml(section.title)}</h1>
-  ${renderContinueReadingPlaceholder()}
   ${indexHtml}
   ${articlesHtml}
 </main>
