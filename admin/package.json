@@ -1,0 +1,11 @@
+{
+  "name": "bhajan-sangrah-admin",
+  "private": true,
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "jose": "^5.9.6"
+  }
+}
