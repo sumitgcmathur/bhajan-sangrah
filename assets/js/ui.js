@@ -117,9 +117,6 @@
       if (whenBanner) whenBanner.hidden = showIndex;
       if (whenIndex) whenIndex.hidden = !showIndex;
     }
-    try {
-      localStorage.setItem('bhajan-sangrah-hero-index', showIndex ? '1' : '0');
-    } catch (e) {}
   }
 
   function initSectionHeroToggle() {
@@ -127,15 +124,9 @@
     var btn = document.getElementById('section-hero-toggle');
     if (!hero || !btn) return;
 
-    var showIndex = false;
-    if (window.location.hash && hero.querySelector('a[href="' + window.location.hash + '"]')) {
-      showIndex = false;
-    } else {
-      try {
-        showIndex = localStorage.getItem('bhajan-sangrah-hero-index') === '1';
-      } catch (e) {}
-    }
-    setSectionHeroIndexMode(showIndex);
+    /* Always open on section image; list only via सूची toggle */
+    setSectionHeroIndexMode(false);
+    window.scrollTo(0, 0);
     syncHeroPagerLayout();
 
     btn.addEventListener('click', function () {
@@ -255,7 +246,7 @@
   function syncHeroPagerLayout() {
     var hero = document.getElementById('section-hero');
     var pager = document.getElementById('bhajan-pager');
-    if (!hero || !isMobile()) return;
+    if (!hero) return;
     var pastHero = hero.getBoundingClientRect().bottom <= window.innerHeight * 0.88;
     document.body.classList.toggle('pager-visible', pastHero);
     if (pager) pager.hidden = !pastHero;

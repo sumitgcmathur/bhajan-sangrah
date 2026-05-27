@@ -235,9 +235,26 @@ body {
   background: rgba(255, 255, 255, 0.22);
 }
 
-/* ---- Mobile bottom bar ---- */
+/* ---- Bottom bar (all screen sizes; sits above sidebar on desktop) ---- */
+body.has-sidebar {
+  padding-bottom: calc(var(--mobile-bar-h) + env(safe-area-inset-bottom, 0px));
+}
+
+body.page-section.has-sidebar.pager-visible {
+  padding-bottom: calc(var(--mobile-bar-h) + var(--pager-h) + env(safe-area-inset-bottom, 0px));
+}
+
 .mobile-bar {
-  display: none;
+  display: flex;
+  position: fixed;
+  left: var(--sidebar-w);
+  right: 0;
+  bottom: 0;
+  z-index: 500;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -2px 12px var(--accent-glow);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .mobile-bar__btn {
@@ -440,7 +457,7 @@ body.search-panel-open {
   align-items: center;
   min-height: var(--banner-h);
   padding: 0.5rem 0.75rem;
-  background: linear-gradient(165deg, #dce8f5 0%, var(--bg-alt) 45%, #e0ecf8 100%);
+  background: linear-gradient(165deg, var(--bg-alt) 0%, var(--surface) 45%, var(--bg-alt) 100%);
   border-bottom: 3px solid var(--accent);
   box-shadow: 0 2px 12px var(--accent-glow);
   overflow: hidden;
@@ -653,17 +670,83 @@ body.search-panel-open {
   background: var(--accent-soft);
 }
 
-/* Section page: banner ↔ index toggle */
-.section-hero {
+/* Section page: full viewport hero (image or index), content below on scroll */
+.page-section .section-hero {
+  height: var(--section-hero-fill);
+  min-height: var(--section-hero-fill);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
   position: relative;
   border-bottom: 1px solid var(--border);
   background: var(--bg-alt);
+}
+
+.page-section .section-hero__view--banner,
+.page-section .section-hero__view--index {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.page-section .section-hero__view--banner {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-section .section-hero.is-index .section-hero__view--index {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.section-hero {
+  position: relative;
 }
 
 .section-hero__view--banner .content-banner {
   margin: 0;
   border-bottom: none;
   box-shadow: none;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+}
+
+/* Original banner presentation: large contained image + blurred fill */
+.page-section .section-hero .content-banner__bg,
+.page-section .section-hero .content-banner::before {
+  display: block;
+}
+
+.page-section .section-hero .content-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--banner-h);
+  padding: 0.5rem 0.75rem;
+}
+
+.page-section .section-hero .content-banner__img {
+  width: auto;
+  height: auto;
+  max-width: var(--banner-img-max-w);
+  max-height: min(var(--banner-img-max-h), calc(var(--section-hero-fill) - 1.5rem));
+  object-fit: contain;
+  object-position: center center;
+  border-radius: 6px;
+  filter: drop-shadow(0 6px 20px rgba(44, 24, 16, 0.2));
+}
+
+.page-section .section-hero__index-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.85rem 1rem 3.5rem;
 }
 
 .section-hero__view--index {
@@ -673,13 +756,6 @@ body.search-panel-open {
   border: none;
   box-shadow: none;
   background: var(--surface);
-}
-
-.section-hero__index-scroll {
-  max-height: min(42vh, 400px);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 0.75rem 0.85rem 0.9rem;
 }
 
 .section-hero__index-scroll .content-index a {
@@ -730,10 +806,6 @@ body.search-panel-open {
 
 .section-hero .content-banner {
   pointer-events: none;
-}
-
-.page-section .section-hero .content-banner__img {
-  object-position: top center;
 }
 
 .section-card__title {
@@ -794,7 +866,7 @@ body.search-panel-open {
 .section-scroll-header {
   position: fixed;
   top: 0;
-  left: 0;
+  left: var(--sidebar-w);
   right: 0;
   z-index: 480;
   display: flex;
@@ -838,7 +910,7 @@ body.search-panel-open {
 /* Prev / next bhajan pager */
 .bhajan-pager {
   position: fixed;
-  left: 0;
+  left: var(--sidebar-w);
   right: 0;
   z-index: 470;
   display: flex;
@@ -1262,37 +1334,17 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-sthayi-connect {
 @media (max-width: 767px) {
   html { font-size: 19px; }
 
-  body.has-sidebar {
-    padding-bottom: calc(var(--mobile-bar-h) + env(safe-area-inset-bottom, 0px));
-  }
-
-  body.page-section.has-sidebar {
-    padding-bottom: calc(var(--mobile-bar-h) + env(safe-area-inset-bottom, 0px));
-  }
-
-  body.page-section.has-sidebar.pager-visible {
-    padding-bottom: calc(var(--mobile-bar-h) + var(--pager-h) + env(safe-area-inset-bottom, 0px));
-  }
-
   .mobile-bar {
-    display: flex;
-    position: fixed;
     left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 500;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    box-shadow: 0 -2px 12px var(--accent-glow);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  .content-banner__bg,
-  .content-banner::before {
+  /* Home banner: full width crop */
+  .page-home .content-banner__bg,
+  .page-home .content-banner::before {
     display: none;
   }
 
-  .content-banner {
+  .page-home .content-banner {
     display: block;
     min-height: 0;
     padding: 0;
@@ -1302,7 +1354,7 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-sthayi-connect {
     border-bottom-width: 1px;
   }
 
-  .content-banner__img {
+  .page-home .content-banner__img {
     width: 100%;
     max-width: none;
     max-height: var(--banner-img-max-h);
@@ -1314,44 +1366,17 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-sthayi-connect {
     vertical-align: top;
   }
 
-  /* Section hero: full screen above bottom menu only */
-  .page-section .section-hero {
-    height: var(--section-hero-fill);
-    min-height: var(--section-hero-fill);
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-  }
-
-  .page-section .section-hero__view--banner,
-  .page-section .section-hero__view--index {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .page-section .section-hero__view--banner {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .page-section .section-hero.is-index .section-hero__view--index {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  /* Section hero on phone: edge-to-edge cover */
+  .page-section .section-hero .content-banner__bg,
+  .page-section .section-hero .content-banner::before {
+    display: none;
   }
 
   .page-section .section-hero .content-banner {
-    flex: 1 1 auto;
-    min-height: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
     align-items: stretch;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 0;
-    line-height: normal;
-    min-height: unset;
+    min-height: 0;
   }
 
   .page-section .section-hero .content-banner__img {
@@ -1363,16 +1388,7 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-sthayi-connect {
     object-fit: cover;
     object-position: top center;
     border-radius: 0;
-  }
-
-  .page-section .section-hero__index-scroll {
-    flex: 1 1 auto;
-    min-height: 0;
-    max-height: none;
-    height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 0.85rem 0.85rem 3.5rem;
+    filter: none;
   }
 
   .page-section .section-hero.is-index .section-hero__toggle {
@@ -1382,6 +1398,14 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-sthayi-connect {
 
   .page-section .section-hero__toggle {
     bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .bhajan-pager {
+    left: 0;
+  }
+
+  .section-scroll-header {
+    left: 0;
   }
 
   .site-sidebar {
@@ -1490,9 +1514,12 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-sthayi-connect {
 }
 
 @media (min-width: 768px) {
-  .section-scroll-header,
+  .mobile-bar__btn[data-action="menu"] {
+    display: none;
+  }
+
   .bhajan-pager {
-    display: none !important;
+    bottom: calc(var(--mobile-bar-h) + env(safe-area-inset-bottom, 0px));
   }
 
   .bhajan-index--collapsible .bhajan-index__panel {
@@ -1538,15 +1565,13 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-sthayi-connect {
     border-radius: 8px;
   }
 
-  .page-section .section-hero .content-banner__img {
-    max-height: min(48vh, 440px);
-    object-fit: cover;
-    object-position: top center;
-    border-radius: 0;
+  .page-section .section-hero .content-banner {
+    padding: 0.65rem 1.25rem;
   }
 
-  .page-section .section-hero .section-hero__index-scroll {
-    max-height: min(48vh, 440px);
+  .page-section .section-hero .content-banner__img {
+    border-radius: 8px;
+    max-height: min(var(--banner-img-max-h), calc(var(--section-hero-fill) - 2rem));
   }
 }
 
