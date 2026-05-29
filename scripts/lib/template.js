@@ -97,7 +97,7 @@ ${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 
 function renderMobileBar(isSectionPage) {
   const indexBtn = isSectionPage
-    ? `<a href="#bhajan-index" class="mobile-bar__btn mobile-bar__btn--index" data-action="index" aria-label="भजन सूची"><span class="mobile-bar__icon" aria-hidden="true">☰</span><span class="mobile-bar__label">सूची</span></a>`
+    ? `<button type="button" class="mobile-bar__btn mobile-bar__btn--index" data-action="index" aria-label="भजन सूची"><span class="mobile-bar__icon" aria-hidden="true">☰</span><span class="mobile-bar__label">सूची</span></button>`
     : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar"><span class="mobile-bar__icon" aria-hidden="true">≡</span><span class="mobile-bar__label">मेनू</span></button>
@@ -256,10 +256,10 @@ function renderSectionHero(section, base, indexPanelHtml) {
   if (!banner) return '';
   return `<div class="section-hero" id="section-hero">
   <div class="section-hero__view section-hero__view--banner">${banner}</div>
-  <nav class="section-hero__view section-hero__view--index bhajan-index" id="bhajan-index" hidden aria-label="भजन सूची">
+  <nav class="section-hero__view section-hero__view--index bhajan-index" id="section-hero-index" hidden aria-label="भजन सूची">
     <div class="section-hero__index-scroll">${indexPanelHtml}</div>
   </nav>
-  <button type="button" class="section-hero__toggle" id="section-hero-toggle" aria-expanded="false" aria-controls="bhajan-index">
+  <button type="button" class="section-hero__toggle" id="section-hero-toggle" aria-expanded="false" aria-controls="section-hero-index">
     <span class="section-hero__toggle-when-banner">सूची</span>
     <span class="section-hero__toggle-when-index" hidden>चित्र</span>
   </button>

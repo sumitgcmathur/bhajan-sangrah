@@ -150,6 +150,15 @@
     }
   }
 
+  function openSectionHeroIndex() {
+    setSectionHeroIndexMode(true);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+    });
+  }
+
   function initSectionHeroToggle() {
     var hero = document.getElementById('section-hero');
     var btn = document.getElementById('section-hero-toggle');
@@ -180,8 +189,7 @@
     document.querySelectorAll('[data-action="index"]').forEach(function (barBtn) {
       barBtn.addEventListener('click', function (e) {
         e.preventDefault();
-        setSectionHeroIndexMode(true);
-        hero.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+        openSectionHeroIndex();
       });
     });
   }
