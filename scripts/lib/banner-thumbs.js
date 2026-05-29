@@ -35,7 +35,8 @@ async function writeThumb(srcRel, destAbs) {
   console.log(`banner-thumbs: ${path.relative(ROOT, destAbs)} (${kb} KB)`);
 }
 
-async function ensureBannerThumbs(config, sections) {
+async function generateBannerThumbs(config) {
+  const sections = config.sections || [];
   fs.mkdirSync(BANNERS_DIR, { recursive: true });
 
   if (config.home_banner) {
@@ -48,6 +49,23 @@ async function ensureBannerThumbs(config, sections) {
   }
 }
 
+function warnMissingThumbs(config) {
+  const missing = [];
+  if (config.home_banner && !fs.existsSync(path.join(BANNERS_DIR, 'home.jpg'))) {
+    missing.push('home.jpg');
+  }
+  for (const section of config.sections || []) {
+    if (!section.banner) continue;
+    const thumb = path.join(BANNERS_DIR, `${section.slug}.jpg`);
+    if (!fs.existsSync(thumb)) missing.push(`${section.slug}.jpg`);
+  }
+  if (missing.length) {
+    console.warn(
+      `Missing landing thumbnails: ${missing.join(', ')}. Run: npm run build:banners`
+    );
+  }
+}
+
 function landingBannerPath(section) {
   return `assets/banners/${section.slug}.jpg`;
 }
@@ -57,7 +75,8 @@ function landingHomeBannerPath() {
 }
 
 module.exports = {
-  ensureBannerThumbs,
+  generateBannerThumbs,
+  warnMissingThumbs,
   landingBannerPath,
   landingHomeBannerPath,
 };

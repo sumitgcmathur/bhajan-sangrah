@@ -5,6 +5,7 @@
   "scripts": {
     "clean-content": "node scripts/clean-content.js",
     "build": "node scripts/build.js",
+    "build:banners": "node scripts/build-banners.js",
     "export-pdf": "node scripts/export-pdf.js",
     "add-bhajan": "node scripts/add-bhajan.js",
     "add-section": "node scripts/add-section.js",
