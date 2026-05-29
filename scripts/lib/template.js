@@ -17,17 +17,6 @@ function renderNav(sections, base, currentSlug) {
     .join('\n');
 }
 
-function renderThemePicker() {
-  return `<div class="sidebar-theme" role="group" aria-label="थीम">
-  <p class="sidebar-theme__label">थीम</p>
-  <div class="sidebar-theme__options">
-    <button type="button" class="sidebar-theme__btn" data-theme-pick="current" aria-pressed="true">वर्तमान</button>
-    <button type="button" class="sidebar-theme__btn" data-theme-pick="blue" aria-pressed="false">नीला</button>
-    <button type="button" class="sidebar-theme__btn" data-theme-pick="white" aria-pressed="false">श्वेत</button>
-  </div>
-</div>`;
-}
-
 function renderSidebar(config, sections, base, currentSlug) {
   const home = pageUrl(base, 'index.html');
   const iconSrc = config.site_icon || 'assets/icons/favicon.jpg';
@@ -42,12 +31,7 @@ function renderSidebar(config, sections, base, currentSlug) {
   <nav class="sidebar-nav" aria-label="विभाग सूची">
     <ul class="sidebar-nav__list">${renderNav(sections, base, currentSlug)}</ul>
   </nav>
-  ${renderThemePicker()}
 </aside>`;
-}
-
-function renderThemeBootScript() {
-  return `<script>(function(){try{var t=localStorage.getItem('bhajan-sangrah-theme');if(t==='blue'||t==='white'||t==='current')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>`;
 }
 
 function renderFooter() {
@@ -84,7 +68,6 @@ function renderHead(pageTitle, base, config) {
 <meta name="theme-color" content="#2a1218" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <title>${escapeHtml(pageTitle)}</title>
-${renderThemeBootScript()}
 ${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -92,13 +75,13 @@ ${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 }
 
 function renderMobileBar(isSectionPage) {
-  const indexBtn = isSectionPage
-    ? `<button type="button" class="mobile-bar__btn mobile-bar__btn--index" data-action="index" aria-label="भजन सूची"><span class="mobile-bar__icon" aria-hidden="true">☰</span><span class="mobile-bar__label">सूची</span></button>`
+  const heroViewBtn = isSectionPage
+    ? `<button type="button" class="mobile-bar__btn mobile-bar__btn--hero-view" data-action="hero-view" aria-pressed="false" aria-label="भजन सूची दिखाएँ"><span class="mobile-bar__when-banner"><span class="mobile-bar__icon" aria-hidden="true">☰</span><span class="mobile-bar__label">सूची</span></span><span class="mobile-bar__when-index" hidden><span class="mobile-bar__icon" aria-hidden="true">⌂</span><span class="mobile-bar__label">चित्र</span></span></button>`
     : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar"><span class="mobile-bar__icon" aria-hidden="true">≡</span><span class="mobile-bar__label">मेनू</span></button>
   <button type="button" class="mobile-bar__btn" data-action="reading-mode" aria-pressed="false" aria-label="पढ़ने का मोड"><span class="mobile-bar__icon" aria-hidden="true">अ</span><span class="mobile-bar__label">पढ़ें</span></button>
-  ${indexBtn}
+  ${heroViewBtn}
 </nav>`;
 }
 
@@ -134,7 +117,6 @@ ${renderFooter()}
 </div>
 </div>
 ${renderMobileBar(isSectionPage)}
-<script src="${pageUrl(base, 'assets/js/theme.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/ui.js')}"></script>
 </body>
@@ -269,10 +251,6 @@ function renderSectionHero(section, base, indexPanelHtml) {
   <nav class="section-hero__view section-hero__view--index bhajan-index" id="section-hero-index" hidden aria-label="भजन सूची">
     <div class="section-hero__index-scroll">${indexPanelHtml}</div>
   </nav>
-  <button type="button" class="section-hero__toggle" id="section-hero-toggle" aria-expanded="false" aria-controls="section-hero-index">
-    <span class="section-hero__toggle-when-banner">सूची</span>
-    <span class="section-hero__toggle-when-index" hidden>चित्र</span>
-  </button>
 </div>`;
 }
 
