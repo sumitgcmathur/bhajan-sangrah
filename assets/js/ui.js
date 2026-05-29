@@ -30,20 +30,24 @@
     }
   }
 
+  function syncHeroViewBar(showIndex) {
+    document.querySelectorAll('[data-action="hero-view"]').forEach(function (btn) {
+      btn.setAttribute('aria-pressed', showIndex ? 'true' : 'false');
+      btn.setAttribute('aria-label', showIndex ? 'चित्र दिखाएँ' : 'भजन सूची दिखाएँ');
+      var whenBanner = btn.querySelector('.mobile-bar__when-banner');
+      var whenIndex = btn.querySelector('.mobile-bar__when-index');
+      if (whenBanner) whenBanner.hidden = showIndex;
+      if (whenIndex) whenIndex.hidden = !showIndex;
+    });
+  }
+
   function collapseSectionHeroIndex() {
     var hero = document.getElementById('section-hero');
     if (!hero) return;
     hero.classList.remove('is-index');
     var indexView = hero.querySelector('.section-hero__view--index');
     if (indexView) indexView.hidden = true;
-    var btn = document.getElementById('section-hero-toggle');
-    if (btn) {
-      btn.setAttribute('aria-expanded', 'false');
-      var whenBanner = btn.querySelector('.section-hero__toggle-when-banner');
-      var whenIndex = btn.querySelector('.section-hero__toggle-when-index');
-      if (whenBanner) whenBanner.hidden = false;
-      if (whenIndex) whenIndex.hidden = true;
-    }
+    syncHeroViewBar(false);
   }
 
   /* ---- Reading mode (bottom bar only) ---- */
@@ -133,25 +137,17 @@
     });
   }
 
-  /* ---- Section hero: banner ↔ index ---- */
+  /* ---- Section hero: banner ↔ index (bottom bar toggle) ---- */
   function setSectionHeroIndexMode(showIndex) {
     var hero = document.getElementById('section-hero');
-    var btn = document.getElementById('section-hero-toggle');
     if (!hero) return;
     hero.classList.toggle('is-index', showIndex);
     var indexView = hero.querySelector('.section-hero__view--index');
     if (indexView) indexView.hidden = !showIndex;
-    if (btn) {
-      btn.setAttribute('aria-expanded', showIndex ? 'true' : 'false');
-      var whenBanner = btn.querySelector('.section-hero__toggle-when-banner');
-      var whenIndex = btn.querySelector('.section-hero__toggle-when-index');
-      if (whenBanner) whenBanner.hidden = showIndex;
-      if (whenIndex) whenIndex.hidden = !showIndex;
-    }
+    syncHeroViewBar(showIndex);
   }
 
-  function openSectionHeroIndex() {
-    setSectionHeroIndexMode(true);
+  function scrollToSectionHero() {
     window.scrollTo({
       top: 0,
       left: 0,
@@ -161,16 +157,11 @@
 
   function initSectionHeroToggle() {
     var hero = document.getElementById('section-hero');
-    var btn = document.getElementById('section-hero-toggle');
-    if (!hero || !btn) return;
+    if (!hero) return;
 
     setSectionHeroIndexMode(false);
-    window.scrollTo(0, 0);
+    scrollToSectionHero();
     syncHeroPagerLayout();
-
-    btn.addEventListener('click', function () {
-      setSectionHeroIndexMode(!hero.classList.contains('is-index'));
-    });
 
     hero.querySelectorAll('a[href^="#"]').forEach(function (link) {
       link.addEventListener('click', function (e) {
@@ -180,16 +171,18 @@
         var target = document.getElementById(id);
         if (!target || !target.classList.contains('bhajan-card')) return;
         e.preventDefault();
-        if (isMobile()) setSectionHeroIndexMode(false);
+        setSectionHeroIndexMode(false);
         history.pushState(null, '', href);
         scrollToBhajanById(id);
       });
     });
 
-    document.querySelectorAll('[data-action="index"]').forEach(function (barBtn) {
+    document.querySelectorAll('[data-action="hero-view"]').forEach(function (barBtn) {
       barBtn.addEventListener('click', function (e) {
         e.preventDefault();
-        openSectionHeroIndex();
+        var showIndex = !hero.classList.contains('is-index');
+        setSectionHeroIndexMode(showIndex);
+        scrollToSectionHero();
       });
     });
   }
