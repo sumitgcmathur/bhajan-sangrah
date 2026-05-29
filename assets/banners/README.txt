@@ -1,7 +1,9 @@
-Landing-page thumbnails (auto-generated on build).
+Landing-page thumbnails (committed; not rebuilt on every site build).
 
-Full banners live in assets/icons/ (see banner: in content/sections.yaml).
-npm run build writes compressed ~420px-wide JPEGs here ({slug}.jpg, home.jpg).
-Section pages still use the full-size icons/ images.
+Full banners: assets/icons/ (banner: in content/sections.yaml).
+Section pages use icons/; the home grid uses these smaller JPEGs.
 
-Do not edit these by hand unless testing — they are overwritten when sources are newer.
+Regenerate only when a full banner changes:
+  npm install
+  npm run build:banners
+  git add assets/banners/*.jpg

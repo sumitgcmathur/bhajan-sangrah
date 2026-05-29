@@ -7,7 +7,7 @@ const { enrichBhajanLyrics } = require('./lib/lyrics-structure');
 const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
 const { anchorId } = require('./lib/slug');
 const { buildSearchIndex, writeSearchIndex } = require('./lib/search-index');
-const { ensureBannerThumbs } = require('./lib/banner-thumbs');
+const { warnMissingThumbs } = require('./lib/banner-thumbs');
 
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) return;
@@ -30,12 +30,12 @@ function rmDir(dir) {
   fs.rmdirSync(dir);
 }
 
-async function main() {
+function main() {
   const config = loadSections();
   const base = config.base_url || '/';
   const sections = config.sections || [];
 
-  await ensureBannerThumbs(config, sections);
+  warnMissingThumbs(config);
 
   if (fs.existsSync(DOCS)) rmDir(DOCS);
   fs.mkdirSync(DOCS, { recursive: true });
@@ -83,7 +83,4 @@ async function main() {
   console.log(`Search index: ${searchItems.length} entries`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main();
