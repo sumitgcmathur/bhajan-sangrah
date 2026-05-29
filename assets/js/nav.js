@@ -1,7 +1,5 @@
 (function () {
   var sidebar = document.getElementById("site-sidebar");
-  var searchPanel = document.getElementById("bhajan-search-panel");
-  var searchBackdrop = document.getElementById("bhajan-search-backdrop");
   if (!sidebar) return;
 
   var menuButtons = document.querySelectorAll(".sidebar-toggle");
@@ -12,22 +10,10 @@
     });
   }
 
-  function closeSearch() {
-    if (!searchPanel) return;
-    searchPanel.classList.remove("is-open");
-    searchPanel.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("search-panel-open");
-    document.querySelectorAll(".search-toggle").forEach(function (btn) {
-      btn.setAttribute("aria-expanded", "false");
-    });
-    if (searchBackdrop) searchBackdrop.hidden = true;
-  }
-
   menuButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
       var open = sidebar.classList.toggle("is-open");
       setMenuExpanded(open);
-      if (open) closeSearch();
     });
   });
 
