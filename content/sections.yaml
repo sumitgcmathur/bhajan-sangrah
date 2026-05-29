@@ -58,6 +58,7 @@ sections:
     folder: mooltatva
     google_path: mooltatva
     title: मूल तत्त्व भजन
+    banner: assets/icons/MoolTatva.jpg
   - slug: horiya
     folder: horiya
     google_path: horiya
