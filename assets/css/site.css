@@ -588,23 +588,48 @@ body.search-panel-open {
 
 /* Home landing */
 .home-title {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.25rem;
   font-size: clamp(1.5rem, 5vw, 1.85rem);
   font-weight: 700;
   color: var(--accent-dark);
   text-align: center;
 }
 
+.home-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  margin: 0 0 0.85rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.home-stats__item strong {
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.home-stats__sep {
+  opacity: 0.55;
+}
+
 .section-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
   gap: 0.75rem;
+  align-items: stretch;
 }
 
 .section-card {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  height: 100%;
+  min-height: 0;
   text-decoration: none;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -616,7 +641,9 @@ body.search-panel-open {
 
 .section-card__media {
   position: relative;
+  flex: 1 1 auto;
   width: 100%;
+  min-height: 0;
   background: var(--bg-alt);
 }
 
@@ -625,17 +652,26 @@ body.search-panel-open {
   background: var(--accent-soft);
 }
 
-/* Landing grid: uniform tile size (most banners are 704×1522) */
+/* Landing grid: equal tiles (fixed aspect; thumbs match 704×1522) */
 .section-card .content-banner--card {
   margin: 0;
   border-bottom: none;
   box-shadow: none;
   aspect-ratio: var(--section-card-aspect);
   width: 100%;
+  height: 100%;
   min-height: 0;
   padding: 0;
   overflow: hidden;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-card .content-banner--card .content-banner__bg,
+.section-card .content-banner--card.content-banner::before {
+  display: none;
 }
 
 .section-card .content-banner--card .content-banner__img {
@@ -645,6 +681,25 @@ body.search-panel-open {
   max-height: none;
   object-fit: contain;
   object-position: center center;
+}
+
+.section-card__foot {
+  flex-shrink: 0;
+  padding: 0.4rem 0.45rem 0.5rem;
+  text-align: center;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.section-card__count {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.section-card:hover .section-card__count {
+  color: var(--link);
 }
 
 /* Section page: full viewport hero (image or index), content below on scroll */
@@ -1324,15 +1379,6 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     overflow: hidden;
   }
 
-  .section-card .content-banner--card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg-alt);
-    box-shadow: none;
-    border-bottom: none;
-  }
-
   .page-home > .content-banner .content-banner__img {
     width: auto;
     height: auto;
@@ -1340,11 +1386,6 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     max-height: 100%;
     object-fit: contain;
     object-position: center center;
-    border-radius: 0;
-    filter: none;
-  }
-
-  .section-card .content-banner--card .content-banner__img {
     border-radius: 0;
     filter: none;
   }
@@ -1551,28 +1592,6 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     --banner-img-max-h: min(56vh, 540px);
     --banner-img-max-w: min(96vw, 880px);
     --banner-card-h: min(20vh, 220px);
-  }
-
-  .section-card .content-banner--card .content-banner__bg,
-  .section-card .content-banner--card.content-banner::before {
-    display: block;
-  }
-
-  .section-card .content-banner--card {
-    aspect-ratio: unset;
-    min-height: var(--banner-card-h);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.35rem 0.45rem;
-  }
-
-  .section-card .content-banner--card .content-banner__img {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: calc(var(--banner-card-h) - 0.7rem);
-    object-fit: contain;
   }
 
   .content-banner {

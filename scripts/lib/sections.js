@@ -34,10 +34,18 @@ function loadBhajan(filePath) {
   return loadBhajanDoc(fs.readFileSync(filePath, 'utf8'));
 }
 
+function countBhajansBySection(sections) {
+  return sections.map((section) => ({
+    slug: section.slug,
+    count: listBhajanFiles(section).length,
+  }));
+}
+
 module.exports = {
   loadSections,
   saveSections,
   sectionFolder,
   listBhajanFiles,
   loadBhajan,
+  countBhajansBySection,
 };

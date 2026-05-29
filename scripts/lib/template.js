@@ -1,5 +1,6 @@
 const { escapeHtml, lyricsToHtml, jabaniToHtml } = require('./escape');
 const { anchorId } = require('./slug');
+const { toDevaNum } = require('./lyrics-structure');
 
 function pageUrl(base, page) {
   if (!page) return base || './';
@@ -164,13 +165,29 @@ function renderSectionCardBanner(src, alt) {
 </div>`;
 }
 
-function renderSectionGrid(sections, base, config) {
+function formatBhajanCount(n) {
+  return `${toDevaNum(n)} भजन`;
+}
+
+function renderHomeStats(totalBhajans, sectionCount) {
+  return `<p class="home-stats" aria-label="कुल ${totalBhajans} भजन, ${sectionCount} श्रेणियाँ">
+  <span class="home-stats__item">कुल <strong>${toDevaNum(totalBhajans)}</strong> भजन</span>
+  <span class="home-stats__sep" aria-hidden="true">·</span>
+  <span class="home-stats__item"><strong>${toDevaNum(sectionCount)}</strong> श्रेणियाँ</span>
+</p>`;
+}
+
+function renderSectionGrid(sections, base, config, sectionCounts) {
+  const countBySlug = new Map(sectionCounts.map((c) => [c.slug, c.count]));
   const cards = sections
     .map((s) => {
       const href = pageUrl(base, `${s.slug}.html`);
       const img = sectionCardImage(s, base, config);
-      return `<a class="section-card" href="${href}" aria-label="${escapeHtml(s.title)}">
+      const count = countBySlug.get(s.slug) ?? 0;
+      const countHtml = `<span class="section-card__count">${formatBhajanCount(count)}</span>`;
+      return `<a class="section-card" href="${href}" aria-label="${escapeHtml(s.title)}, ${count} भजन">
   ${renderSectionCardBanner(img, s.title)}
+  <span class="section-card__foot">${countHtml}</span>
 </a>`;
     })
     .join('\n');
@@ -318,11 +335,14 @@ function renderSectionBanner(section, base) {
   return renderPageBanner(pageUrl(base, section.banner), section.title);
 }
 
-function renderIndex(config, sections, base) {
+function renderIndex(config, sections, base, sectionCounts) {
+  const counts = sectionCounts || [];
+  const totalBhajans = counts.reduce((sum, c) => sum + c.count, 0);
   const body = `${renderHomeBanner(config, base)}
 <main class="content-main content-main--home">
   <h1 class="home-title">${escapeHtml(config.site_title)}</h1>
-  ${renderSectionGrid(sections, base, config)}
+  ${renderHomeStats(totalBhajans, sections.length)}
+  ${renderSectionGrid(sections, base, config, counts)}
 </main>`;
 
   return renderPage({
