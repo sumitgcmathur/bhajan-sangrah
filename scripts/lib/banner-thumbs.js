@@ -18,13 +18,13 @@ function needsRebuild(src, dest) {
   return fs.statSync(src).mtimeMs > fs.statSync(dest).mtimeMs;
 }
 
-async function writeThumb(srcRel, destAbs) {
+async function writeThumb(srcRel, destAbs, { force = false } = {}) {
   const srcAbs = resolveAsset(srcRel);
   if (!fs.existsSync(srcAbs)) {
     console.warn(`banner-thumbs: missing source ${srcRel}`);
     return;
   }
-  if (!needsRebuild(srcAbs, destAbs)) return;
+  if (!force && !needsRebuild(srcAbs, destAbs)) return;
 
   const sharp = require('sharp');
   await sharp(srcAbs)
@@ -37,17 +37,17 @@ async function writeThumb(srcRel, destAbs) {
   console.log(`banner-thumbs: ${path.relative(ROOT, destAbs)} (${kb} KB)`);
 }
 
-async function generateBannerThumbs(config) {
+async function generateBannerThumbs(config, { force = false } = {}) {
   const sections = config.sections || [];
   fs.mkdirSync(BANNERS_DIR, { recursive: true });
 
   if (config.home_banner) {
-    await writeThumb(config.home_banner, path.join(BANNERS_DIR, 'home.jpg'));
+    await writeThumb(config.home_banner, path.join(BANNERS_DIR, 'home.jpg'), { force });
   }
 
   for (const section of sections) {
     if (!section.banner) continue;
-    await writeThumb(section.banner, path.join(BANNERS_DIR, `${section.slug}.jpg`));
+    await writeThumb(section.banner, path.join(BANNERS_DIR, `${section.slug}.jpg`), { force });
   }
 }
 
