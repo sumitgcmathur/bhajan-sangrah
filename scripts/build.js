@@ -2,7 +2,13 @@
 const fs = require('fs');
 const path = require('path');
 const { ROOT, DOCS, ASSETS } = require('./lib/paths');
-const { loadSections, sectionFolder, listBhajanFiles, loadBhajan } = require('./lib/sections');
+const {
+  loadSections,
+  sectionFolder,
+  listBhajanFiles,
+  loadBhajan,
+  countBhajansBySection,
+} = require('./lib/sections');
 const { enrichBhajanLyrics } = require('./lib/lyrics-structure');
 const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
 const { anchorId } = require('./lib/slug');
@@ -34,6 +40,7 @@ function main() {
   const config = loadSections();
   const base = config.base_url || '/';
   const sections = config.sections || [];
+  const sectionCounts = countBhajansBySection(sections);
 
   warnMissingThumbs(config);
 
@@ -49,7 +56,11 @@ function main() {
 
   copyDir(path.join(ASSETS), path.join(DOCS, 'assets'));
 
-  fs.writeFileSync(path.join(DOCS, 'index.html'), renderIndex(config, sections, base), 'utf8');
+  fs.writeFileSync(
+    path.join(DOCS, 'index.html'),
+    renderIndex(config, sections, base, sectionCounts),
+    'utf8'
+  );
 
   let total = 0;
   for (const section of sections) {

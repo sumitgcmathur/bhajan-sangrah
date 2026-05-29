@@ -3,7 +3,9 @@ const path = require('path');
 const { ROOT, ASSETS } = require('./paths');
 
 const BANNERS_DIR = path.join(ASSETS, 'banners');
-const THUMB_WIDTH = 420;
+/** Match section card aspect (704×1522); cover crop so every thumb is identical size */
+const THUMB_WIDTH = 352;
+const THUMB_HEIGHT = Math.round((THUMB_WIDTH * 1522) / 704);
 const JPEG_QUALITY = 82;
 
 function resolveAsset(relPath) {
@@ -27,7 +29,7 @@ async function writeThumb(srcRel, destAbs) {
   const sharp = require('sharp');
   await sharp(srcAbs)
     .rotate()
-    .resize({ width: THUMB_WIDTH, withoutEnlargement: true })
+    .resize(THUMB_WIDTH, THUMB_HEIGHT, { fit: 'cover', position: 'centre' })
     .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
     .toFile(destAbs);
 
