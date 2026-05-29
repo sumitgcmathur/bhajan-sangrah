@@ -17,6 +17,17 @@ function renderNav(sections, base, currentSlug) {
     .join('\n');
 }
 
+function renderThemePicker() {
+  return `<div class="sidebar-theme" role="group" aria-label="थीम">
+  <p class="sidebar-theme__label">थीम</p>
+  <div class="sidebar-theme__options">
+    <button type="button" class="sidebar-theme__btn" data-theme-pick="current" aria-pressed="true">वर्तमान</button>
+    <button type="button" class="sidebar-theme__btn" data-theme-pick="blue" aria-pressed="false">नीला</button>
+    <button type="button" class="sidebar-theme__btn" data-theme-pick="white" aria-pressed="false">श्वेत</button>
+  </div>
+</div>`;
+}
+
 function renderSidebar(config, sections, base, currentSlug) {
   const home = pageUrl(base, 'index.html');
   const iconSrc = config.site_icon || 'assets/icons/favicon.jpg';
@@ -28,32 +39,15 @@ function renderSidebar(config, sections, base, currentSlug) {
       <span class="sidebar-brand__title">${escapeHtml(config.site_title)}</span>
     </a>
   </div>
-  <div class="sidebar-tools">
-    <button type="button" class="sidebar-search-open search-toggle" aria-expanded="false" aria-controls="bhajan-search-panel">
-      <span class="sidebar-search-open__icon" aria-hidden="true">⌕</span>
-      <span>भजन खोजें</span>
-    </button>
-  </div>
-  <nav class="sidebar-nav" aria-label="विभाग">
-    <p class="sidebar-nav__label">विभाग</p>
+  <nav class="sidebar-nav" aria-label="विभाग सूची">
     <ul class="sidebar-nav__list">${renderNav(sections, base, currentSlug)}</ul>
   </nav>
+  ${renderThemePicker()}
 </aside>`;
 }
 
-function renderSearchPanel() {
-  return `<div id="bhajan-search-backdrop" class="bhajan-search-backdrop" hidden></div>
-<aside id="bhajan-search-panel" class="bhajan-search-panel" aria-label="भजन खोजें" aria-hidden="true">
-  <div class="bhajan-search-panel__head">
-    <h2 class="bhajan-search-panel__title">भजन खोजें</h2>
-    <button type="button" class="bhajan-search-panel__close" aria-label="बंद करें">&times;</button>
-  </div>
-  <div class="bhajan-search-panel__body">
-    <label class="visually-hidden" for="bhajan-search">भजन खोजें</label>
-    <input type="search" id="bhajan-search" class="bhajan-search__input" placeholder="भजन खोजें…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="bhajan-search-results" aria-autocomplete="list">
-    <ul id="bhajan-search-results" class="bhajan-search__results" role="listbox" hidden></ul>
-  </div>
-</aside>`;
+function renderThemeBootScript() {
+  return `<script>(function(){try{var t=localStorage.getItem('bhajan-sangrah-theme');if(t==='blue'||t==='white'||t==='current')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>`;
 }
 
 function renderFooter() {
@@ -90,6 +84,7 @@ function renderHead(pageTitle, base, config) {
 <meta name="theme-color" content="#2a1218" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <title>${escapeHtml(pageTitle)}</title>
+${renderThemeBootScript()}
 ${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -102,7 +97,6 @@ function renderMobileBar(isSectionPage) {
     : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar"><span class="mobile-bar__icon" aria-hidden="true">≡</span><span class="mobile-bar__label">मेनू</span></button>
-  <button type="button" class="mobile-bar__btn search-toggle" data-action="search" aria-expanded="false" aria-controls="bhajan-search-panel"><span class="mobile-bar__icon" aria-hidden="true">⌕</span><span class="mobile-bar__label">खोज</span></button>
   <button type="button" class="mobile-bar__btn" data-action="reading-mode" aria-pressed="false" aria-label="पढ़ने का मोड"><span class="mobile-bar__icon" aria-hidden="true">अ</span><span class="mobile-bar__label">पढ़ें</span></button>
   ${indexBtn}
 </nav>`;
@@ -140,9 +134,8 @@ ${renderFooter()}
 </div>
 </div>
 ${renderMobileBar(isSectionPage)}
-${renderSearchPanel()}
+<script src="${pageUrl(base, 'assets/js/theme.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
-<script src="${pageUrl(base, 'assets/js/search.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/ui.js')}"></script>
 </body>
 </html>`;
@@ -317,22 +310,23 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
 </article>`;
 }
 
-function renderPageBanner(src, alt) {
+function renderPageBanner(src, alt, { hero = false } = {}) {
   if (!src) return '';
-  return `<div class="content-banner">
+  const heroClass = hero ? ' content-banner--hero' : '';
+  return `<div class="content-banner${heroClass}">
   <img class="content-banner__bg" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async">
   <img class="content-banner__img" src="${src}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
 </div>`;
 }
 
 function renderHomeBanner(config, base) {
-  const src = config.home_banner ? pageUrl(base, landingHomeBannerPath()) : '';
-  return renderPageBanner(src, config.site_title);
+  const src = config.home_banner ? pageUrl(base, config.home_banner) : '';
+  return renderPageBanner(src, config.site_title, { hero: true });
 }
 
 function renderSectionBanner(section, base) {
   if (!section.banner) return '';
-  return renderPageBanner(pageUrl(base, section.banner), section.title);
+  return renderPageBanner(pageUrl(base, section.banner), section.title, { hero: true });
 }
 
 function renderIndex(config, sections, base, sectionCounts) {
