@@ -7,6 +7,7 @@ const { enrichBhajanLyrics } = require('./lib/lyrics-structure');
 const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
 const { anchorId } = require('./lib/slug');
 const { buildSearchIndex, writeSearchIndex } = require('./lib/search-index');
+const { ensureBannerThumbs } = require('./lib/banner-thumbs');
 
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) return;
@@ -29,14 +30,22 @@ function rmDir(dir) {
   fs.rmdirSync(dir);
 }
 
-function main() {
+async function main() {
   const config = loadSections();
   const base = config.base_url || '/';
   const sections = config.sections || [];
 
+  await ensureBannerThumbs(config, sections);
+
   if (fs.existsSync(DOCS)) rmDir(DOCS);
   fs.mkdirSync(DOCS, { recursive: true });
   fs.writeFileSync(path.join(DOCS, '.nojekyll'), '', 'utf8');
+  // gh-pages is GitHub Pages only; Vercel reads vercel.json from the branch being deployed.
+  fs.writeFileSync(
+    path.join(DOCS, 'vercel.json'),
+    `${JSON.stringify({ git: { deploymentEnabled: false } }, null, 2)}\n`,
+    'utf8'
+  );
 
   copyDir(path.join(ASSETS), path.join(DOCS, 'assets'));
 
@@ -74,4 +83,7 @@ function main() {
   console.log(`Search index: ${searchItems.length} entries`);
 }
 
-main();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

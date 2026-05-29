@@ -22,8 +22,11 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Install dependencies
+        run: npm install
+
       - name: Build static site
-        run: node scripts/build.js
+        run: npm run build
 
       - name: Deploy to gh-pages branch
         uses: JamesIves/github-pages-deploy-action@v4

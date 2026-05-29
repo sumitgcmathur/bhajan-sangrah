@@ -147,8 +147,10 @@ ${renderSearchPanel()}
 </html>`;
 }
 
+const { landingBannerPath, landingHomeBannerPath } = require('./banner-thumbs');
+
 function sectionCardImage(section, base, config) {
-  if (section.banner) return pageUrl(base, section.banner);
+  if (section.banner) return pageUrl(base, landingBannerPath(section));
   if (config.site_icon) return pageUrl(base, config.site_icon);
   return '';
 }
@@ -158,7 +160,6 @@ function renderSectionCardBanner(src, alt) {
     return '<div class="section-card__media section-card__media--empty" aria-hidden="true"></div>';
   }
   return `<div class="section-card__media content-banner content-banner--card">
-  <img class="content-banner__bg" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async">
   <img class="content-banner__img" src="${src}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
 </div>`;
 }
@@ -308,7 +309,7 @@ function renderPageBanner(src, alt) {
 }
 
 function renderHomeBanner(config, base) {
-  const src = config.home_banner ? pageUrl(base, config.home_banner) : '';
+  const src = config.home_banner ? pageUrl(base, landingHomeBannerPath()) : '';
   return renderPageBanner(src, config.site_title);
 }
 
