@@ -65,11 +65,19 @@ npx vercel dev
 
 GitHub Actions pushes the **built site** to the `gh-pages` branch. Vercel must **not** deploy that branch (only `main` with Root Directory `admin`).
 
-`admin/vercel.json` sets `"gh-pages": false` under `git.deploymentEnabled`. After merging, failed `gh-pages` preview rows should stop.
+`admin/vercel.json` disables `gh-pages` for commits on **main**, but each `gh-pages` push only contains the built `docs/` output — no `admin/vercel.json`. Vercel reads config from the branch it is deploying, so you need **`docs/vercel.json`** (written by `scripts/build.js` on every build) on `gh-pages` with `"git": { "deploymentEnabled": false }`.
 
-Optional in Vercel → **Settings → Git**: Production Branch = `main` only.
+After the next push to `main` (CI rebuilds `gh-pages`), new `gh-pages` commits should stop triggering failed Vercel builds. Old failed rows in the dashboard stay as history.
 
-Your public site is on **GitHub Pages**, not Vercel. Vercel is only for this admin app.
+**Immediate fix (no code wait):** Vercel project → **Settings → Git** → **Ignored Build Step** → Custom:
+
+```bash
+[ "$VERCEL_GIT_COMMIT_REF" = "gh-pages" ]
+```
+
+(Exit `0` skips the build; exit `1` builds. This runs before Vercel looks for Root Directory `admin` on `gh-pages`.)
+
+Also confirm **Root Directory** = `admin` and **Production Branch** = `main`. Your public site is **GitHub Pages**, not Vercel.
 
 ## Troubleshooting OAuth / 404 after GitHub
 

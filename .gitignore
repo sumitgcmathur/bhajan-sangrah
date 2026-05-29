@@ -1,5 +1,6 @@
 node_modules/
 docs/
+assets/banners/*.jpg
 output/*
 !output/.gitignore
 spellcheck-report.txt
