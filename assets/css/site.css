@@ -1301,7 +1301,7 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     left: 0;
   }
 
-  /* Home + section cards: full width, natural height (pre–UI-enhancement hero) */
+  /* Home top banner + section grid cards */
   .page-home .content-banner__bg,
   .page-home .content-banner::before,
   .section-card .content-banner--card .content-banner__bg,
@@ -1309,14 +1309,19 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     display: none;
   }
 
-  .page-home .content-banner {
-    display: block;
+  .page-home > .content-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--section-hero-fill);
     min-height: 0;
+    max-height: var(--section-hero-fill);
     padding: 0;
-    line-height: 0;
+    line-height: normal;
     background: var(--bg-alt);
     box-shadow: none;
     border-bottom: none;
+    overflow: hidden;
   }
 
   .section-card .content-banner--card {
@@ -1328,16 +1333,15 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     border-bottom: none;
   }
 
-  .page-home .content-banner__img {
-    width: 100%;
-    max-width: none;
-    max-height: none;
+  .page-home > .content-banner .content-banner__img {
+    width: auto;
     height: auto;
-    object-fit: initial;
-    object-position: top center;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: center center;
     border-radius: 0;
     filter: none;
-    vertical-align: top;
   }
 
   .section-card .content-banner--card .content-banner__img {
