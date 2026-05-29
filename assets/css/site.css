@@ -503,7 +503,7 @@ body.search-panel-open {
 }
 
 /* Home + section page heroes (full-size banner, not grid thumbs) */
-.page-home > .content-banner--hero {
+.page-home .content-banner--hero {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -527,7 +527,7 @@ body.search-panel-open {
   box-shadow: none;
 }
 
-.page-home > .content-banner--hero .content-banner__img,
+.page-home .content-banner--hero .content-banner__img,
 .page-section .section-hero:not(.is-index) .content-banner--hero .content-banner__img {
   width: auto;
   height: auto;
@@ -764,12 +764,12 @@ body.search-panel-open {
   padding: 0.5rem 0.75rem;
 }
 
-.page-home > .content-banner--hero {
+.page-home .content-banner--hero {
   padding: 0.5rem 0.75rem;
 }
 
 .page-section .section-hero .content-banner--hero .content-banner__img,
-.page-home > .content-banner--hero .content-banner__img {
+.page-home .content-banner--hero .content-banner__img {
   border-radius: 6px;
   filter: drop-shadow(0 6px 20px rgba(44, 24, 16, 0.2));
 }
@@ -1257,66 +1257,6 @@ body.search-panel-open {
   border-top: 2px solid var(--border);
 }
 
-/* ---- Reading mode ---- */
-body.reading-mode {
-  --bg: #fffef8;
-  --surface: #fffef8;
-  --text: #1a1008;
-}
-
-@media (prefers-color-scheme: dark) {
-  body.reading-mode {
-    --bg: #14100e;
-    --surface: #14100e;
-    --text: #f8f0ea;
-  }
-}
-
-body.reading-mode .bhajan-card {
-  box-shadow: none;
-  border-color: transparent;
-  background: transparent;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-body.reading-mode .bhajan-card__head {
-  border-bottom-width: 1px;
-  border-bottom-color: var(--border);
-}
-
-body.reading-mode .bhajan-card__head::after {
-  display: none;
-}
-
-body.reading-mode .section-title {
-  box-shadow: none;
-  border-left-width: 3px;
-}
-
-body.reading-mode .section-title::after {
-  display: none;
-}
-
-body.reading-mode .bhajan-index {
-  box-shadow: none;
-}
-
-body.reading-mode .bhajan-card__lyrics {
-  font-size: 1.2rem;
-  line-height: 2;
-}
-
-body.reading-mode .bhajan-lyrics--standard p.lyrics-antara--odd,
-body.reading-mode .bhajan-lyrics--standard p.lyrics-antara--even,
-body.reading-mode .bhajan-lyrics--standard p.lyrics-sthayi {
-  color: var(--text);
-}
-
-body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
-  margin-bottom: 1.15rem;
-}
-
 /* ---- Mobile: bottom bar, collapsible sidebar ---- */
 @media (max-width: 767px) {
   html { font-size: 19px; }
@@ -1326,8 +1266,8 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
   }
 
   /* Hero banners on phone: edge-to-edge; grid cards keep thumbs only */
-  .page-home > .content-banner--hero .content-banner__bg,
-  .page-home > .content-banner--hero::before,
+  .page-home .content-banner--hero .content-banner__bg,
+  .page-home .content-banner--hero::before,
   .page-section .section-hero .content-banner--hero .content-banner__bg,
   .page-section .section-hero .content-banner--hero::before,
   .section-card .content-banner--card .content-banner__bg,
@@ -1335,14 +1275,14 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     display: none;
   }
 
-  .page-home > .content-banner--hero,
+  .page-home .content-banner--hero,
   .page-section .section-hero:not(.is-index) .content-banner--hero {
     padding: 0;
     background: var(--bg-alt);
     overflow: hidden;
   }
 
-  .page-home > .content-banner--hero .content-banner__img,
+  .page-home .content-banner--hero .content-banner__img,
   .page-section .section-hero:not(.is-index) .content-banner--hero .content-banner__img {
     border-radius: 0;
     filter: none;
@@ -1533,12 +1473,12 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     border-radius: 8px;
   }
 
-  .page-home > .content-banner--hero,
+  .page-home .content-banner--hero,
   .page-section .section-hero .content-banner--hero {
     padding: 0.65rem 1.25rem;
   }
 
-  .page-home > .content-banner--hero .content-banner__img,
+  .page-home .content-banner--hero .content-banner__img,
   .page-section .section-hero .content-banner--hero .content-banner__img {
     border-radius: 8px;
   }
