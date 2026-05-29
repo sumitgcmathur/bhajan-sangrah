@@ -80,7 +80,6 @@ function renderMobileBar(isSectionPage) {
     : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar"><span class="mobile-bar__icon" aria-hidden="true">≡</span><span class="mobile-bar__label">मेनू</span></button>
-  <button type="button" class="mobile-bar__btn" data-action="reading-mode" aria-pressed="false" aria-label="पढ़ने का मोड"><span class="mobile-bar__icon" aria-hidden="true">अ</span><span class="mobile-bar__label">पढ़ें</span></button>
   ${heroViewBtn}
 </nav>`;
 }

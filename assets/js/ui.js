@@ -1,5 +1,4 @@
 (function () {
-  var STORAGE_READING = 'bhajan-sangrah-reading-mode';
   var STORAGE_INDEX_OPEN = 'bhajan-sangrah-index-open';
 
   function prefersReducedMotion() {
@@ -48,31 +47,6 @@
     var indexView = hero.querySelector('.section-hero__view--index');
     if (indexView) indexView.hidden = true;
     syncHeroViewBar(false);
-  }
-
-  /* ---- Reading mode (bottom bar only) ---- */
-  function setReadingMode(on) {
-    document.body.classList.toggle('reading-mode', on);
-    var buttons = document.querySelectorAll('[data-action="reading-mode"]');
-    for (var i = 0; i < buttons.length; i++) {
-      buttons[i].setAttribute('aria-pressed', on ? 'true' : 'false');
-    }
-    try {
-      localStorage.setItem(STORAGE_READING, on ? '1' : '0');
-    } catch (e) {}
-  }
-
-  function initReadingMode() {
-    var on = false;
-    try {
-      on = localStorage.getItem(STORAGE_READING) === '1';
-    } catch (e) {}
-    setReadingMode(on);
-    document.addEventListener('click', function (e) {
-      var btn = e.target.closest('[data-action="reading-mode"]');
-      if (!btn) return;
-      setReadingMode(!document.body.classList.contains('reading-mode'));
-    });
   }
 
   /* ---- Collapsible bhajan index ---- */
@@ -353,7 +327,6 @@
     });
   }
 
-  initReadingMode();
   initCollapsibleIndex();
   initSectionHeroToggle();
   initSectionScrollUi();
