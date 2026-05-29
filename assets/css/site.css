@@ -28,6 +28,7 @@
   --banner-img-max-h: min(32vh, 280px);
   --banner-img-max-w: 100%;
   --banner-card-h: min(22vw, 168px);
+  --section-card-aspect: 704 / 1522;
   --content-pad-x: 1rem;
   --content-pad-y: 1.5rem;
   --card-pad-x: 1rem;
@@ -624,19 +625,24 @@ body.search-panel-open {
   background: var(--accent-soft);
 }
 
-/* Same banner treatment as section hero (scaled for grid cards) */
+/* Landing grid: uniform tile size (most banners are 704×1522) */
 .section-card .content-banner--card {
   margin: 0;
   border-bottom: none;
   box-shadow: none;
-  min-height: var(--banner-card-h);
-  padding: 0.35rem 0.45rem;
+  aspect-ratio: var(--section-card-aspect);
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
   pointer-events: none;
 }
 
 .section-card .content-banner--card .content-banner__img {
-  max-width: 100%;
-  max-height: calc(var(--banner-card-h) - 0.7rem);
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
   object-fit: contain;
   object-position: center center;
 }
@@ -1303,8 +1309,7 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     display: none;
   }
 
-  .page-home .content-banner,
-  .section-card .content-banner--card {
+  .page-home .content-banner {
     display: block;
     min-height: 0;
     padding: 0;
@@ -1314,8 +1319,16 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     border-bottom: none;
   }
 
-  .page-home .content-banner__img,
-  .section-card .content-banner--card .content-banner__img {
+  .section-card .content-banner--card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-alt);
+    box-shadow: none;
+    border-bottom: none;
+  }
+
+  .page-home .content-banner__img {
     width: 100%;
     max-width: none;
     max-height: none;
@@ -1325,6 +1338,11 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     border-radius: 0;
     filter: none;
     vertical-align: top;
+  }
+
+  .section-card .content-banner--card .content-banner__img {
+    border-radius: 0;
+    filter: none;
   }
 
   /* Section hero on phone: edge-to-edge cover */
@@ -1521,8 +1539,20 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
   }
 
   .section-card .content-banner--card {
+    aspect-ratio: unset;
+    min-height: var(--banner-card-h);
     display: flex;
-    padding: 0.4rem 0.5rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.45rem;
+  }
+
+  .section-card .content-banner--card .content-banner__img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(var(--banner-card-h) - 0.7rem);
+    object-fit: contain;
   }
 
   .content-banner {

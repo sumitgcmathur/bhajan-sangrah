@@ -168,9 +168,8 @@ function renderSectionGrid(sections, base, config) {
     .map((s) => {
       const href = pageUrl(base, `${s.slug}.html`);
       const img = sectionCardImage(s, base, config);
-      return `<a class="section-card" href="${href}">
+      return `<a class="section-card" href="${href}" aria-label="${escapeHtml(s.title)}">
   ${renderSectionCardBanner(img, s.title)}
-  <span class="section-card__title">${escapeHtml(s.title)}</span>
 </a>`;
     })
     .join('\n');
