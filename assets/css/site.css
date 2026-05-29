@@ -1345,26 +1345,11 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     filter: none;
   }
 
-  /* Section hero on phone: full banner height (index toggle still fills viewport) */
+  /* Section hero on phone: one screen tall; banner scales to fit (no crop, no overflow) */
   .page-section .section-hero {
-    height: auto;
-    min-height: 0;
-  }
-
-  .page-section .section-hero.is-index {
     height: var(--section-hero-fill);
     min-height: var(--section-hero-fill);
-  }
-
-  .page-section .section-hero:not(.is-index) .section-hero__view--banner {
-    flex: none;
-    height: auto;
-    overflow: visible;
-  }
-
-  .page-section .section-hero:not(.is-index) .section-hero__view--banner .content-banner {
-    flex: none;
-    height: auto;
+    max-height: var(--section-hero-fill);
   }
 
   .page-section .section-hero .content-banner__bg,
@@ -1372,23 +1357,33 @@ body.reading-mode .bhajan-lyrics--standard .lyrics-antara {
     display: none;
   }
 
-  .page-section .section-hero .content-banner {
-    display: block;
-    padding: 0;
+  .page-section .section-hero:not(.is-index) .section-hero__view--banner {
+    flex: 1 1 auto;
     min-height: 0;
-    line-height: 0;
+    overflow: hidden;
   }
 
-  .page-section .section-hero .content-banner__img {
-    width: 100%;
+  .page-section .section-hero:not(.is-index) .section-hero__view--banner .content-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    padding: 0;
+    line-height: normal;
+  }
+
+  .page-section .section-hero:not(.is-index) .content-banner__img {
+    display: block;
+    width: auto;
     height: auto;
-    max-width: none;
-    max-height: none;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
-    object-position: top center;
+    object-position: center center;
     border-radius: 0;
     filter: none;
-    vertical-align: top;
   }
 
   .page-section .section-hero.is-index .section-hero__toggle {
