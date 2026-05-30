@@ -85,6 +85,28 @@ ${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="${css}">`;
 }
 
+function renderToolbarSearchIcon() {
+  return `<svg class="mobile-bar__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="10.5" cy="10.5" r="5.75" stroke="currentColor" stroke-width="1.75"/>
+  <path d="M15.2 15.2L20 20" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+</svg>`;
+}
+
+function renderSearchPanel() {
+  return `<div class="bhajan-search-backdrop" id="bhajan-search-backdrop" hidden></div>
+<aside class="bhajan-search-panel" id="bhajan-search-panel" aria-hidden="true" aria-label="भजन खोज">
+  <div class="bhajan-search-panel__head">
+    <p class="bhajan-search-panel__title">भजन खोजें</p>
+    <button type="button" class="bhajan-search-panel__close" aria-label="बंद करें">×</button>
+  </div>
+  <div class="bhajan-search-panel__body">
+    <label class="visually-hidden" for="bhajan-search">भजन खोजें</label>
+    <input type="search" id="bhajan-search" class="bhajan-search__input" placeholder="शब्द या पंक्ति लिखें…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="bhajan-search-results" aria-autocomplete="list">
+    <ul id="bhajan-search-results" class="bhajan-search__results" role="listbox" hidden></ul>
+  </div>
+</aside>`;
+}
+
 function renderToolbarIndexIcon() {
   return `<svg class="mobile-bar__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M5.25 4.25h10.85L17.75 6v13.25H5.25V4.25z" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
@@ -111,6 +133,7 @@ function renderMobileBar(isSectionPage) {
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">≡</span></button>
   ${heroViewBtn}
+  <button type="button" class="mobile-bar__btn search-toggle" aria-expanded="false" aria-controls="bhajan-search-panel" aria-label="भजन खोजें">${renderToolbarSearchIcon()}</button>
   <button type="button" class="mobile-bar__btn" data-action="theme" aria-pressed="false" aria-label="गहरा रंग"><span class="mobile-bar__icon mobile-bar__icon--theme" aria-hidden="true">☽</span></button>
 </nav>`;
 }
@@ -147,9 +170,11 @@ ${renderFooter()}
 </div>
 </div>
 ${renderMobileBar(isSectionPage)}
+${renderSearchPanel()}
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/theme.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/ui.js')}"></script>
+<script src="${pageUrl(base, 'assets/js/search.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/pwa.js')}"></script>
 </body>
 </html>`;

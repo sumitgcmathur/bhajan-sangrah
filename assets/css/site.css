@@ -375,7 +375,7 @@ body.search-panel-open {
   padding: 0.55rem 0.7rem;
   border: 1px solid var(--border);
   border-radius: 0.4rem;
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
   font-family: var(--font);
   font-size: 1rem;
