@@ -49,13 +49,16 @@ function iconTypeFromHref(href) {
 function renderIconLinks(base, config) {
   const iconSrc = config?.site_icon || 'assets/icons/favicon.jpg';
   const iconHref = pageUrl(base, iconSrc);
+  const pwa192 = pageUrl(base, 'assets/icons/pwa-192.png');
+  const pwa512 = pageUrl(base, 'assets/icons/pwa-512.png');
+  const manifest = pageUrl(base, 'manifest.webmanifest');
   if (!iconHref) return '';
   const type = iconTypeFromHref(iconHref);
   const typeAttr = type ? ` type="${type}"` : '';
-  // iOS needs apple-touch-icon for home screen; rel=icon for Safari tabs (PNG most reliable).
   return (
     `<link rel="icon"${typeAttr} href="${iconHref}">\n` +
-    `<link rel="apple-touch-icon" sizes="180x180" href="${iconHref}">\n`
+    `<link rel="apple-touch-icon" sizes="180x180" href="${pwa192 || iconHref}">\n` +
+    `<link rel="manifest" href="${manifest}">\n`
   );
 }
 
@@ -67,6 +70,9 @@ function renderHead(pageTitle, base, config) {
 <meta name="theme-color" content="#8b3a4a" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#2a1218" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="${escapeHtml(config?.site_title || 'भजन संग्रह')}">
+<meta name="description" content="भक्ति भजन संग्रह">
 <title>${escapeHtml(pageTitle)}</title>
 ${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -118,6 +124,7 @@ ${renderFooter()}
 ${renderMobileBar(isSectionPage)}
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/ui.js')}"></script>
+<script src="${pageUrl(base, 'assets/js/pwa.js')}"></script>
 </body>
 </html>`;
 }
