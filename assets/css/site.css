@@ -32,14 +32,35 @@
   --content-pad-x: 1rem;
   --content-pad-y: 1.5rem;
   --card-pad-x: 1rem;
-  --mobile-bar-h: 3.35rem;
+  --mobile-bar-h: 2.85rem;
   --scroll-header-h: 2.5rem;
   --pager-h: 2.65rem;
   --section-hero-fill: calc(100dvh - var(--mobile-bar-h) - env(safe-area-inset-bottom, 0px));
 }
 
+/* Dark theme: manual toggle */
+:root[data-theme="dark"] {
+  --bg: #1a1210;
+  --bg-alt: #261a16;
+  --surface: #2a1e1a;
+  --text: #f5ebe6;
+  --muted: #c4b0a8;
+  --link: #e8a0b0;
+  --link-hover: #f5c4d0;
+  --sidebar-bg: linear-gradient(180deg, #2a1218 0%, #4a2030 50%, #5c2838 100%);
+  --sidebar-bg-solid: #4a2030;
+  --sidebar-text: #f5e0e6;
+  --border: #3d2e28;
+  --accent: #d47890;
+  --accent-dark: #e8a0b0;
+  --accent-soft: #3a2828;
+  --accent-glow: rgba(212, 120, 144, 0.15);
+  --lyrics-marker: #a89088;
+}
+
+/* Dark theme: system preference when user has not chosen light */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #1a1210;
     --bg-alt: #261a16;
     --surface: #2a1e1a;
@@ -186,16 +207,11 @@ body {
   border-left-color: var(--sidebar-active);
 }
 
-.mobile-bar__btn--hero-view {
-  flex-direction: column;
-}
-
 .mobile-bar__when-banner,
 .mobile-bar__when-index {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.1rem;
+  justify-content: center;
 }
 
 .mobile-bar__when-index[hidden],
@@ -228,17 +244,13 @@ body.page-section.has-sidebar.pager-visible {
 .mobile-bar__btn {
   flex: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.1rem;
   min-height: var(--mobile-bar-h);
-  padding: 0.25rem 0.15rem;
+  min-width: 2.75rem;
+  padding: 0.35rem 0.25rem;
   font-family: var(--font);
-  font-size: 0.72rem;
-  font-weight: 600;
   color: var(--text);
-  text-decoration: none;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -247,16 +259,16 @@ body.page-section.has-sidebar.pager-visible {
 }
 
 .mobile-bar__icon {
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   line-height: 1;
-}
-
-.mobile-bar__label {
-  line-height: 1.1;
 }
 
 .mobile-bar__btn[aria-pressed="true"] {
   color: var(--accent);
+}
+
+.mobile-bar__btn[data-action="theme"] .mobile-bar__icon--theme {
+  font-size: 1.4rem;
 }
 
 /* ---- Bhajan search (right slide-in panel) ---- */

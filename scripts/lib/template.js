@@ -62,10 +62,15 @@ function renderIconLinks(base, config) {
   );
 }
 
+function renderThemeBootScript() {
+  return `<script>(function(){try{var t=localStorage.getItem("bhajan-sangrah-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>`;
+}
+
 function renderHead(pageTitle, base, config) {
   const css = pageUrl(base, 'assets/css/site.css');
   const favicon = renderIconLinks(base, config);
   return `<meta charset="utf-8">
+${renderThemeBootScript()}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#8b3a4a" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#2a1218" media="(prefers-color-scheme: dark)">
@@ -82,11 +87,12 @@ ${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 
 function renderMobileBar(isSectionPage) {
   const heroViewBtn = isSectionPage
-    ? `<button type="button" class="mobile-bar__btn mobile-bar__btn--hero-view" data-action="hero-view" aria-pressed="false" aria-label="भजन सूची दिखाएँ"><span class="mobile-bar__when-banner"><span class="mobile-bar__icon" aria-hidden="true">☰</span><span class="mobile-bar__label">सूची</span></span><span class="mobile-bar__when-index" hidden><span class="mobile-bar__icon" aria-hidden="true">⌂</span><span class="mobile-bar__label">चित्र</span></span></button>`
+    ? `<button type="button" class="mobile-bar__btn mobile-bar__btn--hero-view" data-action="hero-view" aria-pressed="false" aria-label="भजन सूची दिखाएँ"><span class="mobile-bar__when-banner"><span class="mobile-bar__icon" aria-hidden="true">☰</span></span><span class="mobile-bar__when-index" hidden><span class="mobile-bar__icon" aria-hidden="true">⌂</span></span></button>`
     : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
-  <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar"><span class="mobile-bar__icon" aria-hidden="true">≡</span><span class="mobile-bar__label">मेनू</span></button>
+  <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">≡</span></button>
   ${heroViewBtn}
+  <button type="button" class="mobile-bar__btn" data-action="theme" aria-pressed="false" aria-label="गहरा रंग"><span class="mobile-bar__icon mobile-bar__icon--theme" aria-hidden="true">☽</span></button>
 </nav>`;
 }
 
@@ -123,6 +129,7 @@ ${renderFooter()}
 </div>
 ${renderMobileBar(isSectionPage)}
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
+<script src="${pageUrl(base, 'assets/js/theme.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/ui.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/pwa.js')}"></script>
 </body>
