@@ -85,9 +85,28 @@ ${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="${css}">`;
 }
 
+function renderToolbarIndexIcon() {
+  return `<svg class="mobile-bar__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5.25 4.25h10.85L17.75 6v13.25H5.25V4.25z" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+  <path d="M15.9 4.25V6.35h2.1" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M15.9 4.25 17.75 6.35 15.9 6.35z" fill="var(--surface)" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+  <rect x="7.1" y="7.85" width="9.4" height="2.15" rx="0.45" fill="var(--accent)" opacity="0.88"/>
+  <circle cx="7.85" cy="11.85" r="0.75" fill="currentColor"/>
+  <path d="M9.35 11.85h5.1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M15.35 11.85h1.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="7.85" cy="14.15" r="0.75" fill="currentColor"/>
+  <path d="M9.35 14.15h5.1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M15.35 14.15h1.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="7.85" cy="16.45" r="0.75" fill="currentColor"/>
+  <path d="M9.35 16.45h5.1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M15.35 16.45h1.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+</svg>`;
+}
+
 function renderMobileBar(isSectionPage) {
+  const indexIcon = renderToolbarIndexIcon();
   const heroViewBtn = isSectionPage
-    ? `<button type="button" class="mobile-bar__btn mobile-bar__btn--hero-view" data-action="hero-view" aria-pressed="false" aria-label="भजन सूची दिखाएँ"><span class="mobile-bar__when-banner"><span class="mobile-bar__icon mobile-bar__icon--numbered" aria-hidden="true">1.2.3</span></span><span class="mobile-bar__when-index" hidden><span class="mobile-bar__icon" aria-hidden="true">⌂</span></span></button>`
+    ? `<button type="button" class="mobile-bar__btn mobile-bar__btn--hero-view" data-action="hero-view" aria-pressed="false" aria-label="भजन सूची दिखाएँ"><span class="mobile-bar__when-banner">${indexIcon}</span><span class="mobile-bar__when-index" hidden><span class="mobile-bar__icon" aria-hidden="true">⌂</span></span></button>`
     : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">≡</span></button>

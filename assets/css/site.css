@@ -271,12 +271,16 @@ body.page-section.has-sidebar.pager-visible {
   font-size: 1.4rem;
 }
 
-.mobile-bar__icon--numbered {
-  font-size: 0.95rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
-  line-height: 1;
+.mobile-bar__icon-svg {
+  width: 1.45rem;
+  height: 1.45rem;
+  flex-shrink: 0;
+  display: block;
+  color: inherit;
+}
+
+.mobile-bar__btn[aria-pressed="true"] .mobile-bar__icon-svg {
+  color: var(--accent);
 }
 
 /* ---- Bhajan search (right slide-in panel) ---- */
