@@ -3,19 +3,14 @@ const { requireAuth, sendJson, readBody } = require('../lib/http');
 const { getFile, putFile, deleteFile, listDir } = require('../lib/github');
 const { parseSectionsYaml, parseBhajanYaml, serializeBhajanDoc, docToEditor, editorToDoc } = require('../lib/yaml-bridge');
 
-const { slugify } = require(path.join(__dirname, '..', '..', 'scripts', 'lib', 'slug'));
-
-function bhajanFilename(title, index, existingNames) {
-  const prefix = String(index + 1).padStart(3, '0');
-  let slug = slugify(title);
-  let name = `${prefix}-${slug}.yaml`;
-  let n = 2;
-  while (existingNames.has(name)) {
-    name = `${prefix}-${slug}-${n}.yaml`;
-    n += 1;
-  }
-  return name;
-}
+const { bhajanFilename, bhajanPathForTitle, titleSlugDiffersFromPath } = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  'scripts',
+  'lib',
+  'slug',
+));
 
 function safeContentPath(p) {
   const norm = String(p || '').replace(/\\/g, '/');
@@ -57,22 +52,44 @@ module.exports = async (req, res) => {
         return;
       }
       const doc = editorToDoc(body.editor);
-      if (!doc.title?.trim()) {
+      const title = (doc.title || '').trim();
+      if (!title || title === 'Untitled') {
         sendJson(res, 400, { error: 'title required' });
         return;
       }
+      doc.title = title;
       const yaml = serializeBhajanDoc(doc);
-      const message = body.message || `admin: update ${filePath}`;
+      const message = body.message || `admin: update ${title}`;
       let sha = body.sha;
       if (!sha) {
         const existing = await getFile(filePath, session.accessToken);
         sha = existing?.sha;
       }
-      const result = await putFile(filePath, yaml, message, session.accessToken, sha);
+      const folder = filePath.replace(/\\/g, '/').replace(/\/[^/]+$/, '');
+      const items = await listDir(folder, session.accessToken);
+      const currentBase = path.basename(filePath);
+      const names = new Set(items.filter((f) => f.type === 'file').map((f) => f.name));
+      names.delete(currentBase);
+      const targetPath = bhajanPathForTitle(filePath, title, names);
+      const renamed = titleSlugDiffersFromPath(filePath, title) && targetPath !== filePath;
+      let result;
+      if (renamed) {
+        if (!sha) {
+          sendJson(res, 409, { error: 'Cannot rename file: missing version (sha). Reload and try again.' });
+          return;
+        }
+        const renameMsg = `admin: rename ${currentBase} → ${path.basename(targetPath)} (${title})`;
+        result = await putFile(targetPath, yaml, renameMsg, session.accessToken);
+        await deleteFile(filePath, renameMsg, session.accessToken, sha);
+      } else {
+        result = await putFile(filePath, yaml, message, session.accessToken, sha);
+      }
       sendJson(res, 200, {
-        path: filePath,
+        path: renamed ? targetPath : filePath,
         sha: result.content?.sha,
         commit: result.commit?.html_url,
+        renamed,
+        previousPath: renamed ? filePath : undefined,
       });
       return;
     }
@@ -95,7 +112,13 @@ module.exports = async (req, res) => {
       const items = await listDir(`content/${folder}`, session.accessToken);
       const names = new Set(items.filter((f) => f.type === 'file').map((f) => f.name));
       const doc = editorToDoc(body.editor);
-      const fileName = bhajanFilename(doc.title, names.size, names);
+      const title = (doc.title || '').trim();
+      if (!title || title === 'Untitled') {
+        sendJson(res, 400, { error: 'title required' });
+        return;
+      }
+      doc.title = title;
+      const fileName = bhajanFilename(title, names.size, names);
       const filePath = `content/${folder}/${fileName}`;
       const yaml = serializeBhajanDoc(doc);
       const message = body.message || `admin: add ${doc.title}`;

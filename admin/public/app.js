@@ -134,6 +134,31 @@ function paragraphsToBulkText(paragraphs) {
     .join('\n\n');
 }
 
+/** Keep in-memory editor in sync with the form before any re-render. */
+function syncEditorFromDom() {
+  if (state.view !== 'edit' || !state.editor) return;
+  const titleEl = document.getElementById('f-title');
+  if (!titleEl) return;
+  const e = state.editor;
+  e.title = titleEl.value.trim();
+  e.tarz = document.getElementById('f-tarz')?.value.trim() || '';
+  if (document.getElementById('f-group-select')) {
+    e.group = readGroupValue();
+  }
+  e.swarachit = document.getElementById('f-swarachit')?.checked || false;
+  e.jabani = document.getElementById('f-jabani')?.value.trim() || '';
+  const L = e.lyrics;
+  L.sthayi = document.getElementById('f-sthayi')?.value.trim() || '';
+  L.sthayi_marker = document.getElementById('f-sthayi-marker')?.value.trim() || '';
+  L.sthayi_connect = document.getElementById('f-connect-off')?.checked ? false : undefined;
+  L.sthayi_connect_text = document.getElementById('f-connect-text')?.value.trim() || '';
+  L.pre_shlok = document.getElementById('f-pre-shlok')?.value.trim() || '';
+  L.dhvani = document.getElementById('f-dhvani')?.value.trim() || '';
+  const legacy = document.getElementById('f-legacy');
+  if (legacy) e.legacyLyricsText = legacy.value;
+  flushParagraphEdits();
+}
+
 function flushParagraphEdits() {
   if (state.view !== 'edit' || !state.editor) return;
   const pastePanel = document.getElementById('paras-paste');
@@ -183,6 +208,23 @@ function resetParagraphEditor() {
   state.paraBulkDraft = null;
 }
 
+function bhajanDisplayName(b) {
+  const title = (b.title || '').trim();
+  if (title) return title;
+  return b.name.replace(/^\d+-/, '').replace(/\.ya?ml$/i, '').replace(/-/g, ' ');
+}
+
+function bindTopbar() {
+  document.querySelector('[data-back="sections"]')?.addEventListener('click', () => {
+    state.view = 'sections';
+    render();
+  });
+  document.querySelector('[data-back="bhajans"]')?.addEventListener('click', () => {
+    state.view = 'bhajans';
+    render();
+  });
+}
+
 function render() {
   if (state.view === 'loading') {
     app.innerHTML = '<p class="loading">Loading…</p>';
@@ -230,9 +272,10 @@ function render() {
         <button type="button" class="btn btn-primary" id="add-bhajan" style="width:100%;margin-bottom:0.75rem">+ New bhajan</button>
         ${state.bhajans.map((b) => `
           <div class="bhajan-item">
-            <button type="button" class="list-btn" data-path="${escapeAttr(b.path)}">${escapeHtml(b.name.replace(/^\d+-/, '').replace(/\.yaml$/, '').replace(/-/g, ' '))}</button>
+            <button type="button" class="list-btn" data-path="${escapeAttr(b.path)}">${escapeHtml(bhajanDisplayName(b))}</button>
           </div>`).join('') || '<p class="hint">No bhajans in this section yet.</p>'}
       </main>`;
+    bindTopbar();
     document.getElementById('add-bhajan').addEventListener('click', () => {
       state.path = null;
       state.sha = null;
@@ -248,6 +291,7 @@ function render() {
   }
 
   if (state.view === 'edit') {
+    syncEditorFromDom();
     const e = state.editor;
     const L = e.lyrics;
     const showGroup = Boolean(state.section?.grouped);
@@ -341,44 +385,19 @@ function escapeAttr(s) {
 }
 
 function collectEditor() {
-  const e = state.editor;
-  e.title = document.getElementById('f-title').value.trim();
-  e.tarz = document.getElementById('f-tarz').value.trim();
-  if (document.getElementById('f-group-select')) {
-    e.group = readGroupValue();
-  }
-  e.swarachit = document.getElementById('f-swarachit').checked;
-  e.jabani = document.getElementById('f-jabani').value.trim();
-  const L = e.lyrics;
-  L.sthayi = document.getElementById('f-sthayi').value.trim();
-  L.sthayi_marker = document.getElementById('f-sthayi-marker').value.trim();
-  L.sthayi_connect = document.getElementById('f-connect-off').checked ? false : undefined;
-  L.sthayi_connect_text = document.getElementById('f-connect-text').value.trim();
-  L.pre_shlok = document.getElementById('f-pre-shlok').value.trim();
-  L.dhvani = document.getElementById('f-dhvani').value.trim();
-  const legacy = document.getElementById('f-legacy');
-  if (legacy) e.legacyLyricsText = legacy.value;
-  flushParagraphEdits();
-  return e;
+  syncEditorFromDom();
+  return state.editor;
 }
 
 function bindEditor() {
   bindGroupField();
-
-  document.querySelector('[data-back="sections"]')?.addEventListener('click', () => {
-    state.view = 'sections';
-    render();
-  });
-  document.querySelector('[data-back="bhajans"]')?.addEventListener('click', () => {
-    state.view = 'bhajans';
-    render();
-  });
+  bindTopbar();
 
   document.querySelectorAll('[data-para-mode]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const next = btn.dataset.paraMode;
       if (next === state.paraEditMode) return;
-      flushParagraphEdits();
+      syncEditorFromDom();
       state.paraEditMode = next;
       if (next === 'paste') {
         state.paraBulkDraft = paragraphsToBulkText(state.editor.lyrics.paragraphs);
@@ -388,20 +407,20 @@ function bindEditor() {
   });
 
   document.getElementById('parse-paras-bulk')?.addEventListener('click', () => {
-    flushParagraphEdits();
+    syncEditorFromDom();
     state.paraEditMode = 'structured';
     state.paraBulkDraft = paragraphsToBulkText(state.editor.lyrics.paragraphs);
     render();
   });
 
   document.getElementById('add-antara')?.addEventListener('click', () => {
-    flushParagraphEdits();
+    syncEditorFromDom();
     state.paraEditMode = 'structured';
     state.editor.lyrics.paragraphs.push({ type: 'antara', text: '' });
     render();
   });
   document.getElementById('add-commentary')?.addEventListener('click', () => {
-    flushParagraphEdits();
+    syncEditorFromDom();
     state.paraEditMode = 'structured';
     state.editor.lyrics.paragraphs.push({ type: 'commentary', text: '' });
     render();
@@ -410,20 +429,20 @@ function bindEditor() {
   document.querySelectorAll('.para-card').forEach((card) => {
     const i = Number(card.dataset.i);
     card.querySelector('.para-del')?.addEventListener('click', () => {
-      flushParagraphEdits();
+      syncEditorFromDom();
       state.editor.lyrics.paragraphs.splice(i, 1);
       if (!state.editor.lyrics.paragraphs.length) state.editor.lyrics.paragraphs.push({ type: 'antara', text: '' });
       render();
     });
     card.querySelector('.para-up')?.addEventListener('click', () => {
       if (i === 0) return;
-      flushParagraphEdits();
+      syncEditorFromDom();
       const arr = state.editor.lyrics.paragraphs;
       [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
       render();
     });
     card.querySelector('.para-down')?.addEventListener('click', () => {
-      flushParagraphEdits();
+      syncEditorFromDom();
       const arr = state.editor.lyrics.paragraphs;
       if (i >= arr.length - 1) return;
       [arr[i + 1], arr[i]] = [arr[i], arr[i + 1]];
@@ -438,9 +457,15 @@ function bindEditor() {
 async function saveEditor() {
   state.error = null;
   collectEditor();
+  if (!state.editor.title.trim()) {
+    state.error = 'Title is required before publishing.';
+    render();
+    return;
+  }
   try {
+    let res;
     if (state.path) {
-      await api('/api/file', {
+      res = await api('/api/file', {
         method: 'PUT',
         body: JSON.stringify({
           path: state.path,
@@ -450,7 +475,7 @@ async function saveEditor() {
         }),
       });
     } else {
-      const res = await api('/api/file', {
+      res = await api('/api/file', {
         method: 'POST',
         body: JSON.stringify({
           section: state.section.slug,
@@ -458,9 +483,15 @@ async function saveEditor() {
           message: `admin: add ${state.editor.title}`,
         }),
       });
-      state.path = res.path;
     }
-    alert('Published — GitHub Actions will rebuild the public site.');
+    if (res?.path) {
+      state.path = res.path;
+      state.sha = res.sha;
+    }
+    const renameNote = res?.renamed
+      ? `\n\nFile renamed to match title:\n${res.path.split('/').pop()}`
+      : '';
+    alert(`Published — GitHub Actions will rebuild the public site.${renameNote}`);
     state.view = 'bhajans';
     await loadBhajans(state.section.slug);
     render();
