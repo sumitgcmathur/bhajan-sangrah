@@ -6,11 +6,14 @@ const state = {
   sections: [],
   section: null,
   bhajans: [],
+  groupOptions: [],
   path: null,
   sha: null,
   editor: null,
   error: null,
 };
+
+const GROUP_OTHER = '__other__';
 
 function emptyEditor() {
   return {
@@ -46,16 +49,62 @@ async function api(path, opts = {}) {
 
 function errMsg(code) {
   const map = {
-    not_allowed: 'यह GitHub खाता अनुमत नहीं है।',
-    invalid_state: 'लॉगिन समाप्त — पुनः प्रयास करें।',
-    access_denied: 'GitHub लॉगिन रद्द।',
+    not_allowed: 'This GitHub account is not allowed.',
+    invalid_state: 'Login expired — please try again.',
+    access_denied: 'GitHub login was cancelled.',
   };
   return map[code] || code;
 }
 
+function groupChoices() {
+  const fromSection = (state.groupOptions || []).filter(Boolean);
+  const fromTitles = (state.sections || []).map((s) => s.title).filter(Boolean);
+  return [...new Set([...fromSection, ...fromTitles])].sort((a, b) => a.localeCompare(b, 'hi'));
+}
+
+function groupFieldHtml(current) {
+  const choices = groupChoices();
+  const known = !current || choices.includes(current);
+  const selectValue = known ? current || '' : GROUP_OTHER;
+  const options = [
+    '<option value="">— None —</option>',
+    ...choices.map(
+      (g) => `<option value="${escapeAttr(g)}" ${g === current && known ? 'selected' : ''}>${escapeHtml(g)}</option>`,
+    ),
+    `<option value="${GROUP_OTHER}" ${!known ? 'selected' : ''}>Other (custom)…</option>`,
+  ].join('');
+  return `
+    <label>Group (subsection)</label>
+    <select id="f-group-select">${options}</select>
+    <div id="f-group-other-wrap" class="${known ? 'is-hidden' : ''}">
+      <label>Custom group name</label>
+      <input type="text" id="f-group-other" value="${escapeAttr(known ? '' : current)}">
+    </div>`;
+}
+
+function bindGroupField() {
+  const sel = document.getElementById('f-group-select');
+  const wrap = document.getElementById('f-group-other-wrap');
+  if (!sel || !wrap) return;
+  const sync = () => {
+    wrap.classList.toggle('is-hidden', sel.value !== GROUP_OTHER);
+  };
+  sel.addEventListener('change', sync);
+  sync();
+}
+
+function readGroupValue() {
+  const sel = document.getElementById('f-group-select');
+  if (!sel) return '';
+  if (sel.value === GROUP_OTHER) {
+    return (document.getElementById('f-group-other')?.value || '').trim();
+  }
+  return sel.value.trim();
+}
+
 function render() {
   if (state.view === 'loading') {
-    app.innerHTML = '<p class="loading">लोड हो रहा है…</p>';
+    app.innerHTML = '<p class="loading">Loading…</p>';
     return;
   }
 
@@ -65,26 +114,30 @@ function render() {
     app.innerHTML = `
       <main>
         <div class="login-card">
-          <h1>भजन संग्रह Admin</h1>
+          <h1>Bhajan Sangrah Admin</h1>
           ${err ? `<p class="err">${escapeHtml(errMsg(err))}</p>` : ''}
-          <p>संपादन के लिए GitHub से लॉगिन करें। केवल अनुमत खाता बदलाव कर सकता है।</p>
-          <a class="btn btn-primary" href="/api/auth/login">GitHub से लॉगिन</a>
+          <p>Sign in with GitHub to edit content. Only the allowed account can make changes.</p>
+          <a class="btn btn-primary" href="/api/auth/login">Sign in with GitHub</a>
         </div>
       </main>`;
     return;
   }
 
   if (state.view === 'sections') {
+    const options = state.sections
+      .map((s) => `<option value="${escapeAttr(s.slug)}">${escapeHtml(s.title)}</option>`)
+      .join('');
     app.innerHTML = `
-      ${topbar('विभाग', '')}
+      ${topbar('Sections', '')}
       <main>
-        <p class="hint">विभाग चुनें — भजन संपादित करें। बदलाव <code>main</code> पर commit होंगे।</p>
-        <div class="section-grid">
-          ${state.sections.map((s) => `<button type="button" class="list-btn" data-slug="${escapeAttr(s.slug)}">${escapeHtml(s.title)}</button>`).join('')}
-        </div>
+        <p class="hint">Choose a section to edit bhajans. Saves are committed to <code>main</code>.</p>
+        <label for="section-pick">Section</label>
+        <select id="section-pick" class="section-pick">${options}</select>
+        <button type="button" class="btn btn-primary" id="open-section" style="width:100%;margin-top:0.65rem">Open section</button>
       </main>`;
-    app.querySelectorAll('[data-slug]').forEach((btn) => {
-      btn.addEventListener('click', () => openSection(btn.dataset.slug));
+    document.getElementById('open-section').addEventListener('click', () => {
+      const slug = document.getElementById('section-pick').value;
+      if (slug) openSection(slug);
     });
     return;
   }
@@ -93,11 +146,11 @@ function render() {
     app.innerHTML = `
       ${topbar(state.section.title, 'sections')}
       <main>
-        <button type="button" class="btn btn-primary" id="add-bhajan" style="width:100%;margin-bottom:0.75rem">+ नया भजन</button>
+        <button type="button" class="btn btn-primary" id="add-bhajan" style="width:100%;margin-bottom:0.75rem">+ New bhajan</button>
         ${state.bhajans.map((b) => `
           <div class="bhajan-item">
             <button type="button" class="list-btn" data-path="${escapeAttr(b.path)}">${escapeHtml(b.name.replace(/^\d+-/, '').replace(/\.yaml$/, '').replace(/-/g, ' '))}</button>
-          </div>`).join('') || '<p class="hint">कोई भजन नहीं।</p>'}
+          </div>`).join('') || '<p class="hint">No bhajans in this section yet.</p>'}
       </main>`;
     document.getElementById('add-bhajan').addEventListener('click', () => {
       state.path = null;
@@ -115,51 +168,51 @@ function render() {
   if (state.view === 'edit') {
     const e = state.editor;
     const L = e.lyrics;
+    const showGroup = Boolean(state.section?.grouped);
     app.innerHTML = `
-      ${topbar(e.title || 'भजन', 'bhajans')}
+      ${topbar(e.title || 'Bhajan', 'bhajans')}
       <main>
         ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
         <div class="form-section">
-          <h2>मूल</h2>
-          <label>शीर्षक</label>
+          <h2>Basic</h2>
+          <label>Title</label>
           <input type="text" id="f-title" value="${escapeAttr(e.title)}">
-          <label>तर्ज</label>
+          <label>Tarz (tune line)</label>
           <input type="text" id="f-tarz" value="${escapeAttr(e.tarz)}">
-          <label>समूह (grouped sections)</label>
-          <input type="text" id="f-group" value="${escapeAttr(e.group)}">
-          <div class="check-row"><input type="checkbox" id="f-swarachit" ${e.swarachit ? 'checked' : ''}><label for="f-swarachit">स्वरचित</label></div>
+          ${showGroup ? groupFieldHtml(e.group) : ''}
+          <div class="check-row"><input type="checkbox" id="f-swarachit" ${e.swarachit ? 'checked' : ''}><label for="f-swarachit">Swarachit (composed)</label></div>
         </div>
         <div class="form-section">
-          <h2>स्थायी</h2>
+          <h2>Refrain (sthayi)</h2>
           <textarea id="f-sthayi">${escapeHtml(L.sthayi)}</textarea>
-          <label>स्थायी marker (advanced)</label>
+          <label>Refrain marker (advanced)</label>
           <input type="text" id="f-sthayi-marker" value="${escapeAttr(L.sthayi_marker)}">
-          <div class="check-row"><input type="checkbox" id="f-connect-off" ${L.sthayi_connect === false ? 'checked' : ''}><label for="f-connect-off">sthayi_connect बंद करें</label></div>
+          <div class="check-row"><input type="checkbox" id="f-connect-off" ${L.sthayi_connect === false ? 'checked' : ''}><label for="f-connect-off">Disable sthayi_connect</label></div>
           <label>sthayi_connect_text</label>
           <input type="text" id="f-connect-text" value="${escapeAttr(L.sthayi_connect_text)}">
         </div>
         <div class="form-section">
-          <h2>प्रारंभिक श्लोक</h2>
+          <h2>Opening shloka</h2>
           <textarea id="f-pre-shlok">${escapeHtml(L.pre_shlok)}</textarea>
         </div>
         <div class="form-section">
-          <h2>अंतरे</h2>
+          <h2>Verses (antaras)</h2>
           <div id="paras">${(L.paragraphs || []).map((p, i) => paraHtml(p, i)).join('')}</div>
-          <button type="button" class="btn" id="add-antara">+ अंतरा</button>
-          <button type="button" class="btn" id="add-commentary">+ टीका</button>
+          <button type="button" class="btn" id="add-antara">+ Antara</button>
+          <button type="button" class="btn" id="add-commentary">+ Commentary</button>
         </div>
         <div class="form-section">
-          <h2>ध्वनि</h2>
+          <h2>Dhvani</h2>
           <textarea id="f-dhvani">${escapeHtml(L.dhvani)}</textarea>
         </div>
         <div class="form-section">
-          <h2>जबानी</h2>
+          <h2>Jabani (explanation)</h2>
           <textarea id="f-jabani">${escapeHtml(e.jabani)}</textarea>
         </div>
         ${e.legacyLyricsText ? `<div class="form-section"><h2>Legacy lyrics</h2><textarea id="f-legacy">${escapeHtml(e.legacyLyricsText)}</textarea></div>` : ''}
         <div class="sticky-actions">
-          <button type="button" class="btn btn-primary" id="save">प्रकाशित करें</button>
-          ${state.path ? '<button type="button" class="btn btn-danger" id="delete">हटाएँ</button>' : ''}
+          <button type="button" class="btn btn-primary" id="save">Publish</button>
+          ${state.path ? '<button type="button" class="btn btn-danger" id="delete">Delete</button>' : ''}
         </div>
       </main>`;
     bindEditor();
@@ -170,27 +223,27 @@ function render() {
 function topbar(title, back) {
   const backBtn =
     back === 'sections'
-      ? '<button type="button" class="btn" data-back="sections">← विभाग</button>'
+      ? '<button type="button" class="btn" data-back="sections">← Sections</button>'
       : back === 'bhajans'
-        ? '<button type="button" class="btn" data-back="bhajans">← सूची</button>'
+        ? '<button type="button" class="btn" data-back="bhajans">← List</button>'
         : '';
   return `<header class="topbar">
     ${backBtn}
     <h1>${escapeHtml(title)}</h1>
-    <a class="btn" href="/api/auth/logout">लॉगआउट</a>
+    <a class="btn" href="/api/auth/logout">Log out</a>
   </header>`;
 }
 
 function paraHtml(p, i) {
   return `<div class="para-card" data-i="${i}">
-    <label>प्रकार</label>
-    <select class="para-type"><option value="antara" ${p.type === 'antara' ? 'selected' : ''}>अंतरा</option><option value="commentary" ${p.type === 'commentary' ? 'selected' : ''}>टीका</option></select>
-    <label>पाठ</label>
+    <label>Type</label>
+    <select class="para-type"><option value="antara" ${p.type === 'antara' ? 'selected' : ''}>Antara (verse)</option><option value="commentary" ${p.type === 'commentary' ? 'selected' : ''}>Commentary</option></select>
+    <label>Text</label>
     <textarea class="para-text">${escapeHtml(p.text || '')}</textarea>
     <div class="para-actions">
       <button type="button" class="btn para-up">↑</button>
       <button type="button" class="btn para-down">↓</button>
-      <button type="button" class="btn btn-danger para-del">हटाएँ</button>
+      <button type="button" class="btn btn-danger para-del">Delete</button>
     </div>
   </div>`;
 }
@@ -211,7 +264,9 @@ function collectEditor() {
   const e = state.editor;
   e.title = document.getElementById('f-title').value.trim();
   e.tarz = document.getElementById('f-tarz').value.trim();
-  e.group = document.getElementById('f-group').value.trim();
+  if (document.getElementById('f-group-select')) {
+    e.group = readGroupValue();
+  }
   e.swarachit = document.getElementById('f-swarachit').checked;
   e.jabani = document.getElementById('f-jabani').value.trim();
   const L = e.lyrics;
@@ -231,6 +286,8 @@ function collectEditor() {
 }
 
 function bindEditor() {
+  bindGroupField();
+
   document.querySelector('[data-back="sections"]')?.addEventListener('click', () => {
     state.view = 'sections';
     render();
@@ -299,7 +356,7 @@ async function saveEditor() {
       });
       state.path = res.path;
     }
-    alert('प्रकाशित — GitHub Actions से साइट अपडेट होगी।');
+    alert('Published — GitHub Actions will rebuild the public site.');
     state.view = 'bhajans';
     await loadBhajans(state.section.slug);
     render();
@@ -310,7 +367,7 @@ async function saveEditor() {
 }
 
 async function deleteEditor() {
-  if (!state.path || !confirm('यह भजन हटाएँ?')) return;
+  if (!state.path || !confirm('Delete this bhajan?')) return;
   try {
     await api(`/api/file?path=${encodeURIComponent(state.path)}&sha=${encodeURIComponent(state.sha)}`, {
       method: 'DELETE',
@@ -335,6 +392,7 @@ async function loadBhajans(slug) {
   const data = await api(`/api/bhajans?section=${encodeURIComponent(slug)}`);
   state.bhajans = data.bhajans;
   state.section = data.section;
+  state.groupOptions = data.groups || [];
 }
 
 async function openFile(path) {
