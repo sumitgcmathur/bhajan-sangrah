@@ -61,6 +61,10 @@ npm run admin:favicon
 
 On Windows without npm, run `powershell -File scripts/generate-admin-favicon.ps1` (PNG) and `node scripts/generate-admin-favicon.js` (SVG).
 
+## Voice typing (edit screen)
+
+On phones, each text field shows a **mic** button when the browser supports the Web Speech API (Chrome on Android, Safari on iOS 14.5+). Dictation uses Hindi (`hi-IN`). Tap again to stop. If the mic button is missing, use the **microphone on your Hindi keyboard** (Gboard / iOS).
+
 ## Local dev
 
 ```bash
