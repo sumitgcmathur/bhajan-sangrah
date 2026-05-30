@@ -1,6 +1,6 @@
 const { requireAuth, sendJson } = require('../lib/http');
 const { getFile, listDir } = require('../lib/github');
-const { parseSectionsYaml } = require('../lib/yaml-bridge');
+const { parseSectionsYaml, parseBhajanYaml } = require('../lib/yaml-bridge');
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
@@ -27,11 +27,30 @@ module.exports = async (req, res) => {
     }
     const folder = section.folder || sectionSlug;
     const items = await listDir(`content/${folder}`, session.accessToken);
-    const bhajans = items
+    const yamlFiles = items
       .filter((f) => f.type === 'file' && /\.ya?ml$/i.test(f.name))
-      .map((f) => ({ name: f.name, path: `content/${folder}/${f.name}` }))
       .sort((a, b) => a.name.localeCompare(b.name, 'hi'));
-    sendJson(res, 200, { section, bhajans });
+    const bhajans = yamlFiles.map((f) => ({
+      name: f.name,
+      path: `content/${folder}/${f.name}`,
+    }));
+
+    let groups = [];
+    if (section.grouped) {
+      const seen = new Set();
+      await Promise.all(
+        yamlFiles.map(async (f) => {
+          const file = await getFile(`content/${folder}/${f.name}`, session.accessToken);
+          if (!file) return;
+          const doc = parseBhajanYaml(file.content);
+          const g = (doc.group || '').trim();
+          if (g) seen.add(g);
+        }),
+      );
+      groups = [...seen].sort((a, b) => a.localeCompare(b, 'hi'));
+    }
+
+    sendJson(res, 200, { section, bhajans, groups });
   } catch (e) {
     sendJson(res, 500, { error: e.message });
   }

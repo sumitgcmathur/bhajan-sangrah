@@ -201,3 +201,10 @@ textarea {
 }
 
 .hint { font-size: 0.85rem; color: var(--muted); margin: 0.35rem 0 0; }
+
+.section-pick {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.is-hidden { display: none; }
