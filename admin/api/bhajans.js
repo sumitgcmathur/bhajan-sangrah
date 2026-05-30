@@ -30,25 +30,25 @@ module.exports = async (req, res) => {
     const yamlFiles = items
       .filter((f) => f.type === 'file' && /\.ya?ml$/i.test(f.name))
       .sort((a, b) => a.name.localeCompare(b.name, 'hi'));
-    const bhajans = yamlFiles.map((f) => ({
-      name: f.name,
-      path: `content/${folder}/${f.name}`,
-    }));
-
-    let groups = [];
-    if (section.grouped) {
-      const seen = new Set();
-      await Promise.all(
-        yamlFiles.map(async (f) => {
-          const file = await getFile(`content/${folder}/${f.name}`, session.accessToken);
-          if (!file) return;
+    const seenGroups = new Set();
+    const bhajans = await Promise.all(
+      yamlFiles.map(async (f) => {
+        const filePath = `content/${folder}/${f.name}`;
+        let title = '';
+        const file = await getFile(filePath, session.accessToken);
+        if (file) {
           const doc = parseBhajanYaml(file.content);
+          title = (doc.title || '').trim();
           const g = (doc.group || '').trim();
-          if (g) seen.add(g);
-        }),
-      );
-      groups = [...seen].sort((a, b) => a.localeCompare(b, 'hi'));
-    }
+          if (g) seenGroups.add(g);
+        }
+        return { name: f.name, path: filePath, title };
+      }),
+    );
+
+    const groups = section.grouped
+      ? [...seenGroups].sort((a, b) => a.localeCompare(b, 'hi'))
+      : [];
 
     sendJson(res, 200, { section, bhajans, groups });
   } catch (e) {

@@ -81,7 +81,7 @@ function editorToDoc(editor) {
   const e = editor || {};
   if (e.legacyLyricsText && String(e.legacyLyricsText).trim()) {
     return {
-      title: e.title || 'Untitled',
+      title: (e.title || '').trim(),
       ...(e.tarz ? { tarz: e.tarz } : {}),
       ...(e.group ? { group: e.group } : {}),
       ...(e.swarachit ? { swarachit: true } : {}),
@@ -108,7 +108,7 @@ function editorToDoc(editor) {
   };
 
   const doc = {
-    title: e.title || 'Untitled',
+    title: (e.title || '').trim(),
     ...(e.tarz ? { tarz: e.tarz } : {}),
     ...(e.group ? { group: e.group } : {}),
     ...(e.swarachit ? { swarachit: true } : {}),
