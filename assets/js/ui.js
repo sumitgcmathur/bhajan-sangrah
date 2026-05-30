@@ -357,24 +357,8 @@
     });
   }
 
-  function initBannerPinchBlock() {
-    if (!isMobile()) return;
-    var blockMultiTouch = function (e) {
-      if (e.touches && e.touches.length > 1) e.preventDefault();
-    };
-    var blockGesture = function (e) {
-      e.preventDefault();
-    };
-    document.querySelectorAll('.content-banner').forEach(function (el) {
-      el.addEventListener('touchmove', blockMultiTouch, { passive: false });
-      el.addEventListener('gesturestart', blockGesture, { passive: false });
-      el.addEventListener('gesturechange', blockGesture, { passive: false });
-    });
-  }
-
   initCollapsibleIndex();
   initSectionHeroToggle();
   initSectionScrollUi();
   initIndexAnchorScroll();
-  initBannerPinchBlock();
 })();
