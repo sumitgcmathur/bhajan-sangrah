@@ -1,5 +1,6 @@
 (function () {
   var STORAGE_INDEX_OPEN = 'bhajan-sangrah-index-open';
+  var sectionNavApi = null;
 
   function prefersReducedMotion() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -95,8 +96,11 @@
         e.preventDefault();
         if (isMobile()) setOpen(false);
         if (document.getElementById('section-hero')) collapseSectionHeroIndex();
-        history.pushState(null, '', href);
-        scrollToBhajanById(id);
+        if (sectionNavApi) sectionNavApi.navigateToBhajan(id);
+        else {
+          history.pushState(null, '', href);
+          scrollToBhajanById(id);
+        }
       });
     }
 
@@ -146,8 +150,11 @@
         if (!target || !target.classList.contains('bhajan-card')) return;
         e.preventDefault();
         setSectionHeroIndexMode(false);
-        history.pushState(null, '', href);
-        scrollToBhajanById(id);
+        if (sectionNavApi) sectionNavApi.navigateToBhajan(id);
+        else {
+          history.pushState(null, '', href);
+          scrollToBhajanById(id);
+        }
       });
     });
 
@@ -207,11 +214,38 @@
     var sectionTitle = document.querySelector('.content-main--section');
     sectionTitle = sectionTitle ? sectionTitle.getAttribute('data-section-title') : '';
 
-    var currentIndex = 0;
+    function scrollAnchorTop() {
+      if (header && header.classList.contains('is-visible')) {
+        return header.getBoundingClientRect().bottom + 4;
+      }
+      return 72;
+    }
+
+    function indexForId(id) {
+      for (var i = 0; i < nav.length; i++) {
+        if (nav[i].id === id) return i;
+      }
+      return -1;
+    }
+
+    function activeCardIndexFromScroll() {
+      if (!cards.length) return 0;
+      var nearBottom =
+        document.documentElement.scrollHeight - window.scrollY - window.innerHeight < 80;
+      if (nearBottom) return cards.length - 1;
+
+      var anchor = scrollAnchorTop();
+      var idx = 0;
+      for (var i = 0; i < cards.length; i++) {
+        if (cards[i].getBoundingClientRect().top <= anchor + 12) idx = i;
+      }
+      return idx;
+    }
+
+    var pinScrollSyncUntil = 0;
 
     function updateUi(index) {
       if (index < 0 || index >= nav.length) return;
-      currentIndex = index;
       var item = nav[index];
       if (progress && header) {
         progress.textContent = toDevaNum(item.num) + ' / ' + toDevaNum(nav.length);
@@ -230,30 +264,31 @@
       }
     }
 
+    function updateUiFromScroll() {
+      if (Date.now() < pinScrollSyncUntil) return;
+      updateUi(activeCardIndexFromScroll());
+    }
+
+    function navigateToBhajan(id) {
+      var idx = indexForId(id);
+      if (idx >= 0) {
+        updateUi(idx);
+        pinScrollSyncUntil = Date.now() + (prefersReducedMotion() ? 120 : 900);
+      }
+      history.pushState(null, '', '#' + id);
+      scrollToBhajanById(id, document.getElementById('section-hero') ? 220 : 0);
+      window.setTimeout(updateUiFromScroll, prefersReducedMotion() ? 80 : 950);
+    }
+
+    sectionNavApi = { navigateToBhajan: navigateToBhajan, indexForId: indexForId };
+
     if (header) {
       var titleEl = header.querySelector('.section-scroll-header__title');
       if (titleEl && sectionTitle) titleEl.textContent = sectionTitle;
     }
 
-    var scrollObserver = new IntersectionObserver(
-      function (entries) {
-        var best = null;
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          if (!best || entry.intersectionRatio > best.ratio) {
-            best = { el: entry.target, ratio: entry.intersectionRatio };
-          }
-        });
-        if (!best) return;
-        var idx = cards.indexOf(best.el);
-        if (idx >= 0) updateUi(idx);
-      },
-      { root: null, rootMargin: '-18% 0px -50% 0px', threshold: [0.15, 0.35, 0.55] }
-    );
-
-    cards.forEach(function (card) {
-      scrollObserver.observe(card);
-    });
+    window.addEventListener('scroll', updateUiFromScroll, { passive: true });
+    window.addEventListener('resize', updateUiFromScroll);
 
     if (document.getElementById('section-hero')) {
       syncHeroPagerLayout();
@@ -266,16 +301,12 @@
 
     if (window.location.hash) {
       var hashId = window.location.hash.slice(1);
-      var hashIdx = -1;
-      for (var h = 0; h < nav.length; h++) {
-        if (nav[h].id === hashId) {
-          hashIdx = h;
-          break;
-        }
-      }
+      var hashIdx = indexForId(hashId);
       if (hashIdx >= 0) {
         updateUi(hashIdx);
+        pinScrollSyncUntil = Date.now() + 500;
         scrollToBhajanById(hashId, document.getElementById('section-hero') ? 220 : 50);
+        window.setTimeout(updateUiFromScroll, 600);
       } else if (cards.length) {
         updateUi(0);
       }
@@ -289,6 +320,7 @@
         function (entries) {
           var past = entries[0] && !entries[0].isIntersecting;
           header.classList.toggle('is-visible', past);
+          updateUiFromScroll();
         },
         { root: null, threshold: 0 }
       );
@@ -306,9 +338,7 @@
         var href = a.getAttribute('href');
         if (!href || href.charAt(0) !== '#') return;
         e.preventDefault();
-        var id = href.slice(1);
-        history.pushState(null, '', href);
-        scrollToBhajanById(id);
+        navigateToBhajan(href.slice(1));
       });
     }
   }
