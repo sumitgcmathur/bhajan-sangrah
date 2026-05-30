@@ -1,3 +1,5 @@
+import { bindSpeechDictation, stopDictation } from './speech.js';
+
 const app = document.getElementById('app');
 
 const state = {
@@ -226,6 +228,7 @@ function bindTopbar() {
 }
 
 function render() {
+  stopDictation();
   if (state.view === 'loading') {
     app.innerHTML = '<p class="loading">Loading…</p>';
     return;
@@ -452,6 +455,7 @@ function bindEditor() {
 
   document.getElementById('save')?.addEventListener('click', saveEditor);
   document.getElementById('delete')?.addEventListener('click', deleteEditor);
+  bindSpeechDictation(app);
 }
 
 async function saveEditor() {
