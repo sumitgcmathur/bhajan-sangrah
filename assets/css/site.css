@@ -1312,15 +1312,6 @@ body.search-panel-open {
     filter: none;
   }
 
-  /* No pinch-zoom on section/home banner images (text elsewhere can still zoom) */
-  .content-banner,
-  .content-banner__img {
-    touch-action: pan-x pan-y pinch-zoom none;
-    -webkit-touch-callout: none;
-    user-select: none;
-    -webkit-user-select: none;
-  }
-
   /* Section hero on phone: one screen tall; banner scales to fit (no crop, no overflow) */
   .page-section .section-hero {
     height: var(--section-hero-fill);

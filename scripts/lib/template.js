@@ -71,7 +71,7 @@ function renderHead(pageTitle, base, config) {
   const favicon = renderIconLinks(base, config);
   return `<meta charset="utf-8">
 ${renderThemeBootScript()}
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#8b3a4a" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#2a1218" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
