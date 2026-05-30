@@ -87,7 +87,7 @@ ${favicon}<link rel="preconnect" href="https://fonts.googleapis.com">
 
 function renderMobileBar(isSectionPage) {
   const heroViewBtn = isSectionPage
-    ? `<button type="button" class="mobile-bar__btn mobile-bar__btn--hero-view" data-action="hero-view" aria-pressed="false" aria-label="भजन सूची दिखाएँ"><span class="mobile-bar__when-banner"><span class="mobile-bar__icon" aria-hidden="true">☰</span></span><span class="mobile-bar__when-index" hidden><span class="mobile-bar__icon" aria-hidden="true">⌂</span></span></button>`
+    ? `<button type="button" class="mobile-bar__btn mobile-bar__btn--hero-view" data-action="hero-view" aria-pressed="false" aria-label="भजन सूची दिखाएँ"><span class="mobile-bar__when-banner"><span class="mobile-bar__icon mobile-bar__icon--numbered" aria-hidden="true">1.2.3</span></span><span class="mobile-bar__when-index" hidden><span class="mobile-bar__icon" aria-hidden="true">⌂</span></span></button>`
     : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">≡</span></button>
