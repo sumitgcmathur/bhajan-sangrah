@@ -41,14 +41,11 @@
     return words.length ? { words: words } : null;
   }
 
-  function tokenize(text) {
-    return norm(text).split(/[\s,;।॥:!?\-—]+/).filter(Boolean);
-  }
-
   function allWordsInText(text, words) {
-    var tokens = tokenize(text);
+    var n = norm(text);
+    if (!n) return false;
     for (var i = 0; i < words.length; i++) {
-      if (tokens.indexOf(words[i]) === -1) return false;
+      if (n.indexOf(words[i]) === -1) return false;
     }
     return true;
   }

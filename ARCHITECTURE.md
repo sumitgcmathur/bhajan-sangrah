@@ -304,7 +304,7 @@ Change `renderIndex()` in `scripts/lib/template.js` or `home_banner` / `site_tit
 ## Search
 
 - **Index**: `scripts/lib/search-index.js` — tokenizes title + all lyric lines (sthayi + paragraphs).
-- **Client**: `assets/js/search.js` — loads `assets/search-index.json`; single-word = exact token; multi-word = all tokens must match (AND).
+- **Client**: `assets/js/search.js` — loads `assets/search-index.json`; each query term must appear as a substring in the normalized text (AND); e.g. `तुलसी` matches `तुलसीदास`.
 - Rebuilt automatically on every `npm run build`.
 
 ---
