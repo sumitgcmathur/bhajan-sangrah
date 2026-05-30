@@ -51,6 +51,16 @@ The OAuth app owner must have **write access** to `GITHUB_OWNER/GITHUB_REPO`.
 
 Each save commits to **main**. Your existing GitHub Action runs `node scripts/build.js` and updates the public site on `gh-pages`.
 
+## Favicon
+
+Admin uses a tweaked variant of the site favicon (maroon ring + edit badge). Regenerate after changing `assets/icons/favicon.jpg`:
+
+```bash
+npm run admin:favicon
+```
+
+On Windows without npm, run `powershell -File scripts/generate-admin-favicon.ps1` (PNG) and `node scripts/generate-admin-favicon.js` (SVG).
+
 ## Local dev
 
 ```bash
