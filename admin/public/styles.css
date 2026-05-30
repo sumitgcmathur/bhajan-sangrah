@@ -208,3 +208,26 @@ textarea {
 }
 
 .is-hidden { display: none; }
+
+.para-mode-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.para-mode-btn.is-active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent-dark);
+}
+
+.paras-bulk {
+  min-height: 12rem;
+  line-height: 1.65;
+  margin-bottom: 0.5rem;
+}
+
+#parse-paras-bulk {
+  width: 100%;
+}

@@ -11,6 +11,8 @@ const state = {
   sha: null,
   editor: null,
   error: null,
+  paraEditMode: 'structured',
+  paraBulkDraft: null,
 };
 
 const GROUP_OTHER = '__other__';
@@ -102,6 +104,85 @@ function readGroupValue() {
   return sel.value.trim();
 }
 
+/** One block per antara; blank line separates blocks. Commentary blocks start with [commentary]. */
+function bulkTextToParagraphs(text) {
+  return String(text || '')
+    .split(/\n\s*\n+/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => {
+      const lines = block.split('\n');
+      if (lines[0].trim().toLowerCase() === '[commentary]') {
+        return {
+          type: 'commentary',
+          text: lines.slice(1).join('\n').trim() || lines.slice(1).join('\n'),
+        };
+      }
+      return { type: 'antara', text: block };
+    });
+}
+
+function paragraphsToBulkText(paragraphs) {
+  return (paragraphs || [])
+    .map((p) => {
+      const text = String(p.text || '').trim();
+      if (!text) return '';
+      if (p.type === 'commentary') return `[commentary]\n${text}`;
+      return text;
+    })
+    .filter(Boolean)
+    .join('\n\n');
+}
+
+function flushParagraphEdits() {
+  if (state.view !== 'edit' || !state.editor) return;
+  const pastePanel = document.getElementById('paras-paste');
+  if (pastePanel && !pastePanel.classList.contains('is-hidden')) {
+    const bulk = document.getElementById('f-paras-bulk');
+    const raw = bulk?.value ?? state.paraBulkDraft ?? '';
+    state.paraBulkDraft = raw;
+    const parsed = bulkTextToParagraphs(raw);
+    state.editor.lyrics.paragraphs = parsed.length ? parsed : [{ type: 'antara', text: '' }];
+    return;
+  }
+  const cards = document.querySelectorAll('.para-card');
+  if (cards.length) {
+    state.editor.lyrics.paragraphs = [...cards].map((card) => ({
+      type: card.querySelector('.para-type').value,
+      text: card.querySelector('.para-text').value,
+    }));
+  }
+  state.paraBulkDraft = paragraphsToBulkText(state.editor.lyrics.paragraphs);
+}
+
+function versesSectionHtml(paragraphs) {
+  const mode = state.paraEditMode || 'structured';
+  const bulk =
+    state.paraBulkDraft != null ? state.paraBulkDraft : paragraphsToBulkText(paragraphs);
+  const structuredHidden = mode === 'paste' ? 'is-hidden' : '';
+  const pasteHidden = mode === 'structured' ? 'is-hidden' : '';
+  return `
+    <div class="para-mode-bar">
+      <button type="button" class="btn para-mode-btn ${mode === 'structured' ? 'is-active' : ''}" data-para-mode="structured">By paragraph</button>
+      <button type="button" class="btn para-mode-btn ${mode === 'paste' ? 'is-active' : ''}" data-para-mode="paste">Paste full text</button>
+    </div>
+    <div id="paras-structured" class="${structuredHidden}">
+      <div id="paras">${(paragraphs || []).map((p, i) => paraHtml(p, i)).join('')}</div>
+      <button type="button" class="btn" id="add-antara">+ Antara</button>
+      <button type="button" class="btn" id="add-commentary">+ Commentary</button>
+    </div>
+    <div id="paras-paste" class="${pasteHidden}">
+      <p class="hint">One verse (antara) per block. Put a <strong>blank line</strong> between blocks. Line breaks inside a block are kept. For commentary, put <code>[commentary]</code> alone on the first line, then the text.</p>
+      <textarea id="f-paras-bulk" class="paras-bulk" rows="14">${escapeHtml(bulk)}</textarea>
+      <button type="button" class="btn" id="parse-paras-bulk">Parse into paragraphs</button>
+    </div>`;
+}
+
+function resetParagraphEditor() {
+  state.paraEditMode = 'structured';
+  state.paraBulkDraft = null;
+}
+
 function render() {
   if (state.view === 'loading') {
     app.innerHTML = '<p class="loading">Loading…</p>';
@@ -156,6 +237,7 @@ function render() {
       state.path = null;
       state.sha = null;
       state.editor = emptyEditor();
+      resetParagraphEditor();
       state.view = 'edit';
       render();
     });
@@ -197,9 +279,7 @@ function render() {
         </div>
         <div class="form-section">
           <h2>Verses (antaras)</h2>
-          <div id="paras">${(L.paragraphs || []).map((p, i) => paraHtml(p, i)).join('')}</div>
-          <button type="button" class="btn" id="add-antara">+ Antara</button>
-          <button type="button" class="btn" id="add-commentary">+ Commentary</button>
+          ${versesSectionHtml(L.paragraphs)}
         </div>
         <div class="form-section">
           <h2>Dhvani</h2>
@@ -278,10 +358,7 @@ function collectEditor() {
   L.dhvani = document.getElementById('f-dhvani').value.trim();
   const legacy = document.getElementById('f-legacy');
   if (legacy) e.legacyLyricsText = legacy.value;
-  L.paragraphs = [...document.querySelectorAll('.para-card')].map((card) => ({
-    type: card.querySelector('.para-type').value,
-    text: card.querySelector('.para-text').value,
-  }));
+  flushParagraphEdits();
   return e;
 }
 
@@ -297,11 +374,35 @@ function bindEditor() {
     render();
   });
 
+  document.querySelectorAll('[data-para-mode]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const next = btn.dataset.paraMode;
+      if (next === state.paraEditMode) return;
+      flushParagraphEdits();
+      state.paraEditMode = next;
+      if (next === 'paste') {
+        state.paraBulkDraft = paragraphsToBulkText(state.editor.lyrics.paragraphs);
+      }
+      render();
+    });
+  });
+
+  document.getElementById('parse-paras-bulk')?.addEventListener('click', () => {
+    flushParagraphEdits();
+    state.paraEditMode = 'structured';
+    state.paraBulkDraft = paragraphsToBulkText(state.editor.lyrics.paragraphs);
+    render();
+  });
+
   document.getElementById('add-antara')?.addEventListener('click', () => {
+    flushParagraphEdits();
+    state.paraEditMode = 'structured';
     state.editor.lyrics.paragraphs.push({ type: 'antara', text: '' });
     render();
   });
   document.getElementById('add-commentary')?.addEventListener('click', () => {
+    flushParagraphEdits();
+    state.paraEditMode = 'structured';
     state.editor.lyrics.paragraphs.push({ type: 'commentary', text: '' });
     render();
   });
@@ -309,17 +410,20 @@ function bindEditor() {
   document.querySelectorAll('.para-card').forEach((card) => {
     const i = Number(card.dataset.i);
     card.querySelector('.para-del')?.addEventListener('click', () => {
+      flushParagraphEdits();
       state.editor.lyrics.paragraphs.splice(i, 1);
       if (!state.editor.lyrics.paragraphs.length) state.editor.lyrics.paragraphs.push({ type: 'antara', text: '' });
       render();
     });
     card.querySelector('.para-up')?.addEventListener('click', () => {
       if (i === 0) return;
+      flushParagraphEdits();
       const arr = state.editor.lyrics.paragraphs;
       [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
       render();
     });
     card.querySelector('.para-down')?.addEventListener('click', () => {
+      flushParagraphEdits();
       const arr = state.editor.lyrics.paragraphs;
       if (i >= arr.length - 1) return;
       [arr[i + 1], arr[i]] = [arr[i], arr[i + 1]];
@@ -400,6 +504,7 @@ async function openFile(path) {
   state.path = data.path;
   state.sha = data.sha;
   state.editor = data.editor;
+  resetParagraphEditor();
   state.view = 'edit';
   state.error = null;
   render();
