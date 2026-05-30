@@ -14,6 +14,7 @@ const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
 const { anchorId } = require('./lib/slug');
 const { buildSearchIndex, writeSearchIndex } = require('./lib/search-index');
 const { warnMissingThumbs } = require('./lib/banner-thumbs');
+const { writePwaArtifacts } = require('./lib/pwa');
 
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) return;
@@ -36,7 +37,7 @@ function rmDir(dir) {
   fs.rmdirSync(dir);
 }
 
-function main() {
+async function main() {
   const config = loadSections();
   const base = config.base_url || '/';
   const sections = config.sections || [];
@@ -55,6 +56,7 @@ function main() {
   );
 
   copyDir(path.join(ASSETS), path.join(DOCS, 'assets'));
+  await writePwaArtifacts(DOCS, config, base);
 
   fs.writeFileSync(
     path.join(DOCS, 'index.html'),
@@ -94,4 +96,7 @@ function main() {
   console.log(`Search index: ${searchItems.length} entries`);
 }
 
-main();
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
