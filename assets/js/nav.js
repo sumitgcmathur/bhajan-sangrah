@@ -10,10 +10,19 @@
     });
   }
 
+  function closeSearchPanel() {
+    var panel = document.getElementById("bhajan-search-panel");
+    if (!panel || !panel.classList.contains("is-open")) return;
+    document.querySelectorAll(".search-toggle").forEach(function (btn) {
+      btn.click();
+    });
+  }
+
   menuButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
       var open = sidebar.classList.toggle("is-open");
       setMenuExpanded(open);
+      if (open) closeSearchPanel();
     });
   });
 
