@@ -586,9 +586,9 @@ body.search-panel-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: var(--section-hero-fill);
-  min-height: var(--section-hero-fill);
-  max-height: var(--section-hero-fill);
+  min-height: var(--banner-h);
+  height: auto;
+  max-height: none;
   margin: 0;
   border-bottom: none;
   box-shadow: none;
@@ -609,8 +609,8 @@ body.search-panel-open {
 .page-section .section-hero__banner .content-banner--hero .content-banner__img {
   width: auto;
   height: auto;
-  max-width: 100%;
-  max-height: var(--banner-img-max-h);
+  max-width: min(100%, var(--banner-img-max-w));
+  max-height: var(--banner-h);
   object-fit: contain;
   object-position: center center;
 }

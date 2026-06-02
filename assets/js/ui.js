@@ -102,11 +102,29 @@
     } catch (e) {}
   }
 
+  function scrollToElementTop(el) {
+    if (!el) return;
+    var scrollMargin = 0;
+    try {
+      scrollMargin = parseFloat(window.getComputedStyle(el).scrollMarginTop) || 0;
+    } catch (e) {}
+    var top = el.getBoundingClientRect().top + window.scrollY - scrollMargin;
+    window.scrollTo({
+      top: Math.max(0, top),
+      left: 0,
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+    });
+  }
+
   function scrollToBhajanIndex() {
     var nav = document.getElementById('bhajan-index');
     if (!nav) return;
     openCollapsibleIndexIfNeeded();
-    nav.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    /* Drop #bhajan-* hash so the browser does not snap back to the card */
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    scrollToElementTop(nav);
   }
 
   function initToolbarIndexButton() {
