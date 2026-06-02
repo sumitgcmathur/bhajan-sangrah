@@ -125,9 +125,13 @@ function renderToolbarIndexIcon() {
 </svg>`;
 }
 
-function renderMobileBar() {
+function renderMobileBar(isSectionPage) {
+  const indexBtn = isSectionPage
+    ? `<button type="button" class="mobile-bar__btn" data-action="index" aria-label="भजन सूची पर जाएँ">${renderToolbarIndexIcon()}</button>`
+    : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">≡</span></button>
+  ${indexBtn}
   <button type="button" class="mobile-bar__btn search-toggle" aria-expanded="false" aria-controls="bhajan-search-panel" aria-label="भजन खोजें">${renderToolbarSearchIcon()}</button>
   <button type="button" class="mobile-bar__btn" data-action="theme" aria-pressed="false" aria-label="गहरा रंग"><span class="mobile-bar__icon mobile-bar__icon--theme" aria-hidden="true">☽</span></button>
 </nav>`;
@@ -150,6 +154,7 @@ function renderBhajanPager() {
 
 function renderPage(opts) {
   const { pageTitle, body, config, sections, base, currentSlug, bodyClass = '' } = opts;
+  const isSectionPage = bodyClass.includes('page-section');
   return `<!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -163,7 +168,7 @@ ${body}
 ${renderFooter()}
 </div>
 </div>
-${renderMobileBar()}
+${renderMobileBar(isSectionPage)}
 ${renderSearchPanel()}
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/theme.js')}"></script>

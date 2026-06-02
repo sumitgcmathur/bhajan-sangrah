@@ -85,13 +85,35 @@
     });
 
     bindBhajanIndexLinks(panel);
+  }
 
+  function openCollapsibleIndexIfNeeded() {
+    var nav = document.getElementById('bhajan-index');
+    if (!nav || !nav.classList.contains('bhajan-index--collapsible')) return;
+    var panel = document.getElementById('bhajan-index-panel');
+    var toggle = nav.querySelector('.bhajan-index__toggle');
+    if (!panel || !toggle || !panel.hidden) return;
+    toggle.setAttribute('aria-expanded', 'true');
+    panel.hidden = false;
+    var label = toggle.querySelector('.bhajan-index__toggle-text');
+    if (label) label.textContent = 'भजन सूची छिपाएँ';
+    try {
+      localStorage.setItem(STORAGE_INDEX_OPEN, '1');
+    } catch (e) {}
+  }
+
+  function scrollToBhajanIndex() {
+    var nav = document.getElementById('bhajan-index');
+    if (!nav) return;
+    openCollapsibleIndexIfNeeded();
+    nav.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  function initToolbarIndexButton() {
     document.querySelectorAll('[data-action="index"]').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
-        if (!isMobile()) return;
         e.preventDefault();
-        setOpen(true);
-        nav.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+        scrollToBhajanIndex();
       });
     });
   }
@@ -285,14 +307,13 @@
     document.addEventListener('click', function (e) {
       var a = e.target.closest('a[href="#bhajan-index"]');
       if (!a || a.getAttribute('data-action') === 'index') return;
-      var nav = document.getElementById('bhajan-index');
-      if (!nav) return;
       e.preventDefault();
-      nav.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+      scrollToBhajanIndex();
     });
   }
 
   initCollapsibleIndex();
+  initToolbarIndexButton();
   initSectionScrollUi();
   initSectionHeroIndex();
   initIndexAnchorScroll();
