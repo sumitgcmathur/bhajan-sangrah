@@ -109,14 +109,25 @@ function renderCompleteBhajanIndex(sectionPayloads) {
 </section>`;
 }
 
+function renderPdfBannerFill(src, alt) {
+  if (!src) return '';
+  return `<figure class="pdf-banner pdf-banner--fill">
+  <div class="pdf-banner__backdrop" aria-hidden="true">
+    <img class="pdf-banner__ambient" src="${src}" alt="">
+    <img class="pdf-banner__wing pdf-banner__wing--left" src="${src}" alt="">
+    <img class="pdf-banner__wing pdf-banner__wing--right" src="${src}" alt="">
+    <img class="pdf-banner__bg" src="${src}" alt="">
+  </div>
+  <img class="pdf-banner__img" src="${src}" alt="${escapeHtml(alt)}">
+</figure>`;
+}
+
 function renderPdfBannerPage(section, resolveAsset) {
   if (!section.banner) return '';
   const src = resolveAsset(section.banner);
   if (!src) return '';
   return `<section class="pdf-banner-page" aria-label="${escapeHtml(section.title)}">
-  <figure class="pdf-banner">
-    <img class="pdf-banner__img" src="${src}" alt="${escapeHtml(section.title)}">
-  </figure>
+  ${renderPdfBannerFill(src, section.title)}
 </section>`;
 }
 
@@ -212,9 +223,7 @@ function renderPdfDocument(config, sectionPayloads, options = {}) {
     .map(({ section, bhajans }) => renderPdfSection(section, bhajans, resolveAsset))
     .join('\n');
 
-  const coverBanner = coverImg
-    ? `<img class="pdf-cover__img" src="${coverImg}" alt="">`
-    : '';
+  const coverBanner = coverImg ? renderPdfBannerFill(coverImg, config.site_title || 'भजन संग्रह') : '';
 
   const toolbar = showToolbar ? PRINT_TOOLBAR : '';
   const toolbarScript = showToolbar ? `<script>${PRINT_TOOLBAR_SCRIPT}</script>` : '';
@@ -231,10 +240,12 @@ function renderPdfDocument(config, sectionPayloads, options = {}) {
 </head>
 <body class="pdf-export${showToolbar ? ' pdf-export--with-toolbar' : ''}">
 ${toolbar}
-<section class="pdf-cover">
+<section class="pdf-cover pdf-banner-page">
   ${coverBanner}
-  <h1 class="pdf-cover__title">${escapeHtml(config.site_title || 'भजन संग्रह')}</h1>
-  <p class="pdf-cover__meta">संपूर्ण भजन संग्रह · ${date}</p>
+  <div class="pdf-cover__text">
+    <h1 class="pdf-cover__title">${escapeHtml(config.site_title || 'भजन संग्रह')}</h1>
+    <p class="pdf-cover__meta">संपूर्ण भजन संग्रह · ${date}</p>
+  </div>
 </section>
 ${renderCompleteBhajanIndex(sectionPayloads)}
 ${sectionsHtml}

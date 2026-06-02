@@ -24,8 +24,8 @@
   --text-base: 1.125rem;
   --text-lg: 1.25rem;
   --leading: 1.85;
-  --banner-h: min(48vh, 440px);
-  --banner-img-max-h: min(32vh, 280px);
+  --banner-h: min(56vh, 520px);
+  --banner-img-max-h: min(54vh, 500px);
   --banner-img-max-w: 100%;
   --banner-card-h: min(22vw, 168px);
   --section-card-aspect: 704 / 1522;
@@ -458,6 +458,27 @@ body.search-panel-open {
 
 .content-banner--hero {
   background: #2a1420;
+  padding: 0;
+  border-bottom: none;
+  box-shadow: none;
+}
+
+.content-banner--hero::before {
+  background:
+    radial-gradient(
+      ellipse 80% 92% at 50% 50%,
+      transparent 0%,
+      transparent 52%,
+      rgba(0, 0, 0, 0.12) 78%,
+      rgba(0, 0, 0, 0.38) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.22) 0%,
+      transparent 16%,
+      transparent 84%,
+      rgba(0, 0, 0, 0.22) 100%
+    );
 }
 
 :root[data-theme="dark"] .content-banner--hero {
@@ -543,7 +564,7 @@ body.search-panel-open {
   );
 }
 
-/* Soft vignette at top/bottom edges only; center stays clear for the photo */
+/* Soft vignette; hero uses a darker variant below */
 .content-banner::before {
   content: "";
   position: absolute;
@@ -581,38 +602,29 @@ body.search-panel-open {
   filter: drop-shadow(0 6px 20px rgba(44, 24, 16, 0.2));
 }
 
-/* Home + section page heroes (full-size banner, not grid thumbs) */
-.page-home .content-banner--hero {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--banner-h);
-  height: auto;
-  max-height: none;
-  margin: 0;
-  border-bottom: none;
-  box-shadow: none;
-}
-
+/* Home + section page heroes (full-width fill + sharp centered image) */
+.page-home .content-banner--hero,
 .page-section .section-hero__banner .content-banner--hero {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   min-height: var(--banner-h);
   height: auto;
+  max-height: none;
   margin: 0;
-  border-bottom: none;
-  box-shadow: none;
 }
 
 .page-home .content-banner--hero .content-banner__img,
 .page-section .section-hero__banner .content-banner--hero .content-banner__img {
   width: auto;
   height: auto;
-  max-width: min(100%, var(--banner-img-max-w));
+  max-width: 100%;
   max-height: var(--banner-h);
   object-fit: contain;
   object-position: center center;
+  border-radius: 6px;
+  filter: drop-shadow(0 6px 20px rgba(44, 24, 16, 0.35));
 }
 
 .content-main {
@@ -809,19 +821,15 @@ body.search-panel-open {
 }
 
 .page-section .section-hero__banner .content-banner--hero {
-  padding: 0.5rem 0.75rem;
+  padding: 0;
 }
 
 .page-home .content-banner--hero {
-  padding: 0.5rem 0.75rem;
+  padding: 0;
 }
 
+.page-section .section-hero__banner .content-banner--hero .content-banner__img,
 .page-home .content-banner--hero .content-banner__img {
-  border-radius: 6px;
-  filter: drop-shadow(0 6px 20px rgba(44, 24, 16, 0.2));
-}
-
-.page-section .section-hero__banner .content-banner--hero .content-banner__img {
   border-radius: 6px;
   filter: drop-shadow(0 6px 20px rgba(44, 24, 16, 0.2));
 }
@@ -1302,32 +1310,28 @@ body.search-panel-open {
     left: 0;
   }
 
-  /* Hero banners on phone: edge-to-edge; grid cards keep thumbs only */
-  .page-home .content-banner--hero .content-banner__backdrop,
-  .page-home .content-banner--hero::before,
-  .page-section .section-hero__banner .content-banner--hero .content-banner__backdrop,
-  .page-section .section-hero__banner .content-banner--hero::before,
+  /* Grid card thumbs only — hero banners keep desktop-style fill on phone */
   .section-card .content-banner--card .content-banner__bg,
   .section-card .content-banner--card.content-banner::before {
     display: none;
   }
 
-  .page-home .content-banner--hero,
-  .page-section .section-hero__banner .content-banner--hero {
-    padding: 0;
-    background: var(--bg-alt);
-    overflow: hidden;
+  :root {
+    --banner-h: min(64vh, 620px);
+    --banner-img-max-h: min(62vh, 600px);
   }
 
-  .page-home .content-banner--hero .content-banner__img,
-  .page-section .section-hero__banner .content-banner--hero .content-banner__img {
-    border-radius: 0;
-    filter: none;
+  .content-banner__wing {
+    width: clamp(5rem, 34vw, 14rem);
+    opacity: 0.92;
   }
 
-  .page-section .section-hero__banner .content-banner__backdrop,
-  .page-section .section-hero__banner .content-banner::before {
-    display: none;
+  .content-banner__ambient {
+    opacity: 0.55;
+  }
+
+  .content-banner__bg {
+    opacity: 0.62;
   }
 
   .page-section .section-hero__index.bhajan-index--inline {
@@ -1504,8 +1508,8 @@ body.search-panel-open {
   }
 
   :root {
-    --banner-h: min(58vh, 560px);
-    --banner-img-max-h: min(56vh, 540px);
+    --banner-h: min(62vh, 640px);
+    --banner-img-max-h: min(60vh, 620px);
     --banner-img-max-w: min(96vw, 880px);
     --banner-card-h: min(20vh, 220px);
   }
@@ -1549,19 +1553,19 @@ body.search-panel-open {
 
   .page-home .content-banner--hero,
   .page-section .section-hero__banner .content-banner--hero {
-    padding: 0.65rem 1.25rem;
+    padding: 0;
   }
 
   .page-home .content-banner--hero .content-banner__img,
   .page-section .section-hero__banner .content-banner--hero .content-banner__img {
-    border-radius: 8px;
+    border-radius: 4px;
   }
 }
 
 @media (min-width: 1024px) {
   :root {
-    --banner-h: min(64vh, 680px);
-    --banner-img-max-h: min(62vh, 660px);
+    --banner-h: min(68vh, 720px);
+    --banner-img-max-h: min(66vh, 700px);
     --banner-img-max-w: min(94vw, 960px);
   }
 
@@ -1572,8 +1576,8 @@ body.search-panel-open {
 
 @media (min-width: 1400px) {
   :root {
-    --banner-h: min(68vh, 760px);
-    --banner-img-max-h: min(66vh, 740px);
+    --banner-h: min(72vh, 780px);
+    --banner-img-max-h: min(70vh, 760px);
     --banner-img-max-w: min(92vw, 1040px);
   }
 
