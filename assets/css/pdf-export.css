@@ -3,29 +3,34 @@
 @page {
   size: A4;
   margin: 16mm 14mm 24mm 14mm;
-  border: 1.25pt solid #c9a227;
-  background: #f4f8fc;
+  border: 1.25pt solid #e0d0c4;
+  background: #faf6f0;
 
   @bottom-center {
     content: counter(page) ' / ' counter(pages);
     font-family: Arial, Helvetica, sans-serif;
     font-size: 9pt;
-    color: #4a6278;
+    color: #5c4a42;
   }
 }
 
+/* Palette aligned with assets/css/site.css (light theme) */
 :root {
   --pdf-font: 'Noto Sans Devanagari', 'Nirmala UI', 'Mangal', sans-serif;
-  --pdf-bg: #f4f8fc;
-  --pdf-surface: #ffffff;
-  --pdf-text: #1a2b3c;
-  --pdf-muted: #4a6278;
-  --pdf-accent: #1565c0;
-  --pdf-accent-dark: #0d47a1;
-  --pdf-link: #1565c0;
-  --pdf-border: #c5d9ed;
-  --pdf-lyrics-odd: #0d47a1;
-  --pdf-lyrics-even: #1565c0;
+  --pdf-bg: #faf6f0;
+  --pdf-bg-alt: #f0e8dc;
+  --pdf-surface: #fffdf9;
+  --pdf-text: #2c1810;
+  --pdf-muted: #5c4a42;
+  --pdf-accent: #9b2d4a;
+  --pdf-accent-dark: #6b1f32;
+  --pdf-link: #9b2d4a;
+  --pdf-border: #e0d0c4;
+  --pdf-accent-soft: #f5e6ea;
+  --pdf-accent-glow: rgba(155, 45, 74, 0.08);
+  --pdf-lyrics-marker: #7a6258;
+  --pdf-lyrics-odd: #2c1810;
+  --pdf-lyrics-even: #2c1810;
   --pdf-page-body-height: 255mm;
 }
 
@@ -108,15 +113,25 @@ body.pdf-export {
   min-height: 0;
 }
 
+/* PDF-only: CSS gradient fill (no blurred photo — smaller print raster) */
 .pdf-banner__backdrop {
   position: absolute;
-  inset: -14%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: blur(42px) saturate(1.32) brightness(0.92);
-  transform: scale(1.06);
+  inset: 0;
   z-index: 0;
+  background:
+    radial-gradient(
+      ellipse 72% 88% at 50% 46%,
+      rgba(155, 45, 74, 0.28) 0%,
+      transparent 58%
+    ),
+    linear-gradient(
+      165deg,
+      #2a1218 0%,
+      #5c1f32 22%,
+      #8b3a4a 48%,
+      #6b1f32 76%,
+      #2a1218 100%
+    );
 }
 
 .pdf-banner--fill::before {
@@ -288,8 +303,11 @@ body.pdf-export {
 
 .pdf-section__head {
   margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--pdf-accent);
+  padding: 0.65rem 0.75rem 0.7rem;
+  border: 1px solid var(--pdf-border);
+  border-left: 5px solid var(--pdf-accent);
+  border-radius: 0.35rem;
+  background: var(--pdf-surface);
 }
 
 .pdf-index {
@@ -360,46 +378,48 @@ body.pdf-export {
   margin-top: 0.5rem;
 }
 
+/* Bhajan cards — match site.css light-theme article styling */
 .pdf-bhajan-list .bhajan-card {
+  background: var(--pdf-surface);
+  border: 1px solid var(--pdf-border);
+  border-radius: 0.5rem;
+  padding: 1rem 0.75rem 1.15rem;
   margin-bottom: 1.25rem;
+  box-shadow: 0 1px 8px var(--pdf-accent-glow);
   page-break-inside: auto;
 }
 
 .pdf-bhajan-list .bhajan-card__head {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pdf-bg-alt);
+  position: relative;
   page-break-after: avoid;
 }
 
-.pdf-bhajan-list .bhajan-card {
-  padding: 0.5rem 0.35rem;
-  border-bottom: 1px solid var(--pdf-border);
+.pdf-bhajan-list .bhajan-card__head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 3rem;
+  height: 2px;
+  background: var(--pdf-accent);
+  border-radius: 1px;
 }
 
 .pdf-bhajan-list .bhajan-card__title {
-  font-size: 1.1rem;
-  font-weight: 600;
   margin: 0;
-  color: var(--pdf-accent);
-}
-
-.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-antara--odd {
-  color: var(--pdf-lyrics-odd);
-}
-
-.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-antara--even,
-.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-sthayi {
-  color: var(--pdf-lyrics-even);
-}
-
-.pdf-bhajan-list .bhajan-tarz {
-  margin: 0 0 0.65rem;
-  padding: 0.5rem 0.65rem;
-  background: #e8f1fa;
-  border-left: 3px solid var(--pdf-accent);
-  color: var(--pdf-muted);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--pdf-accent-dark);
 }
 
 .pdf-bhajan-list .bhajan-card__num {
-  font-weight: 700;
+  font-weight: 600;
+  color: var(--pdf-muted);
+  margin-right: 0.15em;
 }
 
 .pdf-bhajan-list .bhajan-card__to-index,
@@ -407,8 +427,49 @@ body.pdf-export {
   display: none;
 }
 
+.pdf-bhajan-list .bhajan-tarz {
+  margin: 0 0 0.85rem;
+  padding: 0.55rem 0.75rem;
+  background: var(--pdf-bg-alt);
+  border-radius: 0.35rem;
+  border-left: 4px solid var(--pdf-accent);
+  font-size: 1rem;
+  color: var(--pdf-muted);
+  line-height: 1.65;
+}
+
+.pdf-bhajan-list .bhajan-tarz .label {
+  font-weight: 700;
+  color: var(--pdf-accent);
+  margin-right: 0.35rem;
+}
+
+.pdf-bhajan-list .bhajan-lyrics--standard {
+  text-align: left;
+  max-width: 42rem;
+  width: 100%;
+}
+
+.pdf-bhajan-list .bhajan-lyrics--standard .lyrics-tarz {
+  margin: 0 0 0.75rem;
+  font-size: 0.95em;
+  font-weight: 500;
+  font-style: normal;
+  color: var(--pdf-muted);
+}
+
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-antara--odd,
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-antara--even,
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-sthayi {
+  color: var(--pdf-text);
+}
+
+.pdf-bhajan-list .bhajan-lyrics--standard .lyrics-antara {
+  margin: 0 0 0.75rem;
+  line-height: 1.85;
+}
+
 .pdf-bhajan-list .tarz {
-  font-style: italic;
   color: var(--pdf-muted);
   margin: 0.35rem 0;
 }
@@ -419,13 +480,14 @@ body.pdf-export {
 }
 
 .pdf-bhajan-list .lyrics-aside {
-  margin: 0.65rem 0;
-  padding: 0.5rem 0.65rem;
-  border-left: 3px solid var(--pdf-accent);
-  background: #e8f1fa;
-  font-size: 0.95em;
+  margin: 0.75rem 0;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--pdf-border);
+  border-bottom: 1px solid var(--pdf-border);
+  font-size: 0.98em;
   color: var(--pdf-muted);
-  text-align: center;
+  text-align: left;
+  line-height: 1.75;
 }
 
 .pdf-bhajan-list .lyrics-aside p {
@@ -433,13 +495,13 @@ body.pdf-export {
 }
 
 .pdf-bhajan-list .bhajan-card__pre-shlok {
-  margin-bottom: 0.65rem;
-  padding: 0.5rem 0.65rem;
-  border-left: 3px solid var(--pdf-accent);
-  background: #e8f1fa;
-  font-size: 0.95em;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--pdf-border);
+  font-size: 0.98em;
   color: var(--pdf-muted);
-  text-align: center;
+  text-align: left;
+  line-height: 1.75;
 }
 
 .pdf-bhajan-list .lyrics-pre-shlok {
@@ -448,23 +510,28 @@ body.pdf-export {
 
 .pdf-bhajan-list .dhvani,
 .pdf-bhajan-list .bhajan-card__dhvani {
-  margin-top: 0.65rem;
-  padding: 0.5rem 0.65rem;
-  border-left: 3px solid var(--pdf-accent);
-  background: #e8f1fa;
-  font-size: 0.95em;
+  margin-top: 0.75rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--pdf-border);
+  font-size: 0.98em;
   color: var(--pdf-muted);
+  text-align: left;
+  line-height: 1.75;
 }
 
-.pdf-bhajan-list .jabani {
-  margin-top: 0.65rem;
-  font-size: 0.92em;
+.pdf-bhajan-list .jabani,
+.pdf-bhajan-list .bhajan-card__jabani {
+  margin-top: 0.85rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--pdf-border);
+  font-size: 0.95em;
   color: var(--pdf-muted);
+  line-height: 1.75;
 }
 
 .pdf-bhajan-list .bhajan-card__lyrics {
   font-size: 1.05rem;
-  line-height: 1.75;
+  line-height: 1.9;
 }
 
 .pdf-bhajan-list .bhajan-card__lyrics p {
@@ -475,35 +542,21 @@ body.pdf-export {
   display: block;
 }
 
-.pdf-bhajan-list .lyrics-tarz {
-  margin: 0 0 0.5rem;
-  font-style: italic;
-  color: var(--pdf-muted);
-}
-
 .pdf-bhajan-list .lyrics-antara {
   margin: 0.35rem 0;
 }
 
-.pdf-bhajan-list .lyrics-sthayi {
-  font-weight: 600;
-}
-
 .pdf-bhajan-list .lyrics-marker {
-  color: var(--pdf-muted);
+  white-space: nowrap;
+  color: var(--pdf-lyrics-marker);
+  font-weight: 500;
   font-size: 0.92em;
 }
 
 .pdf-bhajan-list .lyrics-refrain {
-  font-style: italic;
-}
-
-.pdf-bhajan-list .bhajan-card__pre-shlok,
-.pdf-bhajan-list .bhajan-card__dhvani,
-.pdf-bhajan-list .bhajan-card__jabani {
-  margin-top: 0.65rem;
-  font-size: 0.92em;
   color: var(--pdf-muted);
+  font-size: 0.92em;
+  font-style: normal;
 }
 
 .pdf-bhajan-list .lyrics-dhvani {
@@ -516,14 +569,21 @@ body.pdf-export {
 
 .pdf-bhajan-list .bhajan-group__title {
   font-size: 1.05rem;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 0.5rem;
+  color: var(--pdf-accent-dark);
 }
 
 .pdf-bhajan-badge {
-  font-size: 0.75em;
-  font-weight: 500;
-  color: var(--pdf-muted);
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: var(--pdf-accent-soft);
+  color: var(--pdf-accent);
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.3rem;
+  margin-left: 0.4rem;
+  vertical-align: middle;
 }
 
 .pdf-print-toolbar {
@@ -535,8 +595,8 @@ body.pdf-export {
   align-items: center;
   gap: 0.5rem 1rem;
   padding: 0.65rem 1rem;
-  background: #e3f2fd;
-  border-bottom: 2px solid var(--pdf-accent);
+  background: var(--pdf-accent-soft);
+  border-bottom: 2px solid var(--pdf-border);
 }
 
 .pdf-print-toolbar__back {

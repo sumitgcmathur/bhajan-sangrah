@@ -27,10 +27,6 @@ function resolvePdfAsset(resolveAsset, relativePath, opts = {}) {
   return { full: url, blur: url, thumb: url };
 }
 
-function cssUrl(url) {
-  return String(url || '').replace(/'/g, '%27');
-}
-
 function renderPdfIndexItem(hrefId, labelHtml) {
   return `<li class="pdf-index__item">
   <a href="#${hrefId}" class="pdf-index__link">
@@ -149,9 +145,8 @@ function renderPdfLanding(config, sectionPayloads, resolveAsset) {
 
 function renderPdfBannerFill(assets, alt) {
   if (!assets.full) return '';
-  const blur = cssUrl(assets.blur || assets.full);
   return `<figure class="pdf-banner pdf-banner--fill">
-  <div class="pdf-banner__backdrop" style="background-image:url('${blur}')" aria-hidden="true"></div>
+  <div class="pdf-banner__backdrop" aria-hidden="true"></div>
   <img class="pdf-banner__img" src="${assets.full}" alt="${escapeHtml(alt)}">
 </figure>`;
 }

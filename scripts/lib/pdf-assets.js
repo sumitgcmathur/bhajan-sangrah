@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const crypto = require('crypto');
 const { ROOT } = require('./paths');
 const { landingBannerPath } = require('./banner-thumbs');
 
@@ -27,10 +26,6 @@ function absFromRel(relativePath) {
   return path.join(ROOT, normRel(relativePath));
 }
 
-function cacheKeyFor(absPath) {
-  return crypto.createHash('md5').update(absPath).digest('hex').slice(0, 12);
-}
-
 /** Inline images as data URIs (browser preview only — inflates PDF size). */
 function createEmbeddedAssetResolver() {
   const cache = new Map();
@@ -52,20 +47,10 @@ function createEmbeddedAssetResolver() {
 }
 
 /**
- * File URLs + optional blur JPEG cache for PDF export.
- * Sharp center image uses original file (full resolution); backdrop uses a small blurred JPEG.
+ * File URLs for PDF export. Banner backdrops use CSS gradients (pdf-export.css);
+ * only the sharp center image is loaded from disk.
  */
 async function createPdfAssetResolver(config, sectionPayloads) {
-  const cacheDir = path.join(ROOT, 'output', 'pdf-cache');
-  fs.mkdirSync(cacheDir, { recursive: true });
-
-  let sharp;
-  try {
-    sharp = require('sharp');
-  } catch {
-    sharp = null;
-  }
-
   const relPaths = new Set();
   if (config.home_banner) relPaths.add(normRel(config.home_banner));
   for (const { section } of sectionPayloads) {
@@ -81,22 +66,8 @@ async function createPdfAssetResolver(config, sectionPayloads) {
   for (const rel of relPaths) {
     const abs = absFromRel(rel);
     if (!fs.existsSync(abs)) continue;
-
     const full = pathToFileURL(abs);
-    let blur = full;
-
-    if (sharp && /\.(jpe?g|png|webp)$/i.test(abs)) {
-      const blurFile = path.join(cacheDir, `${cacheKeyFor(abs)}-blur.jpg`);
-      if (!fs.existsSync(blurFile) || fs.statSync(abs).mtimeMs > fs.statSync(blurFile).mtimeMs) {
-        await sharp(abs)
-          .resize({ width: 960, withoutEnlargement: true })
-          .jpeg({ quality: 52, mozjpeg: true })
-          .toFile(blurFile);
-      }
-      blur = pathToFileURL(blurFile);
-    }
-
-    entries.set(rel, { full, blur, thumb: full });
+    entries.set(rel, { full, blur: '', thumb: full });
   }
 
   return (relativePath, { section } = {}) => {
@@ -111,7 +82,7 @@ async function createPdfAssetResolver(config, sectionPayloads) {
     const abs = absFromRel(rel);
     if (!fs.existsSync(abs)) return { full: '', blur: '', thumb: '' };
     const url = pathToFileURL(abs);
-    return { full: url, blur: url, thumb: url };
+    return { full: url, blur: '', thumb: url };
   };
 }
 
