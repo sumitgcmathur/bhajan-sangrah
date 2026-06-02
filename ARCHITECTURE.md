@@ -27,7 +27,8 @@ Live site base path: **`/bhajan-sangrah/`** (set in `content/sections.yaml` as `
 | `assets/js/nav.js` | Sidebar toggle, mobile nav |
 | `assets/js/search.js` | Client-side search panel |
 | `assets/icons/` | Section icons, favicon, home banner |
-| `assets/banners/` | Optional extra banner images |
+| `assets/banners/` | Landing grid thumbnails (352×761); `npm run build:banners` |
+| `assets/menu/` | Sidebar menu icons (40×40); same command |
 | `scripts/build.js` | **Main build** — wipes `docs/`, emits HTML + search index |
 | `scripts/lib/` | Template, YAML I/O, lyrics HTML, search index, slugs |
 | `docs/` | **Build output only** — do not edit by hand; regenerated every build |

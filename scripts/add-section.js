@@ -37,6 +37,7 @@ async function main() {
 
   console.log(`\nAdded section "${title}" → content/${folder}/`);
   console.log(`Place banner at assets/icons/${slug}.jpg (or set banner in sections.yaml)`);
+  console.log('Run: npm run build:banners  (then commit assets/banners + assets/menu)');
   console.log('Run: npm run build');
   rl.close();
 }

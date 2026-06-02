@@ -1,4 +1,4 @@
-# Resize a section icon (assets/icons) and regenerate its landing thumb (assets/banners).
+# Resize a section icon (assets/icons) and regenerate landing thumb + sidebar menu icon.
 # Usage: powershell -File scripts/resize-section-banner.ps1 -Slug swarachit -Icon Swarachit.jpg
 param(
   [string]$Slug = 'swarachit',
@@ -6,13 +6,15 @@ param(
   [int]$BannerW = 704,
   [int]$BannerH = 1522,
   [int]$ThumbW = 352,
-  [int]$ThumbH = 761
+  [int]$ThumbH = 761,
+  [int]$MenuSize = 40
 )
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $iconPath = Join-Path $root "assets\icons\$Icon"
 $thumbPath = Join-Path $root "assets\banners\$Slug.jpg"
+$menuPath = Join-Path $root "assets\menu\$Slug.jpg"
 
 if (-not (Test-Path $iconPath)) {
   Write-Error "Missing $iconPath"
@@ -66,3 +68,12 @@ $src2.Dispose()
 
 $thumbKb = [Math]::Round((Get-Item $thumbPath).Length / 1KB)
 Write-Host "Landing tile: $thumbPath (${ThumbW}x${ThumbH}, $thumbKb KB)"
+
+$src3 = [System.Drawing.Image]::FromFile($iconPath)
+New-Item -ItemType Directory -Force -Path (Split-Path $menuPath) | Out-Null
+$menu = New-CoverBitmap $src3 $MenuSize $MenuSize
+Save-Jpeg $menu $menuPath 78
+$menu.Dispose()
+$src3.Dispose()
+$menuKb = [Math]::Round((Get-Item $menuPath).Length / 1KB)
+Write-Host "Sidebar menu: $menuPath (${MenuSize}x${MenuSize}, $menuKb KB)"

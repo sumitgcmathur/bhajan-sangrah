@@ -1,10 +1,19 @@
 const { escapeHtml, lyricsToHtml, jabaniToHtml, lyricsHasSthayi } = require('./escape');
 const { anchorId } = require('./slug');
 const { toDevaNum } = require('./lyrics-structure');
+const { landingBannerPath, landingHomeBannerPath, sidebarMenuIconPath } = require('./banner-thumbs');
 
 function pageUrl(base, page) {
   if (!page) return base || './';
   return `${base || './'}${page}`;
+}
+
+function renderSidebarLinkIcon(section, base) {
+  if (!section.banner) {
+    return '<span class="sidebar-link__icon sidebar-link__icon--empty" aria-hidden="true"></span>';
+  }
+  const src = pageUrl(base, sidebarMenuIconPath(section));
+  return `<img class="sidebar-link__icon" src="${src}" width="28" height="28" alt="" loading="lazy" decoding="async">`;
 }
 
 function renderNav(sections, base, currentSlug) {
@@ -12,24 +21,22 @@ function renderNav(sections, base, currentSlug) {
     .map((s) => {
       const href = pageUrl(base, `${s.slug}.html`);
       const active = s.slug === currentSlug ? ' is-active' : '';
-      return `<li><a class="sidebar-link${active}" href="${href}">${escapeHtml(s.title)}</a></li>`;
+      return `<li><a class="sidebar-link${active}" href="${href}">
+  ${renderSidebarLinkIcon(s, base)}
+  <span class="sidebar-link__label">${escapeHtml(s.title)}</span>
+</a></li>`;
     })
     .join('\n');
 }
 
 function renderSidebar(config, sections, base, currentSlug) {
   const home = pageUrl(base, 'index.html');
-  const iconSrc = config.site_icon || 'assets/icons/favicon.jpg';
-  const icon = pageUrl(base, iconSrc);
   return `<aside class="site-sidebar" id="site-sidebar" aria-label="साइट मार्गदर्शन">
-  <div class="sidebar-brand">
-    <a class="sidebar-brand__link" href="${home}">
-      <img class="sidebar-brand__icon" src="${icon}" width="48" height="48" alt="">
-      <span class="sidebar-brand__title">${escapeHtml(config.site_title)}</span>
-    </a>
-  </div>
+  <header class="sidebar-head">
+    <a class="sidebar-head__title" href="${home}">${escapeHtml(config.site_title)}</a>
+  </header>
   <nav class="sidebar-nav" aria-label="विभाग सूची">
-    <ul class="sidebar-nav__list">${renderNav(sections, base, currentSlug)}</ul>
+    <ul class="sidebar-nav__list sidebar-nav__list--sections">${renderNav(sections, base, currentSlug)}</ul>
   </nav>
 </aside>`;
 }
@@ -178,8 +185,6 @@ ${renderSearchPanel()}
 </body>
 </html>`;
 }
-
-const { landingBannerPath, landingHomeBannerPath } = require('./banner-thumbs');
 
 function sectionCardImage(section, base, config) {
   if (section.banner) return pageUrl(base, landingBannerPath(section));
