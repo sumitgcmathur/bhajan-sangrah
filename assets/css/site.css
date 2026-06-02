@@ -456,6 +456,61 @@ body.search-panel-open {
   pointer-events: none;
 }
 
+.content-banner--hero {
+  background: #2a1420;
+}
+
+:root[data-theme="dark"] .content-banner--hero {
+  background: #12080c;
+}
+
+.content-banner__backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Full-area color wash from the artwork */
+.content-banner__ambient {
+  position: absolute;
+  inset: -18%;
+  width: 136%;
+  height: 136%;
+  object-fit: cover;
+  object-position: center;
+  filter: blur(52px) saturate(1.35) brightness(0.9);
+  opacity: 0.5;
+}
+
+/* Sharper side panels pulled from the image edges (portrait letterbox fill) */
+.content-banner__wing {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(7rem, 36vw, 26rem);
+  object-fit: cover;
+  filter: blur(12px) saturate(1.28) brightness(0.97);
+  opacity: 0.9;
+  z-index: 1;
+}
+
+.content-banner__wing--left {
+  left: 0;
+  object-position: 100% center;
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 38%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 0%, #000 38%, transparent 100%);
+}
+
+.content-banner__wing--right {
+  right: 0;
+  object-position: 0% center;
+  transform: scaleX(-1);
+  -webkit-mask-image: linear-gradient(to left, #000 0%, #000 38%, transparent 100%);
+  mask-image: linear-gradient(to left, #000 0%, #000 38%, transparent 100%);
+}
+
 /* Blurred fill in letterbox margins only (not over the sharp image) */
 .content-banner__bg {
   position: absolute;
@@ -779,7 +834,7 @@ body.search-panel-open {
 }
 
 /* Original banner presentation: large contained image + blurred fill */
-.page-section .section-hero .content-banner__bg,
+.page-section .section-hero .content-banner__backdrop,
 .page-section .section-hero .content-banner::before {
   display: block;
 }
@@ -1290,9 +1345,9 @@ body.search-panel-open {
   }
 
   /* Hero banners on phone: edge-to-edge; grid cards keep thumbs only */
-  .page-home .content-banner--hero .content-banner__bg,
+  .page-home .content-banner--hero .content-banner__backdrop,
   .page-home .content-banner--hero::before,
-  .page-section .section-hero .content-banner--hero .content-banner__bg,
+  .page-section .section-hero .content-banner--hero .content-banner__backdrop,
   .page-section .section-hero .content-banner--hero::before,
   .section-card .content-banner--card .content-banner__bg,
   .section-card .content-banner--card.content-banner::before {
@@ -1319,7 +1374,7 @@ body.search-panel-open {
     max-height: var(--section-hero-fill);
   }
 
-  .page-section .section-hero .content-banner__bg,
+  .page-section .section-hero .content-banner__backdrop,
   .page-section .section-hero .content-banner::before {
     display: none;
   }
@@ -1504,15 +1559,41 @@ body.search-panel-open {
     --banner-img-max-h: min(56vh, 540px);
     --banner-img-max-w: min(96vw, 880px);
     --banner-card-h: min(20vh, 220px);
+    /* Desktop: hero band hugs the image instead of full viewport height */
+    --section-hero-fill: min(calc(min(56vh, 540px) + 2.75rem), 72vh, 720px);
   }
 
-  .content-banner {
-    padding: 0.65rem 1.25rem;
+  .content-banner__ambient {
+    opacity: 0.58;
+  }
+
+  .content-banner__wing {
+    width: clamp(8rem, 32vw, 30rem);
+    filter: blur(10px) saturate(1.32);
+    opacity: 0.94;
   }
 
   .content-banner__bg {
-    filter: blur(42px) saturate(1.3);
-    opacity: 0.62;
+    filter: blur(36px) saturate(1.35);
+    opacity: 0.68;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      black 0%,
+      black 8%,
+      transparent 26%,
+      transparent 74%,
+      black 92%,
+      black 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      black 0%,
+      black 8%,
+      transparent 26%,
+      transparent 74%,
+      black 92%,
+      black 100%
+    );
   }
 
   .content-banner__img {
@@ -1535,10 +1616,11 @@ body.search-panel-open {
     --banner-h: min(64vh, 680px);
     --banner-img-max-h: min(62vh, 660px);
     --banner-img-max-w: min(94vw, 960px);
+    --section-hero-fill: min(calc(min(62vh, 660px) + 2.75rem), 76vh, 780px);
   }
 
-  .content-banner {
-    padding: 0.75rem 1.5rem;
+  .content-banner__wing {
+    width: clamp(9rem, 28vw, 34rem);
   }
 }
 
@@ -1547,6 +1629,11 @@ body.search-panel-open {
     --banner-h: min(68vh, 760px);
     --banner-img-max-h: min(66vh, 740px);
     --banner-img-max-w: min(92vw, 1040px);
+    --section-hero-fill: min(calc(min(66vh, 740px) + 2.75rem), 78vh, 820px);
+  }
+
+  .content-banner__wing {
+    width: clamp(10rem, 24vw, 38rem);
   }
 
   .section-grid {

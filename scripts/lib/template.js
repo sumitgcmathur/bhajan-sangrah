@@ -348,8 +348,16 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
 function renderPageBanner(src, alt, { hero = false } = {}) {
   if (!src) return '';
   const heroClass = hero ? ' content-banner--hero' : '';
+  const backdrop = hero
+    ? `<div class="content-banner__backdrop" aria-hidden="true">
+  <img class="content-banner__ambient" src="${src}" alt="" loading="lazy" decoding="async">
+  <img class="content-banner__wing content-banner__wing--left" src="${src}" alt="" loading="lazy" decoding="async">
+  <img class="content-banner__wing content-banner__wing--right" src="${src}" alt="" loading="lazy" decoding="async">
+  <img class="content-banner__bg" src="${src}" alt="" loading="lazy" decoding="async">
+</div>`
+    : `<img class="content-banner__bg" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async">`;
   return `<div class="content-banner${heroClass}">
-  <img class="content-banner__bg" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+  ${backdrop}
   <img class="content-banner__img" src="${src}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
 </div>`;
 }
