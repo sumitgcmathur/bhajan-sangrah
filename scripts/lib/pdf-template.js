@@ -1,18 +1,34 @@
 const path = require('path');
 const { ROOT } = require('./paths');
-const { escapeHtml, bhajanNumberLabel, bhajansByGroup, sectionUsesGroups, renderBhajanCard } = require('./template');
+const { toDevaNum } = require('./lyrics-structure');
+const { landingBannerPath } = require('./banner-thumbs');
+const { pathToFileURL } = require('./pdf-assets');
+const {
+  escapeHtml,
+  bhajanNumberLabel,
+  bhajansByGroup,
+  sectionUsesGroups,
+  renderBhajanCard,
+} = require('./template');
+
 function sectionAnchorId(slug) {
   return `pdf-section-${slug}`;
-}
-
-function pathToFileURL(filePath) {
-  const resolved = path.resolve(filePath).replace(/\\/g, '/');
-  return `file:///${resolved.startsWith('/') ? resolved.slice(1) : resolved}`;
 }
 
 function assetFileURL(relativePath) {
   if (!relativePath) return '';
   return pathToFileURL(path.join(ROOT, relativePath.replace(/^\//, '')));
+}
+
+function resolvePdfAsset(resolveAsset, relativePath, opts = {}) {
+  const out = resolveAsset(relativePath, opts);
+  if (out && typeof out === 'object') return out;
+  const url = out || assetFileURL(relativePath);
+  return { full: url, blur: url, thumb: url };
+}
+
+function cssUrl(url) {
+  return String(url || '').replace(/'/g, '%27');
 }
 
 function renderPdfIndexItem(hrefId, labelHtml) {
@@ -39,7 +55,7 @@ function assignBhajanIds(section, bhajans) {
   return bhajans.map((b) => ({ ...b, id: b.id }));
 }
 
-function renderPdfIndexItemsForSection(section, bhajans, globalNumRef) {
+function renderPdfIndexItemsForSection(section, bhajans, numRef) {
   const showSwarachitBadge = section.slug !== 'swarachit';
   const withIds = assignBhajanIds(section, bhajans);
   const grouped = sectionUsesGroups(section, bhajans);
@@ -51,7 +67,7 @@ function renderPdfIndexItemsForSection(section, bhajans, globalNumRef) {
       .map((g) => {
         const items = g.items
           .map((b) => {
-            const num = bhajanNumberLabel(globalNumRef.n++);
+            const num = bhajanNumberLabel(numRef.n++);
             const sw =
               showSwarachitBadge && b.swarachit
                 ? ' <span class="pdf-index__badge">स्वरचित</span>'
@@ -72,7 +88,7 @@ function renderPdfIndexItemsForSection(section, bhajans, globalNumRef) {
 
   return `<ul class="pdf-index__list">${withIds
     .map((b) => {
-      const num = bhajanNumberLabel(globalNumRef.n++);
+      const num = bhajanNumberLabel(numRef.n++);
       const sw =
         showSwarachitBadge && b.swarachit
           ? ' <span class="pdf-index__badge">स्वरचित</span>'
@@ -85,49 +101,67 @@ function renderPdfIndexItemsForSection(section, bhajans, globalNumRef) {
     .join('\n')}</ul>`;
 }
 
-/** One combined index for the whole book, grouped by section. */
-function renderCompleteBhajanIndex(sectionPayloads) {
-  const globalNumRef = { n: 1 };
-  const blocks = sectionPayloads
+function renderPdfSectionIndex(section, bhajans) {
+  if (!bhajans.length) return '';
+  const numRef = { n: 1 };
+  const body = renderPdfIndexItemsForSection(section, bhajans, numRef);
+  const grouped =
+    sectionUsesGroups(section, bhajans) && bhajansByGroup(bhajans).some((g) => g.title);
+  return `<nav class="pdf-section-index${grouped ? ' pdf-section-index--grouped' : ''}" aria-label="भजन सूची">
+  <h2 class="pdf-section-index__title">भजन सूची</h2>
+  ${body}
+</nav>`;
+}
+
+function formatBhajanCount(n) {
+  return `${toDevaNum(n)} भजन`;
+}
+
+function renderPdfLanding(config, sectionPayloads, resolveAsset) {
+  const totalBhajans = sectionPayloads.reduce((n, p) => n + p.bhajans.length, 0);
+  const cards = sectionPayloads
     .map(({ section, bhajans }) => {
       if (!bhajans.length) return '';
-      const indexBody = renderPdfIndexItemsForSection(section, bhajans, globalNumRef);
-      const grouped =
-        sectionUsesGroups(section, bhajans) && bhajansByGroup(bhajans).some((g) => g.title);
-      return `<section class="pdf-index__section${grouped ? ' pdf-index__section--grouped' : ''}">
-  <h2 class="pdf-index__section-title">
-    <a href="#${sectionAnchorId(section.slug)}" class="pdf-index__section-link">${escapeHtml(section.title)}</a>
-  </h2>
-  ${indexBody}
-</section>`;
+      const href = `#${sectionAnchorId(section.slug)}`;
+      const thumbRel = section.banner ? landingBannerPath(section) : config.home_banner || '';
+      const assets = thumbRel
+        ? resolvePdfAsset(resolveAsset, thumbRel, { section })
+        : { full: '', blur: '', thumb: '' };
+      const imgSrc = assets.thumb || assets.full;
+      const media = imgSrc
+        ? `<img class="pdf-landing__card-img" src="${imgSrc}" alt="">`
+        : `<div class="pdf-landing__card-img pdf-landing__card-img--empty" aria-hidden="true"></div>`;
+      return `<a class="pdf-landing__card" href="${href}">
+  ${media}
+  <span class="pdf-landing__card-title">${escapeHtml(section.title)}</span>
+  <span class="pdf-landing__card-count">${formatBhajanCount(bhajans.length)}</span>
+</a>`;
     })
+    .filter(Boolean)
     .join('\n');
 
-  return `<section class="pdf-master-index" id="pdf-bhajan-index">
-  <h1 class="pdf-master-index__title">भजन सूची</h1>
-  <div class="pdf-index__sections">${blocks}</div>
+  return `<section class="pdf-landing" id="pdf-landing">
+  <h1 class="pdf-landing__title">${escapeHtml(config.site_title || 'भजन संग्रह')}</h1>
+  <p class="pdf-landing__stats">कुल <strong>${toDevaNum(totalBhajans)}</strong> भजन · <strong>${toDevaNum(sectionPayloads.length)}</strong> श्रेणियाँ</p>
+  <div class="pdf-landing__grid">${cards}</div>
 </section>`;
 }
 
-function renderPdfBannerFill(src, alt) {
-  if (!src) return '';
+function renderPdfBannerFill(assets, alt) {
+  if (!assets.full) return '';
+  const blur = cssUrl(assets.blur || assets.full);
   return `<figure class="pdf-banner pdf-banner--fill">
-  <div class="pdf-banner__backdrop" aria-hidden="true">
-    <img class="pdf-banner__ambient" src="${src}" alt="">
-    <img class="pdf-banner__wing pdf-banner__wing--left" src="${src}" alt="">
-    <img class="pdf-banner__wing pdf-banner__wing--right" src="${src}" alt="">
-    <img class="pdf-banner__bg" src="${src}" alt="">
-  </div>
-  <img class="pdf-banner__img" src="${src}" alt="${escapeHtml(alt)}">
+  <div class="pdf-banner__backdrop" style="background-image:url('${blur}')" aria-hidden="true"></div>
+  <img class="pdf-banner__img" src="${assets.full}" alt="${escapeHtml(alt)}">
 </figure>`;
 }
 
 function renderPdfBannerPage(section, resolveAsset) {
   if (!section.banner) return '';
-  const src = resolveAsset(section.banner);
-  if (!src) return '';
+  const assets = resolvePdfAsset(resolveAsset, section.banner, { section });
+  if (!assets.full) return '';
   return `<section class="pdf-banner-page" aria-label="${escapeHtml(section.title)}">
-  ${renderPdfBannerFill(src, section.title)}
+  ${renderPdfBannerFill(assets, section.title)}
 </section>`;
 }
 
@@ -181,10 +215,10 @@ function renderPdfSection(section, bhajans, resolveAsset) {
   <header class="pdf-section__head">
     <h1 class="pdf-section__title">${escapeHtml(section.title)}</h1>
   </header>
+  ${renderPdfSectionIndex(section, bhajans)}
   ${articlesHtml}
 </section>`;
 }
-
 
 const PRINT_TOOLBAR = `<div class="pdf-print-toolbar no-print" role="region" aria-label="मुद्रण">
   <a class="pdf-print-toolbar__back" href="index.html">← मुख पृष्ठ</a>
@@ -212,18 +246,27 @@ const PRINT_TOOLBAR_SCRIPT = `
 `;
 
 function renderPdfDocument(config, sectionPayloads, options = {}) {
-  const resolveAsset = options.resolveAsset || assetFileURL;
+  const resolveAsset =
+    options.resolveAsset ||
+    ((relativePath) => {
+      const url = assetFileURL(relativePath);
+      return { full: url, blur: url, thumb: url };
+    });
   const cssHref =
     options.cssHref || pathToFileURL(path.join(ROOT, 'assets', 'css', 'pdf-export.css'));
   const date = new Date().toISOString().slice(0, 10);
-  const coverImg = config.home_banner ? resolveAsset(config.home_banner) : '';
+  const coverAssets = config.home_banner
+    ? resolvePdfAsset(resolveAsset, config.home_banner)
+    : { full: '', blur: '', thumb: '' };
   const showToolbar = Boolean(options.showPrintToolbar);
 
   const sectionsHtml = sectionPayloads
     .map(({ section, bhajans }) => renderPdfSection(section, bhajans, resolveAsset))
     .join('\n');
 
-  const coverBanner = coverImg ? renderPdfBannerFill(coverImg, config.site_title || 'भजन संग्रह') : '';
+  const coverBanner = coverAssets.full
+    ? renderPdfBannerFill(coverAssets, config.site_title || 'भजन संग्रह')
+    : '';
 
   const toolbar = showToolbar ? PRINT_TOOLBAR : '';
   const toolbarScript = showToolbar ? `<script>${PRINT_TOOLBAR_SCRIPT}</script>` : '';
@@ -247,7 +290,7 @@ ${toolbar}
     <p class="pdf-cover__meta">संपूर्ण भजन संग्रह · ${date}</p>
   </div>
 </section>
-${renderCompleteBhajanIndex(sectionPayloads)}
+${renderPdfLanding(config, sectionPayloads, resolveAsset)}
 ${sectionsHtml}
 ${toolbarScript}
 </body>

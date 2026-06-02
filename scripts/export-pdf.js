@@ -12,7 +12,7 @@ const { ROOT } = require('./lib/paths');
 const { loadSections } = require('./lib/sections');
 const { renderPdfDocument, pathToFileURL } = require('./lib/pdf-template');
 const { loadAllSectionPayloads } = require('./lib/pdf-payloads');
-const { createEmbeddedAssetResolver } = require('./lib/pdf-assets');
+const { createPdfAssetResolver } = require('./lib/pdf-assets');
 const { PDF_PAGE_OPTS } = require('./lib/pdf-print');
 
 const OUT_DIR = path.join(ROOT, 'output');
@@ -125,6 +125,14 @@ async function exportPdfWithSystemChrome(htmlPath, pdfPath) {
   }
 }
 
+function pdfLooksReady(pdfAbs) {
+  try {
+    return fs.statSync(pdfAbs).size > 1024;
+  } catch {
+    return false;
+  }
+}
+
 async function exportPdfWithChromeCli(htmlPath, pdfPath) {
   const chrome = findChrome();
   if (!chrome) {
@@ -133,23 +141,30 @@ async function exportPdfWithChromeCli(htmlPath, pdfPath) {
   fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
   const fileUrl = pathToFileURL(htmlPath);
   const pdfAbs = path.resolve(pdfPath);
-  await execFileAsync(
-    chrome,
-    [
-      '--headless=new',
-      '--disable-gpu',
-      '--allow-file-access-from-files',
-      '--virtual-time-budget=45000',
-      '--print-background',
-      '--no-pdf-header-footer',
-      ...chromiumLaunchArgs(),
-      `--print-to-pdf=${pdfAbs}`,
-      fileUrl,
-    ],
-    { timeout: 600000 }
-  );
-  if (!fs.existsSync(pdfAbs)) throw new Error('Chrome did not produce a PDF file.');
-  console.log(`PDF written: ${pdfAbs} (via Chrome CLI)`);
+  try {
+    await execFileAsync(
+      chrome,
+      [
+        '--headless=new',
+        '--disable-gpu',
+        '--allow-file-access-from-files',
+        '--virtual-time-budget=45000',
+        '--print-background',
+        '--no-pdf-header-footer',
+        ...chromiumLaunchArgs(),
+        `--print-to-pdf=${pdfAbs}`,
+        fileUrl,
+      ],
+      { timeout: 600000, maxBuffer: 20 * 1024 * 1024 }
+    );
+  } catch (err) {
+    // Headless Chrome often prints the PDF then hangs or exits non-zero on Windows.
+    if (!pdfLooksReady(pdfAbs)) throw err;
+    console.warn('Chrome CLI exited with warnings; PDF file is present.');
+  }
+  if (!pdfLooksReady(pdfAbs)) throw new Error('Chrome did not produce a PDF file.');
+  const mb = (fs.statSync(pdfAbs).size / (1024 * 1024)).toFixed(1);
+  console.log(`PDF written: ${pdfAbs} (${mb} MB, via Chrome CLI)`);
 }
 
 async function exportPdf(htmlPath, pdfPath) {
@@ -190,8 +205,10 @@ async function main() {
   const config = loadSections();
   const payloads = loadAllSectionPayloads(config);
 
+  const resolveAsset = await createPdfAssetResolver(config, payloads);
+
   const html = renderPdfDocument(config, payloads, {
-    resolveAsset: createEmbeddedAssetResolver(),
+    resolveAsset,
   });
   fs.mkdirSync(OUT_DIR, { recursive: true });
   fs.writeFileSync(DEFAULT_HTML, html, 'utf8');
