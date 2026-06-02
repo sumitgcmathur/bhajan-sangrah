@@ -8,6 +8,10 @@ function pageUrl(base, page) {
   return `${base || './'}${page}`;
 }
 
+function formatBhajanCount(n) {
+  return `${toDevaNum(n)} भजन`;
+}
+
 function renderSidebarLinkIcon(section, base) {
   if (!section.banner) {
     return '<span class="sidebar-link__icon sidebar-link__icon--empty" aria-hidden="true"></span>';
@@ -16,27 +20,51 @@ function renderSidebarLinkIcon(section, base) {
   return `<img class="sidebar-link__icon" src="${src}" width="28" height="28" alt="" loading="lazy" decoding="async">`;
 }
 
-function renderNav(sections, base, currentSlug) {
+function renderNav(sections, base, currentSlug, sectionCounts) {
+  const countBySlug = new Map((sectionCounts || []).map((c) => [c.slug, c.count]));
   return sections
     .map((s) => {
       const href = pageUrl(base, `${s.slug}.html`);
       const active = s.slug === currentSlug ? ' is-active' : '';
-      return `<li><a class="sidebar-link${active}" href="${href}">
+      const count = countBySlug.get(s.slug) ?? 0;
+      const countHtml = `<span class="sidebar-link__count">${formatBhajanCount(count)}</span>`;
+      return `<li><a class="sidebar-link${active}" href="${href}" aria-label="${escapeHtml(s.title)}, ${count} भजन">
   ${renderSidebarLinkIcon(s, base)}
-  <span class="sidebar-link__label">${escapeHtml(s.title)}</span>
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">${escapeHtml(s.title)}</span>
+    ${countHtml}
+  </span>
 </a></li>`;
     })
     .join('\n');
 }
 
-function renderSidebar(config, sections, base, currentSlug) {
+function renderSidebarHead(config, base, home, sections, sectionCounts) {
+  const counts = sectionCounts || [];
+  const totalBhajans = counts.reduce((sum, c) => sum + c.count, 0);
+  const bannerSrc = config.home_banner ? pageUrl(base, landingHomeBannerPath()) : '';
+  const bannerHtml = bannerSrc
+    ? `<div class="sidebar-head__banner"><img class="sidebar-head__banner-img" src="${bannerSrc}" alt="" loading="lazy" decoding="async"></div>`
+    : '';
+  const statsHtml =
+    counts.length > 0
+      ? `<p class="sidebar-head__stats">कुल <strong>${toDevaNum(totalBhajans)}</strong> भजन · <strong>${toDevaNum(sections.length)}</strong> श्रेणियाँ</p>`
+      : '';
+  return `<header class="sidebar-head">
+  <a class="sidebar-head__link" href="${home}">
+    ${bannerHtml}
+    <span class="sidebar-head__title">${escapeHtml(config.site_title)}</span>
+    ${statsHtml}
+  </a>
+</header>`;
+}
+
+function renderSidebar(config, sections, base, currentSlug, sectionCounts) {
   const home = pageUrl(base, 'index.html');
   return `<aside class="site-sidebar" id="site-sidebar" aria-label="साइट मार्गदर्शन">
-  <header class="sidebar-head">
-    <a class="sidebar-head__title" href="${home}">${escapeHtml(config.site_title)}</a>
-  </header>
+  ${renderSidebarHead(config, base, home, sections, sectionCounts)}
   <nav class="sidebar-nav" aria-label="विभाग सूची">
-    <ul class="sidebar-nav__list sidebar-nav__list--sections">${renderNav(sections, base, currentSlug)}</ul>
+    <ul class="sidebar-nav__list sidebar-nav__list--sections">${renderNav(sections, base, currentSlug, sectionCounts)}</ul>
   </nav>
 </aside>`;
 }
@@ -160,7 +188,8 @@ function renderBhajanPager() {
 }
 
 function renderPage(opts) {
-  const { pageTitle, body, config, sections, base, currentSlug, bodyClass = '' } = opts;
+  const { pageTitle, body, config, sections, base, currentSlug, bodyClass = '', sectionCounts } =
+    opts;
   const isSectionPage = bodyClass.includes('page-section');
   return `<!DOCTYPE html>
 <html lang="hi">
@@ -169,7 +198,7 @@ ${renderHead(pageTitle, base, config)}
 </head>
 <body class="has-sidebar ${bodyClass}" data-site-base="${escapeHtml(base)}">
 <div class="site-shell">
-${renderSidebar(config, sections, base, currentSlug)}
+${renderSidebar(config, sections, base, currentSlug, sectionCounts)}
 <div class="site-content">
 ${body}
 ${renderFooter()}
@@ -199,10 +228,6 @@ function renderSectionCardBanner(src, alt) {
   return `<div class="section-card__media content-banner content-banner--card">
   <img class="content-banner__img" src="${src}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
 </div>`;
-}
-
-function formatBhajanCount(n) {
-  return `${toDevaNum(n)} भजन`;
 }
 
 function renderHomeStats(totalBhajans, sectionCount) {
@@ -400,10 +425,11 @@ function renderIndex(config, sections, base, sectionCounts) {
     base,
     currentSlug: null,
     bodyClass: 'page-home',
+    sectionCounts: counts,
   });
 }
 
-function renderSectionPage(section, bhajans, config, sections, base) {
+function renderSectionPage(section, bhajans, config, sections, base, sectionCounts) {
   const showSwarachitBadge = section.slug !== 'swarachit';
   const grouped = sectionUsesGroups(section, bhajans);
   const groups = grouped ? bhajansByGroup(bhajans) : [];
@@ -462,6 +488,7 @@ ${renderBhajanPager()}`;
     base,
     currentSlug: section.slug,
     bodyClass: 'page-section',
+    sectionCounts,
   });
 }
 

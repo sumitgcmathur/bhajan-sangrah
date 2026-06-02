@@ -52,7 +52,7 @@ async function writeMenuIcon(srcRel, destAbs, { force = false } = {}) {
   const sharp = require('sharp');
   await sharp(srcAbs)
     .rotate()
-    .resize(MENU_ICON_SIZE, MENU_ICON_SIZE, { fit: 'cover', position: 'centre' })
+    .resize(MENU_ICON_SIZE, MENU_ICON_SIZE, { fit: 'fill' })
     .jpeg({ quality: MENU_JPEG_QUALITY, mozjpeg: true })
     .toFile(destAbs);
 

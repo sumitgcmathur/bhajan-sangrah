@@ -82,7 +82,7 @@ async function main() {
     }));
     fs.writeFileSync(
       path.join(DOCS, `${section.slug}.html`),
-      renderSectionPage(section, enriched, config, sections, base),
+      renderSectionPage(section, enriched, config, sections, base, sectionCounts),
       'utf8'
     );
     total += enriched.length;

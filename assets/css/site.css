@@ -143,24 +143,60 @@ body {
 }
 
 .sidebar-head {
-  padding: 1rem 0.85rem 0.75rem;
+  flex-shrink: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(0, 0, 0, 0.08);
 }
 
-.sidebar-head__title {
+.sidebar-head__link {
   display: block;
-  font-size: 1.12rem;
-  font-weight: 700;
-  line-height: 1.4;
-  letter-spacing: 0.02em;
+  padding: 0.65rem 0.6rem 0.7rem;
   text-decoration: none;
   color: var(--sidebar-active);
+}
+
+.sidebar-head__link:hover .sidebar-head__title {
+  text-decoration: underline;
+}
+
+.sidebar-head__banner {
+  display: block;
+  margin: 0 0 0.5rem;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  aspect-ratio: 704 / 1522;
+  max-height: 5.25rem;
+  background: #2a1218;
+}
+
+.sidebar-head__banner-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.sidebar-head__title {
+  display: block;
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-.sidebar-head__title:hover {
-  text-decoration: underline;
+.sidebar-head__stats {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: rgba(252, 232, 236, 0.88);
+}
+
+.sidebar-head__stats strong {
+  color: var(--sidebar-active);
+  font-weight: 700;
 }
 
 .sidebar-nav {
@@ -200,10 +236,10 @@ body {
   flex-shrink: 0;
   width: 28px;
   height: 28px;
-  border-radius: 5px;
-  object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  object-fit: fill;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar-link__icon--empty {
@@ -211,9 +247,33 @@ body {
   background: rgba(255, 255, 255, 0.12);
 }
 
-.sidebar-link__label {
+.sidebar-link__body {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.1rem 0.35rem;
+}
+
+.sidebar-link__label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sidebar-link__count {
+  flex: 0 0 auto;
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: rgba(252, 232, 236, 0.82);
+  white-space: nowrap;
+}
+
+.sidebar-link.is-active .sidebar-link__count,
+.sidebar-link:hover .sidebar-link__count {
+  color: var(--sidebar-active);
 }
 
 .sidebar-link:hover,
