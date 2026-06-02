@@ -71,7 +71,12 @@ Write-Host "Landing tile: $thumbPath (${ThumbW}x${ThumbH}, $thumbKb KB)"
 
 $src3 = [System.Drawing.Image]::FromFile($iconPath)
 New-Item -ItemType Directory -Force -Path (Split-Path $menuPath) | Out-Null
-$menu = New-CoverBitmap $src3 $MenuSize $MenuSize
+$menuBmp = New-Object System.Drawing.Bitmap $MenuSize, $MenuSize
+$mg = [System.Drawing.Graphics]::FromImage($menuBmp)
+$mg.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+$mg.DrawImage($src3, 0, 0, $MenuSize, $MenuSize)
+$mg.Dispose()
+$menu = $menuBmp
 Save-Jpeg $menu $menuPath 78
 $menu.Dispose()
 $src3.Dispose()

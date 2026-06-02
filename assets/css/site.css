@@ -142,68 +142,11 @@ body {
   background: var(--bg);
 }
 
-.sidebar-head {
-  flex-shrink: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(0, 0, 0, 0.08);
-}
-
-.sidebar-head__link {
-  display: block;
-  padding: 0.65rem 0.6rem 0.7rem;
-  text-decoration: none;
-  color: var(--sidebar-active);
-}
-
-.sidebar-head__link:hover .sidebar-head__title {
-  text-decoration: underline;
-}
-
-.sidebar-head__banner {
-  display: block;
-  margin: 0 0 0.5rem;
-  border-radius: 0.4rem;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  aspect-ratio: 704 / 1522;
-  max-height: 5.25rem;
-  background: #2a1218;
-}
-
-.sidebar-head__banner-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-}
-
-.sidebar-head__title {
-  display: block;
-  font-size: 1.08rem;
-  font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: 0.02em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-}
-
-.sidebar-head__stats {
-  margin: 0.35rem 0 0;
-  font-size: 0.78rem;
-  line-height: 1.4;
-  color: rgba(252, 232, 236, 0.88);
-}
-
-.sidebar-head__stats strong {
-  color: var(--sidebar-active);
-  font-weight: 700;
-}
-
 .sidebar-nav {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: 0.5rem 0 0.5rem;
+  padding: 0.55rem 0 0.5rem;
 }
 
 .sidebar-nav__list {
@@ -213,7 +156,17 @@ body {
 }
 
 .sidebar-nav__list--sections {
-  padding: 0.15rem 0.5rem 0.35rem 0.65rem;
+  padding: 0 0.45rem 0.35rem 0.55rem;
+}
+
+.sidebar-nav__item--home {
+  margin-bottom: 0.35rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-link--home .sidebar-link__label {
+  font-weight: 700;
 }
 
 .sidebar-nav__list li { margin: 0; }
@@ -236,10 +189,14 @@ body {
   flex-shrink: 0;
   width: 28px;
   height: 28px;
+  min-width: 28px;
+  min-height: 28px;
   border-radius: 4px;
   object-fit: fill;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  object-position: center;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  background: #2a1218;
 }
 
 .sidebar-link__icon--empty {
@@ -264,11 +221,12 @@ body {
 
 .sidebar-link__count {
   flex: 0 0 auto;
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   font-weight: 600;
   line-height: 1.3;
-  color: rgba(252, 232, 236, 0.82);
+  color: rgba(252, 232, 236, 0.75);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .sidebar-link.is-active .sidebar-link__count,

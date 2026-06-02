@@ -1,7 +1,7 @@
 const { escapeHtml, lyricsToHtml, jabaniToHtml, lyricsHasSthayi } = require('./escape');
 const { anchorId } = require('./slug');
 const { toDevaNum } = require('./lyrics-structure');
-const { landingBannerPath, landingHomeBannerPath, sidebarMenuIconPath } = require('./banner-thumbs');
+const { landingBannerPath, sidebarMenuIconPath, sidebarMenuHomePath } = require('./banner-thumbs');
 
 function pageUrl(base, page) {
   if (!page) return base || './';
@@ -12,12 +12,35 @@ function formatBhajanCount(n) {
   return `${toDevaNum(n)} भजन`;
 }
 
-function renderSidebarLinkIcon(section, base) {
-  if (!section.banner) {
+function formatSidebarCount(n) {
+  return `(${toDevaNum(n)})`;
+}
+
+function renderSidebarMenuIcon(src) {
+  if (!src) {
     return '<span class="sidebar-link__icon sidebar-link__icon--empty" aria-hidden="true"></span>';
   }
-  const src = pageUrl(base, sidebarMenuIconPath(section));
   return `<img class="sidebar-link__icon" src="${src}" width="28" height="28" alt="" loading="lazy" decoding="async">`;
+}
+
+function renderSidebarLinkIcon(section, base) {
+  if (!section.banner) {
+    return renderSidebarMenuIcon('');
+  }
+  return renderSidebarMenuIcon(pageUrl(base, sidebarMenuIconPath(section)));
+}
+
+function renderSidebarHomeItem(config, base, home, currentSlug) {
+  const active = currentSlug == null ? ' is-active' : '';
+  const src = config.home_banner ? pageUrl(base, sidebarMenuHomePath()) : '';
+  return `<li class="sidebar-nav__item sidebar-nav__item--home">
+  <a class="sidebar-link sidebar-link--home${active}" href="${home}">
+  ${renderSidebarMenuIcon(src)}
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">${escapeHtml(config.site_title)}</span>
+  </span>
+</a>
+</li>`;
 }
 
 function renderNav(sections, base, currentSlug, sectionCounts) {
@@ -27,7 +50,7 @@ function renderNav(sections, base, currentSlug, sectionCounts) {
       const href = pageUrl(base, `${s.slug}.html`);
       const active = s.slug === currentSlug ? ' is-active' : '';
       const count = countBySlug.get(s.slug) ?? 0;
-      const countHtml = `<span class="sidebar-link__count">${formatBhajanCount(count)}</span>`;
+      const countHtml = `<span class="sidebar-link__count">${formatSidebarCount(count)}</span>`;
       return `<li><a class="sidebar-link${active}" href="${href}" aria-label="${escapeHtml(s.title)}, ${count} भजन">
   ${renderSidebarLinkIcon(s, base)}
   <span class="sidebar-link__body">
@@ -39,32 +62,14 @@ function renderNav(sections, base, currentSlug, sectionCounts) {
     .join('\n');
 }
 
-function renderSidebarHead(config, base, home, sections, sectionCounts) {
-  const counts = sectionCounts || [];
-  const totalBhajans = counts.reduce((sum, c) => sum + c.count, 0);
-  const bannerSrc = config.home_banner ? pageUrl(base, landingHomeBannerPath()) : '';
-  const bannerHtml = bannerSrc
-    ? `<div class="sidebar-head__banner"><img class="sidebar-head__banner-img" src="${bannerSrc}" alt="" loading="lazy" decoding="async"></div>`
-    : '';
-  const statsHtml =
-    counts.length > 0
-      ? `<p class="sidebar-head__stats">कुल <strong>${toDevaNum(totalBhajans)}</strong> भजन · <strong>${toDevaNum(sections.length)}</strong> श्रेणियाँ</p>`
-      : '';
-  return `<header class="sidebar-head">
-  <a class="sidebar-head__link" href="${home}">
-    ${bannerHtml}
-    <span class="sidebar-head__title">${escapeHtml(config.site_title)}</span>
-    ${statsHtml}
-  </a>
-</header>`;
-}
-
 function renderSidebar(config, sections, base, currentSlug, sectionCounts) {
   const home = pageUrl(base, 'index.html');
   return `<aside class="site-sidebar" id="site-sidebar" aria-label="साइट मार्गदर्शन">
-  ${renderSidebarHead(config, base, home, sections, sectionCounts)}
   <nav class="sidebar-nav" aria-label="विभाग सूची">
-    <ul class="sidebar-nav__list sidebar-nav__list--sections">${renderNav(sections, base, currentSlug, sectionCounts)}</ul>
+    <ul class="sidebar-nav__list sidebar-nav__list--sections">
+      ${renderSidebarHomeItem(config, base, home, currentSlug)}
+      ${renderNav(sections, base, currentSlug, sectionCounts)}
+    </ul>
   </nav>
 </aside>`;
 }

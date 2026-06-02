@@ -67,6 +67,7 @@ async function generateBannerThumbs(config, { force = false } = {}) {
 
   if (config.home_banner) {
     await writeThumb(config.home_banner, path.join(BANNERS_DIR, 'home.jpg'), { force });
+    await writeMenuIcon(config.home_banner, path.join(MENU_DIR, 'home.jpg'), { force });
   }
 
   for (const section of sections) {
@@ -78,10 +79,13 @@ async function generateBannerThumbs(config, { force = false } = {}) {
 
 function warnMissingThumbs(config) {
   const missing = [];
+  const missingMenu = [];
   if (config.home_banner && !fs.existsSync(path.join(BANNERS_DIR, 'home.jpg'))) {
     missing.push('home.jpg');
   }
-  const missingMenu = [];
+  if (config.home_banner && !fs.existsSync(path.join(MENU_DIR, 'home.jpg'))) {
+    missingMenu.push('home.jpg');
+  }
   for (const section of config.sections || []) {
     if (!section.banner) continue;
     const thumb = path.join(BANNERS_DIR, `${section.slug}.jpg`);
@@ -113,10 +117,15 @@ function sidebarMenuIconPath(section) {
   return `assets/menu/${section.slug}.jpg`;
 }
 
+function sidebarMenuHomePath() {
+  return 'assets/menu/home.jpg';
+}
+
 module.exports = {
   generateBannerThumbs,
   warnMissingThumbs,
   landingBannerPath,
   landingHomeBannerPath,
   sidebarMenuIconPath,
+  sidebarMenuHomePath,
 };
