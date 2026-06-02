@@ -72,7 +72,7 @@ sections:
   - slug: ambikacharitra
     folder: ambikacharitra
     google_path: AmbikaCharitra
-    title: अंबिका चरित्र (शुंभ निशुंभ वध कथा)
+    title: अंबिका चरित्र
     banner: assets/icons/AmbikaCharitra.jpg
   - slug: bhairav
     folder: bhairav

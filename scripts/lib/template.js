@@ -1,7 +1,7 @@
 const { escapeHtml, lyricsToHtml, jabaniToHtml, lyricsHasSthayi } = require('./escape');
 const { anchorId } = require('./slug');
 const { toDevaNum } = require('./lyrics-structure');
-const { landingBannerPath, sidebarMenuIconPath, sidebarMenuHomePath } = require('./banner-thumbs');
+const { landingBannerPath } = require('./banner-thumbs');
 
 function pageUrl(base, page) {
   if (!page) return base || './';
@@ -16,26 +16,18 @@ function formatSidebarCount(n) {
   return `(${toDevaNum(n)})`;
 }
 
-function renderSidebarMenuIcon(src) {
-  if (!src) {
-    return '<span class="sidebar-link__icon sidebar-link__icon--empty" aria-hidden="true"></span>';
-  }
-  return `<img class="sidebar-link__icon" src="${src}" width="28" height="28" alt="" loading="lazy" decoding="async">`;
-}
-
-function renderSidebarLinkIcon(section, base) {
-  if (!section.banner) {
-    return renderSidebarMenuIcon('');
-  }
-  return renderSidebarMenuIcon(pageUrl(base, sidebarMenuIconPath(section)));
+function renderSidebarHomeIcon(src) {
+  if (!src) return '';
+  return `<img class="sidebar-link__icon" src="${src}" width="18" height="18" alt="" loading="lazy" decoding="async">`;
 }
 
 function renderSidebarHomeItem(config, base, home, currentSlug) {
   const active = currentSlug == null ? ' is-active' : '';
-  const src = config.home_banner ? pageUrl(base, sidebarMenuHomePath()) : '';
+  const iconSrc = config.site_icon || 'assets/icons/favicon.jpg';
+  const src = pageUrl(base, iconSrc);
   return `<li class="sidebar-nav__item sidebar-nav__item--home">
   <a class="sidebar-link sidebar-link--home${active}" href="${home}">
-  ${renderSidebarMenuIcon(src)}
+  ${renderSidebarHomeIcon(src)}
   <span class="sidebar-link__body">
     <span class="sidebar-link__label">${escapeHtml(config.site_title)}</span>
   </span>
@@ -52,7 +44,6 @@ function renderNav(sections, base, currentSlug, sectionCounts) {
       const count = countBySlug.get(s.slug) ?? 0;
       const countHtml = `<span class="sidebar-link__count">${formatSidebarCount(count)}</span>`;
       return `<li><a class="sidebar-link${active}" href="${href}" aria-label="${escapeHtml(s.title)}, ${count} भजन">
-  ${renderSidebarLinkIcon(s, base)}
   <span class="sidebar-link__body">
     <span class="sidebar-link__label">${escapeHtml(s.title)}</span>
     ${countHtml}
