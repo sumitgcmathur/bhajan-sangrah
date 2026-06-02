@@ -170,20 +170,21 @@ function renderParagraphHtml(text, verseNum, opts = {}) {
   };
 }
 
-function renderSthayiHtml(sthayi, sthayiMarker) {
+function renderSthayiHtml(sthayi, sthayiMarker, anchorId) {
   const body = String(sthayi || '').trim();
   if (!body) return '';
 
   const endMarker = sthayiMarker === 'टेर' ? ' || टेर ||' : STHAYI_MARKER;
+  const idAttr = anchorId ? ` id="${escapeHtml(anchorId)}"` : '';
 
   if (isMultilineParagraph(body)) {
     const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
     const { html } = renderBlockLines(lines, { endMarker });
-    return `<p class="lyrics-antara lyrics-antara--block lyrics-sthayi lyrics-antara--even">${html}</p>`;
+    return `<p${idAttr} class="lyrics-antara lyrics-antara--block lyrics-sthayi lyrics-antara--even">${html}</p>`;
   }
 
   const core = lineWithoutEndDanda(body);
-  return `<p class="lyrics-antara lyrics-sthayi lyrics-antara--even">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(endMarker)}</span></p>`;
+  return `<p${idAttr} class="lyrics-antara lyrics-sthayi lyrics-antara--even">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(endMarker)}</span></p>`;
 }
 
 function renderJabaniHtml(jabani) {
@@ -221,7 +222,7 @@ function renderLyricsAsideHtml(text, kind) {
   return `<div class="lyrics-aside lyrics-aside--${kind}" aria-label="${labels[kind] || kind}">${inner}</div>`;
 }
 
-function renderLyricsPart(part, tarzHtml) {
+function renderLyricsPart(part, tarzHtml, opts = {}) {
   const chunks = [];
   if (tarzHtml) chunks.push(tarzHtml);
 
@@ -232,7 +233,7 @@ function renderLyricsPart(part, tarzHtml) {
   const sthayiSuffix = resolveSthayiConnectSuffix(part);
 
   if (part.sthayi) {
-    const sthayiHtml = renderSthayiHtml(part.sthayi, part.sthayi_marker);
+    const sthayiHtml = renderSthayiHtml(part.sthayi, part.sthayi_marker, opts.sthayiAnchorId || null);
     if (sthayiHtml) chunks.push(sthayiHtml);
   }
 
@@ -258,7 +259,19 @@ function renderLyricsPart(part, tarzHtml) {
   return chunks.filter(Boolean).join('\n');
 }
 
-function lyricsStructureToHtml(lyrics, tarz) {
+function lyricsHasSthayi(lyrics) {
+  if (!lyrics) return false;
+  const hasText = (p) => Boolean(String(p?.sthayi || '').trim());
+  if (typeof lyrics === 'string') {
+    const norm = normalizeFromLegacy(lyrics);
+    if (norm.parts?.length) return norm.parts.some(hasText);
+    return hasText(norm);
+  }
+  if (lyrics.parts?.length) return lyrics.parts.some(hasText);
+  return hasText(lyrics);
+}
+
+function lyricsStructureToHtml(lyrics, tarz, opts = {}) {
   const tarzHtml = tarz
     ? `<p class="lyrics-tarz">तर्ज — ${escapeHtml(String(tarz).trim())}</p>`
     : '';
@@ -294,7 +307,11 @@ function lyricsStructureToHtml(lyrics, tarz) {
     return tarzHtml;
   }
 
-  const html = parts.map((p, i) => renderLyricsPart(p, i === 0 ? tarzHtml : '')).join('\n');
+  const html = parts
+    .map((p, i) =>
+      renderLyricsPart(p, i === 0 ? tarzHtml : '', i === 0 ? { sthayiAnchorId: opts.sthayiAnchorId } : {}),
+    )
+    .join('\n');
   if (!html && !tarzHtml) return '';
   return `<div class="bhajan-lyrics bhajan-lyrics--standard">${html}</div>`;
 }
@@ -334,11 +351,19 @@ function jabaniToHtml(jabani) {
   return `<div class="bhajan-card__jabani">${body}</div>`;
 }
 
-function lyricsToHtml(lyrics, tarz) {
+function lyricsToHtml(lyrics, tarz, opts = {}) {
   if (isStructuredLyrics(lyrics) || typeof lyrics === 'string') {
-    return lyricsStructureToHtml(lyrics, tarz);
+    return lyricsStructureToHtml(lyrics, tarz, opts);
   }
   return '';
 }
 
-module.exports = { escapeHtml, lyricsToHtml, jabaniToHtml, dhvaniToHtml, preShlokToHtml, lyricsStructureToHtml };
+module.exports = {
+  escapeHtml,
+  lyricsToHtml,
+  lyricsHasSthayi,
+  jabaniToHtml,
+  dhvaniToHtml,
+  preShlokToHtml,
+  lyricsStructureToHtml,
+};

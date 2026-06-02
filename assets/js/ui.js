@@ -30,27 +30,26 @@
     }
   }
 
-  function syncHeroViewBar(showIndex) {
-    document.querySelectorAll('[data-action="hero-view"]').forEach(function (btn) {
-      btn.setAttribute('aria-pressed', showIndex ? 'true' : 'false');
-      btn.setAttribute('aria-label', showIndex ? 'चित्र दिखाएँ' : 'भजन सूची दिखाएँ');
-      var whenBanner = btn.querySelector('.mobile-bar__when-banner');
-      var whenIndex = btn.querySelector('.mobile-bar__when-index');
-      if (whenBanner) whenBanner.hidden = showIndex;
-      if (whenIndex) whenIndex.hidden = !showIndex;
+  function bindBhajanIndexLinks(root) {
+    if (!root) return;
+    root.querySelectorAll('a[href^="#"]').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        var href = link.getAttribute('href');
+        if (!href || href.charAt(0) !== '#') return;
+        var id = href.slice(1);
+        var target = document.getElementById(id);
+        if (!target || !target.classList.contains('bhajan-card')) return;
+        e.preventDefault();
+        if (sectionNavApi) sectionNavApi.navigateToBhajan(id);
+        else {
+          history.pushState(null, '', href);
+          scrollToBhajanById(id);
+        }
+      });
     });
   }
 
-  function collapseSectionHeroIndex() {
-    var hero = document.getElementById('section-hero');
-    if (!hero) return;
-    hero.classList.remove('is-index');
-    var indexView = hero.querySelector('.section-hero__view--index');
-    if (indexView) indexView.hidden = true;
-    syncHeroViewBar(false);
-  }
-
-  /* ---- Collapsible bhajan index ---- */
+  /* ---- Collapsible bhajan index (sections without banner) ---- */
   function initCollapsibleIndex() {
     var nav = document.getElementById('bhajan-index');
     if (!nav || !nav.classList.contains('bhajan-index--collapsible')) return;
@@ -85,29 +84,11 @@
       setOpen(panel.hidden);
     });
 
-    var indexLinks = panel.querySelectorAll('a[href^="#"]');
-    for (var i = 0; i < indexLinks.length; i++) {
-      indexLinks[i].addEventListener('click', function (e) {
-        var href = e.currentTarget.getAttribute('href');
-        if (!href || href.charAt(0) !== '#') return;
-        var id = href.slice(1);
-        var target = document.getElementById(id);
-        if (!target || !target.classList.contains('bhajan-card')) return;
-        e.preventDefault();
-        if (isMobile()) setOpen(false);
-        if (document.getElementById('section-hero')) collapseSectionHeroIndex();
-        if (sectionNavApi) sectionNavApi.navigateToBhajan(id);
-        else {
-          history.pushState(null, '', href);
-          scrollToBhajanById(id);
-        }
-      });
-    }
+    bindBhajanIndexLinks(panel);
 
     document.querySelectorAll('[data-action="index"]').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         if (!isMobile()) return;
-        if (document.getElementById('section-hero')) return;
         e.preventDefault();
         setOpen(true);
         nav.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
@@ -115,57 +96,13 @@
     });
   }
 
-  /* ---- Section hero: banner ↔ index (bottom bar toggle) ---- */
-  function setSectionHeroIndexMode(showIndex) {
+  /* ---- Section hero: banner then index (always visible) ---- */
+  function initSectionHeroIndex() {
     var hero = document.getElementById('section-hero');
     if (!hero) return;
-    hero.classList.toggle('is-index', showIndex);
-    var indexView = hero.querySelector('.section-hero__view--index');
-    if (indexView) indexView.hidden = !showIndex;
-    syncHeroViewBar(showIndex);
-  }
-
-  function scrollToSectionHero() {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-    });
-  }
-
-  function initSectionHeroToggle() {
-    var hero = document.getElementById('section-hero');
-    if (!hero) return;
-
-    setSectionHeroIndexMode(false);
-    scrollToSectionHero();
-    syncHeroPagerLayout();
-
-    hero.querySelectorAll('a[href^="#"]').forEach(function (link) {
-      link.addEventListener('click', function (e) {
-        var href = link.getAttribute('href');
-        if (!href || href.charAt(0) !== '#') return;
-        var id = href.slice(1);
-        var target = document.getElementById(id);
-        if (!target || !target.classList.contains('bhajan-card')) return;
-        e.preventDefault();
-        setSectionHeroIndexMode(false);
-        if (sectionNavApi) sectionNavApi.navigateToBhajan(id);
-        else {
-          history.pushState(null, '', href);
-          scrollToBhajanById(id);
-        }
-      });
-    });
-
-    document.querySelectorAll('[data-action="hero-view"]').forEach(function (barBtn) {
-      barBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        var showIndex = !hero.classList.contains('is-index');
-        setSectionHeroIndexMode(showIndex);
-        scrollToSectionHero();
-      });
-    });
+    var indexNav = document.getElementById('bhajan-index');
+    if (!indexNav || !hero.contains(indexNav)) return;
+    bindBhajanIndexLinks(indexNav);
   }
 
   /* ---- Section sticky header + pager ---- */
@@ -276,7 +213,7 @@
         pinScrollSyncUntil = Date.now() + (prefersReducedMotion() ? 120 : 900);
       }
       history.pushState(null, '', '#' + id);
-      scrollToBhajanById(id, document.getElementById('section-hero') ? 220 : 0);
+      scrollToBhajanById(id, prefersReducedMotion() ? 0 : 80);
       window.setTimeout(updateUiFromScroll, prefersReducedMotion() ? 80 : 950);
     }
 
@@ -305,7 +242,7 @@
       if (hashIdx >= 0) {
         updateUi(hashIdx);
         pinScrollSyncUntil = Date.now() + 500;
-        scrollToBhajanById(hashId, document.getElementById('section-hero') ? 220 : 50);
+        scrollToBhajanById(hashId, prefersReducedMotion() ? 0 : 80);
         window.setTimeout(updateUiFromScroll, 600);
       } else if (cards.length) {
         updateUi(0);
@@ -343,13 +280,11 @@
     }
   }
 
-  /* ---- Mobile index link: smooth scroll ---- */
+  /* ---- Index anchor: smooth scroll ---- */
   function initIndexAnchorScroll() {
     document.addEventListener('click', function (e) {
       var a = e.target.closest('a[href="#bhajan-index"]');
       if (!a || a.getAttribute('data-action') === 'index') return;
-      var hero = document.getElementById('section-hero');
-      if (hero) return;
       var nav = document.getElementById('bhajan-index');
       if (!nav) return;
       e.preventDefault();
@@ -358,7 +293,7 @@
   }
 
   initCollapsibleIndex();
-  initSectionHeroToggle();
   initSectionScrollUi();
+  initSectionHeroIndex();
   initIndexAnchorScroll();
 })();

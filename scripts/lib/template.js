@@ -1,4 +1,4 @@
-const { escapeHtml, lyricsToHtml, jabaniToHtml } = require('./escape');
+const { escapeHtml, lyricsToHtml, jabaniToHtml, lyricsHasSthayi } = require('./escape');
 const { anchorId } = require('./slug');
 const { toDevaNum } = require('./lyrics-structure');
 
@@ -125,14 +125,9 @@ function renderToolbarIndexIcon() {
 </svg>`;
 }
 
-function renderMobileBar(isSectionPage) {
-  const indexIcon = renderToolbarIndexIcon();
-  const heroViewBtn = isSectionPage
-    ? `<button type="button" class="mobile-bar__btn mobile-bar__btn--hero-view" data-action="hero-view" aria-pressed="false" aria-label="भजन सूची दिखाएँ"><span class="mobile-bar__when-banner">${indexIcon}</span><span class="mobile-bar__when-index" hidden><span class="mobile-bar__icon" aria-hidden="true">⌂</span></span></button>`
-    : '';
+function renderMobileBar() {
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">≡</span></button>
-  ${heroViewBtn}
   <button type="button" class="mobile-bar__btn search-toggle" aria-expanded="false" aria-controls="bhajan-search-panel" aria-label="भजन खोजें">${renderToolbarSearchIcon()}</button>
   <button type="button" class="mobile-bar__btn" data-action="theme" aria-pressed="false" aria-label="गहरा रंग"><span class="mobile-bar__icon mobile-bar__icon--theme" aria-hidden="true">☽</span></button>
 </nav>`;
@@ -155,7 +150,6 @@ function renderBhajanPager() {
 
 function renderPage(opts) {
   const { pageTitle, body, config, sections, base, currentSlug, bodyClass = '' } = opts;
-  const isSectionPage = bodyClass.includes('page-section');
   return `<!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -169,7 +163,7 @@ ${body}
 ${renderFooter()}
 </div>
 </div>
-${renderMobileBar(isSectionPage)}
+${renderMobileBar()}
 ${renderSearchPanel()}
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/theme.js')}"></script>
@@ -304,9 +298,9 @@ function renderSectionHero(section, base, indexPanelHtml) {
   const banner = renderSectionBanner(section, base);
   if (!banner) return '';
   return `<div class="section-hero" id="section-hero">
-  <div class="section-hero__view section-hero__view--banner">${banner}</div>
-  <nav class="section-hero__view section-hero__view--index bhajan-index" id="section-hero-index" hidden aria-label="भजन सूची">
-    <div class="section-hero__index-scroll">${indexPanelHtml}</div>
+  <div class="section-hero__banner">${banner}</div>
+  <nav class="section-hero__index bhajan-index bhajan-index--inline" id="bhajan-index" aria-label="भजन सूची">
+    ${indexPanelHtml}
   </nav>
 </div>`;
 }
@@ -336,11 +330,17 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
   const id = b.id || anchorId(section.slug, b.title, index);
   const num = index + 1;
   const sw = showSwarachitBadge && b.swarachit ? '<span class="bhajan-badge">स्वरचित</span>' : '';
+  const sthayiAnchor = `${id}-sthayi`;
+  const hasSthayi = lyricsHasSthayi(b.lyrics);
+  const toSthayi = hasSthayi
+    ? `<a href="#${sthayiAnchor}" class="bhajan-card__to-sthayi">↑ स्थायी</a>`
+    : '';
   return `<article class="bhajan-card" id="${id}">
   <header class="bhajan-card__head">
     <h3 class="bhajan-card__title"><span class="bhajan-card__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}${sw}</h3>
   </header>
-  <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics, b.tarz)}</div>
+  <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics, b.tarz, { sthayiAnchorId: hasSthayi ? sthayiAnchor : null })}</div>
+  ${toSthayi}
   ${jabaniToHtml(b.jabani)}
 </article>`;
 }

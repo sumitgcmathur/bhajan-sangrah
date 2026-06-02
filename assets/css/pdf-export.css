@@ -55,13 +55,15 @@ body.pdf-export {
   align-items: center;
   justify-content: center;
   text-align: center;
+  gap: 0.75rem;
+  padding: 10mm 12mm;
   page-break-after: always;
 }
 
 .pdf-cover__title {
   font-size: 2rem;
   font-weight: 700;
-  margin: 0 0 0.5rem;
+  margin: 0;
 }
 
 .pdf-cover__meta {
@@ -72,26 +74,43 @@ body.pdf-export {
 
 .pdf-cover__img {
   display: block;
-  max-width: 72%;
-  max-height: 42mm;
-  margin: 0 auto 1.25rem;
+  flex: 1 1 auto;
+  max-width: 100%;
+  max-height: calc(var(--pdf-page-body-height) - 28mm);
+  width: auto;
+  height: auto;
+  margin: 0 auto;
   object-fit: contain;
 }
 
+.pdf-banner-page {
+  min-height: var(--pdf-page-body-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10mm 12mm;
+  page-break-after: always;
+}
+
 .pdf-banner {
-  margin: 0 0 1rem;
-  page-break-inside: avoid;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pdf-banner__img {
   display: block;
-  width: 100%;
-  max-height: 56mm;
+  max-width: 100%;
+  max-height: var(--pdf-page-body-height);
+  width: auto;
+  height: auto;
   object-fit: contain;
   object-position: center;
-  border-radius: 6px;
-  border: 1px solid var(--pdf-border);
-  background: var(--pdf-surface);
+  border: none;
+  background: transparent;
 }
 
 .pdf-master-index {
@@ -275,7 +294,8 @@ body.pdf-export {
   font-weight: 700;
 }
 
-.pdf-bhajan-list .bhajan-card__to-index {
+.pdf-bhajan-list .bhajan-card__to-index,
+.pdf-bhajan-list .bhajan-card__to-sthayi {
   display: none;
 }
 

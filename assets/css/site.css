@@ -594,24 +594,23 @@ body.search-panel-open {
   box-shadow: none;
 }
 
-.page-section .section-hero:not(.is-index) .content-banner--hero {
+.page-section .section-hero__banner .content-banner--hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1 1 auto;
-  min-height: 0;
-  height: 100%;
+  min-height: var(--banner-h);
+  height: auto;
   margin: 0;
   border-bottom: none;
   box-shadow: none;
 }
 
 .page-home .content-banner--hero .content-banner__img,
-.page-section .section-hero:not(.is-index) .content-banner--hero .content-banner__img {
+.page-section .section-hero__banner .content-banner--hero .content-banner__img {
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: 100%;
+  max-height: var(--banner-img-max-h);
   object-fit: contain;
   object-position: center center;
 }
@@ -789,57 +788,27 @@ body.search-panel-open {
   color: var(--link);
 }
 
-/* Section page: full viewport hero (image or index), content below on scroll */
+/* Section page: banner, then index, then content on scroll */
 .page-section .section-hero {
-  height: var(--section-hero-fill);
-  min-height: var(--section-hero-fill);
-  display: flex;
-  flex-direction: column;
+  display: block;
   flex-shrink: 0;
   position: relative;
   border-bottom: 1px solid var(--border);
   background: var(--bg-alt);
 }
 
-.page-section .section-hero__view--banner,
-.page-section .section-hero__view--index {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.page-section .section-hero__view--banner {
-  display: flex;
-  flex-direction: column;
-}
-
-.page-section .section-hero.is-index .section-hero__view--index {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.section-hero {
-  position: relative;
-}
-
-.section-hero__view--banner .content-banner {
+.section-hero__banner .content-banner {
   margin: 0;
   border-bottom: none;
   box-shadow: none;
-  flex: 1 1 auto;
-  min-height: 0;
-  height: 100%;
-  width: 100%;
 }
 
-/* Original banner presentation: large contained image + blurred fill */
 .page-section .section-hero .content-banner__backdrop,
 .page-section .section-hero .content-banner::before {
   display: block;
 }
 
-.page-section .section-hero .content-banner--hero {
+.page-section .section-hero__banner .content-banner--hero {
   padding: 0.5rem 0.75rem;
 }
 
@@ -847,41 +816,23 @@ body.search-panel-open {
   padding: 0.5rem 0.75rem;
 }
 
-.page-section .section-hero .content-banner--hero .content-banner__img,
 .page-home .content-banner--hero .content-banner__img {
   border-radius: 6px;
   filter: drop-shadow(0 6px 20px rgba(44, 24, 16, 0.2));
 }
 
-.page-section .section-hero__index-scroll {
-  flex: 1 1 auto;
-  min-height: 0;
-  max-height: none;
-  height: 100%;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 0.85rem 1rem 3.5rem;
+.page-section .section-hero__banner .content-banner--hero .content-banner__img {
+  border-radius: 6px;
+  filter: drop-shadow(0 6px 20px rgba(44, 24, 16, 0.2));
 }
 
-.section-hero__view--index {
-  display: none;
+.page-section .section-hero__index.bhajan-index--inline {
   margin: 0;
-  padding: 0;
   border: none;
+  border-radius: 0;
+  border-top: 1px solid var(--border);
   box-shadow: none;
-  background: var(--surface);
-}
-
-.section-hero__index-scroll .content-index a {
-  font-size: 1.1rem;
-}
-
-.section-hero.is-index .section-hero__view--banner {
-  display: none;
-}
-
-.section-hero.is-index .section-hero__view--index {
-  display: block;
+  scroll-margin-top: calc(var(--scroll-header-h) + env(safe-area-inset-top, 0px));
 }
 
 .section-hero .content-banner {
@@ -1144,8 +1095,10 @@ body.search-panel-open {
   margin-right: 0.15em;
 }
 
-.bhajan-card__to-index {
-  flex-shrink: 0;
+.bhajan-card__to-index,
+.bhajan-card__to-sthayi {
+  display: inline-block;
+  margin: 0.65rem 0 0;
   font-size: 0.88rem;
   font-weight: 600;
   color: var(--link);
@@ -1156,9 +1109,14 @@ body.search-panel-open {
   background: var(--accent-soft);
 }
 
-.bhajan-card__to-index:hover {
+.bhajan-card__to-index:hover,
+.bhajan-card__to-sthayi:hover {
   color: var(--link-hover);
   text-decoration: underline;
+}
+
+.bhajan-card__lyrics .lyrics-sthayi {
+  scroll-margin-top: calc(var(--scroll-header-h) + env(safe-area-inset-top, 0px) + 0.65rem);
 }
 
 .bhajan-badge {
@@ -1347,42 +1305,33 @@ body.search-panel-open {
   /* Hero banners on phone: edge-to-edge; grid cards keep thumbs only */
   .page-home .content-banner--hero .content-banner__backdrop,
   .page-home .content-banner--hero::before,
-  .page-section .section-hero .content-banner--hero .content-banner__backdrop,
-  .page-section .section-hero .content-banner--hero::before,
+  .page-section .section-hero__banner .content-banner--hero .content-banner__backdrop,
+  .page-section .section-hero__banner .content-banner--hero::before,
   .section-card .content-banner--card .content-banner__bg,
   .section-card .content-banner--card.content-banner::before {
     display: none;
   }
 
   .page-home .content-banner--hero,
-  .page-section .section-hero:not(.is-index) .content-banner--hero {
+  .page-section .section-hero__banner .content-banner--hero {
     padding: 0;
     background: var(--bg-alt);
     overflow: hidden;
   }
 
   .page-home .content-banner--hero .content-banner__img,
-  .page-section .section-hero:not(.is-index) .content-banner--hero .content-banner__img {
+  .page-section .section-hero__banner .content-banner--hero .content-banner__img {
     border-radius: 0;
     filter: none;
   }
 
-  /* Section hero on phone: one screen tall; banner scales to fit (no crop, no overflow) */
-  .page-section .section-hero {
-    height: var(--section-hero-fill);
-    min-height: var(--section-hero-fill);
-    max-height: var(--section-hero-fill);
-  }
-
-  .page-section .section-hero .content-banner__backdrop,
-  .page-section .section-hero .content-banner::before {
+  .page-section .section-hero__banner .content-banner__backdrop,
+  .page-section .section-hero__banner .content-banner::before {
     display: none;
   }
 
-  .page-section .section-hero:not(.is-index) .section-hero__view--banner {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow: hidden;
+  .page-section .section-hero__index.bhajan-index--inline {
+    padding: 0.85rem 0.75rem 1rem;
   }
 
   .bhajan-pager {
@@ -1559,8 +1508,6 @@ body.search-panel-open {
     --banner-img-max-h: min(56vh, 540px);
     --banner-img-max-w: min(96vw, 880px);
     --banner-card-h: min(20vh, 220px);
-    /* Desktop: hero band hugs the image instead of full viewport height */
-    --section-hero-fill: min(calc(min(56vh, 540px) + 2.75rem), 72vh, 720px);
   }
 
   .content-banner__ambient {
@@ -1601,12 +1548,12 @@ body.search-panel-open {
   }
 
   .page-home .content-banner--hero,
-  .page-section .section-hero .content-banner--hero {
+  .page-section .section-hero__banner .content-banner--hero {
     padding: 0.65rem 1.25rem;
   }
 
   .page-home .content-banner--hero .content-banner__img,
-  .page-section .section-hero .content-banner--hero .content-banner__img {
+  .page-section .section-hero__banner .content-banner--hero .content-banner__img {
     border-radius: 8px;
   }
 }
@@ -1616,7 +1563,6 @@ body.search-panel-open {
     --banner-h: min(64vh, 680px);
     --banner-img-max-h: min(62vh, 660px);
     --banner-img-max-w: min(94vw, 960px);
-    --section-hero-fill: min(calc(min(62vh, 660px) + 2.75rem), 76vh, 780px);
   }
 
   .content-banner__wing {
@@ -1629,7 +1575,6 @@ body.search-panel-open {
     --banner-h: min(68vh, 760px);
     --banner-img-max-h: min(66vh, 740px);
     --banner-img-max-w: min(92vw, 1040px);
-    --section-hero-fill: min(calc(min(66vh, 740px) + 2.75rem), 78vh, 820px);
   }
 
   .content-banner__wing {

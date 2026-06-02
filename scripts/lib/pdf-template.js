@@ -109,18 +109,20 @@ function renderCompleteBhajanIndex(sectionPayloads) {
 </section>`;
 }
 
-function renderPdfBanner(section, resolveAsset) {
+function renderPdfBannerPage(section, resolveAsset) {
   if (!section.banner) return '';
   const src = resolveAsset(section.banner);
   if (!src) return '';
-  return `<figure class="pdf-banner">
-  <img class="pdf-banner__img" src="${src}" alt="${escapeHtml(section.title)}">
-</figure>`;
+  return `<section class="pdf-banner-page" aria-label="${escapeHtml(section.title)}">
+  <figure class="pdf-banner">
+    <img class="pdf-banner__img" src="${src}" alt="${escapeHtml(section.title)}">
+  </figure>
+</section>`;
 }
 
 function renderPdfBhajanCard(b, section, index, showSwarachitBadge) {
   let html = renderBhajanCard(b, section, index, showSwarachitBadge);
-  html = html.replace(/\s*<a class="bhajan-card__to-index"[^>]*>[\s\S]*?<\/a>/, '');
+  html = html.replace(/\s*<a class="bhajan-card__to-(?:index|sthayi)"[^>]*>[\s\S]*?<\/a>/g, '');
   html = html.replace('class="bhajan-badge"', 'class="bhajan-badge pdf-bhajan-badge"');
   return html;
 }
@@ -163,8 +165,8 @@ function renderPdfSection(section, bhajans, resolveAsset) {
       .join('\n')}</div>`;
   }
 
-  return `<section class="pdf-section" id="${secId}">
-  ${renderPdfBanner(section, resolveAsset)}
+  return `${renderPdfBannerPage(section, resolveAsset)}
+<section class="pdf-section" id="${secId}">
   <header class="pdf-section__head">
     <h1 class="pdf-section__title">${escapeHtml(section.title)}</h1>
   </header>
