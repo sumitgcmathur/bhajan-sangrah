@@ -140,6 +140,13 @@ module.exports = async (req, res) => {
 
   try {
     const body = await readBody(req);
+
+    if (body.listPaths) {
+      const { paths } = await listBhajanYamlPaths(session.accessToken);
+      sendJson(res, 200, { paths, total: paths.length });
+      return;
+    }
+
     const find = String(body?.find ?? '').trim();
     const replace = String(body?.replace ?? '');
     const dryRun = body?.dryRun !== false;
@@ -152,12 +159,6 @@ module.exports = async (req, res) => {
     }
 
     const opts = { regex, caseInsensitive };
-
-    if (body.listPaths) {
-      const { paths } = await listBhajanYamlPaths(session.accessToken);
-      sendJson(res, 200, { paths, total: paths.length });
-      return;
-    }
 
     let pathsOnly = Array.isArray(body.paths) ? body.paths.map(String).filter(Boolean) : null;
     if (!pathsOnly?.length) {

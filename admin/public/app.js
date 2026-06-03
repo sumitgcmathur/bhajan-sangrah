@@ -319,11 +319,14 @@ function bhajanDisplayName(b) {
 function bindTopbar(opts = {}) {
   document.querySelector('[data-back="sections"]')?.addEventListener('click', () => {
     if (opts.abortReplaceOnLeave) state.replace.abortCtrl?.abort();
+    if (state.view === 'replace') endReplaceOp();
+    state.error = null;
     state.view = 'sections';
     render();
   });
   document.querySelector('[data-back="bhajans"]')?.addEventListener('click', () => {
     if (opts.abortReplaceOnLeave) state.replace.abortCtrl?.abort();
+    state.error = null;
     state.view = 'bhajans';
     render();
   });
@@ -331,6 +334,9 @@ function bindTopbar(opts = {}) {
 
 function render() {
   stopDictation();
+  if (state.view !== 'edit' && state.view !== 'replace') {
+    state.error = null;
+  }
   if (state.view === 'loading') {
     app.innerHTML = '<p class="loading">Loading…</p>';
     return;
@@ -369,6 +375,7 @@ function render() {
       if (slug) openSection(slug);
     });
     document.getElementById('go-replace').addEventListener('click', () => {
+      endReplaceOp();
       state.error = null;
       state.replace.preview = null;
       state.view = 'replace';

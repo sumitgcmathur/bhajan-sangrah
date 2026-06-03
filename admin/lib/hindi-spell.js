@@ -53,6 +53,20 @@ const DEFAULT_IGNORE = new Set([
 let checker = null;
 let loadError = null;
 let loadPromise = null;
+let EspellsClass = null;
+
+async function loadEspells() {
+  if (EspellsClass) return EspellsClass;
+  try {
+    const mod = await import('espells');
+    EspellsClass = mod.Espells;
+    if (!EspellsClass) throw new Error('Espells export missing');
+    return EspellsClass;
+  } catch (e) {
+    const detail = e?.message || String(e);
+    throw new Error(`Spell checker failed to load (espells): ${detail}`);
+  }
+}
 
 function tokenize(text) {
   const re = /[\u0900-\u097F]+/gu;
@@ -77,12 +91,7 @@ async function getChecker() {
   if (loadError) throw loadError;
   if (!loadPromise) {
     loadPromise = (async () => {
-      let Espells;
-      try {
-        ({ Espells } = require('espells'));
-      } catch (e) {
-        throw new Error('espells not installed — run npm install in admin/');
-      }
+      const Espells = await loadEspells();
       checker = await Espells.fromURL({ aff: DICT_AFF, dic: DICT_DIC });
       return checker;
     })().catch((e) => {

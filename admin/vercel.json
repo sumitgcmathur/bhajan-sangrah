@@ -7,7 +7,7 @@
   },
   "functions": {
     "api/**/*.js": {
-      "includeFiles": "node_modules/espells/**",
+      "includeFiles": "{node_modules/espells/**,node_modules/iterare/**}",
       "maxDuration": 60
     }
   }
