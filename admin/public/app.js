@@ -23,6 +23,9 @@ const state = {
     caseInsensitive: false,
     preview: null,
     busy: false,
+    busyPhase: null,
+    progress: null,
+    abortCtrl: null,
   },
   spell: {
     result: null,
@@ -57,14 +60,95 @@ function emptyEditor() {
 }
 
 async function api(path, opts = {}) {
+  const { signal, ...fetchOpts } = opts;
   const res = await fetch(path, {
     credentials: 'same-origin',
-    headers: opts.body ? { 'Content-Type': 'application/json' } : {},
-    ...opts,
+    headers: fetchOpts.body ? { 'Content-Type': 'application/json' } : {},
+    signal,
+    ...fetchOpts,
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || res.statusText);
   return data;
+}
+
+const REPLACE_BATCH = 10;
+
+function isReplaceAborted(err) {
+  return err?.name === 'AbortError' || /aborted/i.test(String(err?.message || ''));
+}
+
+function beginReplaceOp(phase) {
+  state.replace.abortCtrl?.abort();
+  const ac = new AbortController();
+  state.replace.abortCtrl = ac;
+  state.replace.busy = true;
+  state.replace.busyPhase = phase;
+  state.replace.progress = { current: 0, total: 0, phase, matches: 0, updated: 0 };
+  return ac;
+}
+
+function endReplaceOp() {
+  state.replace.busy = false;
+  state.replace.busyPhase = null;
+  state.replace.progress = null;
+  state.replace.abortCtrl = null;
+}
+
+function cancelReplaceOp() {
+  const phase = state.replace.busyPhase;
+  state.replace.abortCtrl?.abort();
+  endReplaceOp();
+  state.error =
+    phase === 'apply'
+      ? 'Apply cancelled. Files already committed in finished batches were not reverted.'
+      : 'Search cancelled.';
+  render();
+}
+
+function replaceProgressHtml(r) {
+  if (!r.busy || !r.progress) return '';
+  const { current, total, phase, matches = 0, updated = 0, listing } = r.progress;
+  if (listing || total === 0) {
+    return `<div class="replace-progress" role="status" aria-live="polite">
+      <div class="replace-progress-track" aria-hidden="true"><div class="replace-progress-fill replace-progress-fill--pulse"></div></div>
+      <p class="replace-progress-label">${escapeHtml(phase === 'apply' ? 'Preparing apply…' : 'Loading file list…')}</p>
+    </div>`;
+  }
+  const pct = Math.min(100, Math.round((current / total) * 100));
+  const label =
+    phase === 'apply'
+      ? `Applying… ${current} / ${total} files (${updated} updated, ${matches} replacement${matches === 1 ? '' : 's'})`
+      : `Searching… ${current} / ${total} files (${matches} match${matches === 1 ? '' : 'es'} so far)`;
+  return `<div class="replace-progress" role="status" aria-live="polite">
+    <div class="replace-progress-track" aria-hidden="true"><div class="replace-progress-fill" style="width:${pct}%"></div></div>
+    <p class="replace-progress-label">${escapeHtml(label)}</p>
+  </div>`;
+}
+
+async function replaceListPaths(signal) {
+  const data = await api('/api/replace', {
+    method: 'POST',
+    signal,
+    body: JSON.stringify({ listPaths: true }),
+  });
+  return data.paths || [];
+}
+
+async function replaceScanBatch(paths, payload, signal) {
+  return api('/api/replace', {
+    method: 'POST',
+    signal,
+    body: JSON.stringify({ ...payload, dryRun: true, paths }),
+  });
+}
+
+async function replaceApplyBatch(paths, payload, signal) {
+  return api('/api/replace', {
+    method: 'POST',
+    signal,
+    body: JSON.stringify({ ...payload, dryRun: false, paths }),
+  });
 }
 
 function errMsg(code) {
@@ -232,12 +316,14 @@ function bhajanDisplayName(b) {
   return b.name.replace(/^\d+-/, '').replace(/\.ya?ml$/i, '').replace(/-/g, ' ');
 }
 
-function bindTopbar() {
+function bindTopbar(opts = {}) {
   document.querySelector('[data-back="sections"]')?.addEventListener('click', () => {
+    if (opts.abortReplaceOnLeave) state.replace.abortCtrl?.abort();
     state.view = 'sections';
     render();
   });
   document.querySelector('[data-back="bhajans"]')?.addEventListener('click', () => {
+    if (opts.abortReplaceOnLeave) state.replace.abortCtrl?.abort();
     state.view = 'bhajans';
     render();
   });
@@ -294,26 +380,34 @@ function render() {
   if (state.view === 'replace') {
     const r = state.replace;
     const prev = r.preview;
+    const busy = r.busy;
+    const disabled = busy ? 'disabled' : '';
+    const previewLabel =
+      busy && r.busyPhase === 'preview' ? 'Searching…' : 'Preview matches';
+    const applyLabel = busy && r.busyPhase === 'apply' ? 'Applying…' : 'Apply to all matches';
     app.innerHTML = `
       ${topbar('Find & replace', 'sections')}
       <main class="replace-main">
         ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
         <p class="hint">Search and replace across every bhajan YAML under <code>content/</code>. Preview first, then apply. Each changed file gets its own commit on <code>main</code>.</p>
         <label for="rep-find">Find</label>
-        <textarea id="rep-find" class="replace-field" rows="3" placeholder="Text to find (min. 2 characters)">${escapeHtml(r.find)}</textarea>
+        <textarea id="rep-find" class="replace-field" rows="3" ${disabled} placeholder="Text to find (min. 2 characters)">${escapeHtml(r.find)}</textarea>
         <label for="rep-replace">Replace with</label>
-        <textarea id="rep-replace" class="replace-field" rows="3" placeholder="Leave empty to delete matches">${escapeHtml(r.replace)}</textarea>
-        <div class="check-row"><input type="checkbox" id="rep-regex" ${r.regex ? 'checked' : ''}><label for="rep-regex">Regular expression</label></div>
-        <div class="check-row"><input type="checkbox" id="rep-ci" ${r.caseInsensitive ? 'checked' : ''}><label for="rep-ci">Case insensitive</label></div>
+        <textarea id="rep-replace" class="replace-field" rows="3" ${disabled} placeholder="Leave empty to delete matches">${escapeHtml(r.replace)}</textarea>
+        <div class="check-row"><input type="checkbox" id="rep-regex" ${r.regex ? 'checked' : ''} ${disabled}><label for="rep-regex">Regular expression</label></div>
+        <div class="check-row"><input type="checkbox" id="rep-ci" ${r.caseInsensitive ? 'checked' : ''} ${disabled}><label for="rep-ci">Case insensitive</label></div>
+        ${busy ? replaceProgressHtml(r) : ''}
         <div class="replace-actions">
-          <button type="button" class="btn btn-primary" id="rep-preview" ${r.busy ? 'disabled' : ''}>Preview matches</button>
-          <button type="button" class="btn" id="rep-apply" ${r.busy || !prev ? 'disabled' : ''}>Apply to all matches</button>
+          <button type="button" class="btn btn-primary" id="rep-preview" ${busy ? 'disabled' : ''}>${previewLabel}</button>
+          <button type="button" class="btn" id="rep-apply" ${busy || !prev?.filesAffected ? 'disabled' : ''}>${applyLabel}</button>
+          ${busy ? '<button type="button" class="btn btn-danger" id="rep-cancel">Cancel</button>' : ''}
         </div>
-        ${prev ? renderReplacePreview(prev) : ''}
+        ${prev && !busy ? renderReplacePreview(prev) : ''}
       </main>`;
-    bindTopbar();
+    bindTopbar({ abortReplaceOnLeave: busy });
     document.getElementById('rep-preview')?.addEventListener('click', previewReplace);
     document.getElementById('rep-apply')?.addEventListener('click', applyReplace);
+    document.getElementById('rep-cancel')?.addEventListener('click', cancelReplaceOp);
     return;
   }
 
@@ -436,25 +530,54 @@ async function previewReplace() {
     render();
     return;
   }
-  state.replace.busy = true;
+
+  const ac = beginReplaceOp('preview');
+  state.replace.preview = null;
   render();
+
+  const payload = {
+    find: state.replace.find,
+    replace: state.replace.replace,
+    regex: state.replace.regex,
+    caseInsensitive: state.replace.caseInsensitive,
+  };
+
   try {
-    const data = await api('/api/replace', {
-      method: 'POST',
-      body: JSON.stringify({
-        find: state.replace.find,
-        replace: state.replace.replace,
-        regex: state.replace.regex,
-        caseInsensitive: state.replace.caseInsensitive,
-        dryRun: true,
-      }),
-    });
-    state.replace.preview = data;
-    state.replace.busy = false;
+    state.replace.progress.listing = true;
+    render();
+    const paths = await replaceListPaths(ac.signal);
+    const total = paths.length;
+    state.replace.progress.listing = false;
+    state.replace.progress.total = total;
+    render();
+
+    const merged = { files: [], totalMatches: 0, filesScanned: 0, filesAffected: 0 };
+
+    for (let i = 0; i < paths.length; i += REPLACE_BATCH) {
+      if (ac.signal.aborted) throw new DOMException('Aborted', 'AbortError');
+      const batch = paths.slice(i, i + REPLACE_BATCH);
+      const data = await replaceScanBatch(batch, payload, ac.signal);
+      merged.files.push(...(data.files || []));
+      merged.totalMatches += data.totalMatches || 0;
+      merged.filesScanned += data.filesScanned || batch.length;
+      state.replace.progress.current = Math.min(i + REPLACE_BATCH, total);
+      state.replace.progress.matches = merged.totalMatches;
+      render();
+    }
+
+    merged.files.sort((a, b) => b.count - a.count);
+    merged.filesAffected = merged.files.length;
+    state.replace.preview = merged;
+    endReplaceOp();
+    state.error = null;
     render();
   } catch (e) {
-    state.replace.busy = false;
-    state.error = e.message;
+    endReplaceOp();
+    if (isReplaceAborted(e)) {
+      if (!state.error) state.error = 'Search cancelled.';
+    } else {
+      state.error = e.message;
+    }
     render();
   }
 }
@@ -468,29 +591,60 @@ async function applyReplace() {
     'This commits each changed file to main.';
   if (!confirm(msg)) return;
 
-  state.replace.busy = true;
+  const ac = beginReplaceOp('apply');
   state.error = null;
   render();
+
+  const payload = {
+    find: state.replace.find,
+    replace: state.replace.replace,
+    regex: state.replace.regex,
+    caseInsensitive: state.replace.caseInsensitive,
+  };
+
   try {
-    const data = await api('/api/replace', {
-      method: 'POST',
-      body: JSON.stringify({
-        find: state.replace.find,
-        replace: state.replace.replace,
-        regex: state.replace.regex,
-        caseInsensitive: state.replace.caseInsensitive,
-        dryRun: false,
-      }),
-    });
-    state.replace.busy = false;
+    let paths = (prev.files || []).map((f) => f.path).filter(Boolean);
+    if (!paths.length) {
+      state.replace.progress.listing = true;
+      render();
+      paths = await replaceListPaths(ac.signal);
+    }
+    const total = paths.length;
+    state.replace.progress.listing = false;
+    state.replace.progress.total = total;
+    render();
+
+    let totalMatches = 0;
+    let filesUpdated = 0;
+
+    for (let i = 0; i < paths.length; i += REPLACE_BATCH) {
+      if (ac.signal.aborted) throw new DOMException('Aborted', 'AbortError');
+      const batch = paths.slice(i, i + REPLACE_BATCH);
+      const data = await replaceApplyBatch(batch, payload, ac.signal);
+      totalMatches += data.totalMatches || 0;
+      filesUpdated += data.filesUpdated || 0;
+      state.replace.progress.current = Math.min(i + REPLACE_BATCH, total);
+      state.replace.progress.matches = totalMatches;
+      state.replace.progress.updated = filesUpdated;
+      render();
+    }
+
+    endReplaceOp();
     state.replace.preview = null;
     alert(
-      `Done: ${data.totalMatches} replacement(s) in ${data.filesUpdated} file(s).\n\nGitHub Actions will rebuild the site.`,
+      `Done: ${totalMatches} replacement(s) in ${filesUpdated} file(s).\n\nGitHub Actions will rebuild the site.`,
     );
     render();
   } catch (e) {
-    state.replace.busy = false;
-    state.error = e.message;
+    endReplaceOp();
+    if (isReplaceAborted(e)) {
+      if (!state.error) {
+        state.error =
+          'Apply cancelled. Files already committed in finished batches were not reverted.';
+      }
+    } else {
+      state.error = e.message;
+    }
     render();
   }
 }

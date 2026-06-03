@@ -66,8 +66,8 @@ On Windows without npm, run `powershell -File scripts/generate-admin-favicon.ps1
 From the **Sections** screen, open **Find & replace (all YAML)**.
 
 1. Enter find / replace text (minimum 2 characters to find).
-2. **Preview matches** — lists each `content/{section}/*.yaml` file and match count (no commits).
-3. **Apply to all matches** — replaces in every matching file; each file is a separate commit on `main`.
+2. **Preview matches** — scans in batches with a progress bar; **Cancel** stops the search (no commits).
+3. **Apply to all matches** — same progress + cancel; each changed file is a separate commit on `main` (cancel does not undo commits already made).
 
 Options: regular expression, case insensitive. Raw file text is updated (YAML structure is preserved if you only change lyrics text).
 

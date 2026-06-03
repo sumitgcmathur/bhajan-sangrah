@@ -78,12 +78,11 @@ function escapeRegex(s) {
   return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-async function scanReplace(token, find, replace, opts) {
-  const { paths } = await listBhajanYamlPaths(token);
+async function scanReplace(token, find, replace, opts, pathsOnly) {
   const files = [];
   let totalMatches = 0;
 
-  for (const filePath of paths) {
+  for (const filePath of pathsOnly) {
     const file = await getFile(filePath, token);
     if (!file) continue;
     const { count, snippets } = countAndReplace(file.content, find, replace, opts);
@@ -99,15 +98,14 @@ async function scanReplace(token, find, replace, opts) {
   }
 
   files.sort((a, b) => b.count - a.count);
-  return { files, totalMatches, filesAffected: files.length, filesScanned: paths.length };
+  return { files, totalMatches, filesAffected: files.length, filesScanned: pathsOnly.length };
 }
 
-async function applyReplace(token, find, replace, opts) {
-  const { paths } = await listBhajanYamlPaths(token);
+async function applyReplace(token, find, replace, opts, pathsOnly) {
   const updated = [];
   let totalMatches = 0;
 
-  for (const filePath of paths) {
+  for (const filePath of pathsOnly) {
     const file = await getFile(filePath, token);
     if (!file) continue;
     const { count, next } = countAndReplace(file.content, find, replace, opts);
@@ -155,13 +153,25 @@ module.exports = async (req, res) => {
 
     const opts = { regex, caseInsensitive };
 
+    if (body.listPaths) {
+      const { paths } = await listBhajanYamlPaths(session.accessToken);
+      sendJson(res, 200, { paths, total: paths.length });
+      return;
+    }
+
+    let pathsOnly = Array.isArray(body.paths) ? body.paths.map(String).filter(Boolean) : null;
+    if (!pathsOnly?.length) {
+      const listed = await listBhajanYamlPaths(session.accessToken);
+      pathsOnly = listed.paths;
+    }
+
     if (dryRun) {
-      const result = await scanReplace(session.accessToken, find, replace, opts);
+      const result = await scanReplace(session.accessToken, find, replace, opts, pathsOnly);
       sendJson(res, 200, { dryRun: true, ...result });
       return;
     }
 
-    const result = await applyReplace(session.accessToken, find, replace, opts);
+    const result = await applyReplace(session.accessToken, find, replace, opts, pathsOnly);
     sendJson(res, 200, { dryRun: false, ...result });
   } catch (e) {
     sendJson(res, e.status || 500, { error: e.message });
