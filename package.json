@@ -13,6 +13,7 @@
     "fix-danda": "node scripts/fix-danda.js",
     "lint:typos": "node scripts/lint-typos.js",
     "spelling-report": "node scripts/spelling-report.js",
+    "apply-spelling-standard": "node scripts/apply-spelling-standard.js",
     "admin:favicon": "node scripts/generate-admin-favicon.js",
     "serve": "npx --yes serve docs -l 3000"
   },

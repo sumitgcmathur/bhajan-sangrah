@@ -67,12 +67,12 @@ sections:
   - slug: navratri
     folder: navratri
     google_path: navratri
-    title: नवरात्री पूजन
+    title: नवरात्रि पूजन
     banner: assets/icons/Navratri.jpg
   - slug: ambikacharitra
     folder: ambikacharitra
     google_path: AmbikaCharitra
-    title: अंबिका चरित्र
+    title: अम्बिका चरित्र
     banner: assets/icons/AmbikaCharitra.jpg
   - slug: bhairav
     folder: bhairav
