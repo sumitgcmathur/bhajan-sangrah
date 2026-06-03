@@ -491,7 +491,7 @@ function render() {
         ${e.legacyLyricsText ? `<div class="form-section"><h2>Legacy lyrics</h2><textarea id="f-legacy" ${HI_FIELD}>${escapeHtml(e.legacyLyricsText)}</textarea></div>` : ''}
         <div class="form-section spell-section">
           <h2>Spell check (Hindi)</h2>
-          <p class="hint">Browser underline + Hunspell dictionary on server. Bhajan names and rare words may be flagged — use <strong>Ignore word</strong> for your terms.</p>
+          <p class="hint">Browser underline + Hunspell (loads once in this tab; first check may take ~15s). Bhajan terms may be flagged — use <strong>Ignore word</strong>.</p>
           <button type="button" class="btn" id="spell-run" ${state.spell.checking ? 'disabled' : ''}>${state.spell.checking ? 'Checking…' : 'Check spelling'}</button>
           <div id="spell-panel" class="spell-panel${state.spell.result ? '' : ' is-hidden'}"></div>
         </div>

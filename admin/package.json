@@ -6,7 +6,6 @@
     "node": ">=18"
   },
   "dependencies": {
-    "espells": "^0.4.1",
     "jose": "^5.9.6"
   }
 }

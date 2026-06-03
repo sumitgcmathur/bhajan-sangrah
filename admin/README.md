@@ -76,11 +76,9 @@ Options: regular expression, case insensitive. Raw file text is updated (YAML st
 On the edit screen:
 
 - **Browser underline** — fields use `lang="hi-IN"` and `spellcheck` (OS dictionary).
-- **Check spelling** — server Hunspell check (`espells` + [dictionary-hi](https://www.npmjs.com/package/dictionary-hi)). First run after deploy may take ~15s while the dictionary loads.
-- **Ignore word** — stores the word in this browser session (not committed to the repo).
+- **Check spelling** — Hunspell in the browser ([espells](https://www.npmjs.com/package/espells) via esm.sh + [dictionary-hi](https://www.npmjs.com/package/dictionary-hi) from jsDelivr). First check in a tab may take ~15s while the dictionary downloads.
+- **Ignore word** — stored in this browser session only (not in the repo).
 - **Publish** — runs spell check if needed; warns if unknown words remain.
-
-After changing `admin/package.json`, run `npm install` in `admin/` before deploy.
 
 ## Voice typing (edit screen)
 
