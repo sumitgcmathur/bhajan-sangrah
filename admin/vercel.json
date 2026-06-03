@@ -7,9 +7,7 @@
   },
   "functions": {
     "api/**/*.js": {
-      "includeFiles": "{node_modules/espells/**,../scripts/lib/**}"
-    },
-    "api/spell.js": {
+      "includeFiles": "node_modules/espells/**",
       "maxDuration": 60
     }
   }
