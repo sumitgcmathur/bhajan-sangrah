@@ -76,7 +76,7 @@ Options: regular expression, case insensitive. Raw file text is updated (YAML st
 On the edit screen:
 
 - **Browser underline** — fields use `lang="hi-IN"` and `spellcheck` (OS dictionary).
-- **Check spelling** — Hunspell in the browser ([espells](https://www.npmjs.com/package/espells) via esm.sh + [dictionary-hi](https://www.npmjs.com/package/dictionary-hi) from jsDelivr). First check in a tab may take ~15s while the dictionary downloads.
+- **Check spelling** — Hunspell in the browser ([espells](https://www.npmjs.com/package/espells) + [hindi-hunspell](https://github.com/Shreeshrii/hindi-hunspell) `hi_IN` dictionary). First check may take 30–60s while ~5&nbsp;MB downloads.
 - **Ignore word** — stored in this browser session only (not in the repo).
 - **Publish** — runs spell check if needed; warns if unknown words remain.
 

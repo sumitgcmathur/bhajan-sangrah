@@ -4,8 +4,12 @@
  */
 
 const ESPELLS_URL = 'https://esm.sh/espells@0.4.1';
-const DICT_AFF = 'https://cdn.jsdelivr.net/npm/dictionary-hi@2/index.aff';
-const DICT_DIC = 'https://cdn.jsdelivr.net/npm/dictionary-hi@2/index.dic';
+/** Hindi Hunspell (~4.4 lakh words) — dictionary-hi npm package does not exist; these URLs work */
+const DICT_AFF =
+  'https://raw.githubusercontent.com/Shreeshrii/hindi-hunspell/master/Hindi/hi_IN.aff';
+const DICT_DIC =
+  'https://raw.githubusercontent.com/Shreeshrii/hindi-hunspell/master/Hindi/hi_IN.dic';
+const DICT_PROBE_WORD = 'जय';
 
 const MIN_WORD_LEN = 2;
 const MAX_SUGGESTIONS = 6;
@@ -73,15 +77,15 @@ export function ignoreWord(word) {
   return list;
 }
 
+function normWord(word) {
+  return String(word || '').normalize('NFC');
+}
+
 function tokenize(text) {
-  const re = /[\u0900-\u097F]+/gu;
-  const words = [];
-  let m;
-  while ((m = re.exec(String(text || ''))) !== null) {
-    const w = m[0];
-    if (w.length >= MIN_WORD_LEN) words.push(w);
-  }
-  return words;
+  return String(text || '')
+    .split(/[^\u0900-\u097F]+/u)
+    .map(normWord)
+    .filter((w) => [...w].length >= MIN_WORD_LEN);
 }
 
 function shouldSkip(word, extraIgnore) {
@@ -96,8 +100,18 @@ async function getChecker() {
     checkerPromise = (async () => {
       const { Espells } = await import(ESPELLS_URL);
       if (!Espells?.fromURL) throw new Error('Espells failed to load from CDN');
-      return Espells.fromURL({ aff: DICT_AFF, dic: DICT_DIC });
-    })();
+      const spell = await Espells.fromURL({ aff: DICT_AFF, dic: DICT_DIC });
+      const probe = spell.lookup(normWord(DICT_PROBE_WORD));
+      if (!probe.correct) {
+        throw new Error(
+          'Hindi dictionary failed to load (network or blocked CDN). Try again on Wi‑Fi.',
+        );
+      }
+      return spell;
+    })().catch((e) => {
+      checkerPromise = null;
+      throw e;
+    });
   }
   return checkerPromise;
 }
@@ -126,6 +140,7 @@ export async function runSpellCheck(texts) {
       issues.push({ word, suggestions });
       totalIssues += 1;
     }
+    issues.sort((a, b) => a.word.localeCompare(b.word, 'hi'));
     if (issues.length) fields.push({ id, label, issues });
   }
 
@@ -158,7 +173,7 @@ export function renderSpellPanel(container, result, hooks = {}) {
 
   if (!result.totalIssues) {
     container.innerHTML =
-      '<p class="spell-ok">No unknown words found (dictionary may still miss some bhajan terms).</p>';
+      '<p class="spell-ok">No unknown words in the Hindi dictionary (bhajan names may still need <strong>Ignore word</strong>).</p>';
     return;
   }
 
