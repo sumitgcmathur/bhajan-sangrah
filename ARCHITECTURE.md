@@ -151,6 +151,7 @@ Anchor IDs are stable: `{slug}-{title-slug}-{NN}` (see `scripts/lib/slug.js`).
 | `npm run clean-content` | Strip junk lines from all YAML |
 | `npm run fix-danda` | Normalize danda (।) in lyrics |
 | `npm run lint:typos` | Scan lyrics for common typos → `output/typo-report.html`; `--fix` applies safe replacements |
+| `npm run spelling-report` | Find same word spelled different ways → `output/spelling-report.html`; Fix/Ignore per group; `--apply` uses `output/spelling-choices.json` |
 | `npm run serve` | Serve `docs/` locally (after build) |
 | `npm run export-pdf` | Full-site PDF → `output/bhajan-sangrah.pdf` |
 

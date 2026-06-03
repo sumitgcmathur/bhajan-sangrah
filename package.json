@@ -12,6 +12,7 @@
     "add-section": "node scripts/add-section.js",
     "fix-danda": "node scripts/fix-danda.js",
     "lint:typos": "node scripts/lint-typos.js",
+    "spelling-report": "node scripts/spelling-report.js",
     "admin:favicon": "node scripts/generate-admin-favicon.js",
     "serve": "npx --yes serve docs -l 3000"
   },
