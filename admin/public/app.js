@@ -408,6 +408,7 @@ function render() {
     document.getElementById('rep-preview')?.addEventListener('click', previewReplace);
     document.getElementById('rep-apply')?.addEventListener('click', applyReplace);
     document.getElementById('rep-cancel')?.addEventListener('click', cancelReplaceOp);
+    bindReplaceForm();
     return;
   }
 
@@ -515,6 +516,10 @@ function renderReplacePreview(prev) {
   </div>`;
 }
 
+function replaceFindLength(text) {
+  return [...String(text || '').trim()].length;
+}
+
 function readReplaceForm() {
   state.replace.find = document.getElementById('rep-find')?.value ?? '';
   state.replace.replace = document.getElementById('rep-replace')?.value ?? '';
@@ -522,11 +527,25 @@ function readReplaceForm() {
   state.replace.caseInsensitive = Boolean(document.getElementById('rep-ci')?.checked);
 }
 
+function bindReplaceForm() {
+  const clearErr = () => {
+    if (state.error) {
+      state.error = null;
+      const banner = document.querySelector('.replace-main .err');
+      if (banner) banner.remove();
+    }
+  };
+  document.getElementById('rep-find')?.addEventListener('input', clearErr);
+  document.getElementById('rep-replace')?.addEventListener('input', clearErr);
+  document.getElementById('rep-regex')?.addEventListener('change', clearErr);
+  document.getElementById('rep-ci')?.addEventListener('change', clearErr);
+}
+
 async function previewReplace() {
   readReplaceForm();
   state.error = null;
-  if (state.replace.find.trim().length < 2) {
-    state.error = 'Find text must be at least 2 characters.';
+  if (replaceFindLength(state.replace.find) < 2) {
+    state.error = 'Find text must be at least 2 characters (letters or marks).';
     render();
     return;
   }

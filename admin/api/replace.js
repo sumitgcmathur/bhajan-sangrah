@@ -140,13 +140,13 @@ module.exports = async (req, res) => {
 
   try {
     const body = await readBody(req);
-    const find = String(body?.find ?? '');
+    const find = String(body?.find ?? '').trim();
     const replace = String(body?.replace ?? '');
     const dryRun = body?.dryRun !== false;
     const regex = Boolean(body?.regex);
     const caseInsensitive = Boolean(body?.caseInsensitive);
 
-    if (find.length < MIN_FIND_LEN) {
+    if ([...find].length < MIN_FIND_LEN) {
       sendJson(res, 400, { error: `Find text must be at least ${MIN_FIND_LEN} characters` });
       return;
     }
