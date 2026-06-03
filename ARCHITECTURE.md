@@ -150,6 +150,7 @@ Anchor IDs are stable: `{slug}-{title-slug}-{NN}` (see `scripts/lib/slug.js`).
 | `npm run add-section` | Interactive new section + folder |
 | `npm run clean-content` | Strip junk lines from all YAML |
 | `npm run fix-danda` | Normalize danda (।) in lyrics |
+| `npm run lint:typos` | Scan lyrics for common typos → `output/typo-report.html`; `--fix` applies safe replacements |
 | `npm run serve` | Serve `docs/` locally (after build) |
 | `npm run export-pdf` | Full-site PDF → `output/bhajan-sangrah.pdf` |
 

@@ -11,6 +11,7 @@
     "add-bhajan": "node scripts/add-bhajan.js",
     "add-section": "node scripts/add-section.js",
     "fix-danda": "node scripts/fix-danda.js",
+    "lint:typos": "node scripts/lint-typos.js",
     "admin:favicon": "node scripts/generate-admin-favicon.js",
     "serve": "npx --yes serve docs -l 3000"
   },
