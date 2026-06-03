@@ -452,7 +452,7 @@ function render() {
     const showGroup = Boolean(state.section?.grouped);
     app.innerHTML = `
       ${topbar(e.title || 'Bhajan', 'bhajans')}
-      <main>
+      <main class="edit-main">
         ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
         <div class="form-section">
           <h2>Basic</h2>
