@@ -71,6 +71,17 @@ From the **Sections** screen, open **Find & replace (all YAML)**.
 
 Options: regular expression, case insensitive. Raw file text is updated (YAML structure is preserved if you only change lyrics text).
 
+## Spell check (bhajan editor)
+
+On the edit screen:
+
+- **Browser underline** — fields use `lang="hi-IN"` and `spellcheck` (OS dictionary).
+- **Check spelling** — server Hunspell check (`espells` + [dictionary-hi](https://www.npmjs.com/package/dictionary-hi)). First run after deploy may take ~15s while the dictionary loads.
+- **Ignore word** — stores the word in this browser session (not committed to the repo).
+- **Publish** — runs spell check if needed; warns if unknown words remain.
+
+After changing `admin/package.json`, run `npm install` in `admin/` before deploy.
+
 ## Voice typing (edit screen)
 
 On phones, each text field shows a **mic** button when the browser supports the Web Speech API (Chrome on Android, Safari on iOS 14.5+). Dictation uses Hindi (`hi-IN`). Tap again to stop. If the mic button is missing, use the **microphone on your Hindi keyboard** (Gboard / iOS).

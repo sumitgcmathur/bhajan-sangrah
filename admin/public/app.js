@@ -1,4 +1,5 @@
 import { bindSpeechDictation, stopDictation } from './speech.js';
+import { runSpellCheck, renderSpellPanel } from './spellcheck.js';
 
 const app = document.getElementById('app');
 
@@ -23,7 +24,14 @@ const state = {
     preview: null,
     busy: false,
   },
+  spell: {
+    result: null,
+    checking: false,
+    stale: true,
+  },
 };
+
+const HI_FIELD = 'class="hi-field" lang="hi-IN" spellcheck="true"';
 
 const GROUP_OTHER = '__other__';
 
@@ -90,7 +98,7 @@ function groupFieldHtml(current) {
     <select id="f-group-select">${options}</select>
     <div id="f-group-other-wrap" class="${known ? 'is-hidden' : ''}">
       <label>Custom group name</label>
-      <input type="text" id="f-group-other" value="${escapeAttr(known ? '' : current)}">
+      <input type="text" id="f-group-other" class="hi-field" lang="hi-IN" spellcheck="true" value="${escapeAttr(known ? '' : current)}">
     </div>`;
 }
 
@@ -208,7 +216,7 @@ function versesSectionHtml(paragraphs) {
     </div>
     <div id="paras-paste" class="${pasteHidden}">
       <p class="hint">One verse (antara) per block. Put a <strong>blank line</strong> between blocks. Line breaks inside a block are kept. For commentary, put <code>[commentary]</code> alone on the first line, then the text.</p>
-      <textarea id="f-paras-bulk" class="paras-bulk" rows="14">${escapeHtml(bulk)}</textarea>
+      <textarea id="f-paras-bulk" class="paras-bulk hi-field" lang="hi-IN" spellcheck="true" rows="14">${escapeHtml(bulk)}</textarea>
       <button type="button" class="btn" id="parse-paras-bulk">Parse into paragraphs</button>
     </div>`;
 }
@@ -325,6 +333,7 @@ function render() {
       state.sha = null;
       state.editor = emptyEditor();
       resetParagraphEditor();
+      resetSpellState();
       state.view = 'edit';
       render();
     });
@@ -346,24 +355,24 @@ function render() {
         <div class="form-section">
           <h2>Basic</h2>
           <label>Title</label>
-          <input type="text" id="f-title" value="${escapeAttr(e.title)}">
+          <input type="text" id="f-title" ${HI_FIELD} value="${escapeAttr(e.title)}">
           <label>Tarz (tune line)</label>
-          <input type="text" id="f-tarz" value="${escapeAttr(e.tarz)}">
+          <input type="text" id="f-tarz" ${HI_FIELD} value="${escapeAttr(e.tarz)}">
           ${showGroup ? groupFieldHtml(e.group) : ''}
           <div class="check-row"><input type="checkbox" id="f-swarachit" ${e.swarachit ? 'checked' : ''}><label for="f-swarachit">Swarachit (composed)</label></div>
         </div>
         <div class="form-section">
           <h2>Refrain (sthayi)</h2>
-          <textarea id="f-sthayi">${escapeHtml(L.sthayi)}</textarea>
+          <textarea id="f-sthayi" ${HI_FIELD}>${escapeHtml(L.sthayi)}</textarea>
           <label>Refrain marker (advanced)</label>
-          <input type="text" id="f-sthayi-marker" value="${escapeAttr(L.sthayi_marker)}">
+          <input type="text" id="f-sthayi-marker" ${HI_FIELD} value="${escapeAttr(L.sthayi_marker)}">
           <div class="check-row"><input type="checkbox" id="f-connect-off" ${L.sthayi_connect === false ? 'checked' : ''}><label for="f-connect-off">Disable sthayi_connect</label></div>
           <label>sthayi_connect_text</label>
-          <input type="text" id="f-connect-text" value="${escapeAttr(L.sthayi_connect_text)}">
+          <input type="text" id="f-connect-text" ${HI_FIELD} value="${escapeAttr(L.sthayi_connect_text)}">
         </div>
         <div class="form-section">
           <h2>Opening shloka</h2>
-          <textarea id="f-pre-shlok">${escapeHtml(L.pre_shlok)}</textarea>
+          <textarea id="f-pre-shlok" ${HI_FIELD}>${escapeHtml(L.pre_shlok)}</textarea>
         </div>
         <div class="form-section">
           <h2>Verses (antaras)</h2>
@@ -371,13 +380,19 @@ function render() {
         </div>
         <div class="form-section">
           <h2>Dhvani</h2>
-          <textarea id="f-dhvani">${escapeHtml(L.dhvani)}</textarea>
+          <textarea id="f-dhvani" ${HI_FIELD}>${escapeHtml(L.dhvani)}</textarea>
         </div>
         <div class="form-section">
           <h2>Jabani (explanation)</h2>
-          <textarea id="f-jabani">${escapeHtml(e.jabani)}</textarea>
+          <textarea id="f-jabani" ${HI_FIELD}>${escapeHtml(e.jabani)}</textarea>
         </div>
-        ${e.legacyLyricsText ? `<div class="form-section"><h2>Legacy lyrics</h2><textarea id="f-legacy">${escapeHtml(e.legacyLyricsText)}</textarea></div>` : ''}
+        ${e.legacyLyricsText ? `<div class="form-section"><h2>Legacy lyrics</h2><textarea id="f-legacy" ${HI_FIELD}>${escapeHtml(e.legacyLyricsText)}</textarea></div>` : ''}
+        <div class="form-section spell-section">
+          <h2>Spell check (Hindi)</h2>
+          <p class="hint">Browser underline + Hunspell dictionary on server. Bhajan names and rare words may be flagged — use <strong>Ignore word</strong> for your terms.</p>
+          <button type="button" class="btn" id="spell-run" ${state.spell.checking ? 'disabled' : ''}>${state.spell.checking ? 'Checking…' : 'Check spelling'}</button>
+          <div id="spell-panel" class="spell-panel${state.spell.result ? '' : ' is-hidden'}"></div>
+        </div>
         <div class="sticky-actions">
           <button type="button" class="btn btn-primary" id="save">Publish</button>
           ${state.path ? '<button type="button" class="btn btn-danger" id="delete">Delete</button>' : ''}
@@ -499,7 +514,7 @@ function paraHtml(p, i) {
     <label>Type</label>
     <select class="para-type"><option value="antara" ${p.type === 'antara' ? 'selected' : ''}>Antara (verse)</option><option value="commentary" ${p.type === 'commentary' ? 'selected' : ''}>Commentary</option></select>
     <label>Text</label>
-    <textarea class="para-text">${escapeHtml(p.text || '')}</textarea>
+    <textarea class="para-text hi-field" lang="hi-IN" spellcheck="true">${escapeHtml(p.text || '')}</textarea>
     <div class="para-actions">
       <button type="button" class="btn para-up">↑</button>
       <button type="button" class="btn para-down">↓</button>
@@ -523,6 +538,60 @@ function escapeAttr(s) {
 function collectEditor() {
   syncEditorFromDom();
   return state.editor;
+}
+
+function getEditorTextFields() {
+  syncEditorFromDom();
+  const e = state.editor;
+  const L = e.lyrics;
+  const fields = [
+    { id: 'title', label: 'Title', text: e.title || '' },
+    { id: 'tarz', label: 'Tarz', text: e.tarz || '' },
+    { id: 'sthayi', label: 'Refrain (sthayi)', text: L.sthayi || '' },
+    { id: 'pre_shlok', label: 'Opening shloka', text: L.pre_shlok || '' },
+    { id: 'dhvani', label: 'Dhvani', text: L.dhvani || '' },
+    { id: 'jabani', label: 'Jabani', text: e.jabani || '' },
+  ];
+  if (L.sthayi_marker) {
+    fields.push({ id: 'sthayi_marker', label: 'Refrain marker', text: L.sthayi_marker });
+  }
+  if (L.sthayi_connect_text) {
+    fields.push({ id: 'connect_text', label: 'sthayi_connect_text', text: L.sthayi_connect_text });
+  }
+  if (e.legacyLyricsText) {
+    fields.push({ id: 'legacy', label: 'Legacy lyrics', text: e.legacyLyricsText });
+  }
+  (L.paragraphs || []).forEach((p, i) => {
+    const text = String(p.text || '').trim();
+    if (!text) return;
+    const kind = p.type === 'commentary' ? 'Commentary' : 'Antara';
+    fields.push({ id: `para-${i}`, label: `${kind} ${i + 1}`, text: p.text });
+  });
+  return fields.filter((f) => String(f.text).trim().length > 0);
+}
+
+async function runEditorSpellCheck() {
+  state.spell.checking = true;
+  state.error = null;
+  render();
+  try {
+    const result = await runSpellCheck(getEditorTextFields());
+    state.spell.result = result;
+    state.spell.stale = false;
+    state.spell.checking = false;
+    render();
+    renderSpellPanel(document.getElementById('spell-panel'), result, {
+      onRecheck: () => runEditorSpellCheck(),
+    });
+  } catch (e) {
+    state.spell.checking = false;
+    state.error = e.message;
+    render();
+  }
+}
+
+function resetSpellState() {
+  state.spell = { result: null, checking: false, stale: true };
 }
 
 function bindEditor() {
@@ -588,7 +657,18 @@ function bindEditor() {
 
   document.getElementById('save')?.addEventListener('click', saveEditor);
   document.getElementById('delete')?.addEventListener('click', deleteEditor);
+  document.getElementById('spell-run')?.addEventListener('click', runEditorSpellCheck);
+  app.querySelectorAll('.hi-field').forEach((el) => {
+    el.addEventListener('input', () => {
+      state.spell.stale = true;
+    });
+  });
   bindSpeechDictation(app);
+  if (state.spell.result) {
+    renderSpellPanel(document.getElementById('spell-panel'), state.spell.result, {
+      onRecheck: () => runEditorSpellCheck(),
+    });
+  }
 }
 
 async function saveEditor() {
@@ -599,6 +679,33 @@ async function saveEditor() {
     render();
     return;
   }
+
+  try {
+    let spell = state.spell.stale ? null : state.spell.result;
+    if (!spell) {
+      spell = await runSpellCheck(getEditorTextFields());
+      state.spell.result = spell;
+      state.spell.stale = false;
+    }
+    if (spell.totalIssues > 0) {
+      renderSpellPanel(document.getElementById('spell-panel'), spell, {
+        onRecheck: () => runEditorSpellCheck(),
+      });
+      const ok = confirm(
+        `Spell check found ${spell.totalIssues} possible misspelling(s).\n\nPublish anyway?`,
+      );
+      if (!ok) {
+        render();
+        return;
+      }
+    }
+  } catch (e) {
+    const ok = confirm(
+      `Spell check is unavailable (${e.message}).\n\nPublish without checking?`,
+    );
+    if (!ok) return;
+  }
+
   try {
     let res;
     if (state.path) {
@@ -673,6 +780,7 @@ async function openFile(path) {
   state.sha = data.sha;
   state.editor = data.editor;
   resetParagraphEditor();
+  resetSpellState();
   state.view = 'edit';
   state.error = null;
   render();
