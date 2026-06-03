@@ -294,3 +294,64 @@ textarea {
 .dictation-hint {
   margin-bottom: 0.75rem;
 }
+
+.replace-field {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--surface);
+  resize: vertical;
+}
+
+.replace-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.replace-results {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.replace-summary {
+  margin: 0 0 0.65rem;
+  font-size: 0.95rem;
+}
+
+.replace-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.replace-hit {
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.92rem;
+}
+
+.replace-hit:last-child {
+  border-bottom: none;
+}
+
+.replace-snippets {
+  margin: 0.35rem 0 0 1rem;
+  padding: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.replace-snippets li {
+  margin: 0.2rem 0;
+}

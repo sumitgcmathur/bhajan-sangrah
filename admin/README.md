@@ -61,6 +61,16 @@ npm run admin:favicon
 
 On Windows without npm, run `powershell -File scripts/generate-admin-favicon.ps1` (PNG) and `node scripts/generate-admin-favicon.js` (SVG).
 
+## Find & replace (all bhajan YAML)
+
+From the **Sections** screen, open **Find & replace (all YAML)**.
+
+1. Enter find / replace text (minimum 2 characters to find).
+2. **Preview matches** — lists each `content/{section}/*.yaml` file and match count (no commits).
+3. **Apply to all matches** — replaces in every matching file; each file is a separate commit on `main`.
+
+Options: regular expression, case insensitive. Raw file text is updated (YAML structure is preserved if you only change lyrics text).
+
 ## Voice typing (edit screen)
 
 On phones, each text field shows a **mic** button when the browser supports the Web Speech API (Chrome on Android, Safari on iOS 14.5+). Dictation uses Hindi (`hi-IN`). Tap again to stop. If the mic button is missing, use the **microphone on your Hindi keyboard** (Gboard / iOS).

@@ -15,6 +15,14 @@ const state = {
   error: null,
   paraEditMode: 'structured',
   paraBulkDraft: null,
+  replace: {
+    find: '',
+    replace: '',
+    regex: false,
+    caseInsensitive: false,
+    preview: null,
+    busy: false,
+  },
 };
 
 const GROUP_OTHER = '__other__';
@@ -260,11 +268,44 @@ function render() {
         <label for="section-pick">Section</label>
         <select id="section-pick" class="section-pick">${options}</select>
         <button type="button" class="btn btn-primary" id="open-section" style="width:100%;margin-top:0.65rem">Open section</button>
+        <button type="button" class="btn" id="go-replace" style="width:100%;margin-top:0.5rem">Find &amp; replace (all YAML)</button>
       </main>`;
     document.getElementById('open-section').addEventListener('click', () => {
       const slug = document.getElementById('section-pick').value;
       if (slug) openSection(slug);
     });
+    document.getElementById('go-replace').addEventListener('click', () => {
+      state.error = null;
+      state.replace.preview = null;
+      state.view = 'replace';
+      render();
+    });
+    return;
+  }
+
+  if (state.view === 'replace') {
+    const r = state.replace;
+    const prev = r.preview;
+    app.innerHTML = `
+      ${topbar('Find & replace', 'sections')}
+      <main class="replace-main">
+        ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
+        <p class="hint">Search and replace across every bhajan YAML under <code>content/</code>. Preview first, then apply. Each changed file gets its own commit on <code>main</code>.</p>
+        <label for="rep-find">Find</label>
+        <textarea id="rep-find" class="replace-field" rows="3" placeholder="Text to find (min. 2 characters)">${escapeHtml(r.find)}</textarea>
+        <label for="rep-replace">Replace with</label>
+        <textarea id="rep-replace" class="replace-field" rows="3" placeholder="Leave empty to delete matches">${escapeHtml(r.replace)}</textarea>
+        <div class="check-row"><input type="checkbox" id="rep-regex" ${r.regex ? 'checked' : ''}><label for="rep-regex">Regular expression</label></div>
+        <div class="check-row"><input type="checkbox" id="rep-ci" ${r.caseInsensitive ? 'checked' : ''}><label for="rep-ci">Case insensitive</label></div>
+        <div class="replace-actions">
+          <button type="button" class="btn btn-primary" id="rep-preview" ${r.busy ? 'disabled' : ''}>Preview matches</button>
+          <button type="button" class="btn" id="rep-apply" ${r.busy || !prev ? 'disabled' : ''}>Apply to all matches</button>
+        </div>
+        ${prev ? renderReplacePreview(prev) : ''}
+      </main>`;
+    bindTopbar();
+    document.getElementById('rep-preview')?.addEventListener('click', previewReplace);
+    document.getElementById('rep-apply')?.addEventListener('click', applyReplace);
     return;
   }
 
@@ -344,6 +385,98 @@ function render() {
       </main>`;
     bindEditor();
     return;
+  }
+}
+
+function renderReplacePreview(prev) {
+  if (!prev.filesAffected) {
+    return '<p class="hint replace-summary">No matches in ' + prev.filesScanned + ' file(s).</p>';
+  }
+  const rows = prev.files
+    .map(
+      (f) => `<li class="replace-hit">
+        <strong>${escapeHtml(f.name)}</strong> — ${f.count} match${f.count === 1 ? '' : 'es'}
+        ${f.snippets?.length ? `<ul class="replace-snippets">${f.snippets.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ul>` : ''}
+      </li>`,
+    )
+    .join('');
+  return `<div class="replace-results">
+    <p class="replace-summary"><strong>${prev.totalMatches}</strong> match(es) in <strong>${prev.filesAffected}</strong> of ${prev.filesScanned} bhajan file(s).</p>
+    <ul class="replace-list">${rows}</ul>
+  </div>`;
+}
+
+function readReplaceForm() {
+  state.replace.find = document.getElementById('rep-find')?.value ?? '';
+  state.replace.replace = document.getElementById('rep-replace')?.value ?? '';
+  state.replace.regex = Boolean(document.getElementById('rep-regex')?.checked);
+  state.replace.caseInsensitive = Boolean(document.getElementById('rep-ci')?.checked);
+}
+
+async function previewReplace() {
+  readReplaceForm();
+  state.error = null;
+  if (state.replace.find.trim().length < 2) {
+    state.error = 'Find text must be at least 2 characters.';
+    render();
+    return;
+  }
+  state.replace.busy = true;
+  render();
+  try {
+    const data = await api('/api/replace', {
+      method: 'POST',
+      body: JSON.stringify({
+        find: state.replace.find,
+        replace: state.replace.replace,
+        regex: state.replace.regex,
+        caseInsensitive: state.replace.caseInsensitive,
+        dryRun: true,
+      }),
+    });
+    state.replace.preview = data;
+    state.replace.busy = false;
+    render();
+  } catch (e) {
+    state.replace.busy = false;
+    state.error = e.message;
+    render();
+  }
+}
+
+async function applyReplace() {
+  readReplaceForm();
+  const prev = state.replace.preview;
+  if (!prev?.filesAffected) return;
+  const msg =
+    `Replace «${state.replace.find.slice(0, 60)}» in ${prev.filesAffected} file(s) (${prev.totalMatches} total)?\n\n` +
+    'This commits each changed file to main.';
+  if (!confirm(msg)) return;
+
+  state.replace.busy = true;
+  state.error = null;
+  render();
+  try {
+    const data = await api('/api/replace', {
+      method: 'POST',
+      body: JSON.stringify({
+        find: state.replace.find,
+        replace: state.replace.replace,
+        regex: state.replace.regex,
+        caseInsensitive: state.replace.caseInsensitive,
+        dryRun: false,
+      }),
+    });
+    state.replace.busy = false;
+    state.replace.preview = null;
+    alert(
+      `Done: ${data.totalMatches} replacement(s) in ${data.filesUpdated} file(s).\n\nGitHub Actions will rebuild the site.`,
+    );
+    render();
+  } catch (e) {
+    state.replace.busy = false;
+    state.error = e.message;
+    render();
   }
 }
 
