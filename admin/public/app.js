@@ -98,6 +98,28 @@ function finishRouteSync() {
   syncRouteFromState();
 }
 
+/** Scroll in-preview card anchors without replacing admin #/… route. */
+function scrollPreviewCardAnchor(id) {
+  const el = document.getElementById(id);
+  if (!el) return false;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  return true;
+}
+
+function bindPreviewCardLinks() {
+  const root = document.querySelector('.preview-site');
+  if (!root) return;
+  root.addEventListener('click', (e) => {
+    const link = e.target.closest('.bhajan-card__to-sthayi');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href || href.charAt(0) !== '#') return;
+    const id = href.slice(1);
+    if (!scrollPreviewCardAnchor(id)) return;
+    e.preventDefault();
+  });
+}
+
 function sectionSlugFromPath(filePath) {
   const m = String(filePath || '').match(/^content\/([^/]+)\//);
   return m ? m[1] : null;
@@ -508,19 +530,16 @@ function editNavHtml(e) {
     { id: 'preview', label: 'Preview' },
   ];
   if (e.legacyLyricsText) items.push({ id: 'legacy', label: 'Legacy' });
-  const hint =
-    active === 'preview'
-      ? 'Public site preview'
-      : speechSupported()
-        ? 'Mic → focused field'
-        : 'Use Hindi keyboard mic';
+  const hint = speechSupported() ? 'Mic → focused field' : 'Use Hindi keyboard mic';
   const buttons = items
     .map(
       (p) =>
         `<button type="button" class="edit-nav__btn${active === p.id ? ' is-active' : ''}" data-edit-panel="${p.id}" aria-current="${active === p.id ? 'page' : 'false'}">${escapeHtml(p.label)}${p.badge || ''}</button>`,
     )
     .join('');
-  return `<nav class="edit-nav" aria-label="Edit sections">${buttons}<p class="edit-nav__hint">${escapeHtml(hint)}</p></nav>`;
+  const navHint =
+    active === 'preview' ? '' : `<p class="edit-nav__hint">${escapeHtml(hint)}</p>`;
+  return `<nav class="edit-nav" aria-label="Edit sections">${buttons}${navHint}</nav>`;
 }
 
 function optionalLyricsHtml(e, L) {
@@ -582,11 +601,10 @@ function previewPanelHtml() {
     return '<p class="loading">Building preview…</p>';
   }
   if (state.previewHtml) {
-    return `<p class="hint">Matches the public site, including स्थायी repeat on antaras (site default <code>sthayi_connect</code> from sections.yaml). Use “Disable sthayi_connect” or custom connect text if needed.</p>
-      <div class="preview-site preview-site--section">${state.previewHtml}</div>
+    return `<div class="preview-site preview-site--section">${state.previewHtml}</div>
       <button type="button" class="btn" id="refresh-preview" style="margin-top:0.65rem">Refresh preview</button>`;
   }
-  return '<p class="hint">Generating preview from your current edits…</p>';
+  return '<p class="loading">Building preview…</p>';
 }
 
 function dictationStickyBtnHtml() {
@@ -1097,6 +1115,7 @@ function bindEditor() {
   });
 
   document.getElementById('refresh-preview')?.addEventListener('click', () => refreshPreview());
+  bindPreviewCardLinks();
 
   document.querySelectorAll('.para-row').forEach((card) => {
     const i = Number(card.dataset.i);
@@ -1284,6 +1303,15 @@ async function init() {
 window.addEventListener('hashchange', () => {
   if (state.view === 'login' || state.view === 'loading') return;
   if (location.hash === lastSyncedRouteHash) return;
+  const raw = (location.hash || '').replace(/^#/, '');
+  // Public-site card anchors (#id-title) are not admin routes (#/…).
+  if (raw && !raw.startsWith('/')) {
+    if (scrollPreviewCardAnchor(raw)) {
+      routeUseReplace = true;
+      syncRouteFromState();
+    }
+    return;
+  }
   applyRouteFromHash();
 });
 
