@@ -112,7 +112,7 @@ The edit form uses a **section menu** (left column on wide screens, tabs on phon
 
 ## Publish preview
 
-On the edit screen, **Publish** opens a **preview** that uses the same HTML as the public site (`renderBhajanCard` + `site-preview.css`). Review the card, then **Publish** to commit or **Back to edit** to change fields.
+On the edit screen, open **Preview** in the left menu to see the public-site card (`renderBhajanCard` + `site-preview.css`). Use **Refresh preview** after edits on other tabs. **Publish** appears in the bottom bar only on the Preview tab and commits to GitHub.
 
 After changing `assets/css/site.css`, run `npm run admin:preview-css` so the admin preview stays in sync.
 

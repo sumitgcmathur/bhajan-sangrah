@@ -74,11 +74,11 @@ function buildRouteHash() {
     return `#/s/${encodeURIComponent(state.section.slug)}`;
   }
   if (state.view === 'edit') {
+    if (state.editPanel === 'preview' && state.path) {
+      return `#/preview?p=${encodeURIComponent(state.path)}`;
+    }
     if (state.path) return `#/edit?p=${encodeURIComponent(state.path)}`;
     if (state.section?.slug) return `#/s/${encodeURIComponent(state.section.slug)}/new`;
-  }
-  if (state.view === 'preview' && state.path) {
-    return `#/preview?p=${encodeURIComponent(state.path)}`;
   }
   return '#/';
 }
@@ -181,12 +181,11 @@ async function applyRouteFromHash() {
   if (route.view === 'preview' && route.path) {
     try {
       await loadEditorFromPath(route.path);
-      state.view = 'preview';
-      state.previewHtml = null;
-      state.previewBusy = true;
+      state.view = 'edit';
+      state.editPanel = 'preview';
       state.error = null;
       render();
-      await runPreviewRequest();
+      await refreshPreview();
     } catch (e) {
       state.previewBusy = false;
       state.error = e.message;
@@ -506,11 +505,15 @@ function editNavHtml(e) {
     { id: 'sthayi', label: 'स्थायी' },
     { id: 'verses', label: 'Antaras' },
     { id: 'more', label: 'More', badge: moreBadge },
+    { id: 'preview', label: 'Preview' },
   ];
   if (e.legacyLyricsText) items.push({ id: 'legacy', label: 'Legacy' });
-  const hint = speechSupported()
-    ? 'Mic → focused field'
-    : 'Use Hindi keyboard mic';
+  const hint =
+    active === 'preview'
+      ? 'Public site preview'
+      : speechSupported()
+        ? 'Mic → focused field'
+        : 'Use Hindi keyboard mic';
   const buttons = items
     .map(
       (p) =>
@@ -563,6 +566,18 @@ function optionalLyricsHtml(e, L) {
   return `${blocks.join('')}${adds.length ? `<div class="optional-add-bar">${adds.join('')}</div>` : ''}`;
 }
 
+function previewPanelHtml() {
+  if (state.previewBusy) {
+    return '<p class="loading">Building preview…</p>';
+  }
+  if (state.previewHtml) {
+    return `<p class="hint">How this bhajan will look on the public site.</p>
+      <div class="preview-site">${state.previewHtml}</div>
+      <button type="button" class="btn" id="refresh-preview" style="margin-top:0.65rem">Refresh preview</button>`;
+  }
+  return '<p class="hint">Generating preview from your current edits…</p>';
+}
+
 function dictationStickyBtnHtml() {
   if (!speechSupported()) return '';
   return `<button type="button" class="btn dictation-global" id="dictation-global" aria-label="Dictate into focused field (Hindi)" aria-pressed="false" title="Dictate into focused field">
@@ -593,6 +608,7 @@ function bindTopbar(opts = {}) {
     state.error = null;
     state.previewHtml = null;
     state.previewBusy = false;
+    state.editPanel = 'basic';
     if (state.path) location.hash = `#/edit?p=${encodeURIComponent(state.path)}`;
     else if (state.section?.slug) location.hash = `#/s/${encodeURIComponent(state.section.slug)}/new`;
     else location.hash = '#/';
@@ -601,8 +617,9 @@ function bindTopbar(opts = {}) {
 
 function renderInner() {
   stopDictation();
-  if (state.view !== 'preview') setPreviewStylesheet(false);
-  if (state.view !== 'edit' && state.view !== 'replace' && state.view !== 'preview') {
+  const showPreviewCss = state.view === 'edit' && state.editPanel === 'preview';
+  setPreviewStylesheet(showPreviewCss);
+  if (state.view !== 'edit' && state.view !== 'replace') {
     state.error = null;
   }
   if (state.view === 'loading') {
@@ -760,43 +777,20 @@ function renderInner() {
               <p class="hint">Optional opening shloka, dhvani, or jabani.</p>
               ${optionalLyricsHtml(e, L)}
             </div>
+            <div class="form-section edit-panel edit-panel--preview${editPanelHidden('preview')}" id="edit-panel-preview">
+              <h2>Preview</h2>
+              ${previewPanelHtml()}
+            </div>
             ${e.legacyLyricsText ? `<div class="form-section edit-panel${editPanelHidden('legacy')}" id="edit-panel-legacy"><h2>Legacy lyrics</h2><textarea id="f-legacy" class="hi-field" lang="hi-IN" rows="12">${escapeHtml(e.legacyLyricsText)}</textarea></div>` : ''}
           </div>
         </div>
         <div class="sticky-actions">
-          ${dictationStickyBtnHtml()}
-          <button type="button" class="btn btn-primary" id="save">Publish</button>
+          ${state.editPanel === 'preview' ? '' : dictationStickyBtnHtml()}
+          ${state.editPanel === 'preview' ? '<button type="button" class="btn btn-primary" id="save">Publish</button>' : ''}
           ${state.path ? '<button type="button" class="btn btn-danger" id="delete">Delete</button>' : ''}
         </div>
       </main>`;
     bindEditor();
-    return;
-  }
-
-  if (state.view === 'preview') {
-    const loading = state.previewBusy;
-    app.innerHTML = `
-      ${topbar('Preview', 'edit')}
-      <main class="preview-main">
-        ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
-        <p class="hint preview-hint">How this bhajan will look on the public site. Check title, स्थायी, and verses, then publish or go back to edit.</p>
-        ${loading ? '<p class="loading">Building preview…</p>' : ''}
-        ${!loading && state.previewHtml ? `<div class="preview-site content-main content-main--section">${state.previewHtml}</div>` : ''}
-      </main>
-      <div class="sticky-actions">
-        <button type="button" class="btn" id="preview-back">Back to edit</button>
-        <button type="button" class="btn btn-primary" id="preview-publish" ${loading ? 'disabled' : ''}>Publish</button>
-      </div>`;
-    bindTopbar();
-    setPreviewStylesheet(true);
-    document.getElementById('preview-back')?.addEventListener('click', () => {
-      state.error = null;
-      state.previewHtml = null;
-      if (state.path) location.hash = `#/edit?p=${encodeURIComponent(state.path)}`;
-      else if (state.section?.slug) location.hash = `#/s/${encodeURIComponent(state.section.slug)}/new`;
-      else location.hash = '#/';
-    });
-    document.getElementById('preview-publish')?.addEventListener('click', () => commitPublish());
     return;
   }
 }
@@ -1087,8 +1081,11 @@ function bindEditor() {
       syncEditorFromDom();
       state.editPanel = next;
       render();
+      if (next === 'preview') refreshPreview();
     });
   });
+
+  document.getElementById('refresh-preview')?.addEventListener('click', () => refreshPreview());
 
   document.querySelectorAll('.para-row').forEach((card) => {
     const i = Number(card.dataset.i);
@@ -1114,7 +1111,7 @@ function bindEditor() {
     });
   });
 
-  document.getElementById('save')?.addEventListener('click', openPreview);
+  document.getElementById('save')?.addEventListener('click', () => commitPublish());
   document.getElementById('delete')?.addEventListener('click', deleteEditor);
   bindSpeechDictation(app);
 }
@@ -1133,16 +1130,16 @@ async function runPreviewRequest() {
   render();
 }
 
-async function openPreview() {
+async function refreshPreview() {
   state.error = null;
   collectEditor();
-  if (!state.editor.title.trim()) {
-    state.error = 'Title is required before publishing.';
+  if (!state.editor?.title?.trim()) {
+    state.error = 'Title is required for preview.';
+    state.editPanel = 'basic';
     render();
     return;
   }
 
-  state.view = 'preview';
   state.previewHtml = null;
   state.previewBusy = true;
   render();
@@ -1152,21 +1149,21 @@ async function openPreview() {
   } catch (e) {
     state.previewBusy = false;
     state.error = e.message;
-    state.view = 'edit';
     render();
   }
 }
 
 async function commitPublish() {
   state.error = null;
+  collectEditor();
   if (!state.editor?.title?.trim()) {
     state.error = 'Title is required before publishing.';
-    state.view = 'edit';
+    state.editPanel = 'basic';
     render();
     return;
   }
 
-  const btn = document.getElementById('preview-publish');
+  const btn = document.getElementById('save');
   if (btn) btn.disabled = true;
 
   try {
