@@ -330,9 +330,29 @@
     });
   }
 
+  /** ↑ स्थायी — jump to bhajan title (sthayi is just below). */
+  function initBhajanSthayiJumpLinks() {
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest('.bhajan-card__to-sthayi');
+      if (!link) return;
+      var href = link.getAttribute('href');
+      if (!href || href.charAt(0) !== '#') return;
+      var target = document.getElementById(href.slice(1));
+      var card = target && target.closest('.bhajan-card');
+      if (!card) return;
+      e.preventDefault();
+      if (sectionNavApi) sectionNavApi.navigateToBhajan(card.id);
+      else {
+        history.pushState(null, '', '#' + card.id);
+        scrollToElementTop(target);
+      }
+    });
+  }
+
   initCollapsibleIndex();
   initToolbarIndexButton();
   initSectionScrollUi();
   initSectionHeroIndex();
   initIndexAnchorScroll();
+  initBhajanSthayiJumpLinks();
 })();

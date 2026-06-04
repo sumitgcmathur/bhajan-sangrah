@@ -362,12 +362,13 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
   const num = index + 1;
   const sw = showSwarachitBadge && b.swarachit ? '<span class="bhajan-badge">स्वरचित</span>' : '';
   const sthayiAnchor = `${id}-sthayi`;
+  const titleAnchor = `${id}-title`;
   const hasSthayi = lyricsHasSthayi(b.lyrics);
   const toSthayi = hasSthayi
-    ? `<a href="#${sthayiAnchor}" class="bhajan-card__to-sthayi">↑ स्थायी</a>`
+    ? `<a href="#${titleAnchor}" class="bhajan-card__to-sthayi" aria-label="भजन शीर्षक और स्थायी पर जाएँ">↑ स्थायी</a>`
     : '';
   return `<article class="bhajan-card" id="${id}">
-  <header class="bhajan-card__head">
+  <header class="bhajan-card__head" id="${titleAnchor}">
     <h3 class="bhajan-card__title"><span class="bhajan-card__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}${sw}</h3>
   </header>
   <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics, b.tarz, { sthayiAnchorId: hasSthayi ? sthayiAnchor : null })}</div>

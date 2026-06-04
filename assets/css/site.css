@@ -1107,6 +1107,7 @@ body.search-panel-open {
   padding-bottom: 0.55rem;
   border-bottom: 2px solid var(--bg-alt);
   position: relative;
+  scroll-margin-top: calc(var(--scroll-header-h) + env(safe-area-inset-top, 0px) + 0.65rem);
 }
 
 .bhajan-card__head::after {
