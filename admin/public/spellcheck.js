@@ -3,6 +3,8 @@
  * Avoids Vercel serverless ESM bundling issues with node_modules/espells.
  */
 
+import { normWord, tokenizeHindiForSpell } from './spell-tokens.js';
+
 const ESPELLS_URL = 'https://esm.sh/espells@0.4.1';
 /** Hindi Hunspell (~4.4 lakh words) — dictionary-hi npm package does not exist; these URLs work */
 const DICT_AFF =
@@ -76,15 +78,8 @@ export function ignoreWord(word) {
   return list;
 }
 
-function normWord(word) {
-  return String(word || '').normalize('NFC');
-}
-
 function tokenize(text) {
-  return String(text || '')
-    .split(/[^\u0900-\u097F]+/u)
-    .map(normWord)
-    .filter((w) => [...w].length >= MIN_WORD_LEN);
+  return tokenizeHindiForSpell(text, MIN_WORD_LEN);
 }
 
 function shouldSkip(word, extraIgnore) {
