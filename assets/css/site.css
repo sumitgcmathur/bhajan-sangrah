@@ -1327,15 +1327,6 @@ body.search-panel-open {
   visibility: hidden;
 }
 
-.site-footer {
-  text-align: center;
-  padding: 1.35rem 1rem;
-  font-size: 0.95rem;
-  color: var(--muted);
-  background: var(--surface);
-  border-top: 2px solid var(--border);
-}
-
 /* ---- Mobile: bottom bar, collapsible sidebar ---- */
 @media (max-width: 767px) {
   html { font-size: 19px; }

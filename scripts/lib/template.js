@@ -65,10 +65,6 @@ function renderSidebar(config, sections, base, currentSlug, sectionCounts) {
 </aside>`;
 }
 
-function renderFooter() {
-  return '<footer class="site-footer"><p>भक्ति भजन संग्रह</p></footer>';
-}
-
 function iconTypeFromHref(href) {
   if (/\.jpe?g$/i.test(href)) return 'image/jpeg';
   if (/\.png$/i.test(href)) return 'image/png';
@@ -197,7 +193,6 @@ ${renderHead(pageTitle, base, config)}
 ${renderSidebar(config, sections, base, currentSlug, sectionCounts)}
 <div class="site-content">
 ${body}
-${renderFooter()}
 </div>
 </div>
 ${renderMobileBar(isSectionPage)}
