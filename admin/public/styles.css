@@ -797,6 +797,16 @@ textarea {
   transition: width 0.2s ease;
 }
 
+.spell-corpus-progress--indeterminate .spell-corpus-progress__bar--indeterminate {
+  animation: spell-corpus-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes spell-corpus-pulse {
+  0% { margin-left: 0; width: 35%; }
+  50% { margin-left: 45%; width: 45%; }
+  100% { margin-left: 0; width: 35%; }
+}
+
 .spell-corpus-summary {
   margin: 0 0 1rem;
   color: var(--accent-dark);

@@ -47,7 +47,7 @@ export async function runCorpusSpellScan(api, { onProgress, signal } = {}) {
   onProgress?.(0, paths.length, 'list');
   const items = await fetchEditorItems(api, paths, onProgress, signal);
   const result = await scanCorpusItems(items, {
-    onProgress: (cur, tot) => onProgress?.(cur, tot, 'spell'),
+    onProgress,
     signal,
   });
   return { ...result, pathsListed: paths.length };

@@ -162,24 +162,52 @@ function clusterOccurrences(occurrences) {
     .sort((a, b) => b.count - a.count || a.word.localeCompare(b.word, 'hi'));
 }
 
+function yieldToMain() {
+  return new Promise((resolve) => setTimeout(resolve, 0));
+}
+
+function abortIfNeeded(signal) {
+  if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+}
+
 /**
  * @param {Array<{ path: string, title: string, texts: Array<{field:string,text:string}> }>} items
  */
-export async function scanCorpusItems(items, { onProgress } = {}) {
+export async function scanCorpusItems(items, { onProgress, signal } = {}) {
+  onProgress?.(0, 1, 'dict');
+  abortIfNeeded(signal);
   await getChecker();
-  const occurrences = [];
-  const wordHits = new Map();
+  abortIfNeeded(signal);
 
+  const uniqueWords = new Set();
+  for (const { texts } of items) {
+    for (const { text } of texts) {
+      for (const tok of tokenizeHindiWithOffsets(text || '', MIN_WORD_LEN)) {
+        uniqueWords.add(tok.word);
+      }
+    }
+  }
+
+  const words = [...uniqueWords];
+  const wordHits = new Map();
+  for (let i = 0; i < words.length; i++) {
+    abortIfNeeded(signal);
+    const w = words[i];
+    wordHits.set(w, await lookupWord(w));
+    if (i % 15 === 0 || i === words.length - 1) {
+      onProgress?.(i + 1, words.length, 'words');
+    }
+    if (i % 20 === 0) await yieldToMain();
+  }
+
+  const occurrences = [];
   for (let i = 0; i < items.length; i++) {
+    abortIfNeeded(signal);
     const { path, title, texts } = items[i];
     for (const { field, text } of texts) {
       for (const tok of tokenizeHindiWithOffsets(text || '', MIN_WORD_LEN)) {
-        let hit = wordHits.get(tok.word);
-        if (!hit) {
-          hit = await lookupWord(tok.word);
-          wordHits.set(tok.word, hit);
-        }
-        if (hit.ok) continue;
+        const hit = wordHits.get(tok.word);
+        if (!hit || hit.ok) continue;
         occurrences.push({
           word: tok.word,
           path,
@@ -189,13 +217,15 @@ export async function scanCorpusItems(items, { onProgress } = {}) {
         });
       }
     }
-    onProgress?.(i + 1, items.length);
+    onProgress?.(i + 1, items.length, 'spell');
+    if (i % 8 === 0) await yieldToMain();
   }
 
   return {
     clusters: clusterOccurrences(occurrences),
     totalOccurrences: occurrences.length,
     filesScanned: items.length,
+    uniqueWordsChecked: words.length,
   };
 }
 

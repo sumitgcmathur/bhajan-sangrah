@@ -176,9 +176,6 @@ async function applyRouteFromHash() {
     state.error = null;
     state.view = 'spell-errors';
     render();
-    if (!state.spellCorpus.report && !state.spellCorpus.scanning) {
-      startSpellCorpusScan();
-    }
     return;
   }
 
@@ -1264,10 +1261,14 @@ function renderSpellCorpusBody() {
   const sc = state.spellCorpus;
   if (sc.scanning) {
     const p = sc.progress;
-    const pct = p.total ? Math.round((p.current / p.total) * 100) : 0;
+    const indeterminate = sc.phase === 'dict' || sc.phase === 'list';
+    const pct = indeterminate ? 0 : p.total ? Math.round((p.current / p.total) * 100) : 0;
+    const barClass = indeterminate
+      ? 'spell-corpus-progress__bar spell-corpus-progress__bar--indeterminate'
+      : 'spell-corpus-progress__bar';
     return `<p class="loading">${escapeHtml(spellCorpusProgressLabel(sc))}</p>
-      <div class="spell-corpus-progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100">
-        <div class="spell-corpus-progress__bar" style="width:${pct}%"></div>
+      <div class="spell-corpus-progress${indeterminate ? ' spell-corpus-progress--indeterminate' : ''}" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100">
+        <div class="${barClass}" style="width:${indeterminate ? '40%' : `${pct}%`}"></div>
       </div>
       <button type="button" class="btn btn-danger" id="spell-corpus-cancel">Cancel</button>`;
   }
@@ -1276,7 +1277,7 @@ function renderSpellCorpusBody() {
   </div>`;
   const report = sc.report;
   if (!report) {
-    return `${actions}<p class="hint">Loads every bhajan from GitHub, checks Hindi Hunspell, groups unknown words by how often they appear.</p>`;
+    return `${actions}<p class="hint">Tap <strong>Scan all bhajans</strong> to start. First run loads the dictionary (~1–2 min), then scans all YAML. Progress shows each step; use Cancel if needed.</p>`;
   }
   if (!report.clusters.length) {
     return `${actions}<p class="spell-ok">No unknown words in ${report.filesScanned} bhajan(s).</p>`;
@@ -1365,6 +1366,8 @@ async function startSpellCorpusScan() {
   state.spellCorpus.progress = { current: 0, total: 0 };
   state.spellCorpus.report = null;
   state.spellCorpus.abortCtrl = new AbortController();
+  let lastProgressRender = 0;
+  let lastPhase = '';
   render();
 
   try {
@@ -1373,7 +1376,13 @@ async function startSpellCorpusScan() {
       onProgress: (current, total, phase) => {
         state.spellCorpus.phase = phase;
         state.spellCorpus.progress = { current, total };
-        render();
+        const now = Date.now();
+        const phaseChanged = phase !== lastPhase;
+        lastPhase = phase;
+        if (phaseChanged || now - lastProgressRender > 250) {
+          lastProgressRender = now;
+          render();
+        }
       },
     });
     endSpellCorpusOp();

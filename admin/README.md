@@ -133,7 +133,7 @@ Red wavy underlines on Hindi fields (Hunspell in the browser; first load ~30–6
 
 ### Spell errors (all bhajans)
 
-**Sections** → **Spell errors (all bhajans)** (`#/spell-errors`). Scans all bhajan YAML; lists unknown words sorted by **use count**. Per word: **Correct all** (suggestion → commits on `main`), **Ignore all**, **Add all**. Links open the editor.
+**Sections** → **Spell errors (all bhajans)** (`#/spell-errors`), then **Scan all bhajans**. Progress: load YAML from GitHub → load dictionary (first time ~1–2 min) → check unique words. Lists unknown words by **use count**. Per word: **Correct all**, **Ignore all**, **Add all**; links open the editor.
 
 Files: `admin/public/spellcheck.js`, `admin/public/spell-errors.js`, `admin/api/spell-fix.js`.
 
