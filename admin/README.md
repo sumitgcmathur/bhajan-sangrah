@@ -71,6 +71,10 @@ From the **Sections** screen, open **Find & replace (all YAML)**.
 
 Options: regular expression, case insensitive. Raw file text is updated (YAML structure is preserved if you only change lyrics text).
 
+## Edit screen layout
+
+The edit form uses a **section menu** (left column on wide screens, tabs on phones): **Basic**, **स्थायी**, **Antaras**, **More** (optional shloka / dhvani / jabani), and **Legacy** when applicable. Only one panel is visible at a time; switching sections keeps your in-memory edits until you publish.
+
 ## Publish preview
 
 On the edit screen, **Publish** opens a **preview** that uses the same HTML as the public site (`renderBhajanCard` + `site-preview.css`). Review the card, then **Publish** to commit or **Back to edit** to change fields.

@@ -18,6 +18,7 @@ const state = {
   editOptional: { preShlok: false, dhvani: false, jabani: false },
   previewHtml: null,
   previewBusy: false,
+  editPanel: 'basic',
   replace: {
     find: '',
     replace: '',
@@ -309,6 +310,7 @@ function versesSectionHtml(paragraphs) {
 function resetParagraphEditor() {
   state.paraEditMode = 'paste';
   state.paraBulkDraft = null;
+  state.editPanel = 'basic';
 }
 
 function initEditOptionalFromEditor(editor) {
@@ -324,24 +326,34 @@ function hasSthayiAdvanced(L) {
   return Boolean(L.sthayi_connect === false || (L.sthayi_connect_text || '').trim());
 }
 
-function editJumpBarHtml(e, L) {
-  const hasMore =
+function editPanelHidden(panel) {
+  return state.editPanel === panel ? '' : ' is-hidden';
+}
+
+function editNavHtml(e) {
+  const active = state.editPanel || 'basic';
+  const hasMoreContent =
     state.editOptional.preShlok ||
     state.editOptional.dhvani ||
     state.editOptional.jabani;
-  const moreLink = hasMore ? '<a href="#sec-more">More</a>' : '';
+  const moreBadge = hasMoreContent ? '<span class="edit-nav__badge" title="Has optional content">•</span>' : '';
+  const items = [
+    { id: 'basic', label: 'Basic' },
+    { id: 'sthayi', label: 'स्थायी' },
+    { id: 'verses', label: 'Antaras' },
+    { id: 'more', label: 'More', badge: moreBadge },
+  ];
+  if (e.legacyLyricsText) items.push({ id: 'legacy', label: 'Legacy' });
   const hint = speechSupported()
-    ? '<span class="edit-jump__hint">Mic → focused field</span>'
-    : '<span class="edit-jump__hint">Use Hindi keyboard mic</span>';
-  return `<nav class="edit-jump" aria-label="Jump to section">
-    <div class="edit-jump__links">
-      <a href="#sec-basic">Basic</a>
-      <a href="#sec-sthayi">स्थायी</a>
-      <a href="#sec-verses">Antaras</a>
-      ${moreLink}
-    </div>
-    ${hint}
-  </nav>`;
+    ? 'Mic → focused field'
+    : 'Use Hindi keyboard mic';
+  const buttons = items
+    .map(
+      (p) =>
+        `<button type="button" class="edit-nav__btn${active === p.id ? ' is-active' : ''}" data-edit-panel="${p.id}" aria-current="${active === p.id ? 'page' : 'false'}">${escapeHtml(p.label)}${p.badge || ''}</button>`,
+    )
+    .join('');
+  return `<nav class="edit-nav" aria-label="Edit sections">${buttons}<p class="edit-nav__hint">${escapeHtml(hint)}</p></nav>`;
 }
 
 function optionalLyricsHtml(e, L) {
@@ -381,11 +393,10 @@ function optionalLyricsHtml(e, L) {
       '<button type="button" class="btn btn-add-optional" data-show-optional="jabani">+ Jabani</button>',
     );
   }
-  if (!blocks.length && !adds.length) return '';
-  return `<div class="optional-lyrics" id="sec-more">
-    ${blocks.join('')}
-    ${adds.length ? `<div class="optional-add-bar">${adds.join('')}</div>` : ''}
-  </div>`;
+  if (!blocks.length && !adds.length) {
+    return `<div class="optional-add-bar">${adds.join('')}</div>`;
+  }
+  return `${blocks.join('')}${adds.length ? `<div class="optional-add-bar">${adds.join('')}</div>` : ''}`;
 }
 
 function dictationStickyBtnHtml() {
@@ -542,6 +553,7 @@ function render() {
     syncEditorFromDom();
     const e = state.editor;
     const L = e.lyrics;
+    if (state.editPanel === 'legacy' && !e.legacyLyricsText) state.editPanel = 'basic';
     const showGroup = Boolean(state.section?.grouped);
     const advOpen = hasSthayiAdvanced(L) ? ' open' : '';
     const groupBlock = showGroup
@@ -549,51 +561,56 @@ function render() {
       : '';
     app.innerHTML = `
       ${topbar(e.title || 'Bhajan', 'bhajans')}
-      ${editJumpBarHtml(e, L)}
       <main class="edit-main">
         ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
-        <div class="form-section" id="sec-basic">
-          <h2>Basic</h2>
-          <div class="basic-grid">
-            <div class="basic-grid__title">
-              <label for="f-title">Title</label>
-              <input type="text" id="f-title" ${HI_FIELD} value="${escapeAttr(e.title)}">
-            </div>
-            <div class="basic-grid__row2${showGroup ? ' basic-grid__row2--group' : ''}">
-              <div class="basic-grid__tarz">
-                <label for="f-tarz">Tarz (tune line)</label>
-                <input type="text" id="f-tarz" ${HI_FIELD} value="${escapeAttr(e.tarz)}">
+        <div class="edit-layout">
+          ${editNavHtml(e)}
+          <div class="edit-panels">
+            <div class="form-section edit-panel${editPanelHidden('basic')}" id="edit-panel-basic">
+              <h2>Basic</h2>
+              <div class="basic-grid">
+                <div class="basic-grid__title">
+                  <label for="f-title">Title</label>
+                  <input type="text" id="f-title" ${HI_FIELD} value="${escapeAttr(e.title)}">
+                </div>
+                <div class="basic-grid__row2${showGroup ? ' basic-grid__row2--group' : ''}">
+                  <div class="basic-grid__tarz">
+                    <label for="f-tarz">Tarz (tune line)</label>
+                    <input type="text" id="f-tarz" ${HI_FIELD} value="${escapeAttr(e.tarz)}">
+                  </div>
+                  ${groupBlock}
+                  <div class="check-row basic-grid__swarachit">
+                    <input type="checkbox" id="f-swarachit" ${e.swarachit ? 'checked' : ''}>
+                    <label for="f-swarachit">Swarachit</label>
+                  </div>
+                </div>
               </div>
-              ${groupBlock}
-              <div class="check-row basic-grid__swarachit">
-                <input type="checkbox" id="f-swarachit" ${e.swarachit ? 'checked' : ''}>
-                <label for="f-swarachit">Swarachit</label>
-              </div>
             </div>
+            <div class="form-section edit-panel${editPanelHidden('sthayi')}" id="edit-panel-sthayi">
+              <h2>स्थायी (refrain)</h2>
+              <textarea id="f-sthayi" class="hi-field" lang="hi-IN" rows="8">${escapeHtml(L.sthayi)}</textarea>
+              <details class="sthayi-advanced"${advOpen}>
+                <summary>Advanced refrain options</summary>
+                <div class="check-row">
+                  <input type="checkbox" id="f-connect-off" ${L.sthayi_connect === false ? 'checked' : ''}>
+                  <label for="f-connect-off">Disable sthayi_connect</label>
+                </div>
+                <label for="f-connect-text">sthayi_connect_text</label>
+                <input type="text" id="f-connect-text" class="hi-field" lang="hi-IN" value="${escapeAttr(L.sthayi_connect_text)}">
+              </details>
+            </div>
+            <div class="form-section edit-panel${editPanelHidden('verses')}" id="edit-panel-verses">
+              <h2>Antaras</h2>
+              ${versesSectionHtml(L.paragraphs)}
+            </div>
+            <div class="form-section edit-panel${editPanelHidden('more')}" id="edit-panel-more">
+              <h2>More</h2>
+              <p class="hint">Optional opening shloka, dhvani, or jabani.</p>
+              ${optionalLyricsHtml(e, L)}
+            </div>
+            ${e.legacyLyricsText ? `<div class="form-section edit-panel${editPanelHidden('legacy')}" id="edit-panel-legacy"><h2>Legacy lyrics</h2><textarea id="f-legacy" class="hi-field" lang="hi-IN" rows="12">${escapeHtml(e.legacyLyricsText)}</textarea></div>` : ''}
           </div>
         </div>
-        <div class="form-section form-section--lyrics" id="sec-lyrics">
-          <h2>Lyrics</h2>
-          <div class="lyrics-block" id="sec-sthayi">
-            <h3>स्थायी (refrain)</h3>
-            <textarea id="f-sthayi" class="hi-field" lang="hi-IN" rows="4">${escapeHtml(L.sthayi)}</textarea>
-            <details class="sthayi-advanced"${advOpen}>
-              <summary>Advanced refrain options</summary>
-              <div class="check-row">
-                <input type="checkbox" id="f-connect-off" ${L.sthayi_connect === false ? 'checked' : ''}>
-                <label for="f-connect-off">Disable sthayi_connect</label>
-              </div>
-              <label for="f-connect-text">sthayi_connect_text</label>
-              <input type="text" id="f-connect-text" class="hi-field" lang="hi-IN" value="${escapeAttr(L.sthayi_connect_text)}">
-            </details>
-          </div>
-          <div class="lyrics-block" id="sec-verses">
-            <h3>Antaras</h3>
-            ${versesSectionHtml(L.paragraphs)}
-          </div>
-          ${optionalLyricsHtml(e, L)}
-        </div>
-        ${e.legacyLyricsText ? `<div class="form-section"><h2>Legacy lyrics</h2><textarea id="f-legacy" class="hi-field" lang="hi-IN">${escapeHtml(e.legacyLyricsText)}</textarea></div>` : ''}
         <div class="sticky-actions">
           ${dictationStickyBtnHtml()}
           <button type="button" class="btn btn-primary" id="save">Publish</button>
@@ -901,17 +918,18 @@ function bindEditor() {
       syncEditorFromDom();
       const key = btn.dataset.showOptional;
       if (key && key in state.editOptional) state.editOptional[key] = true;
+      state.editPanel = 'more';
       render();
     });
   });
 
-  document.querySelectorAll('.edit-jump a[href^="#"]').forEach((link) => {
-    link.addEventListener('click', (ev) => {
-      const id = link.getAttribute('href')?.slice(1);
-      const el = id ? document.getElementById(id) : null;
-      if (!el) return;
-      ev.preventDefault();
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('[data-edit-panel]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const next = btn.dataset.editPanel;
+      if (!next || next === state.editPanel) return;
+      syncEditorFromDom();
+      state.editPanel = next;
+      render();
     });
   });
 
