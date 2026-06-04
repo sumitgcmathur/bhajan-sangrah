@@ -673,6 +673,89 @@ textarea {
   font-family: var(--font);
 }
 
+/* Inline Hindi spell check (mirror underlines) */
+.spell-wrap {
+  position: relative;
+  background: #fff;
+  border-radius: 0.35rem;
+}
+
+.spell-wrap__mirror {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: transparent;
+  z-index: 0;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+}
+
+.spell-wrap__mirror mark.spell-err {
+  color: transparent;
+  background: none;
+  text-decoration: underline wavy #c62828;
+  text-underline-offset: 3px;
+}
+
+.spell-wrap__input {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+}
+
+.spell-wrap__input[data-spell-loading] {
+  background: rgba(255, 253, 249, 0.92) !important;
+}
+
+.spell-menu {
+  position: fixed;
+  z-index: 100;
+  min-width: 10rem;
+  max-width: 18rem;
+  padding: 0.35rem 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  box-shadow: 0 6px 24px rgba(44, 24, 16, 0.18);
+}
+
+.spell-menu__word {
+  margin: 0;
+  padding: 0.35rem 0.75rem 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.spell-menu__muted {
+  margin: 0;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.spell-menu__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.spell-menu__item:hover,
+.spell-menu__item:focus {
+  background: rgba(155, 45, 74, 0.08);
+  outline: none;
+}
+
 .preview-main {
   max-width: 48rem;
   padding-bottom: calc(var(--action-bar-h) + 1.25rem + env(safe-area-inset-bottom, 0px));

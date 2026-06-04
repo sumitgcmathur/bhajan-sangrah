@@ -1,4 +1,5 @@
 import { bindSpeechDictation, stopDictation, speechSupported } from './speech.js';
+import { bindInlineSpellFields, spellCheckEditorFields } from './spellcheck.js';
 
 const app = document.getElementById('app');
 
@@ -32,7 +33,7 @@ const state = {
   },
 };
 
-const HI_FIELD = 'class="hi-field" lang="hi-IN"';
+const HI_FIELD = 'class="hi-field" lang="hi-IN" spellcheck="false"';
 
 const GROUP_OTHER = '__other__';
 
@@ -1035,7 +1036,7 @@ function paraHtml(p, i) {
         <button type="button" class="btn btn-icon btn-danger para-del" aria-label="Delete">✕</button>
       </div>
     </div>
-    <textarea class="para-text hi-field" lang="hi-IN" rows="3">${escapeHtml(p.text || '')}</textarea>
+    <textarea class="para-text hi-field" lang="hi-IN" spellcheck="false" rows="3">${escapeHtml(p.text || '')}</textarea>
   </div>`;
 }
 
@@ -1144,6 +1145,7 @@ function bindEditor() {
   document.getElementById('save')?.addEventListener('click', () => commitPublish());
   document.getElementById('delete')?.addEventListener('click', deleteEditor);
   bindSpeechDictation(app);
+  bindInlineSpellFields(app);
 }
 
 async function runPreviewRequest() {
@@ -1186,6 +1188,24 @@ async function refreshPreview() {
   }
 }
 
+function editorTextsForSpell() {
+  const e = state.editor;
+  if (!e) return [];
+  const L = e.lyrics || {};
+  const texts = [
+    { id: 'title', text: e.title || '' },
+    { id: 'tarz', text: e.tarz || '' },
+    { id: 'jabani', text: e.jabani || '' },
+    { id: 'sthayi', text: L.sthayi || '' },
+    { id: 'pre_shlok', text: L.pre_shlok || '' },
+    { id: 'dhvani', text: L.dhvani || '' },
+    { id: 'connect', text: L.sthayi_connect_text || '' },
+  ];
+  for (const p of L.paragraphs || []) texts.push({ id: 'para', text: p.text || '' });
+  if (e.legacyLyricsText) texts.push({ id: 'legacy', text: e.legacyLyricsText });
+  return texts;
+}
+
 async function commitPublish() {
   state.error = null;
   collectEditor();
@@ -1200,6 +1220,22 @@ async function commitPublish() {
   if (btn) btn.disabled = true;
 
   try {
+    try {
+      const { totalIssues } = await spellCheckEditorFields(editorTextsForSpell());
+      if (totalIssues > 0) {
+        const ok = confirm(
+          `Spell check: ${totalIssues} possible misspelling(s) (red underlines). Publish anyway?`,
+        );
+        if (!ok) {
+          if (btn) btn.disabled = false;
+          state.editPanel = 'preview';
+          render();
+          return;
+        }
+      }
+    } catch {
+      /* dictionary unavailable — publish allowed */
+    }
     let res;
     if (state.path) {
       res = await api('/api/file', {

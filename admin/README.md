@@ -116,6 +116,15 @@ On the edit screen, open **Preview** in the left menu to see the public-site car
 
 After changing `assets/css/site.css`, run `npm run admin:preview-css` so the admin preview stays in sync.
 
+## Hindi spell check (edit screen)
+
+Hindi fields show **red wavy underlines** for words not in the Hunspell dictionary (loaded in the browser on first use; ~5&nbsp;MB, may take 30–60s). While you type, checks run automatically.
+
+- **Right-click** a flagged word (or **select** it) for **suggestions**, **Ignore** (this browser), or **Add to dictionary** (this browser).
+- **Publish** warns if any flagged words remain (you can still proceed).
+
+Files: `admin/public/spellcheck.js`, `admin/public/spell-tokens.js`.
+
 ## Voice typing (edit screen)
 
 On phones, the edit screen’s bottom bar has a **mic** button when the browser supports the Web Speech API (Chrome on Android, Safari on iOS 14.5+). Focus a field, tap mic, and dictate in Hindi (`hi-IN`). Tap again to stop. If the mic button is missing, use the **microphone on your Hindi keyboard** (Gboard / iOS).
