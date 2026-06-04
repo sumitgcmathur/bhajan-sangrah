@@ -71,6 +71,12 @@ From the **Sections** screen, open **Find & replace (all YAML)**.
 
 Options: regular expression, case insensitive. Raw file text is updated (YAML structure is preserved if you only change lyrics text).
 
+## Publish preview
+
+On the edit screen, **Publish** opens a **preview** that uses the same HTML as the public site (`renderBhajanCard` + `site-preview.css`). Review the card, then **Publish** to commit or **Back to edit** to change fields.
+
+After changing `assets/css/site.css`, run `npm run admin:preview-css` so the admin preview stays in sync.
+
 ## Voice typing (edit screen)
 
 On phones, the edit screen’s bottom bar has a **mic** button when the browser supports the Web Speech API (Chrome on Android, Safari on iOS 14.5+). Focus a field, tap mic, and dictate in Hindi (`hi-IN`). Tap again to stop. If the mic button is missing, use the **microphone on your Hindi keyboard** (Gboard / iOS).

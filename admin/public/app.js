@@ -16,6 +16,8 @@ const state = {
   paraEditMode: 'paste',
   paraBulkDraft: null,
   editOptional: { preShlok: false, dhvani: false, jabani: false },
+  previewHtml: null,
+  previewBusy: false,
   replace: {
     find: '',
     replace: '',
@@ -420,11 +422,19 @@ function bindTopbar(opts = {}) {
     state.view = 'bhajans';
     render();
   });
+  document.querySelector('[data-back="edit"]')?.addEventListener('click', () => {
+    state.error = null;
+    state.previewHtml = null;
+    state.previewBusy = false;
+    state.view = 'edit';
+    render();
+  });
 }
 
 function render() {
   stopDictation();
-  if (state.view !== 'edit' && state.view !== 'replace') {
+  if (state.view !== 'preview') setPreviewStylesheet(false);
+  if (state.view !== 'edit' && state.view !== 'replace' && state.view !== 'preview') {
     state.error = null;
   }
   if (state.view === 'loading') {
@@ -602,6 +612,39 @@ function render() {
     bindEditor();
     return;
   }
+
+  if (state.view === 'preview') {
+    const loading = state.previewBusy;
+    app.innerHTML = `
+      ${topbar('Preview', 'edit')}
+      <main class="preview-main">
+        ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
+        <p class="hint preview-hint">How this bhajan will look on the public site. Check title, स्थायी, and verses, then publish or go back to edit.</p>
+        ${loading ? '<p class="loading">Building preview…</p>' : ''}
+        ${!loading && state.previewHtml ? `<div class="preview-site content-main content-main--section">${state.previewHtml}</div>` : ''}
+      </main>
+      <div class="sticky-actions">
+        <button type="button" class="btn" id="preview-back">Back to edit</button>
+        <button type="button" class="btn btn-primary" id="preview-publish" ${loading ? 'disabled' : ''}>Publish</button>
+      </div>`;
+    bindTopbar();
+    setPreviewStylesheet(true);
+    document.getElementById('preview-back')?.addEventListener('click', () => {
+      state.error = null;
+      state.previewHtml = null;
+      state.view = 'edit';
+      render();
+    });
+    document.getElementById('preview-publish')?.addEventListener('click', () => commitPublish());
+    setPreviewStylesheet(true);
+    return;
+  }
+}
+
+function setPreviewStylesheet(on) {
+  const link = document.getElementById('site-preview-css');
+  if (!link) return;
+  link.media = on ? 'all' : 'not all';
 }
 
 function renderReplacePreview(prev) {
@@ -780,7 +823,9 @@ function topbar(title, back) {
       ? '<button type="button" class="btn" data-back="sections">← Sections</button>'
       : back === 'bhajans'
         ? '<button type="button" class="btn" data-back="bhajans">← List</button>'
-        : '';
+        : back === 'edit'
+          ? '<button type="button" class="btn" data-back="edit">← Edit</button>'
+          : '';
   return `<header class="topbar">
     ${backBtn}
     <h1>${escapeHtml(title)}</h1>
@@ -903,12 +948,12 @@ function bindEditor() {
     });
   });
 
-  document.getElementById('save')?.addEventListener('click', saveEditor);
+  document.getElementById('save')?.addEventListener('click', openPreview);
   document.getElementById('delete')?.addEventListener('click', deleteEditor);
   bindSpeechDictation(app);
 }
 
-async function saveEditor() {
+async function openPreview() {
   state.error = null;
   collectEditor();
   if (!state.editor.title.trim()) {
@@ -916,6 +961,43 @@ async function saveEditor() {
     render();
     return;
   }
+
+  state.view = 'preview';
+  state.previewHtml = null;
+  state.previewBusy = true;
+  render();
+
+  try {
+    const data = await api('/api/preview', {
+      method: 'POST',
+      body: JSON.stringify({
+        editor: state.editor,
+        sectionSlug: state.section?.slug,
+        sectionTitle: state.section?.title,
+      }),
+    });
+    state.previewHtml = data.html || '';
+    state.previewBusy = false;
+    render();
+  } catch (e) {
+    state.previewBusy = false;
+    state.error = e.message;
+    state.view = 'edit';
+    render();
+  }
+}
+
+async function commitPublish() {
+  state.error = null;
+  if (!state.editor?.title?.trim()) {
+    state.error = 'Title is required before publishing.';
+    state.view = 'edit';
+    render();
+    return;
+  }
+
+  const btn = document.getElementById('preview-publish');
+  if (btn) btn.disabled = true;
 
   try {
     let res;
@@ -946,12 +1028,14 @@ async function saveEditor() {
     const renameNote = res?.renamed
       ? `\n\nFile renamed to match title:\n${res.path.split('/').pop()}`
       : '';
+    state.previewHtml = null;
     alert(`Published — GitHub Actions will rebuild the public site.${renameNote}`);
     state.view = 'bhajans';
     await loadBhajans(state.section.slug);
     render();
   } catch (e) {
     state.error = e.message;
+    if (btn) btn.disabled = false;
     render();
   }
 }

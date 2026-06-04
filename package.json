@@ -15,6 +15,7 @@
     "spelling-report": "node scripts/spelling-report.js",
     "apply-spelling-standard": "node scripts/apply-spelling-standard.js",
     "admin:favicon": "node scripts/generate-admin-favicon.js",
+    "admin:preview-css": "node -e \"require('fs').copyFileSync('assets/css/site.css','admin/public/site-preview.css')\"",
     "serve": "npx --yes serve docs -l 3000"
   },
   "devDependencies": {

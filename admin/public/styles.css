@@ -603,3 +603,29 @@ textarea {
 .hi-field {
   font-family: var(--font);
 }
+
+.preview-main {
+  max-width: 48rem;
+  padding-bottom: calc(var(--action-bar-h) + 1.25rem + env(safe-area-inset-bottom, 0px));
+}
+
+.preview-hint {
+  margin-bottom: 0.75rem;
+}
+
+.preview-site {
+  padding: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+}
+
+.preview-site .bhajan-card {
+  margin: 0;
+}
+
+.preview-main .loading {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--muted);
+}
