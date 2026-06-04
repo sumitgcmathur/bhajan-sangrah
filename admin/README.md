@@ -61,6 +61,10 @@ Each save commits to **main**. Your existing GitHub Action runs `node scripts/bu
 
 `admin/vercel.json` sets `"ignoreCommand": "bash vercel-should-build.sh"` (path is relative to **Root Directory** `admin`, not the repo root). The script exits **1** (build) when admin-related files changed, **0** (skip) otherwise. It also skips the `gh-pages` branch.
 
+**Merge commits:** The script diffs against **both** merge parents (and uses `VERCEL_GIT_PREVIOUS_SHA` when set). A plain `HEAD^..HEAD` diff on a merge often shows only `content/` even when `admin/` changed on the other side — that used to skip admin deploys incorrectly.
+
+If admin is behind after a skipped deploy: Vercel dashboard → **Deployments** → **Redeploy** (latest `main`), or push any commit that touches `admin/`.
+
 **Vercel project settings to confirm:**
 
 1. **Root Directory:** `admin`
