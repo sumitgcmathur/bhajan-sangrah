@@ -61,6 +61,10 @@ let menuEl = null;
 let activeTarget = null;
 let wordCache = new Map();
 const fieldTimers = new WeakMap();
+let lastMenuOpenedAt = 0;
+
+const LONG_PRESS_MS = 550;
+const SELECTION_MENU_DELAY_MS = 400;
 
 function loadWordSet(key) {
   try {
@@ -231,6 +235,17 @@ function scheduleFieldCheck(input) {
   );
 }
 
+function wordAtIndex(text, index) {
+  const re = /[\u0900-\u097F]+/gu;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index <= index && m.index + m[0].length > index) {
+      return { word: m[0], start: m.index, end: m.index + m[0].length };
+    }
+  }
+  return null;
+}
+
 function wordAtSelection(input) {
   const start = input.selectionStart;
   const end = input.selectionEnd;
@@ -240,15 +255,60 @@ function wordAtSelection(input) {
     const w = normWord(sel);
     if (/^[\u0900-\u097F]+$/.test(w)) return { word: w, start, end };
   }
-  const text = input.value;
-  const re = /[\u0900-\u097F]+/gu;
-  let m;
-  while ((m = re.exec(text)) !== null) {
-    if (m.index < end && m.index + m[0].length > start) {
-      return { word: m[0], start: m.index, end: m.index + m[0].length };
-    }
+  return wordAtIndex(input.value, end);
+}
+
+/** Map touch coordinates to a caret index (for long-press on phones). */
+function caretIndexAtPoint(textarea, clientX, clientY) {
+  const text = textarea.value;
+  if (!text.length) return 0;
+
+  const mirror = document.createElement('div');
+  const cs = getComputedStyle(textarea);
+  mirror.setAttribute('aria-hidden', 'true');
+  mirror.style.cssText =
+    'position:fixed;left:-9999px;top:0;visibility:hidden;white-space:pre-wrap;word-wrap:break-word;overflow:visible;';
+  for (const prop of [
+    'fontFamily',
+    'fontSize',
+    'fontWeight',
+    'lineHeight',
+    'letterSpacing',
+    'paddingTop',
+    'paddingRight',
+    'paddingBottom',
+    'paddingLeft',
+    'borderTopWidth',
+    'borderRightWidth',
+    'borderBottomWidth',
+    'borderLeftWidth',
+    'boxSizing',
+    'width',
+  ]) {
+    mirror.style[prop] = cs[prop];
   }
-  return null;
+  document.body.appendChild(mirror);
+
+  try {
+    let lo = 0;
+    let hi = text.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      mirror.textContent = text.slice(0, mid);
+      const probe = document.createElement('span');
+      probe.textContent = text[mid] || ' ';
+      mirror.appendChild(probe);
+      const r = probe.getBoundingClientRect();
+      mirror.textContent = '';
+      const py = r.top + r.height / 2;
+      const px = r.left;
+      if (py < clientY || (Math.abs(py - clientY) < 3 && px < clientX)) lo = mid + 1;
+      else hi = mid;
+    }
+    return lo;
+  } finally {
+    mirror.remove();
+  }
 }
 
 function ensureMenu() {
@@ -309,6 +369,7 @@ async function showMenuForWord(input, hit, clientX, clientY) {
     <button type="button" class="spell-menu__item" role="menuitem" data-action="add">Add to dictionary</button>`;
 
   menu.hidden = false;
+  lastMenuOpenedAt = Date.now();
   const pad = 8;
   const rect = menu.getBoundingClientRect();
   let left = clientX;
@@ -319,7 +380,8 @@ async function showMenuForWord(input, hit, clientX, clientY) {
   menu.style.top = `${Math.max(pad, top)}px`;
 
   menu.querySelectorAll('[data-action]').forEach((btn) => {
-    btn.addEventListener('click', async () => {
+    const onPick = (e) => {
+      if (e?.type === 'touchend') e.preventDefault();
       const { input: ta, hit: h } = activeTarget || {};
       if (!ta || !h) return hideMenu();
       const action = btn.dataset.action;
@@ -333,8 +395,79 @@ async function showMenuForWord(input, hit, clientX, clientY) {
         document.querySelectorAll('.spell-wrap__input').forEach((el) => scheduleFieldCheck(el));
       }
       hideMenu();
-    });
+    };
+    btn.addEventListener('click', onPick);
+    btn.addEventListener('touchend', onPick, { passive: false });
   });
+}
+
+function bindTouchSpell(input, openMenuIfFlagged) {
+  let pressTimer = null;
+  let pressTouch = null;
+  let selTimer = null;
+
+  const maybeOpenFromSelection = () => {
+    if (Date.now() - lastMenuOpenedAt < 700) return;
+    const hit = wordAtSelection(input);
+    if (!hit || input.selectionStart === input.selectionEnd) return;
+    if (document.activeElement !== input) return;
+    const rect = input.getBoundingClientRect();
+    openMenuIfFlagged(hit, rect.left + 12, Math.min(rect.top + 48, window.innerHeight * 0.35));
+  };
+
+  const scheduleSelectionMenu = () => {
+    clearTimeout(selTimer);
+    selTimer = setTimeout(maybeOpenFromSelection, SELECTION_MENU_DELAY_MS);
+  };
+
+  input.addEventListener('select', scheduleSelectionMenu);
+  input.addEventListener('keyup', scheduleSelectionMenu);
+  document.addEventListener('selectionchange', () => {
+    if (document.activeElement === input) scheduleSelectionMenu();
+  });
+
+  input.addEventListener(
+    'touchstart',
+    (e) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      pressTouch = { x: t.clientX, y: t.clientY };
+      clearTimeout(pressTimer);
+      pressTimer = setTimeout(() => {
+        pressTimer = null;
+        if (!pressTouch) return;
+        input.focus();
+        const idx = caretIndexAtPoint(input, pressTouch.x, pressTouch.y);
+        const hit = wordAtIndex(input.value, idx);
+        if (!hit) return;
+        input.setSelectionRange(hit.start, hit.end);
+        openMenuIfFlagged(hit, pressTouch.x, pressTouch.y);
+        pressTouch = null;
+      }, LONG_PRESS_MS);
+    },
+    { passive: true },
+  );
+
+  input.addEventListener(
+    'touchmove',
+    (e) => {
+      if (!pressTouch || !pressTimer || e.touches.length !== 1) return;
+      const t = e.touches[0];
+      if (Math.hypot(t.clientX - pressTouch.x, t.clientY - pressTouch.y) > 14) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+    },
+    { passive: true },
+  );
+
+  const endPress = () => {
+    clearTimeout(pressTimer);
+    pressTimer = null;
+    pressTouch = null;
+  };
+  input.addEventListener('touchend', endPress);
+  input.addEventListener('touchcancel', endPress);
 }
 
 function wrapField(input) {
@@ -366,25 +499,34 @@ function wrapField(input) {
     { passive: true },
   );
 
+  function openMenuIfFlagged(hit, clientX, clientY) {
+    if (!hit) return;
+    lookupWord(normWord(hit.word)).then(({ ok }) => {
+      if (ok) return;
+      showMenuForWord(input, hit, clientX, clientY);
+    });
+  }
+
   input.addEventListener('contextmenu', (e) => {
     const hit = wordAtSelection(input);
     if (!hit) return;
     e.preventDefault();
-    lookupWord(normWord(hit.word)).then(({ ok }) => {
-      if (ok) return;
-      showMenuForWord(input, hit, e.clientX, e.clientY);
-    });
+    openMenuIfFlagged(hit, e.clientX, e.clientY);
+  });
+
+  input.addEventListener('dblclick', (e) => {
+    const hit = wordAtSelection(input);
+    openMenuIfFlagged(hit, e.clientX, e.clientY);
   });
 
   input.addEventListener('mouseup', () => {
     const hit = wordAtSelection(input);
     if (!hit || input.selectionStart === input.selectionEnd) return;
-    lookupWord(normWord(hit.word)).then(({ ok }) => {
-      if (ok) return;
-      const rect = input.getBoundingClientRect();
-      showMenuForWord(input, hit, rect.left + 12, rect.top + 12);
-    });
+    const rect = input.getBoundingClientRect();
+    openMenuIfFlagged(hit, rect.left + 12, rect.top + 12);
   });
+
+  bindTouchSpell(input, openMenuIfFlagged);
 
   scheduleFieldCheck(input);
 }

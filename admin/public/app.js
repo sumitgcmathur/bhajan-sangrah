@@ -531,7 +531,16 @@ function editNavHtml(e) {
     { id: 'preview', label: 'Preview' },
   ];
   if (e.legacyLyricsText) items.push({ id: 'legacy', label: 'Legacy' });
-  const hint = speechSupported() ? 'Mic → focused field' : 'Use Hindi keyboard mic';
+  const parts = [];
+  if (speechSupported()) parts.push('Mic → focused field');
+  const coarse =
+    typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
+  parts.push(
+    coarse
+      ? 'Spell: long-press flagged word, or select it'
+      : 'Spell: right-click, double-click, or select flagged word',
+  );
+  const hint = parts.join(' · ');
   const buttons = items
     .map(
       (p) =>

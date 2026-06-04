@@ -124,7 +124,9 @@ After changing `assets/css/site.css`, run `npm run admin:preview-css` so the adm
 
 Hindi fields show **red wavy underlines** for words not in the Hunspell dictionary (loaded in the browser on first use; ~5&nbsp;MB, may take 30–60s). While you type, checks run automatically.
 
-- **Right-click** a flagged word (or **select** it) for **suggestions**, **Ignore** (this browser), or **Add to dictionary** (this browser).
+- **Phone / tablet:** **Long-press** (~½ s) a flagged word, or **select** it (touch handles) — menu opens at your finger.
+- **Desktop:** **Right-click**, **double-click**, or **select** the flagged word.
+- Menu: **suggestions** (tap to replace), **Ignore**, **Add to dictionary** (stored in this browser).
 - **Publish** warns if any flagged words remain (you can still proceed).
 
 Files: `admin/public/spellcheck.js`, `admin/public/spell-tokens.js`.

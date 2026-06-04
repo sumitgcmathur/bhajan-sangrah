@@ -756,6 +756,24 @@ textarea {
   outline: none;
 }
 
+@media (pointer: coarse) {
+  .spell-menu {
+    max-width: min(20rem, 92vw);
+    padding: 0.5rem 0;
+  }
+
+  .spell-menu__item {
+    min-height: 2.75rem;
+    padding: 0.65rem 1rem;
+    font-size: 1.05rem;
+  }
+
+  .spell-menu__word {
+    font-size: 1.05rem;
+    padding: 0.5rem 1rem 0.35rem;
+  }
+}
+
 .preview-main {
   max-width: 48rem;
   padding-bottom: calc(var(--action-bar-h) + 1.25rem + env(safe-area-inset-bottom, 0px));
