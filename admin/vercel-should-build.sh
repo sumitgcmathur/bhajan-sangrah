@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Vercel Ignored Build Step (repo root). Exit 0 = skip deploy, 1 = build.
-# See admin/README.md — configure: Project → Settings → Git → Ignored Build Step → Custom:
-#   bash admin/vercel-should-build.sh
+# Runs with Vercel Root Directory = admin (cwd is admin/). See admin/README.md.
 
 set -euo pipefail
 

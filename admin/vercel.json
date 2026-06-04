@@ -1,6 +1,6 @@
 {
   "outputDirectory": "public",
-  "ignoreCommand": "bash admin/vercel-should-build.sh",
+  "ignoreCommand": "bash vercel-should-build.sh",
   "git": {
     "deploymentEnabled": {
       "gh-pages": false

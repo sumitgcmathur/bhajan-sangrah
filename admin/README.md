@@ -59,13 +59,13 @@ Each save commits to **main**. Your existing GitHub Action runs `node scripts/bu
 | Push to `main` with **only** `content/` (or other non-admin paths) | **Skipped** (saves builds) | Yes (GitHub Actions) |
 | Push to `gh-pages` | **No** (must not deploy) | Yes (GitHub Pages) |
 
-`admin/vercel.json` sets `"ignoreCommand": "bash admin/vercel-should-build.sh"`. That script exits **1** (build) when admin-related files changed, **0** (skip) otherwise. It also skips the `gh-pages` branch.
+`admin/vercel.json` sets `"ignoreCommand": "bash vercel-should-build.sh"` (path is relative to **Root Directory** `admin`, not the repo root). The script exits **1** (build) when admin-related files changed, **0** (skip) otherwise. It also skips the `gh-pages` branch.
 
 **Vercel project settings to confirm:**
 
 1. **Root Directory:** `admin`
 2. **Production Branch:** `main`
-3. **Git → Ignored Build Step:** should use `ignoreCommand` from `vercel.json`, or paste: `bash admin/vercel-should-build.sh`
+3. **Git → Ignored Build Step:** should use `ignoreCommand` from `vercel.json`, or paste: `bash vercel-should-build.sh` (not `admin/vercel-should-build.sh`)
 
 If you prefer **every** `main` commit to redeploy admin (even content-only edits), remove `ignoreCommand` from `admin/vercel.json` and clear the Ignored Build Step in the dashboard.
 
@@ -138,11 +138,13 @@ GitHub Actions pushes the **built site** to the `gh-pages` branch. Vercel must *
 
 After the next push to `main` (CI rebuilds `gh-pages`), new `gh-pages` commits should stop triggering failed Vercel builds. Old failed rows in the dashboard stay as history.
 
-**Immediate fix (no code wait):** Vercel project → **Settings → Git** → **Ignored Build Step** → Custom:
+**Immediate fix (no code wait):** Vercel project → **Settings → Git** → **Ignored Build Step** → Custom (with Root Directory `admin`):
 
 ```bash
 [ "$VERCEL_GIT_COMMIT_REF" = "gh-pages" ]
 ```
+
+Or for path-based skips: `bash vercel-should-build.sh` (same as `vercel.json`, **not** `bash admin/vercel-should-build.sh`).
 
 (Exit `0` skips the build; exit `1` builds. This runs before Vercel looks for Root Directory `admin` on `gh-pages`.)
 
