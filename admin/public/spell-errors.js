@@ -5,6 +5,7 @@
 import {
   textsFromEditor,
   scanCorpusItems,
+  ensureSpellDictionary,
   ignoreWord,
   addCustomWord,
   clearSpellWordCache,
@@ -43,14 +44,23 @@ export async function fetchEditorItems(api, paths, onProgress, signal) {
 }
 
 export async function runCorpusSpellScan(api, { onProgress, signal } = {}) {
+  await ensureSpellDictionary(onProgress, signal);
+
   const paths = await listAllBhajanPaths(api, signal);
-  onProgress?.(0, paths.length, 'list');
+  onProgress?.(paths.length, paths.length, 'list');
+  abortIfNeeded(signal);
+
   const items = await fetchEditorItems(api, paths, onProgress, signal);
   const result = await scanCorpusItems(items, {
     onProgress,
     signal,
+    dictionaryReady: true,
   });
   return { ...result, pathsListed: paths.length };
+}
+
+function abortIfNeeded(signal) {
+  if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
 }
 
 export async function applyCorpusCorrection(api, word, replacement, paths) {

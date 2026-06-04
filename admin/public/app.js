@@ -1251,17 +1251,29 @@ function endSpellCorpusOp() {
 function spellCorpusProgressLabel(sc) {
   const { phase, progress } = sc;
   const { current, total } = progress;
+  if (phase === 'dict') {
+    return current
+      ? `Loading Hindi dictionary… (${current}s — first time may take 1–2 min)`
+      : 'Loading Hindi dictionary… (first time may take 1–2 min)';
+  }
   if (phase === 'list') return 'Listing bhajan files…';
-  if (phase === 'load') return `Loading bhajans… ${current}/${total}`;
-  if (phase === 'spell') return `Checking spelling… ${current}/${total}`;
-  return 'Scanning…';
+  if (phase === 'load') return `Loading bhajan text from GitHub… ${current}/${total}`;
+  if (phase === 'tokenize') return 'Collecting words from all bhajans…';
+  if (phase === 'words') {
+    return total
+      ? `Spell-checking unique words… ${current}/${total}`
+      : 'Spell-checking unique words…';
+  }
+  if (phase === 'spell') return `Building error list… ${current}/${total}`;
+  return `Working… (${phase || 'unknown'})`;
 }
 
 function renderSpellCorpusBody() {
   const sc = state.spellCorpus;
   if (sc.scanning) {
     const p = sc.progress;
-    const indeterminate = sc.phase === 'dict' || sc.phase === 'list';
+    const indeterminate =
+      sc.phase === 'dict' || sc.phase === 'list' || sc.phase === 'tokenize';
     const pct = indeterminate ? 0 : p.total ? Math.round((p.current / p.total) * 100) : 0;
     const barClass = indeterminate
       ? 'spell-corpus-progress__bar spell-corpus-progress__bar--indeterminate'
@@ -1277,7 +1289,7 @@ function renderSpellCorpusBody() {
   </div>`;
   const report = sc.report;
   if (!report) {
-    return `${actions}<p class="hint">Tap <strong>Scan all bhajans</strong> to start. First run loads the dictionary (~1–2 min), then scans all YAML. Progress shows each step; use Cancel if needed.</p>`;
+    return `${actions}<p class="hint">Tap <strong>Scan all bhajans</strong>. Steps: (1) Hindi dictionary, (2) load ~200 YAML files from GitHub, (3) check unique words, (4) show results. Use Cancel anytime.</p>`;
   }
   if (!report.clusters.length) {
     return `${actions}<p class="spell-ok">No unknown words in ${report.filesScanned} bhajan(s).</p>`;
@@ -1366,23 +1378,15 @@ async function startSpellCorpusScan() {
   state.spellCorpus.progress = { current: 0, total: 0 };
   state.spellCorpus.report = null;
   state.spellCorpus.abortCtrl = new AbortController();
-  let lastProgressRender = 0;
-  let lastPhase = '';
   render();
 
   try {
     const report = await runCorpusSpellScan(api, {
       signal: state.spellCorpus.abortCtrl.signal,
       onProgress: (current, total, phase) => {
-        state.spellCorpus.phase = phase;
+        if (phase) state.spellCorpus.phase = phase;
         state.spellCorpus.progress = { current, total };
-        const now = Date.now();
-        const phaseChanged = phase !== lastPhase;
-        lastPhase = phase;
-        if (phaseChanged || now - lastProgressRender > 250) {
-          lastProgressRender = now;
-          render();
-        }
+        render();
       },
     });
     endSpellCorpusOp();

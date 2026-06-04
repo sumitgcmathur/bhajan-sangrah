@@ -173,12 +173,30 @@ function abortIfNeeded(signal) {
 /**
  * @param {Array<{ path: string, title: string, texts: Array<{field:string,text:string}> }>} items
  */
-export async function scanCorpusItems(items, { onProgress, signal } = {}) {
-  onProgress?.(0, 1, 'dict');
-  abortIfNeeded(signal);
-  await getChecker();
+/** Load Hunspell once; call onProgress(seconds, 0, 'dict') while waiting. */
+export async function ensureSpellDictionary(onProgress, signal) {
+  onProgress?.(0, 0, 'dict');
+  const started = Date.now();
+  const tick = setInterval(() => {
+    if (signal?.aborted) return;
+    const sec = Math.floor((Date.now() - started) / 1000);
+    onProgress?.(sec, 0, 'dict');
+  }, 500);
+  try {
+    abortIfNeeded(signal);
+    await getChecker();
+  } finally {
+    clearInterval(tick);
+  }
+}
+
+export async function scanCorpusItems(items, { onProgress, signal, dictionaryReady = false } = {}) {
+  if (!dictionaryReady) {
+    await ensureSpellDictionary(onProgress, signal);
+  }
   abortIfNeeded(signal);
 
+  onProgress?.(0, 1, 'tokenize');
   const uniqueWords = new Set();
   for (const { texts } of items) {
     for (const { text } of texts) {
