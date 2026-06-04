@@ -113,8 +113,7 @@ lyrics:
 - **`sthayi_connect_text`** — optional exact refrain string under `lyrics:` (e.g. `ॐ जय शिव ओंकारा`). If omitted, first 3 words of `sthayi` are used (longer → `...`).
 - **`paragraphs`** — antaras (`- |`) and optional `- commentary: |` entries, in order.
 - **`dhvani`** / **`shlok`** — closing shloka after lyrics (inside `lyrics:`).
-- **`sthayi_marker`** — optional text in lyrics that triggers repeating the sthayi between paragraphs (advanced).
-- **`parts`** — for multi-part bhajans (e.g. long charitra): array of `{ sthayi, paragraphs, sthayi_marker? }`.
+- **`parts`** — for multi-part bhajans (e.g. long charitra): array of `{ sthayi, paragraphs }`.
 
 Filenames are sorted lexicographically (`001-…`, `002-…`) — that order is the **bhajan number** on the page.
 

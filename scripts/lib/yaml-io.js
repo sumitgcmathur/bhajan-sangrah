@@ -101,11 +101,6 @@ function parseLyricsObject(lines, startIdx) {
           i = next;
           continue;
         }
-        if (part && pr.match(/^\s{6}sthayi_marker:\s/)) {
-          part.sthayi_marker = pr.replace(/^\s{6}sthayi_marker:\s*/, '').trim();
-          i += 1;
-          continue;
-        }
         if (part && pr.match(/^\s{6}paragraphs:\s*$/)) {
           const parsed = parseParagraphList(lines, i + 1, 8);
           part.paragraphs = parsed.paragraphs;
@@ -122,12 +117,6 @@ function parseLyricsObject(lines, startIdx) {
       const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
       lyrics.sthayi = text;
       i = next;
-      continue;
-    }
-
-    if (raw.match(/^\s{2}sthayi_marker:\s/)) {
-      lyrics.sthayi_marker = raw.replace(/^\s{2}sthayi_marker:\s*/, '').trim();
-      i += 1;
       continue;
     }
 
@@ -336,14 +325,12 @@ function dumpLyricsObject(lyrics) {
     for (const part of lyrics.parts) {
       out.push('    - sthayi: |');
       for (const line of String(part.sthayi || '').split('\n')) out.push(`        ${line}`);
-      if (part.sthayi_marker) out.push(`      sthayi_marker: ${part.sthayi_marker}`);
       out.push(...dumpParagraphList(part.paragraphs, 6));
     }
     return out;
   }
   if (lyrics.pre_shlok) out.push(...dumpLiteralBlock('pre_shlok', lyrics.pre_shlok, 2));
   if (lyrics.sthayi) out.push(...dumpLiteralBlock('sthayi', lyrics.sthayi, 2));
-  if (lyrics.sthayi_marker) out.push(`  sthayi_marker: ${lyrics.sthayi_marker}`);
   if (lyrics.sthayi_connect === false) out.push('  sthayi_connect: false');
   else if (lyrics.sthayi_connect === true) out.push('  sthayi_connect: true');
   if (lyrics.sthayi_connect_text) {

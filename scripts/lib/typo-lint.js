@@ -10,23 +10,6 @@ const { isStructuredLyrics } = require('./lyrics-structure');
 
 const RULES = [
   {
-    id: 'duplicate_ter',
-    label: 'Duplicate टेर (inline + sthayi_marker)',
-    detect(text, ctx) {
-      if (ctx.field !== 'lyrics.sthayi' || ctx.sthayi_marker !== 'टेर') return null;
-      if (!/(?:\[?\s*टेर|टेर\s*\|\||\|\|\s*टेर)/u.test(text)) return null;
-      return 'स्थायी line has टेर in text while sthayi_marker is also टेर (renders twice)';
-    },
-    fix(text) {
-      let t = String(text || '').trim();
-      t = t.replace(/।?\s*\[?\s*टेर\s*।?\s*\]?/gu, '');
-      t = t.replace(/\s*\|\|\s*टेर\s*\|\|\s*/gu, ' ');
-      t = t.replace(/\s+/g, ' ').trim();
-      if (!/॥\s*$/.test(t)) t = t.replace(/।\s*$/, '॥');
-      return t;
-    },
-  },
-  {
     id: 'kachh_hum',
     label: 'कछ → कछु (before हम)',
     detect(text) {
@@ -94,11 +77,7 @@ function collectFields(doc) {
   }
   if (lyrics.tarz) out.push({ field: 'lyrics.tarz', text: String(lyrics.tarz) });
   if (lyrics.sthayi) {
-    out.push({
-      field: 'lyrics.sthayi',
-      text: String(lyrics.sthayi),
-      sthayi_marker: lyrics.sthayi_marker || null,
-    });
+    out.push({ field: 'lyrics.sthayi', text: String(lyrics.sthayi) });
   }
   if (lyrics.pre_shlok) out.push({ field: 'lyrics.pre_shlok', text: String(lyrics.pre_shlok) });
   if (lyrics.dhvani) out.push({ field: 'lyrics.dhvani', text: String(lyrics.dhvani) });
@@ -111,10 +90,7 @@ function collectFields(doc) {
 
 function scanField(fieldEntry, doc) {
   const issues = [];
-  const ctx = {
-    field: fieldEntry.field,
-    sthayi_marker: fieldEntry.sthayi_marker || (doc.lyrics && doc.lyrics.sthayi_marker) || null,
-  };
+  const ctx = { field: fieldEntry.field };
   for (const rule of RULES) {
     const detail = rule.detect(fieldEntry.text, ctx);
     if (!detail) continue;
@@ -207,10 +183,7 @@ function applyAutoFixes(config) {
       const fields = collectFields(doc);
       for (const f of fields) {
         let text = f.text;
-        const ctx = {
-          field: f.field,
-          sthayi_marker: f.sthayi_marker || (doc.lyrics && doc.lyrics.sthayi_marker) || null,
-        };
+        const ctx = { field: f.field };
         for (const rule of RULES) {
           if (!rule.detect(text, ctx)) continue;
           const next = rule.fix(text, ctx);

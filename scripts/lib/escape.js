@@ -170,11 +170,11 @@ function renderParagraphHtml(text, verseNum, opts = {}) {
   };
 }
 
-function renderSthayiHtml(sthayi, sthayiMarker, anchorId) {
+function renderSthayiHtml(sthayi, anchorId) {
   const body = String(sthayi || '').trim();
   if (!body) return '';
 
-  const endMarker = sthayiMarker === 'टेर' ? ' || टेर ||' : STHAYI_MARKER;
+  const endMarker = STHAYI_MARKER;
   const idAttr = anchorId ? ` id="${escapeHtml(anchorId)}"` : '';
 
   if (isMultilineParagraph(body)) {
@@ -233,7 +233,7 @@ function renderLyricsPart(part, tarzHtml, opts = {}) {
   const sthayiSuffix = resolveSthayiConnectSuffix(part);
 
   if (part.sthayi) {
-    const sthayiHtml = renderSthayiHtml(part.sthayi, part.sthayi_marker, opts.sthayiAnchorId || null);
+    const sthayiHtml = renderSthayiHtml(part.sthayi, opts.sthayiAnchorId || null);
     if (sthayiHtml) chunks.push(sthayiHtml);
   }
 
@@ -285,7 +285,6 @@ function lyricsStructureToHtml(lyrics, tarz, opts = {}) {
     else parts = [{
       pre_shlok: norm.pre_shlok,
       sthayi: norm.sthayi,
-      sthayi_marker: norm.sthayi_marker,
       paragraphs: norm.paragraphs,
       dhvani: norm.dhvani,
     }];
@@ -296,7 +295,6 @@ function lyricsStructureToHtml(lyrics, tarz, opts = {}) {
       {
         pre_shlok: lyrics.pre_shlok,
         sthayi: lyrics.sthayi,
-        sthayi_marker: lyrics.sthayi_marker,
         sthayi_connect: lyrics.sthayi_connect,
         sthayi_connect_text: lyrics.sthayi_connect_text,
         paragraphs: lyrics.paragraphs,

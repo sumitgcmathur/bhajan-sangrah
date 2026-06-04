@@ -40,7 +40,6 @@ function docToEditor(doc) {
     jabani: d.jabani || '',
     lyrics: {
       sthayi: '',
-      sthayi_marker: '',
       sthayi_connect: false,
       sthayi_connect_text: '',
       pre_shlok: '',
@@ -59,7 +58,6 @@ function docToEditor(doc) {
   if (!lyrics || typeof lyrics !== 'object') return out;
 
   out.lyrics.sthayi = lyrics.sthayi || '';
-  out.lyrics.sthayi_marker = lyrics.sthayi_marker || '';
   out.lyrics.sthayi_connect =
     lyrics.sthayi_connect === true ? true : lyrics.sthayi_connect === false ? false : undefined;
   out.lyrics.sthayi_connect_text = lyrics.sthayi_connect_text || '';
@@ -98,7 +96,6 @@ function editorToDoc(editor) {
 
   const lyrics = {
     ...(L.sthayi ? { sthayi: L.sthayi } : {}),
-    ...(L.sthayi_marker ? { sthayi_marker: L.sthayi_marker } : {}),
     ...(L.sthayi_connect === true ? { sthayi_connect: true } : L.sthayi_connect === false ? { sthayi_connect: false } : {}),
     ...(L.sthayi_connect_text ? { sthayi_connect_text: L.sthayi_connect_text } : {}),
     ...(L.pre_shlok ? { pre_shlok: L.pre_shlok } : {}),

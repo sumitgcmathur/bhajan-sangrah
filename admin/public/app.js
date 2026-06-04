@@ -44,7 +44,6 @@ function emptyEditor() {
     jabani: '',
     lyrics: {
       sthayi: '',
-      sthayi_marker: '',
       sthayi_connect: false,
       sthayi_connect_text: '',
       pre_shlok: '',
@@ -250,8 +249,6 @@ function syncEditorFromDom() {
   const L = e.lyrics;
   const sthayiEl = document.getElementById('f-sthayi');
   if (sthayiEl) L.sthayi = sthayiEl.value.trim();
-  const markerEl = document.getElementById('f-sthayi-marker');
-  if (markerEl) L.sthayi_marker = markerEl.value.trim();
   const connectOff = document.getElementById('f-connect-off');
   if (connectOff) L.sthayi_connect = connectOff.checked ? false : undefined;
   const connectTextEl = document.getElementById('f-connect-text');
@@ -324,11 +321,7 @@ function initEditOptionalFromEditor(editor) {
 }
 
 function hasSthayiAdvanced(L) {
-  return Boolean(
-    (L.sthayi_marker || '').trim() ||
-      L.sthayi_connect === false ||
-      (L.sthayi_connect_text || '').trim(),
-  );
+  return Boolean(L.sthayi_connect === false || (L.sthayi_connect_text || '').trim());
 }
 
 function editJumpBarHtml(e, L) {
@@ -586,8 +579,6 @@ function render() {
             <textarea id="f-sthayi" class="hi-field" lang="hi-IN" rows="4">${escapeHtml(L.sthayi)}</textarea>
             <details class="sthayi-advanced"${advOpen}>
               <summary>Advanced refrain options</summary>
-              <label for="f-sthayi-marker">Refrain marker</label>
-              <input type="text" id="f-sthayi-marker" class="hi-field" lang="hi-IN" value="${escapeAttr(L.sthayi_marker)}">
               <div class="check-row">
                 <input type="checkbox" id="f-connect-off" ${L.sthayi_connect === false ? 'checked' : ''}>
                 <label for="f-connect-off">Disable sthayi_connect</label>

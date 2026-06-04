@@ -181,11 +181,9 @@ function migrateBlankBlocksToStanzas(blocks, hookPhrases) {
     }
   }
 
-  const parsed = parseEndMarker(sthayi.split('\n')[0] || sthayi);
   return {
     strategy: 'stanza-blocks',
     sthayi,
-    sthayi_marker: parsed.marker === 'टेर' ? 'टेर' : null,
     paragraphs: rest,
   };
 }
@@ -210,7 +208,6 @@ function normalizeFromLegacy(text) {
     return {
       strategy: 'first-line-sthayi',
       sthayi: parsed.body,
-      sthayi_marker: parsed.marker === 'टेर' ? 'टेर' : null,
       paragraphs: allLines.slice(1).map((l) => stripVerseNumbers(l)),
       lineCount: allLines.length,
       blockCount: 1,
@@ -222,7 +219,6 @@ function normalizeFromLegacy(text) {
     return {
       strategy: 'single-line',
       sthayi: parsed.body,
-      sthayi_marker: parsed.marker === 'टेर' ? 'टेर' : null,
       paragraphs: [],
       lineCount: 1,
       blockCount: 1,
@@ -232,7 +228,6 @@ function normalizeFromLegacy(text) {
   return {
     strategy: 'empty',
     sthayi: '',
-    sthayi_marker: null,
     paragraphs: [],
     lineCount: 0,
     blockCount: 0,
@@ -332,7 +327,6 @@ function migrateDoc(doc) {
 
   out.lyrics = {
     sthayi: sanitizeStanzaText(norm.sthayi || ''),
-    ...(norm.sthayi_marker ? { sthayi_marker: norm.sthayi_marker } : {}),
     paragraphs: cleanParas(norm.paragraphs).map(sanitizeStanzaText),
   };
   return out;
