@@ -317,6 +317,8 @@ main.edit-main {
   font-weight: 600;
   color: var(--accent-dark);
   cursor: pointer;
+  text-decoration: none;
+  box-sizing: border-box;
 }
 
 .bhajan-item {

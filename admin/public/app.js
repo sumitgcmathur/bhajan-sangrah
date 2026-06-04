@@ -36,6 +36,170 @@ const HI_FIELD = 'class="hi-field" lang="hi-IN"';
 
 const GROUP_OTHER = '__other__';
 
+/** @type {string} last #/… hash written by syncRouteFromState */
+let lastSyncedRouteHash = '';
+let routeUseReplace = false;
+
+function parseRouteHash() {
+  const raw = (location.hash || '#/').replace(/^#/, '') || '/';
+  const qIdx = raw.indexOf('?');
+  const pathPart = qIdx >= 0 ? raw.slice(0, qIdx) : raw;
+  const q = new URLSearchParams(qIdx >= 0 ? raw.slice(qIdx + 1) : '');
+  const parts = pathPart.split('/').filter(Boolean);
+
+  if (!parts.length || parts[0] === '') return { view: 'sections' };
+  if (parts[0] === 'replace') return { view: 'replace' };
+
+  if (parts[0] === 'edit') {
+    const p = q.get('p');
+    if (p && p.startsWith('content/') && !p.includes('..')) return { view: 'edit', path: p };
+  }
+  if (parts[0] === 'preview') {
+    const p = q.get('p');
+    if (p && p.startsWith('content/') && !p.includes('..')) return { view: 'preview', path: p };
+  }
+  if (parts[0] === 's' && parts[1]) {
+    const slug = decodeURIComponent(parts[1]);
+    if (parts[2] === 'new') return { view: 'edit-new', slug };
+    if (parts.length === 2) return { view: 'bhajans', slug };
+  }
+  return { view: 'sections' };
+}
+
+function buildRouteHash() {
+  if (state.view === 'login' || state.view === 'loading') return '#/';
+  if (state.view === 'sections') return '#/';
+  if (state.view === 'replace') return '#/replace';
+  if (state.view === 'bhajans' && state.section?.slug) {
+    return `#/s/${encodeURIComponent(state.section.slug)}`;
+  }
+  if (state.view === 'edit') {
+    if (state.path) return `#/edit?p=${encodeURIComponent(state.path)}`;
+    if (state.section?.slug) return `#/s/${encodeURIComponent(state.section.slug)}/new`;
+  }
+  if (state.view === 'preview' && state.path) {
+    return `#/preview?p=${encodeURIComponent(state.path)}`;
+  }
+  return '#/';
+}
+
+function syncRouteFromState() {
+  if (state.view === 'loading' || state.view === 'login') return;
+  const hash = buildRouteHash();
+  if (hash === lastSyncedRouteHash) return;
+  lastSyncedRouteHash = hash;
+  const url = `${location.pathname}${location.search}${hash}`;
+  if (routeUseReplace) history.replaceState(null, '', url);
+  else history.pushState(null, '', url);
+  routeUseReplace = false;
+}
+
+function finishRouteSync() {
+  syncRouteFromState();
+}
+
+function sectionSlugFromPath(filePath) {
+  const m = String(filePath || '').match(/^content\/([^/]+)\//);
+  return m ? m[1] : null;
+}
+
+async function ensureSectionForPath(filePath) {
+  const slug = sectionSlugFromPath(filePath);
+  if (!slug) return;
+  if (state.section?.slug === slug && state.bhajans?.length) return;
+  await loadBhajans(slug);
+}
+
+async function applyRouteFromHash() {
+  routeUseReplace = true;
+  lastSyncedRouteHash = '';
+  const route = parseRouteHash();
+
+  if (route.view === 'sections') {
+    state.view = 'sections';
+    state.error = null;
+    render();
+    return;
+  }
+
+  if (route.view === 'replace') {
+    endReplaceOp();
+    state.error = null;
+    state.replace.preview = null;
+    state.view = 'replace';
+    render();
+    return;
+  }
+
+  if (route.view === 'bhajans') {
+    const sec = state.sections.find((s) => s.slug === route.slug);
+    if (!sec) {
+      state.view = 'sections';
+      render();
+      return;
+    }
+    await loadBhajans(route.slug);
+    state.view = 'bhajans';
+    state.error = null;
+    render();
+    return;
+  }
+
+  if (route.view === 'edit-new') {
+    const sec = state.sections.find((s) => s.slug === route.slug);
+    if (!sec) {
+      state.view = 'sections';
+      render();
+      return;
+    }
+    await loadBhajans(route.slug);
+    state.path = null;
+    state.sha = null;
+    state.editor = emptyEditor();
+    resetParagraphEditor();
+    initEditOptionalFromEditor(state.editor);
+    state.view = 'edit';
+    state.error = null;
+    render();
+    return;
+  }
+
+  if (route.view === 'edit' && route.path) {
+    try {
+      await loadEditorFromPath(route.path);
+      state.view = 'edit';
+      state.error = null;
+      render();
+    } catch (e) {
+      state.error = e.message;
+      state.view = 'sections';
+      render();
+    }
+    return;
+  }
+
+  if (route.view === 'preview' && route.path) {
+    try {
+      await loadEditorFromPath(route.path);
+      state.view = 'preview';
+      state.previewHtml = null;
+      state.previewBusy = true;
+      state.error = null;
+      render();
+      await runPreviewRequest();
+    } catch (e) {
+      state.previewBusy = false;
+      state.error = e.message;
+      state.view = 'sections';
+      render();
+    }
+    return;
+  }
+
+  state.view = 'sections';
+  render();
+}
+
 function emptyEditor() {
   return {
     title: '',
@@ -417,25 +581,25 @@ function bindTopbar(opts = {}) {
     if (opts.abortReplaceOnLeave) state.replace.abortCtrl?.abort();
     if (state.view === 'replace') endReplaceOp();
     state.error = null;
-    state.view = 'sections';
-    render();
+    location.hash = '#/';
   });
   document.querySelector('[data-back="bhajans"]')?.addEventListener('click', () => {
     if (opts.abortReplaceOnLeave) state.replace.abortCtrl?.abort();
     state.error = null;
-    state.view = 'bhajans';
-    render();
+    if (state.section?.slug) location.hash = `#/s/${encodeURIComponent(state.section.slug)}`;
+    else location.hash = '#/';
   });
   document.querySelector('[data-back="edit"]')?.addEventListener('click', () => {
     state.error = null;
     state.previewHtml = null;
     state.previewBusy = false;
-    state.view = 'edit';
-    render();
+    if (state.path) location.hash = `#/edit?p=${encodeURIComponent(state.path)}`;
+    else if (state.section?.slug) location.hash = `#/s/${encodeURIComponent(state.section.slug)}/new`;
+    else location.hash = '#/';
   });
 }
 
-function render() {
+function renderInner() {
   stopDictation();
   if (state.view !== 'preview') setPreviewStylesheet(false);
   if (state.view !== 'edit' && state.view !== 'replace' && state.view !== 'preview') {
@@ -476,14 +640,10 @@ function render() {
       </main>`;
     document.getElementById('open-section').addEventListener('click', () => {
       const slug = document.getElementById('section-pick').value;
-      if (slug) openSection(slug);
+      if (slug) location.hash = `#/s/${encodeURIComponent(slug)}`;
     });
     document.getElementById('go-replace').addEventListener('click', () => {
-      endReplaceOp();
-      state.error = null;
-      state.replace.preview = null;
-      state.view = 'replace';
-      render();
+      location.hash = '#/replace';
     });
     return;
   }
@@ -530,21 +690,13 @@ function render() {
         <button type="button" class="btn btn-primary" id="add-bhajan" style="width:100%;margin-bottom:0.75rem">+ New bhajan</button>
         ${state.bhajans.map((b) => `
           <div class="bhajan-item">
-            <button type="button" class="list-btn" data-path="${escapeAttr(b.path)}">${escapeHtml(bhajanDisplayName(b))}</button>
+            <a class="list-btn" href="#/edit?p=${encodeURIComponent(b.path)}">${escapeHtml(bhajanDisplayName(b))}</a>
           </div>`).join('') || '<p class="hint">No bhajans in this section yet.</p>'}
       </main>`;
     bindTopbar();
     document.getElementById('add-bhajan').addEventListener('click', () => {
-      state.path = null;
-      state.sha = null;
-      state.editor = emptyEditor();
-      resetParagraphEditor();
-      initEditOptionalFromEditor(state.editor);
-      state.view = 'edit';
-      render();
-    });
-    app.querySelectorAll('[data-path]').forEach((btn) => {
-      btn.addEventListener('click', () => openFile(btn.dataset.path));
+      if (!state.section?.slug) return;
+      location.hash = `#/s/${encodeURIComponent(state.section.slug)}/new`;
     });
     return;
   }
@@ -640,13 +792,18 @@ function render() {
     document.getElementById('preview-back')?.addEventListener('click', () => {
       state.error = null;
       state.previewHtml = null;
-      state.view = 'edit';
-      render();
+      if (state.path) location.hash = `#/edit?p=${encodeURIComponent(state.path)}`;
+      else if (state.section?.slug) location.hash = `#/s/${encodeURIComponent(state.section.slug)}/new`;
+      else location.hash = '#/';
     });
     document.getElementById('preview-publish')?.addEventListener('click', () => commitPublish());
-    setPreviewStylesheet(true);
     return;
   }
+}
+
+function render() {
+  renderInner();
+  finishRouteSync();
 }
 
 function setPreviewStylesheet(on) {
@@ -962,6 +1119,20 @@ function bindEditor() {
   bindSpeechDictation(app);
 }
 
+async function runPreviewRequest() {
+  const data = await api('/api/preview', {
+    method: 'POST',
+    body: JSON.stringify({
+      editor: state.editor,
+      sectionSlug: state.section?.slug,
+      sectionTitle: state.section?.title,
+    }),
+  });
+  state.previewHtml = data.html || '';
+  state.previewBusy = false;
+  render();
+}
+
 async function openPreview() {
   state.error = null;
   collectEditor();
@@ -977,17 +1148,7 @@ async function openPreview() {
   render();
 
   try {
-    const data = await api('/api/preview', {
-      method: 'POST',
-      body: JSON.stringify({
-        editor: state.editor,
-        sectionSlug: state.section?.slug,
-        sectionTitle: state.section?.title,
-      }),
-    });
-    state.previewHtml = data.html || '';
-    state.previewBusy = false;
-    render();
+    await runPreviewRequest();
   } catch (e) {
     state.previewBusy = false;
     state.error = e.message;
@@ -1039,9 +1200,12 @@ async function commitPublish() {
       : '';
     state.previewHtml = null;
     alert(`Published — GitHub Actions will rebuild the public site.${renameNote}`);
-    state.view = 'bhajans';
-    await loadBhajans(state.section.slug);
-    render();
+    if (state.section?.slug) {
+      await loadBhajans(state.section.slug);
+      location.hash = `#/s/${encodeURIComponent(state.section.slug)}`;
+    } else {
+      location.hash = '#/';
+    }
   } catch (e) {
     state.error = e.message;
     if (btn) btn.disabled = false;
@@ -1055,20 +1219,16 @@ async function deleteEditor() {
     await api(`/api/file?path=${encodeURIComponent(state.path)}&sha=${encodeURIComponent(state.sha)}`, {
       method: 'DELETE',
     });
-    state.view = 'bhajans';
-    await loadBhajans(state.section.slug);
-    render();
+    if (state.section?.slug) {
+      await loadBhajans(state.section.slug);
+      location.hash = `#/s/${encodeURIComponent(state.section.slug)}`;
+    } else {
+      location.hash = '#/';
+    }
   } catch (e) {
     state.error = e.message;
     render();
   }
-}
-
-async function openSection(slug) {
-  state.section = state.sections.find((s) => s.slug === slug);
-  await loadBhajans(slug);
-  state.view = 'bhajans';
-  render();
 }
 
 async function loadBhajans(slug) {
@@ -1078,13 +1238,18 @@ async function loadBhajans(slug) {
   state.groupOptions = data.groups || [];
 }
 
-async function openFile(path) {
+async function loadEditorFromPath(path) {
+  await ensureSectionForPath(path);
   const data = await api(`/api/file?path=${encodeURIComponent(path)}`);
   state.path = data.path;
   state.sha = data.sha;
   state.editor = data.editor;
   resetParagraphEditor();
   initEditOptionalFromEditor(state.editor);
+}
+
+async function openFile(path) {
+  await loadEditorFromPath(path);
   state.view = 'edit';
   state.error = null;
   render();
@@ -1096,13 +1261,19 @@ async function init() {
     state.login = me.login;
     const data = await api('/api/sections');
     state.sections = data.sections;
-    state.view = 'sections';
-    history.replaceState(null, '', location.pathname);
-    render();
+    state.view = 'loading';
+    renderInner();
+    await applyRouteFromHash();
   } catch {
     state.view = 'login';
     render();
   }
 }
+
+window.addEventListener('hashchange', () => {
+  if (state.view === 'login' || state.view === 'loading') return;
+  if (location.hash === lastSyncedRouteHash) return;
+  applyRouteFromHash();
+});
 
 init();

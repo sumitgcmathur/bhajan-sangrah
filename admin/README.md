@@ -71,6 +71,21 @@ From the **Sections** screen, open **Find & replace (all YAML)**.
 
 Options: regular expression, case insensitive. Raw file text is updated (YAML structure is preserved if you only change lyrics text).
 
+## URLs and reload
+
+Navigation uses the **hash** in the address bar so reload and back/forward keep context:
+
+| URL hash | Screen |
+|----------|--------|
+| `#/` | Section picker (home) |
+| `#/s/{slug}` | Bhajan list for that section |
+| `#/s/{slug}/new` | New bhajan editor |
+| `#/edit?p=content/…` | Edit existing file |
+| `#/preview?p=content/…` | Publish preview |
+| `#/replace` | Find & replace |
+
+Example: `https://your-admin.vercel.app/#/edit?p=content%2Fshiv%2F001-….yaml` reopens that bhajan after refresh.
+
 ## Edit screen layout
 
 The edit form uses a **section menu** (left column on wide screens, tabs on phones): **Basic**, **स्थायी**, **Antaras**, **More** (optional shloka / dhvani / jabani), and **Legacy** when applicable. Only one panel is visible at a time; switching sections keeps your in-memory edits until you publish.
