@@ -1,4 +1,4 @@
-import { bindSpeechDictation, stopDictation } from './speech.js';
+import { bindSpeechDictation, stopDictation, speechSupported } from './speech.js';
 
 const app = document.getElementById('app');
 
@@ -13,8 +13,9 @@ const state = {
   sha: null,
   editor: null,
   error: null,
-  paraEditMode: 'structured',
+  paraEditMode: 'paste',
   paraBulkDraft: null,
+  editOptional: { preShlok: false, dhvani: false, jabani: false },
   replace: {
     find: '',
     replace: '',
@@ -242,14 +243,21 @@ function syncEditorFromDom() {
     e.group = readGroupValue();
   }
   e.swarachit = document.getElementById('f-swarachit')?.checked || false;
-  e.jabani = document.getElementById('f-jabani')?.value.trim() || '';
+  const jabEl = document.getElementById('f-jabani');
+  if (jabEl) e.jabani = jabEl.value.trim();
   const L = e.lyrics;
-  L.sthayi = document.getElementById('f-sthayi')?.value.trim() || '';
-  L.sthayi_marker = document.getElementById('f-sthayi-marker')?.value.trim() || '';
-  L.sthayi_connect = document.getElementById('f-connect-off')?.checked ? false : undefined;
-  L.sthayi_connect_text = document.getElementById('f-connect-text')?.value.trim() || '';
-  L.pre_shlok = document.getElementById('f-pre-shlok')?.value.trim() || '';
-  L.dhvani = document.getElementById('f-dhvani')?.value.trim() || '';
+  const sthayiEl = document.getElementById('f-sthayi');
+  if (sthayiEl) L.sthayi = sthayiEl.value.trim();
+  const markerEl = document.getElementById('f-sthayi-marker');
+  if (markerEl) L.sthayi_marker = markerEl.value.trim();
+  const connectOff = document.getElementById('f-connect-off');
+  if (connectOff) L.sthayi_connect = connectOff.checked ? false : undefined;
+  const connectTextEl = document.getElementById('f-connect-text');
+  if (connectTextEl) L.sthayi_connect_text = connectTextEl.value.trim();
+  const preEl = document.getElementById('f-pre-shlok');
+  if (preEl) L.pre_shlok = preEl.value.trim();
+  const dhvEl = document.getElementById('f-dhvani');
+  if (dhvEl) L.dhvani = dhvEl.value.trim();
   const legacy = document.getElementById('f-legacy');
   if (legacy) e.legacyLyricsText = legacy.value;
   flushParagraphEdits();
@@ -266,7 +274,7 @@ function flushParagraphEdits() {
     state.editor.lyrics.paragraphs = parsed.length ? parsed : [{ type: 'antara', text: '' }];
     return;
   }
-  const cards = document.querySelectorAll('.para-card');
+  const cards = document.querySelectorAll('.para-row');
   if (cards.length) {
     state.editor.lyrics.paragraphs = [...cards].map((card) => ({
       type: card.querySelector('.para-type').value,
@@ -277,7 +285,7 @@ function flushParagraphEdits() {
 }
 
 function versesSectionHtml(paragraphs) {
-  const mode = state.paraEditMode || 'structured';
+  const mode = state.paraEditMode || 'paste';
   const bulk =
     state.paraBulkDraft != null ? state.paraBulkDraft : paragraphsToBulkText(paragraphs);
   const structuredHidden = mode === 'paste' ? 'is-hidden' : '';
@@ -300,8 +308,96 @@ function versesSectionHtml(paragraphs) {
 }
 
 function resetParagraphEditor() {
-  state.paraEditMode = 'structured';
+  state.paraEditMode = 'paste';
   state.paraBulkDraft = null;
+}
+
+function initEditOptionalFromEditor(editor) {
+  const L = editor?.lyrics || {};
+  state.editOptional = {
+    preShlok: Boolean((L.pre_shlok || '').trim()),
+    dhvani: Boolean((L.dhvani || '').trim()),
+    jabani: Boolean((editor?.jabani || '').trim()),
+  };
+}
+
+function hasSthayiAdvanced(L) {
+  return Boolean(
+    (L.sthayi_marker || '').trim() ||
+      L.sthayi_connect === false ||
+      (L.sthayi_connect_text || '').trim(),
+  );
+}
+
+function editJumpBarHtml(e, L) {
+  const hasMore =
+    state.editOptional.preShlok ||
+    state.editOptional.dhvani ||
+    state.editOptional.jabani;
+  const moreLink = hasMore ? '<a href="#sec-more">More</a>' : '';
+  const hint = speechSupported()
+    ? '<span class="edit-jump__hint">Mic → focused field</span>'
+    : '<span class="edit-jump__hint">Use Hindi keyboard mic</span>';
+  return `<nav class="edit-jump" aria-label="Jump to section">
+    <div class="edit-jump__links">
+      <a href="#sec-basic">Basic</a>
+      <a href="#sec-sthayi">स्थायी</a>
+      <a href="#sec-verses">Antaras</a>
+      ${moreLink}
+    </div>
+    ${hint}
+  </nav>`;
+}
+
+function optionalLyricsHtml(e, L) {
+  const o = state.editOptional;
+  const blocks = [];
+  if (o.preShlok) {
+    blocks.push(`<div class="lyrics-block">
+      <h3>Opening shloka</h3>
+      <textarea id="f-pre-shlok" class="hi-field" lang="hi-IN" rows="3">${escapeHtml(L.pre_shlok)}</textarea>
+    </div>`);
+  }
+  if (o.dhvani) {
+    blocks.push(`<div class="lyrics-block">
+      <h3>Dhvani</h3>
+      <textarea id="f-dhvani" class="hi-field" lang="hi-IN" rows="3">${escapeHtml(L.dhvani)}</textarea>
+    </div>`);
+  }
+  if (o.jabani) {
+    blocks.push(`<div class="lyrics-block">
+      <h3>Jabani (explanation)</h3>
+      <textarea id="f-jabani" class="hi-field" lang="hi-IN" rows="4">${escapeHtml(e.jabani)}</textarea>
+    </div>`);
+  }
+  const adds = [];
+  if (!o.preShlok) {
+    adds.push(
+      '<button type="button" class="btn btn-add-optional" data-show-optional="preShlok">+ Opening shloka</button>',
+    );
+  }
+  if (!o.dhvani) {
+    adds.push(
+      '<button type="button" class="btn btn-add-optional" data-show-optional="dhvani">+ Dhvani</button>',
+    );
+  }
+  if (!o.jabani) {
+    adds.push(
+      '<button type="button" class="btn btn-add-optional" data-show-optional="jabani">+ Jabani</button>',
+    );
+  }
+  if (!blocks.length && !adds.length) return '';
+  return `<div class="optional-lyrics" id="sec-more">
+    ${blocks.join('')}
+    ${adds.length ? `<div class="optional-add-bar">${adds.join('')}</div>` : ''}
+  </div>`;
+}
+
+function dictationStickyBtnHtml() {
+  if (!speechSupported()) return '';
+  return `<button type="button" class="btn dictation-global" id="dictation-global" aria-label="Dictate into focused field (Hindi)" aria-pressed="false" title="Dictate into focused field">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-4.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+  </button>`;
 }
 
 function bhajanDisplayName(b) {
@@ -429,6 +525,7 @@ function render() {
       state.sha = null;
       state.editor = emptyEditor();
       resetParagraphEditor();
+      initEditOptionalFromEditor(state.editor);
       state.view = 'edit';
       render();
     });
@@ -443,46 +540,61 @@ function render() {
     const e = state.editor;
     const L = e.lyrics;
     const showGroup = Boolean(state.section?.grouped);
+    const advOpen = hasSthayiAdvanced(L) ? ' open' : '';
+    const groupBlock = showGroup
+      ? `<div class="basic-grid__group">${groupFieldHtml(e.group)}</div>`
+      : '';
     app.innerHTML = `
       ${topbar(e.title || 'Bhajan', 'bhajans')}
+      ${editJumpBarHtml(e, L)}
       <main class="edit-main">
         ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
-        <div class="form-section">
+        <div class="form-section" id="sec-basic">
           <h2>Basic</h2>
-          <label>Title</label>
-          <input type="text" id="f-title" ${HI_FIELD} value="${escapeAttr(e.title)}">
-          <label>Tarz (tune line)</label>
-          <input type="text" id="f-tarz" ${HI_FIELD} value="${escapeAttr(e.tarz)}">
-          ${showGroup ? groupFieldHtml(e.group) : ''}
-          <div class="check-row"><input type="checkbox" id="f-swarachit" ${e.swarachit ? 'checked' : ''}><label for="f-swarachit">Swarachit (composed)</label></div>
+          <div class="basic-grid">
+            <div class="basic-grid__title">
+              <label for="f-title">Title</label>
+              <input type="text" id="f-title" ${HI_FIELD} value="${escapeAttr(e.title)}">
+            </div>
+            <div class="basic-grid__row2${showGroup ? ' basic-grid__row2--group' : ''}">
+              <div class="basic-grid__tarz">
+                <label for="f-tarz">Tarz (tune line)</label>
+                <input type="text" id="f-tarz" ${HI_FIELD} value="${escapeAttr(e.tarz)}">
+              </div>
+              ${groupBlock}
+              <div class="check-row basic-grid__swarachit">
+                <input type="checkbox" id="f-swarachit" ${e.swarachit ? 'checked' : ''}>
+                <label for="f-swarachit">Swarachit</label>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-section">
-          <h2>Refrain (sthayi)</h2>
-          <textarea id="f-sthayi" ${HI_FIELD}>${escapeHtml(L.sthayi)}</textarea>
-          <label>Refrain marker (advanced)</label>
-          <input type="text" id="f-sthayi-marker" ${HI_FIELD} value="${escapeAttr(L.sthayi_marker)}">
-          <div class="check-row"><input type="checkbox" id="f-connect-off" ${L.sthayi_connect === false ? 'checked' : ''}><label for="f-connect-off">Disable sthayi_connect</label></div>
-          <label>sthayi_connect_text</label>
-          <input type="text" id="f-connect-text" ${HI_FIELD} value="${escapeAttr(L.sthayi_connect_text)}">
+        <div class="form-section form-section--lyrics" id="sec-lyrics">
+          <h2>Lyrics</h2>
+          <div class="lyrics-block" id="sec-sthayi">
+            <h3>स्थायी (refrain)</h3>
+            <textarea id="f-sthayi" class="hi-field" lang="hi-IN" rows="4">${escapeHtml(L.sthayi)}</textarea>
+            <details class="sthayi-advanced"${advOpen}>
+              <summary>Advanced refrain options</summary>
+              <label for="f-sthayi-marker">Refrain marker</label>
+              <input type="text" id="f-sthayi-marker" class="hi-field" lang="hi-IN" value="${escapeAttr(L.sthayi_marker)}">
+              <div class="check-row">
+                <input type="checkbox" id="f-connect-off" ${L.sthayi_connect === false ? 'checked' : ''}>
+                <label for="f-connect-off">Disable sthayi_connect</label>
+              </div>
+              <label for="f-connect-text">sthayi_connect_text</label>
+              <input type="text" id="f-connect-text" class="hi-field" lang="hi-IN" value="${escapeAttr(L.sthayi_connect_text)}">
+            </details>
+          </div>
+          <div class="lyrics-block" id="sec-verses">
+            <h3>Antaras</h3>
+            ${versesSectionHtml(L.paragraphs)}
+          </div>
+          ${optionalLyricsHtml(e, L)}
         </div>
-        <div class="form-section">
-          <h2>Opening shloka</h2>
-          <textarea id="f-pre-shlok" ${HI_FIELD}>${escapeHtml(L.pre_shlok)}</textarea>
-        </div>
-        <div class="form-section">
-          <h2>Verses (antaras)</h2>
-          ${versesSectionHtml(L.paragraphs)}
-        </div>
-        <div class="form-section">
-          <h2>Dhvani</h2>
-          <textarea id="f-dhvani" ${HI_FIELD}>${escapeHtml(L.dhvani)}</textarea>
-        </div>
-        <div class="form-section">
-          <h2>Jabani (explanation)</h2>
-          <textarea id="f-jabani" ${HI_FIELD}>${escapeHtml(e.jabani)}</textarea>
-        </div>
-        ${e.legacyLyricsText ? `<div class="form-section"><h2>Legacy lyrics</h2><textarea id="f-legacy" ${HI_FIELD}>${escapeHtml(e.legacyLyricsText)}</textarea></div>` : ''}
+        ${e.legacyLyricsText ? `<div class="form-section"><h2>Legacy lyrics</h2><textarea id="f-legacy" class="hi-field" lang="hi-IN">${escapeHtml(e.legacyLyricsText)}</textarea></div>` : ''}
         <div class="sticky-actions">
+          ${dictationStickyBtnHtml()}
           <button type="button" class="btn btn-primary" id="save">Publish</button>
           ${state.path ? '<button type="button" class="btn btn-danger" id="delete">Delete</button>' : ''}
         </div>
@@ -677,16 +789,20 @@ function topbar(title, back) {
 }
 
 function paraHtml(p, i) {
-  return `<div class="para-card" data-i="${i}">
-    <label>Type</label>
-    <select class="para-type"><option value="antara" ${p.type === 'antara' ? 'selected' : ''}>Antara (verse)</option><option value="commentary" ${p.type === 'commentary' ? 'selected' : ''}>Commentary</option></select>
-    <label>Text</label>
-    <textarea class="para-text hi-field" lang="hi-IN">${escapeHtml(p.text || '')}</textarea>
-    <div class="para-actions">
-      <button type="button" class="btn para-up">↑</button>
-      <button type="button" class="btn para-down">↓</button>
-      <button type="button" class="btn btn-danger para-del">Delete</button>
+  return `<div class="para-row" data-i="${i}">
+    <div class="para-row__head">
+      <span class="para-row__num">${i + 1}</span>
+      <select class="para-type" title="Paragraph type" aria-label="Paragraph ${i + 1} type">
+        <option value="antara" ${p.type === 'antara' ? 'selected' : ''}>Antara</option>
+        <option value="commentary" ${p.type === 'commentary' ? 'selected' : ''}>Commentary</option>
+      </select>
+      <div class="para-row__tools">
+        <button type="button" class="btn btn-icon para-up" aria-label="Move up">↑</button>
+        <button type="button" class="btn btn-icon para-down" aria-label="Move down">↓</button>
+        <button type="button" class="btn btn-icon btn-danger para-del" aria-label="Delete">✕</button>
+      </div>
     </div>
+    <textarea class="para-text hi-field" lang="hi-IN" rows="3">${escapeHtml(p.text || '')}</textarea>
   </div>`;
 }
 
@@ -744,7 +860,26 @@ function bindEditor() {
     render();
   });
 
-  document.querySelectorAll('.para-card').forEach((card) => {
+  document.querySelectorAll('[data-show-optional]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      syncEditorFromDom();
+      const key = btn.dataset.showOptional;
+      if (key && key in state.editOptional) state.editOptional[key] = true;
+      render();
+    });
+  });
+
+  document.querySelectorAll('.edit-jump a[href^="#"]').forEach((link) => {
+    link.addEventListener('click', (ev) => {
+      const id = link.getAttribute('href')?.slice(1);
+      const el = id ? document.getElementById(id) : null;
+      if (!el) return;
+      ev.preventDefault();
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  document.querySelectorAll('.para-row').forEach((card) => {
     const i = Number(card.dataset.i);
     card.querySelector('.para-del')?.addEventListener('click', () => {
       syncEditorFromDom();
@@ -856,6 +991,7 @@ async function openFile(path) {
   state.sha = data.sha;
   state.editor = data.editor;
   resetParagraphEditor();
+  initEditOptionalFromEditor(state.editor);
   state.view = 'edit';
   state.error = null;
   render();

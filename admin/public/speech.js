@@ -14,6 +14,7 @@ let wantsListen = false;
 let activeField = null;
 let activeBtn = null;
 let statusEl = null;
+let lastFocusedField = null;
 
 export function speechSupported() {
   return Boolean(SpeechRecognitionCtor);
@@ -50,7 +51,7 @@ function showStatus(msg, isError) {
 }
 
 function setListeningUi(on) {
-  document.querySelectorAll('.dictation-btn.is-active').forEach((b) => {
+  document.querySelectorAll('.dictation-global.is-active').forEach((b) => {
     b.classList.remove('is-active');
     b.setAttribute('aria-pressed', 'false');
   });
@@ -130,8 +131,27 @@ function getRecognition() {
   return r;
 }
 
+function isDictationField(el) {
+  if (!el || el.disabled || el.readOnly) return false;
+  if (el.matches('textarea, input[type="text"]')) return true;
+  return false;
+}
+
+function pickDictationField(root) {
+  if (lastFocusedField && root.contains(lastFocusedField) && isDictationField(lastFocusedField)) {
+    return lastFocusedField;
+  }
+  return root.querySelector(
+    'textarea.hi-field, input.hi-field[type="text"], textarea, main input[type="text"]',
+  );
+}
+
 function startDictation(field, btn) {
   if (!SpeechRecognitionCtor) return;
+  if (!field) {
+    showStatus('Tap a text field first, then tap the mic.', true);
+    return;
+  }
   if (activeField === field && wantsListen) {
     stopDictation();
     return;
@@ -156,57 +176,26 @@ function startDictation(field, btn) {
   }
 }
 
-function wrapField(field) {
-  if (field.closest('.field-with-mic')) return;
-  const wrap = document.createElement('div');
-  wrap.className = 'field-with-mic';
-  field.parentNode.insertBefore(wrap, field);
-  wrap.appendChild(field);
-
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'dictation-btn';
-  btn.setAttribute('aria-label', 'Speak to type (Hindi)');
-  btn.setAttribute('aria-pressed', 'false');
-  btn.title = 'Speak to type (Hindi)';
-  btn.innerHTML =
-    '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-4.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>';
-
-  btn.addEventListener('click', (e) => {
-    e.preventDefault();
-    startDictation(field, btn);
-  });
-
-  wrap.appendChild(btn);
-}
-
 export function bindSpeechDictation(root) {
   if (!root) return;
   ensureStatusEl();
 
-  if (!speechSupported()) {
-    let hint = root.querySelector('.dictation-hint');
-    if (!hint) {
-      hint = document.createElement('p');
-      hint.className = 'hint dictation-hint';
-      hint.textContent =
-        'Voice typing: use the microphone on your Hindi keyboard (Gboard / iOS keyboard).';
-      const main = root.querySelector('main') || root;
-      const first = main.querySelector('.form-section');
-      if (first) first.prepend(hint);
-    }
-    return;
-  }
+  root.addEventListener(
+    'focusin',
+    (e) => {
+      if (isDictationField(e.target)) lastFocusedField = e.target;
+    },
+    true,
+  );
 
-  let hint = root.querySelector('.dictation-hint');
-  if (!hint) {
-    hint = document.createElement('p');
-    hint.className = 'hint dictation-hint';
-    hint.textContent = 'Tap the mic beside a field to dictate in Hindi. Tap again to stop.';
-    const main = root.querySelector('main') || root;
-    const first = main.querySelector('.form-section');
-    if (first) first.prepend(hint);
-  }
+  if (!speechSupported()) return;
 
-  root.querySelectorAll('textarea, input[type="text"]').forEach(wrapField);
+  const btn = root.querySelector('#dictation-global');
+  if (!btn || btn.dataset.bound === '1') return;
+  btn.dataset.bound = '1';
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const main = root.querySelector('.edit-main') || root;
+    startDictation(pickDictationField(main), btn);
+  });
 }
