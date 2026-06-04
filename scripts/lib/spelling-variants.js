@@ -83,10 +83,17 @@ function collectFields(doc) {
   return out;
 }
 
-const { tokenizeHindiRuns } = require('./spell-tokens');
-
 function tokenize(text) {
-  return tokenizeHindiRuns(text, MIN_WORD_LEN, MAX_WORD_LEN).filter((w) => !SKIP_WORDS.has(w));
+  const re = /[\u0900-\u097F]+/gu;
+  const words = [];
+  let m;
+  while ((m = re.exec(String(text || ''))) !== null) {
+    const w = m[0];
+    if (w.length >= MIN_WORD_LEN && w.length <= MAX_WORD_LEN && !SKIP_WORDS.has(w)) {
+      words.push(w);
+    }
+  }
+  return words;
 }
 
 function devaSkeleton(word) {
