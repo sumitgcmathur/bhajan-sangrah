@@ -1,6 +1,6 @@
 const path = require('path');
 const { sectionFolder, listBhajanFiles, loadBhajan } = require('./sections');
-const { enrichBhajanLyrics } = require('./lyrics-structure');
+const { prepareBhajanForRender } = require('./bhajan-render');
 
 /** Short id for PDF named destinations (PDF spec limits name length; Hindi slugs are too long). */
 function pdfBhajanId(index) {
@@ -17,15 +17,7 @@ function loadAllSectionPayloads(config) {
       const data = loadBhajan(path.join(sectionFolder(section), f));
       const id = pdfBhajanId(globalIndex);
       globalIndex += 1;
-      return {
-        title: data.title,
-        tarz: data.tarz,
-        group: data.group,
-        swarachit: data.swarachit,
-        lyrics: enrichBhajanLyrics(data.lyrics, section, data, config),
-        jabani: data.jabani,
-        id,
-      };
+      return prepareBhajanForRender(data, section, config, { index: globalIndex, id });
     });
     return { section, bhajans };
   });

@@ -1,4 +1,6 @@
 const { requireAuth, sendJson, readBody } = require('../lib/http');
+const { getFile } = require('../lib/github');
+const { parseSectionsYaml } = require('../lib/yaml-bridge');
 const { renderBhajanPreviewCard } = require('../lib/bhajan-preview');
 
 module.exports = async (req, res) => {
@@ -28,7 +30,16 @@ module.exports = async (req, res) => {
       title: String(body.sectionTitle || '').trim() || 'Preview',
     };
 
-    const html = renderBhajanPreviewCard(editor, section);
+    let config = { sthayi_connect: true, sections: [] };
+    const sectionsFile = await getFile('content/sections.yaml', session.accessToken);
+    if (sectionsFile?.content) {
+      config = parseSectionsYaml(sectionsFile.content);
+    }
+
+    const index = Number(body.bhajanIndex);
+    const html = renderBhajanPreviewCard(editor, section, config, {
+      index: Number.isFinite(index) ? index : 0,
+    });
     sendJson(res, 200, { html });
   } catch (e) {
     sendJson(res, 500, { error: e.message || 'Preview failed' });

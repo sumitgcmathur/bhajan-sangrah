@@ -148,14 +148,23 @@ main.edit-main {
 }
 
 .edit-panel--preview .preview-site {
-  padding: 0.75rem;
-  background: var(--surface);
+  padding: 0;
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.45rem;
+  overflow: hidden;
+}
+
+.edit-panel--preview .preview-in-section {
+  background: var(--bg);
 }
 
 .edit-panel--preview .preview-site .bhajan-card {
   margin: 0;
+}
+
+.edit-panel--preview .preview-site .bhajan-list {
+  padding: 0.75rem;
 }
 
 .edit-panel--preview .loading {

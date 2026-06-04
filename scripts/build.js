@@ -9,9 +9,8 @@ const {
   loadBhajan,
   countBhajansBySection,
 } = require('./lib/sections');
-const { enrichBhajanLyrics } = require('./lib/lyrics-structure');
+const { prepareBhajanForRender } = require('./lib/bhajan-render');
 const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
-const { anchorId } = require('./lib/slug');
 const { buildSearchIndex, writeSearchIndex } = require('./lib/search-index');
 const { warnMissingThumbs } = require('./lib/banner-thumbs');
 const { writePwaArtifacts } = require('./lib/pwa');
@@ -71,15 +70,7 @@ async function main() {
       const data = loadBhajan(path.join(sectionFolder(section), f));
       return { ...data, _file: f };
     });
-    const enriched = bhajans.map((b, i) => ({
-      title: b.title,
-      tarz: b.tarz,
-      group: b.group,
-      swarachit: b.swarachit,
-      lyrics: enrichBhajanLyrics(b.lyrics, section, b, config),
-      jabani: b.jabani,
-      id: b.id || anchorId(section.slug, b.title, i),
-    }));
+    const enriched = bhajans.map((b, i) => prepareBhajanForRender(b, section, config, { index: i }));
     fs.writeFileSync(
       path.join(DOCS, `${section.slug}.html`),
       renderSectionPage(section, enriched, config, sections, base, sectionCounts),

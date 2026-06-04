@@ -566,13 +566,24 @@ function optionalLyricsHtml(e, L) {
   return `${blocks.join('')}${adds.length ? `<div class="optional-add-bar">${adds.join('')}</div>` : ''}`;
 }
 
+function previewListContext() {
+  const list = state.bhajans || [];
+  if (!state.path) {
+    const total = Math.max(1, list.length + 1);
+    return { index: list.length, total };
+  }
+  const i = list.findIndex((b) => b.path === state.path);
+  if (i >= 0) return { index: i, total: Math.max(1, list.length) };
+  return { index: 0, total: Math.max(1, list.length) };
+}
+
 function previewPanelHtml() {
   if (state.previewBusy) {
     return '<p class="loading">Building preview…</p>';
   }
   if (state.previewHtml) {
-    return `<p class="hint">How this bhajan will look on the public site.</p>
-      <div class="preview-site">${state.previewHtml}</div>
+    return `<p class="hint">Matches the public site, including स्थायी repeat on antaras (site default <code>sthayi_connect</code> from sections.yaml). Use “Disable sthayi_connect” or custom connect text if needed.</p>
+      <div class="preview-site preview-site--section">${state.previewHtml}</div>
       <button type="button" class="btn" id="refresh-preview" style="margin-top:0.65rem">Refresh preview</button>`;
   }
   return '<p class="hint">Generating preview from your current edits…</p>';
@@ -1117,12 +1128,15 @@ function bindEditor() {
 }
 
 async function runPreviewRequest() {
+  const ctx = previewListContext();
   const data = await api('/api/preview', {
     method: 'POST',
     body: JSON.stringify({
       editor: state.editor,
       sectionSlug: state.section?.slug,
       sectionTitle: state.section?.title,
+      bhajanIndex: ctx.index,
+      bhajanTotal: ctx.total,
     }),
   });
   state.previewHtml = data.html || '';
