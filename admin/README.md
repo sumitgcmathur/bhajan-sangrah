@@ -51,6 +51,26 @@ The OAuth app owner must have **write access** to `GITHUB_OWNER/GITHUB_REPO`.
 
 Each save commits to **main**. Your existing GitHub Action runs `node scripts/build.js` and updates the public site on `gh-pages`.
 
+## When Vercel rebuilds the admin app
+
+| Trigger | Admin deploy? | Public site (`gh-pages`)? |
+|---------|---------------|---------------------------|
+| Push to `main` with changes under `admin/`, `scripts/lib/`, or `assets/css/site.css` | **Yes** (Vercel) | Yes (GitHub Actions) |
+| Push to `main` with **only** `content/` (or other non-admin paths) | **Skipped** (saves builds) | Yes (GitHub Actions) |
+| Push to `gh-pages` | **No** (must not deploy) | Yes (GitHub Pages) |
+
+`admin/vercel.json` sets `"ignoreCommand": "bash admin/vercel-should-build.sh"`. That script exits **1** (build) when admin-related files changed, **0** (skip) otherwise. It also skips the `gh-pages` branch.
+
+**Vercel project settings to confirm:**
+
+1. **Root Directory:** `admin`
+2. **Production Branch:** `main`
+3. **Git → Ignored Build Step:** should use `ignoreCommand` from `vercel.json`, or paste: `bash admin/vercel-should-build.sh`
+
+If you prefer **every** `main` commit to redeploy admin (even content-only edits), remove `ignoreCommand` from `admin/vercel.json` and clear the Ignored Build Step in the dashboard.
+
+**Shared code:** Admin API routes `require()` `scripts/lib/` (YAML, preview HTML, slugs). Changes there trigger an admin rebuild even when `admin/public/` is unchanged.
+
 ## Favicon
 
 Admin uses a tweaked variant of the site favicon (maroon ring + edit badge). Regenerate after changing `assets/icons/favicon.jpg`:
