@@ -1,5 +1,12 @@
 import { bindSpeechDictation, stopDictation, speechSupported } from './speech.js';
-import { bindInlineSpellFields, spellCheckEditorFields } from './spellcheck.js';
+import { bindInlineSpellFields, spellCheckEditorFields, textsFromEditor } from './spellcheck.js';
+import {
+  runCorpusSpellScan,
+  applyCorpusCorrection,
+  ignoreCorpusWord,
+  addCorpusWord,
+  removeClusterFromReport,
+} from './spell-errors.js';
 
 const app = document.getElementById('app');
 
@@ -31,6 +38,14 @@ const state = {
     progress: null,
     abortCtrl: null,
   },
+  spellCorpus: {
+    scanning: false,
+    phase: '',
+    progress: { current: 0, total: 0 },
+    report: null,
+    busyWord: null,
+    abortCtrl: null,
+  },
 };
 
 const HI_FIELD = 'class="hi-field" lang="hi-IN" spellcheck="false"';
@@ -50,6 +65,7 @@ function parseRouteHash() {
 
   if (!parts.length || parts[0] === '') return { view: 'sections' };
   if (parts[0] === 'replace') return { view: 'replace' };
+  if (parts[0] === 'spell-errors') return { view: 'spell-errors' };
 
   if (parts[0] === 'edit') {
     const p = q.get('p');
@@ -71,6 +87,7 @@ function buildRouteHash() {
   if (state.view === 'login' || state.view === 'loading') return '#/';
   if (state.view === 'sections') return '#/';
   if (state.view === 'replace') return '#/replace';
+  if (state.view === 'spell-errors') return '#/spell-errors';
   if (state.view === 'bhajans' && state.section?.slug) {
     return `#/s/${encodeURIComponent(state.section.slug)}`;
   }
@@ -151,6 +168,17 @@ async function applyRouteFromHash() {
     state.replace.preview = null;
     state.view = 'replace';
     render();
+    return;
+  }
+
+  if (route.view === 'spell-errors') {
+    endSpellCorpusOp();
+    state.error = null;
+    state.view = 'spell-errors';
+    render();
+    if (!state.spellCorpus.report && !state.spellCorpus.scanning) {
+      startSpellCorpusScan();
+    }
     return;
   }
 
@@ -633,12 +661,15 @@ function bhajanDisplayName(b) {
 function bindTopbar(opts = {}) {
   document.querySelector('[data-back="sections"]')?.addEventListener('click', () => {
     if (opts.abortReplaceOnLeave) state.replace.abortCtrl?.abort();
+    if (opts.abortSpellOnLeave) state.spellCorpus.abortCtrl?.abort();
     if (state.view === 'replace') endReplaceOp();
+    if (state.view === 'spell-errors') endSpellCorpusOp();
     state.error = null;
     location.hash = '#/';
   });
   document.querySelector('[data-back="bhajans"]')?.addEventListener('click', () => {
     if (opts.abortReplaceOnLeave) state.replace.abortCtrl?.abort();
+    if (opts.abortSpellOnLeave) state.spellCorpus.abortCtrl?.abort();
     state.error = null;
     if (state.section?.slug) location.hash = `#/s/${encodeURIComponent(state.section.slug)}`;
     else location.hash = '#/';
@@ -658,7 +689,7 @@ function renderInner() {
   stopDictation();
   const showPreviewCss = state.view === 'edit' && state.editPanel === 'preview';
   setPreviewStylesheet(showPreviewCss);
-  if (state.view !== 'edit' && state.view !== 'replace') {
+  if (state.view !== 'edit' && state.view !== 'replace' && state.view !== 'spell-errors') {
     state.error = null;
   }
   if (state.view === 'loading') {
@@ -693,6 +724,7 @@ function renderInner() {
         <select id="section-pick" class="section-pick">${options}</select>
         <button type="button" class="btn btn-primary" id="open-section" style="width:100%;margin-top:0.65rem">Open section</button>
         <button type="button" class="btn" id="go-replace" style="width:100%;margin-top:0.5rem">Find &amp; replace (all YAML)</button>
+        <button type="button" class="btn" id="go-spell-errors" style="width:100%;margin-top:0.5rem">Spell errors (all bhajans)</button>
       </main>`;
     document.getElementById('open-section').addEventListener('click', () => {
       const slug = document.getElementById('section-pick').value;
@@ -701,6 +733,21 @@ function renderInner() {
     document.getElementById('go-replace').addEventListener('click', () => {
       location.hash = '#/replace';
     });
+    document.getElementById('go-spell-errors')?.addEventListener('click', () => {
+      location.hash = '#/spell-errors';
+    });
+    return;
+  }
+
+  if (state.view === 'spell-errors') {
+    app.innerHTML = `
+      ${topbar('Spell errors', 'sections')}
+      <main class="spell-corpus-main">
+        ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
+        ${renderSpellCorpusBody()}
+      </main>`;
+    bindTopbar({ abortSpellOnLeave: state.spellCorpus.scanning });
+    bindSpellCorpusView();
     return;
   }
 
@@ -1197,22 +1244,183 @@ async function refreshPreview() {
   }
 }
 
-function editorTextsForSpell() {
-  const e = state.editor;
-  if (!e) return [];
-  const L = e.lyrics || {};
-  const texts = [
-    { id: 'title', text: e.title || '' },
-    { id: 'tarz', text: e.tarz || '' },
-    { id: 'jabani', text: e.jabani || '' },
-    { id: 'sthayi', text: L.sthayi || '' },
-    { id: 'pre_shlok', text: L.pre_shlok || '' },
-    { id: 'dhvani', text: L.dhvani || '' },
-    { id: 'connect', text: L.sthayi_connect_text || '' },
-  ];
-  for (const p of L.paragraphs || []) texts.push({ id: 'para', text: p.text || '' });
-  if (e.legacyLyricsText) texts.push({ id: 'legacy', text: e.legacyLyricsText });
-  return texts;
+function endSpellCorpusOp() {
+  state.spellCorpus.abortCtrl?.abort();
+  state.spellCorpus.abortCtrl = null;
+  state.spellCorpus.scanning = false;
+  state.spellCorpus.busyWord = null;
+}
+
+function spellCorpusProgressLabel(sc) {
+  const { phase, progress } = sc;
+  const { current, total } = progress;
+  if (phase === 'list') return 'Listing bhajan files…';
+  if (phase === 'load') return `Loading bhajans… ${current}/${total}`;
+  if (phase === 'spell') return `Checking spelling… ${current}/${total}`;
+  return 'Scanning…';
+}
+
+function renderSpellCorpusBody() {
+  const sc = state.spellCorpus;
+  if (sc.scanning) {
+    const p = sc.progress;
+    const pct = p.total ? Math.round((p.current / p.total) * 100) : 0;
+    return `<p class="loading">${escapeHtml(spellCorpusProgressLabel(sc))}</p>
+      <div class="spell-corpus-progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100">
+        <div class="spell-corpus-progress__bar" style="width:${pct}%"></div>
+      </div>
+      <button type="button" class="btn btn-danger" id="spell-corpus-cancel">Cancel</button>`;
+  }
+  const actions = `<div class="spell-corpus-actions">
+    <button type="button" class="btn btn-primary" id="spell-corpus-scan">Scan all bhajans</button>
+  </div>`;
+  const report = sc.report;
+  if (!report) {
+    return `${actions}<p class="hint">Loads every bhajan from GitHub, checks Hindi Hunspell, groups unknown words by how often they appear.</p>`;
+  }
+  if (!report.clusters.length) {
+    return `${actions}<p class="spell-ok">No unknown words in ${report.filesScanned} bhajan(s).</p>`;
+  }
+  const rows = report.clusters
+    .map((c) => {
+      const busy = sc.busyWord === c.word;
+      const sugOpts = (c.suggestions || [])
+        .map(
+          (s) =>
+            `<option value="${escapeAttr(s)}"${c.suggestions[0] === s ? ' selected' : ''}>${escapeHtml(s)}</option>`,
+        )
+        .join('');
+      const pathRows = c.paths
+        .map((p) => {
+          const fields = p.fields.map((f) => `${escapeHtml(f.field)} (${f.count})`).join(', ');
+          return `<li class="spell-corpus-hit">
+            <a href="#/edit?p=${encodeURIComponent(p.path)}">${escapeHtml(p.title)}</a>
+            <span class="spell-corpus-hit__meta">${fields}</span>
+          </li>`;
+        })
+        .join('');
+      return `<article class="spell-corpus-cluster" data-word="${escapeAttr(c.word)}">
+        <header class="spell-corpus-cluster__head">
+          <h3 class="spell-corpus-cluster__word">${escapeHtml(c.word)}</h3>
+          <span class="spell-corpus-cluster__count">${c.count} use${c.count === 1 ? '' : 's'}</span>
+        </header>
+        <div class="spell-corpus-cluster__actions">
+          <label class="spell-corpus-sug-label">Correct to
+            <select class="spell-corpus-sug" data-word="${escapeAttr(c.word)}" ${busy ? 'disabled' : ''}>
+              ${sugOpts || '<option value="">—</option>'}
+            </select>
+          </label>
+          <button type="button" class="btn btn-primary spell-corpus-fix" data-word="${escapeAttr(c.word)}" ${busy || !c.suggestions?.length ? 'disabled' : ''}>Correct all</button>
+          <button type="button" class="btn spell-corpus-ignore" data-word="${escapeAttr(c.word)}" ${busy ? 'disabled' : ''}>Ignore all</button>
+          <button type="button" class="btn spell-corpus-add" data-word="${escapeAttr(c.word)}" ${busy ? 'disabled' : ''}>Add all</button>
+        </div>
+        <ul class="spell-corpus-paths">${pathRows}</ul>
+      </article>`;
+    })
+    .join('');
+  return `${actions}
+    <p class="spell-corpus-summary"><strong>${report.clusters.length}</strong> unknown word(s), <strong>${report.totalOccurrences}</strong> occurrence(s) in <strong>${report.filesScanned}</strong> bhajan file(s).</p>
+    <div class="spell-corpus-list">${rows}</div>`;
+}
+
+function bindSpellCorpusView() {
+  document.getElementById('spell-corpus-scan')?.addEventListener('click', () => startSpellCorpusScan());
+  document.getElementById('spell-corpus-cancel')?.addEventListener('click', () => {
+    state.spellCorpus.abortCtrl?.abort();
+    endSpellCorpusOp();
+    state.error = 'Scan cancelled.';
+    render();
+  });
+
+  document.querySelectorAll('.spell-corpus-ignore').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const word = btn.dataset.word;
+      if (!word) return;
+      ignoreCorpusWord(word);
+      state.spellCorpus.report = removeClusterFromReport(state.spellCorpus.report, word);
+      render();
+    });
+  });
+
+  document.querySelectorAll('.spell-corpus-add').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const word = btn.dataset.word;
+      if (!word) return;
+      addCorpusWord(word);
+      state.spellCorpus.report = removeClusterFromReport(state.spellCorpus.report, word);
+      render();
+    });
+  });
+
+  document.querySelectorAll('.spell-corpus-fix').forEach((btn) => {
+    btn.addEventListener('click', () => corpusCorrectWord(btn.dataset.word));
+  });
+}
+
+async function startSpellCorpusScan() {
+  endSpellCorpusOp();
+  state.error = null;
+  state.spellCorpus.scanning = true;
+  state.spellCorpus.phase = 'list';
+  state.spellCorpus.progress = { current: 0, total: 0 };
+  state.spellCorpus.report = null;
+  state.spellCorpus.abortCtrl = new AbortController();
+  render();
+
+  try {
+    const report = await runCorpusSpellScan(api, {
+      signal: state.spellCorpus.abortCtrl.signal,
+      onProgress: (current, total, phase) => {
+        state.spellCorpus.phase = phase;
+        state.spellCorpus.progress = { current, total };
+        render();
+      },
+    });
+    endSpellCorpusOp();
+    state.spellCorpus.report = report;
+    render();
+  } catch (e) {
+    endSpellCorpusOp();
+    if (e.name === 'AbortError') {
+      if (!state.error) state.error = 'Scan cancelled.';
+    } else {
+      state.error = e.message;
+    }
+    render();
+  }
+}
+
+async function corpusCorrectWord(word) {
+  const cluster = state.spellCorpus.report?.clusters?.find((c) => c.word === word);
+  if (!cluster) return;
+  const article = [...document.querySelectorAll('.spell-corpus-cluster')].find(
+    (el) => el.dataset.word === word,
+  );
+  const sel = article?.querySelector('.spell-corpus-sug');
+  const replacement = sel?.value?.trim();
+  if (!replacement) {
+    state.error = 'Choose a suggestion first.';
+    render();
+    return;
+  }
+  const paths = cluster.paths.map((p) => p.path);
+  const msg = `Replace «${word}» with «${replacement}» in ${paths.length} file(s) (${cluster.count} occurrence(s))?`;
+  if (!confirm(msg)) return;
+
+  state.spellCorpus.busyWord = word;
+  state.error = null;
+  render();
+  try {
+    await applyCorpusCorrection(api, word, replacement, paths);
+    state.spellCorpus.report = removeClusterFromReport(state.spellCorpus.report, word);
+    state.spellCorpus.busyWord = null;
+    alert(`Updated ${paths.length} file(s) on main.`);
+    render();
+  } catch (e) {
+    state.spellCorpus.busyWord = null;
+    state.error = e.message;
+    render();
+  }
 }
 
 async function commitPublish() {
@@ -1230,7 +1438,7 @@ async function commitPublish() {
 
   try {
     try {
-      const { totalIssues } = await spellCheckEditorFields(editorTextsForSpell());
+      const { totalIssues } = await spellCheckEditorFields(textsFromEditor(state.editor));
       if (totalIssues > 0) {
         const ok = confirm(
           `Spell check: ${totalIssues} possible misspelling(s) (red underlines). Publish anyway?`,

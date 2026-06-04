@@ -107,6 +107,98 @@ export function addCustomWord(word) {
   wordCache.delete(w);
 }
 
+export function clearSpellWordCache() {
+  wordCache.clear();
+}
+
+/** Text fields from editor JSON (same coverage as publish spell check). */
+export function textsFromEditor(editor) {
+  const e = editor || {};
+  const L = e.lyrics || {};
+  const texts = [
+    { field: 'title', text: e.title || '' },
+    { field: 'tarz', text: e.tarz || '' },
+    { field: 'jabani', text: e.jabani || '' },
+    { field: 'lyrics.sthayi', text: L.sthayi || '' },
+    { field: 'lyrics.pre_shlok', text: L.pre_shlok || '' },
+    { field: 'lyrics.dhvani', text: L.dhvani || '' },
+    { field: 'lyrics.sthayi_connect_text', text: L.sthayi_connect_text || '' },
+  ];
+  for (const p of L.paragraphs || []) texts.push({ field: 'paragraph', text: p.text || '' });
+  if (e.legacyLyricsText) texts.push({ field: 'legacy', text: e.legacyLyricsText });
+  return texts;
+}
+
+function clusterOccurrences(occurrences) {
+  const map = new Map();
+  for (const o of occurrences) {
+    if (!map.has(o.word)) {
+      map.set(o.word, {
+        word: o.word,
+        count: 0,
+        suggestions: o.suggestions || [],
+        byPath: new Map(),
+      });
+    }
+    const c = map.get(o.word);
+    c.count += 1;
+    if (!c.byPath.has(o.path)) {
+      c.byPath.set(o.path, { path: o.path, title: o.title, fields: new Map() });
+    }
+    const row = c.byPath.get(o.path);
+    row.fields.set(o.field, (row.fields.get(o.field) || 0) + 1);
+  }
+  return [...map.values()]
+    .map((c) => ({
+      word: c.word,
+      count: c.count,
+      suggestions: c.suggestions,
+      paths: [...c.byPath.values()].map((p) => ({
+        path: p.path,
+        title: p.title,
+        fields: [...p.fields.entries()].map(([field, n]) => ({ field, count: n })),
+      })),
+    }))
+    .sort((a, b) => b.count - a.count || a.word.localeCompare(b.word, 'hi'));
+}
+
+/**
+ * @param {Array<{ path: string, title: string, texts: Array<{field:string,text:string}> }>} items
+ */
+export async function scanCorpusItems(items, { onProgress } = {}) {
+  await getChecker();
+  const occurrences = [];
+  const wordHits = new Map();
+
+  for (let i = 0; i < items.length; i++) {
+    const { path, title, texts } = items[i];
+    for (const { field, text } of texts) {
+      for (const tok of tokenizeHindiWithOffsets(text || '', MIN_WORD_LEN)) {
+        let hit = wordHits.get(tok.word);
+        if (!hit) {
+          hit = await lookupWord(tok.word);
+          wordHits.set(tok.word, hit);
+        }
+        if (hit.ok) continue;
+        occurrences.push({
+          word: tok.word,
+          path,
+          title,
+          field,
+          suggestions: hit.suggestions || [],
+        });
+      }
+    }
+    onProgress?.(i + 1, items.length);
+  }
+
+  return {
+    clusters: clusterOccurrences(occurrences),
+    totalOccurrences: occurrences.length,
+    filesScanned: items.length,
+  };
+}
+
 function shouldSkip(word) {
   if (DEFAULT_IGNORE.has(word)) return true;
   if (loadWordSet(IGNORE_KEY).has(word)) return true;

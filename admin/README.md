@@ -120,16 +120,22 @@ On the edit screen, open **Preview** in the left menu to see the public-site car
 
 After changing `assets/css/site.css`, run `npm run admin:preview-css` so the admin preview stays in sync.
 
-## Hindi spell check (edit screen)
+## Hindi spell check
 
-Hindi fields show **red wavy underlines** for words not in the Hunspell dictionary (loaded in the browser on first use; ~5&nbsp;MB, may take 30–60s). While you type, checks run automatically.
+### Edit screen (inline)
 
-- **Phone / tablet:** **Long-press** (~½ s) a flagged word, or **select** it (touch handles) — menu opens at your finger.
-- **Desktop:** **Right-click**, **double-click**, or **select** the flagged word.
-- Menu: **suggestions** (tap to replace), **Ignore**, **Add to dictionary** (stored in this browser).
-- **Publish** warns if any flagged words remain (you can still proceed).
+Red wavy underlines on Hindi fields (Hunspell in the browser; first load ~30–60s).
 
-Files: `admin/public/spellcheck.js`, `admin/public/spell-tokens.js`.
+- **Phone / tablet:** **Long-press** or **select** a flagged word.
+- **Desktop:** **Right-click**, **double-click**, or **select** the word.
+- Menu: **suggestions**, **Ignore**, **Add to dictionary** (this browser).
+- **Publish** warns if flagged words remain.
+
+### Spell errors (all bhajans)
+
+**Sections** → **Spell errors (all bhajans)** (`#/spell-errors`). Scans all bhajan YAML; lists unknown words sorted by **use count**. Per word: **Correct all** (suggestion → commits on `main`), **Ignore all**, **Add all**. Links open the editor.
+
+Files: `admin/public/spellcheck.js`, `admin/public/spell-errors.js`, `admin/api/spell-fix.js`.
 
 ## Voice typing (edit screen)
 
