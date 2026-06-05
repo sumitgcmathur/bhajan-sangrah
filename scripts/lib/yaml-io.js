@@ -148,7 +148,7 @@ function parseLyricsObject(lines, startIdx) {
       continue;
     }
 
-    if (raw.match(/^\s{2}pre_shlok:\s*\|\s*$/)) {
+    if (raw.match(/^\s{2}pre_(?:shlok|sthayi):\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
       lyrics.pre_shlok = text;
       i = next;
