@@ -1160,10 +1160,27 @@ body.search-panel-open {
 /* Post shlok after ↑ स्थायी (outside main lyrics flow) */
 .bhajan-card__post-shlok {
   margin-top: 0.85rem;
+  max-width: 42rem;
+  width: 100%;
 }
 
 .bhajan-card__post-shlok .lyrics-aside {
   margin: 0;
+  padding: 0.65rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  line-height: 1.75;
+  font-size: 0.98em;
+  color: var(--muted);
+}
+
+.bhajan-card__post-shlok .lyrics-aside p {
+  margin: 0;
+}
+
+.bhajan-card__post-shlok .lyrics-line {
+  display: block;
 }
 
 .bhajan-card__lyrics .lyrics-sthayi {

@@ -513,8 +513,10 @@ body.pdf-export {
 }
 
 .pdf-bhajan-list .bhajan-card__post-shlok .lyrics-aside {
-  padding-top: 0.55rem;
+  margin: 0;
+  padding: 0.55rem 0;
   border-top: 1px solid var(--pdf-border);
+  border-bottom: 1px solid var(--pdf-border);
   font-size: 0.98em;
   color: var(--pdf-muted);
   text-align: left;
