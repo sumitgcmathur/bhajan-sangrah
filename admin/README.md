@@ -73,6 +73,8 @@ If admin is behind after a skipped deploy: Vercel dashboard → **Deployments** 
 
 If you prefer **every** `main` commit to redeploy admin (even content-only edits), remove `ignoreCommand` from `admin/vercel.json` and clear the Ignored Build Step in the dashboard.
 
+**Production still on an old deploy?** Pushes that only change `content/` (spell-fix commits) **skip** the admin project. After admin-only commits (e.g. allowlist), Vercel should build; if not, use **Deployments → … → Redeploy** on latest `main`, or push any commit that touches `admin/`.
+
 **Shared code:** Admin API routes `require()` `scripts/lib/` (YAML, preview HTML, slugs). Changes there trigger an admin rebuild even when `admin/public/` is unchanged.
 
 ## Favicon

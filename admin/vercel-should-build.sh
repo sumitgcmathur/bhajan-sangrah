@@ -15,6 +15,10 @@ cd "$ROOT"
 # Admin API + UI, shared libs, and site CSS used for publish preview
 PATTERN='^(admin/|scripts/lib/|assets/css/site\.css)'
 
+matches_admin() {
+  grep -qE "$PATTERN" || return 1
+}
+
 # List files changed for this deployment (handles merge commits).
 changed_files() {
   if [ -n "${VERCEL_GIT_PREVIOUS_SHA:-}" ]; then
@@ -39,15 +43,29 @@ changed_files() {
   git diff --name-only HEAD^1 HEAD 2>/dev/null || true
 }
 
+# This commit alone (e.g. spell-allowlist) must build even if last Production was older.
+if git rev-parse HEAD^1 >/dev/null 2>&1; then
+  commit_files="$(git diff --name-only HEAD^1 HEAD 2>/dev/null || true)"
+  if [ -n "$commit_files" ] && echo "$commit_files" | matches_admin; then
+    echo "Build: admin-related paths in this commit"
+    echo "$commit_files" | grep -E "$PATTERN" || true
+    exit 1
+  fi
+fi
+
 if ! git rev-parse HEAD^1 >/dev/null 2>&1; then
   echo "Build: no parent commit (first deploy or shallow clone)"
   exit 1
 fi
 
-if changed_files | grep -qE "$PATTERN"; then
-  echo "Build: admin-related paths changed"
+all_files="$(changed_files)"
+if [ -n "$all_files" ] && echo "$all_files" | matches_admin; then
+  echo "Build: admin-related paths changed since last deploy"
+  echo "$all_files" | grep -E "$PATTERN" || true
   exit 1
 fi
 
-echo "Skip: no changes under admin/, scripts/lib/, or assets/css/site.css"
+echo "Skip: no admin-related paths in this commit or since ${VERCEL_GIT_PREVIOUS_SHA:-previous deploy}"
+echo "Changed files (sample):"
+echo "$all_files" | head -20 || true
 exit 0
