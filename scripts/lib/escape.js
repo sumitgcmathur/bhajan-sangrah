@@ -187,18 +187,6 @@ function renderSthayiHtml(sthayi, anchorId) {
   return `<p${idAttr} class="lyrics-antara lyrics-sthayi lyrics-antara--even">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(endMarker)}</span></p>`;
 }
 
-function renderJabaniHtml(jabani) {
-  const body = String(jabani || '').trim();
-  if (!body) return '';
-
-  if (isMultilineParagraph(body)) {
-    const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
-    const html = lines.map((l) => `<span class="lyrics-line">${escapeHtml(l)}</span>`).join('\n');
-    return `<p class="lyrics-jabani">${html}</p>`;
-  }
-  return `<p class="lyrics-jabani">${escapeHtml(body)}</p>`;
-}
-
 function isCommentaryItem(item) {
   return item && typeof item === 'object' && item.commentary != null;
 }
@@ -211,13 +199,17 @@ function paragraphText(item) {
 
 function renderLyricsAsideHtml(text, kind) {
   const className =
-    kind === 'pre-shlok' ? 'lyrics-pre-shlok' : kind === 'commentary' ? 'lyrics-commentary' : 'lyrics-dhvani';
+    kind === 'pre-shlok'
+      ? 'lyrics-pre-shlok'
+      : kind === 'commentary'
+        ? 'lyrics-commentary'
+        : 'lyrics-post-shlok';
   const inner = renderShlokBlockHtml(text, className);
   if (!inner) return '';
   const labels = {
     'pre-shlok': 'प्रारंभिक श्लोक',
     commentary: 'टीका',
-    dhvani: 'ध्वनि',
+    'post-shlok': 'समापन श्लोक',
   };
   return `<div class="lyrics-aside lyrics-aside--${kind}" aria-label="${labels[kind] || kind}">${inner}</div>`;
 }
@@ -252,8 +244,8 @@ function renderLyricsPart(part, tarzHtml, opts = {}) {
     paraNum = nextVerse;
   }
 
-  if (part.dhvani) {
-    chunks.push(renderLyricsAsideHtml(part.dhvani, 'dhvani'));
+  if (part.post_shlok) {
+    chunks.push(renderLyricsAsideHtml(part.post_shlok, 'post-shlok'));
   }
 
   return chunks.filter(Boolean).join('\n');
@@ -286,7 +278,7 @@ function lyricsStructureToHtml(lyrics, tarz, opts = {}) {
       pre_shlok: norm.pre_shlok,
       sthayi: norm.sthayi,
       paragraphs: norm.paragraphs,
-      dhvani: norm.dhvani,
+      post_shlok: norm.post_shlok,
     }];
   } else if (lyrics.parts?.length) {
     parts = lyrics.parts;
@@ -298,7 +290,7 @@ function lyricsStructureToHtml(lyrics, tarz, opts = {}) {
         sthayi_connect: lyrics.sthayi_connect,
         sthayi_connect_text: lyrics.sthayi_connect_text,
         paragraphs: lyrics.paragraphs,
-        dhvani: lyrics.dhvani,
+        post_shlok: lyrics.post_shlok,
       },
     ];
   } else {
@@ -323,10 +315,6 @@ function renderShlokBlockHtml(text, className) {
   return `<p class="${className}">${html}</p>`;
 }
 
-function renderDhvaniHtml(dhvani) {
-  return renderShlokBlockHtml(dhvani, 'lyrics-dhvani');
-}
-
 function renderPreShlokHtml(preShlok) {
   return renderShlokBlockHtml(preShlok, 'lyrics-pre-shlok');
 }
@@ -335,18 +323,6 @@ function preShlokToHtml(preShlok) {
   const body = renderPreShlokHtml(preShlok);
   if (!body) return '';
   return `<div class="bhajan-card__pre-shlok" aria-label="प्रारंभिक श्लोक">${body}</div>`;
-}
-
-function dhvaniToHtml(dhvani) {
-  const body = renderDhvaniHtml(dhvani);
-  if (!body) return '';
-  return `<div class="bhajan-card__dhvani" aria-label="ध्वनि">${body}</div>`;
-}
-
-function jabaniToHtml(jabani) {
-  const body = renderJabaniHtml(jabani);
-  if (!body) return '';
-  return `<div class="bhajan-card__jabani">${body}</div>`;
 }
 
 function lyricsToHtml(lyrics, tarz, opts = {}) {
@@ -360,8 +336,6 @@ module.exports = {
   escapeHtml,
   lyricsToHtml,
   lyricsHasSthayi,
-  jabaniToHtml,
-  dhvaniToHtml,
   preShlokToHtml,
   lyricsStructureToHtml,
 };

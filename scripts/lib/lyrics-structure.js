@@ -366,7 +366,7 @@ function flattenLyricsText(lyrics) {
       }
       chunks.push(para);
     }
-    if (p.dhvani) chunks.push(p.dhvani);
+    if (p.post_shlok) chunks.push(p.post_shlok);
   };
   if (lyrics.parts) {
     for (const p of lyrics.parts) renderPart(p);

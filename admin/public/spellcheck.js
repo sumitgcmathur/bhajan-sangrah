@@ -125,10 +125,9 @@ export function textsFromEditor(editor) {
   const texts = [
     { field: 'title', text: e.title || '' },
     { field: 'tarz', text: e.tarz || '' },
-    { field: 'jabani', text: e.jabani || '' },
     { field: 'lyrics.sthayi', text: L.sthayi || '' },
     { field: 'lyrics.pre_shlok', text: L.pre_shlok || '' },
-    { field: 'lyrics.dhvani', text: L.dhvani || '' },
+    { field: 'lyrics.post_shlok', text: L.post_shlok || '' },
     { field: 'lyrics.sthayi_connect_text', text: L.sthayi_connect_text || '' },
   ];
   for (const p of L.paragraphs || []) texts.push({ field: 'paragraph', text: p.text || '' });

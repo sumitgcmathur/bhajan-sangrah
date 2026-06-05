@@ -37,13 +37,12 @@ function docToEditor(doc) {
     tarz: d.tarz || '',
     group: d.group || '',
     swarachit: Boolean(d.swarachit),
-    jabani: d.jabani || '',
     lyrics: {
       sthayi: '',
       sthayi_connect: false,
       sthayi_connect_text: '',
       pre_shlok: '',
-      dhvani: '',
+      post_shlok: '',
       paragraphs: [],
       parts: null,
     },
@@ -62,7 +61,7 @@ function docToEditor(doc) {
     lyrics.sthayi_connect === true ? true : lyrics.sthayi_connect === false ? false : undefined;
   out.lyrics.sthayi_connect_text = lyrics.sthayi_connect_text || '';
   out.lyrics.pre_shlok = lyrics.pre_shlok || '';
-  out.lyrics.dhvani = lyrics.dhvani || '';
+  out.lyrics.post_shlok = lyrics.post_shlok || '';
   out.lyrics.parts = lyrics.parts?.length ? lyrics.parts : null;
 
   for (const item of lyrics.paragraphs || []) {
@@ -83,7 +82,6 @@ function editorToDoc(editor) {
       ...(e.tarz ? { tarz: e.tarz } : {}),
       ...(e.group ? { group: e.group } : {}),
       ...(e.swarachit ? { swarachit: true } : {}),
-      ...(e.jabani ? { jabani: e.jabani } : {}),
       lyrics: String(e.legacyLyricsText).trim(),
     };
   }
@@ -100,19 +98,17 @@ function editorToDoc(editor) {
     ...(L.sthayi_connect_text ? { sthayi_connect_text: L.sthayi_connect_text } : {}),
     ...(L.pre_shlok ? { pre_shlok: L.pre_shlok } : {}),
     ...(paragraphs.length ? { paragraphs } : {}),
-    ...(L.dhvani ? { dhvani: L.dhvani } : {}),
+    ...(L.post_shlok ? { post_shlok: L.post_shlok } : {}),
     ...(L.parts?.length ? { parts: L.parts } : {}),
   };
 
-  const doc = {
+  return {
     title: (e.title || '').trim(),
     ...(e.tarz ? { tarz: e.tarz } : {}),
     ...(e.group ? { group: e.group } : {}),
     ...(e.swarachit ? { swarachit: true } : {}),
-    ...(e.jabani ? { jabani: e.jabani } : {}),
     lyrics,
   };
-  return doc;
 }
 
 module.exports = {

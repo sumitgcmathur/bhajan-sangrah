@@ -35,7 +35,6 @@ function collectFields(doc) {
   const out = [];
   if (doc.title) out.push({ field: 'title', text: String(doc.title) });
   if (doc.tarz) out.push({ field: 'tarz', text: String(doc.tarz) });
-  if (doc.jabani) out.push({ field: 'jabani', text: String(doc.jabani) });
 
   const lyrics = doc.lyrics;
   if (!lyrics) return out;
@@ -46,7 +45,7 @@ function collectFields(doc) {
   if (lyrics.tarz) out.push({ field: 'lyrics.tarz', text: String(lyrics.tarz) });
   if (lyrics.sthayi) out.push({ field: 'lyrics.sthayi', text: String(lyrics.sthayi) });
   if (lyrics.pre_shlok) out.push({ field: 'lyrics.pre_shlok', text: String(lyrics.pre_shlok) });
-  if (lyrics.dhvani) out.push({ field: 'lyrics.dhvani', text: String(lyrics.dhvani) });
+  if (lyrics.post_shlok) out.push({ field: 'lyrics.post_shlok', text: String(lyrics.post_shlok) });
   const paras = lyrics.paragraphs || [];
   paras.forEach((p, i) => {
     if (p && typeof p === 'object' && p.commentary != null) {
@@ -65,7 +64,6 @@ function collectFields(doc) {
 function applyFieldToDoc(doc, field, text, kind) {
   if (field === 'title') doc.title = text;
   else if (field === 'tarz') doc.tarz = text || undefined;
-  else if (field === 'jabani') doc.jabani = text || undefined;
   else if (field === 'lyrics') doc.lyrics = text;
   else if (field.startsWith('lyrics.')) {
     const lyrics = doc.lyrics;
@@ -73,7 +71,7 @@ function applyFieldToDoc(doc, field, text, kind) {
     if (field === 'lyrics.tarz') lyrics.tarz = text || undefined;
     else if (field === 'lyrics.sthayi') lyrics.sthayi = text || undefined;
     else if (field === 'lyrics.pre_shlok') lyrics.pre_shlok = text || undefined;
-    else if (field === 'lyrics.dhvani') lyrics.dhvani = text || undefined;
+    else if (field === 'lyrics.post_shlok') lyrics.post_shlok = text || undefined;
     else {
       const m = field.match(/^lyrics\.paragraphs\[(\d+)\]$/);
       if (m) {

@@ -1,4 +1,4 @@
-const { escapeHtml, lyricsToHtml, jabaniToHtml, lyricsHasSthayi } = require('./escape');
+const { escapeHtml, lyricsToHtml, lyricsHasSthayi } = require('./escape');
 const { anchorId } = require('./slug');
 const { toDevaNum } = require('./lyrics-structure');
 const { landingBannerPath } = require('./banner-thumbs');
@@ -368,7 +368,6 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
   </header>
   <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics, b.tarz, { sthayiAnchorId: hasSthayi ? sthayiAnchor : null })}</div>
   ${toSthayi}
-  ${jabaniToHtml(b.jabani)}
 </article>`;
 }
 

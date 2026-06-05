@@ -508,24 +508,13 @@ body.pdf-export {
   margin: 0;
 }
 
-.pdf-bhajan-list .dhvani,
-.pdf-bhajan-list .bhajan-card__dhvani {
+.pdf-bhajan-list .lyrics-aside--post-shlok {
   margin-top: 0.75rem;
   padding-top: 0.55rem;
   border-top: 1px solid var(--pdf-border);
   font-size: 0.98em;
   color: var(--pdf-muted);
   text-align: left;
-  line-height: 1.75;
-}
-
-.pdf-bhajan-list .jabani,
-.pdf-bhajan-list .bhajan-card__jabani {
-  margin-top: 0.85rem;
-  padding-top: 0.65rem;
-  border-top: 1px solid var(--pdf-border);
-  font-size: 0.95em;
-  color: var(--pdf-muted);
   line-height: 1.75;
 }
 
@@ -559,7 +548,7 @@ body.pdf-export {
   font-style: normal;
 }
 
-.pdf-bhajan-list .lyrics-dhvani {
+.pdf-bhajan-list .lyrics-post-shlok {
   margin: 0;
 }
 

@@ -67,7 +67,6 @@ function collectFields(doc) {
   const out = [];
   if (doc.title) out.push({ field: 'title', text: String(doc.title) });
   if (doc.tarz) out.push({ field: 'tarz', text: String(doc.tarz) });
-  if (doc.jabani) out.push({ field: 'jabani', text: String(doc.jabani) });
 
   const lyrics = doc.lyrics;
   if (!lyrics) return out;
@@ -80,7 +79,7 @@ function collectFields(doc) {
     out.push({ field: 'lyrics.sthayi', text: String(lyrics.sthayi) });
   }
   if (lyrics.pre_shlok) out.push({ field: 'lyrics.pre_shlok', text: String(lyrics.pre_shlok) });
-  if (lyrics.dhvani) out.push({ field: 'lyrics.dhvani', text: String(lyrics.dhvani) });
+  if (lyrics.post_shlok) out.push({ field: 'lyrics.post_shlok', text: String(lyrics.post_shlok) });
   const paras = lyrics.paragraphs || [];
   paras.forEach((p, i) => {
     if (p) out.push({ field: `lyrics.paragraphs[${i}]`, text: String(p) });
@@ -149,8 +148,8 @@ function applyFixToDoc(doc, field, newText) {
     doc.tarz = newText;
     return;
   }
-  if (field === 'jabani') {
-    doc.jabani = newText;
+  if (field === 'lyrics.post_shlok') {
+    doc.lyrics.post_shlok = newText;
     return;
   }
   if (field === 'lyrics' && typeof doc.lyrics === 'string') {
@@ -161,7 +160,7 @@ function applyFixToDoc(doc, field, newText) {
   if (field === 'lyrics.tarz') doc.lyrics.tarz = newText;
   else if (field === 'lyrics.sthayi') doc.lyrics.sthayi = newText;
   else if (field === 'lyrics.pre_shlok') doc.lyrics.pre_shlok = newText;
-  else if (field === 'lyrics.dhvani') doc.lyrics.dhvani = newText;
+  else if (field === 'lyrics.post_shlok') doc.lyrics.post_shlok = newText;
   else {
     const m = field.match(/^lyrics\.paragraphs\[(\d+)\]$/);
     if (m) {

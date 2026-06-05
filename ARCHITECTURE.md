@@ -83,9 +83,8 @@ sections:
 | `lyrics` | yes | Structured object (preferred) or plain multiline string |
 | `tarz` | no | Tune / style line shown above lyrics |
 | `pre_shlok` | no | Opening doha / shloka before main lyrics (inside `lyrics:`; not स्थायी) |
-| `commentary` | no | Inline टीका blocks in `paragraphs` (styled like pre_shlok/dhvani, no verse numbers) |
-| `dhvani` / `shlok` | no | Post-shloka after lyrics (inside `lyrics:`) |
-| `jabani` | no | Prose explanation (e.g. charitra) |
+| `commentary` | no | Inline टीका blocks in `paragraphs` (styled like pre_shlok/post_shlok, no verse numbers) |
+| `post_shlok` | no | Closing shloka or narration after lyrics (inside `lyrics:`) |
 | `group` | no | Sub-section name when section has `grouped: true` |
 | `swarachit: true` | no | Shows “स्वरचित” badge (except on `swarachit` section page) |
 
@@ -102,7 +101,7 @@ lyrics:
       एक दंत दयावंत, चार भुजा धारी…
     - |
       अंधन को आंख देत…
-  dhvani: |
+  post_shlok: |
     वक्रतुण्ड महाकाय…॥
 ```
 
@@ -112,7 +111,7 @@ lyrics:
 - **`sthayi_connect`** — **on by default** (`sthayi_connect: true` in `sections.yaml`). Each antara’s last line also ends with `....` + refrain; the full `sthayi` block with `॥स्थायी॥` still prints first. Disable per bhajan with `sthayi_connect: false` under `lyrics:` (or top-level on the bhajan file), or per section in `sections.yaml`.
 - **`sthayi_connect_text`** — optional exact refrain string under `lyrics:` (e.g. `ॐ जय शिव ओंकारा`). If omitted, first 3 words of `sthayi` are used (longer → `...`).
 - **`paragraphs`** — antaras (`- |`) and optional `- commentary: |` entries, in order.
-- **`dhvani`** / **`shlok`** — closing shloka after lyrics (inside `lyrics:`).
+- **`post_shlok`** — closing shloka or narration after lyrics (inside `lyrics:`). Legacy keys `dhvani`, `shlok`, and `jabani` are merged into this on load.
 - **`parts`** — for multi-part bhajans (e.g. long charitra): array of `{ sthayi, paragraphs }`.
 
 Filenames are sorted lexicographically (`001-…`, `002-…`) — that order is the **bhajan number** on the page.
@@ -132,7 +131,7 @@ Every public page shares:
 1. Optional banner image.
 2. Section title.
 3. Numbered **भजन सूची** (anchor index).
-4. **Bhajan cards** — title, lyrics HTML (pre_shlok, sthayi, antaras, commentary, dhvani), optional jabani, “सूची ↑” back to index.
+4. **Bhajan cards** — title, lyrics HTML (pre_shlok, sthayi, antaras, commentary, post_shlok), “सूची ↑” back to index.
 
 **Home** (`index.html`): home banner + list of section links.
 
@@ -318,7 +317,7 @@ Change `renderIndex()` in `scripts/lib/template.js` or `home_banner` / `site_tit
 | `scripts/lib/sections.js` | Load/save `sections.yaml`, list bhajan files |
 | `scripts/lib/yaml-io.js` | Parse/write bhajan + sections YAML |
 | `scripts/lib/lyrics-structure.js` | Structured lyrics helpers; used by `escape.js` |
-| `scripts/lib/escape.js` | `lyricsToHtml`, `preShlokToHtml`, `dhvaniToHtml`, `jabaniToHtml` |
+| `scripts/lib/escape.js` | `lyricsToHtml`, `preShlokToHtml` |
 | `scripts/lib/template.js` | HTML shell, sidebar, section/home pages |
 | `scripts/lib/search-index.js` | JSON search index |
 | `scripts/lib/slug.js` | Filename + anchor id generation |

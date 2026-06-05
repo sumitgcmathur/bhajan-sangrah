@@ -3,10 +3,10 @@ tarz: महाभारत के दोहो की भांति
 group: अम्बे भजन
 swarachit: true
 lyrics:
-  sthayi_connect: false
   sthayi: |
     सती अंग धरती गिरें, बने शक्ति के पीठ, 
     भैरव रक्षक है वहाँ, पूजित पावन तीर्थ।
+  sthayi_connect: false
   paragraphs:
     - |
       कामरूप माता कामाख्या, योनि गिरी जिस धाम, 

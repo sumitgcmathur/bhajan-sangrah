@@ -25,7 +25,7 @@ function collectLyricsText(lyrics) {
       const body = String(para).trim();
       if (body) chunks.push(body);
     }
-    if (p.dhvani) chunks.push(String(p.dhvani));
+    if (p.post_shlok) chunks.push(String(p.post_shlok));
   };
 
   if (Array.isArray(lyrics.parts)) {

@@ -11,10 +11,11 @@ const DOC_KEYS = new Set([
   'group',
   'swarachit',
   'lyrics',
-  'jabani',
   'pre_shlok',
+  'post_shlok',
   'dhvani',
   'shlok',
+  'jabani',
 ]);
 
 /** Keys allowed under `lyrics:` (structured) */
@@ -26,6 +27,7 @@ const LYRICS_KEYS = new Set([
   'sthayi_connect_text',
   'pre_shlok',
   'pre_sthayi',
+  'post_shlok',
   'dhvani',
   'shlok',
   'jabani',
@@ -38,11 +40,14 @@ const PART_KEYS = new Set([
   'sthayi_connect',
   'sthayi_connect_text',
   'pre_shlok',
-  'dhvani',
+  'post_shlok',
 ]);
 
 const DEPRECATED_KEYS = {
   pre_sthayi: 'pre_shlok',
+  dhvani: 'post_shlok',
+  shlok: 'post_shlok',
+  jabani: 'post_shlok',
 };
 
 function stripBom(text) {
@@ -159,7 +164,7 @@ function partHasContent(part) {
   if (!part) return false;
   if (String(part.sthayi || '').trim()) return true;
   if (String(part.pre_shlok || '').trim()) return true;
-  if (String(part.dhvani || '').trim()) return true;
+  if (String(part.post_shlok || '').trim()) return true;
   return (part.paragraphs || []).some((item) => {
     if (item && typeof item === 'object' && item.commentary != null) {
       return Boolean(String(item.commentary).trim());
@@ -271,15 +276,21 @@ function validateBhajanYaml(text, relPath) {
     add('error', 'empty_lyrics', 'Lyrics parsed but contain no renderable text');
   }
 
+  const parsedPostShlok = (d) => Boolean(String(d.lyrics?.post_shlok || '').trim());
   const fieldChecks = [
     ['sthayi', (d) => Boolean(String(d.lyrics?.sthayi || '').trim())],
     ['pre_shlok', (d) => Boolean(String(d.lyrics?.pre_shlok || '').trim())],
-    ['dhvani', (d) => Boolean(String(d.lyrics?.dhvani || '').trim())],
+    ['post_shlok', parsedPostShlok],
+    ['dhvani', parsedPostShlok],
+    ['shlok', parsedPostShlok],
+    ['jabani', parsedPostShlok],
     ['parts', (d) => Boolean(d.lyrics?.parts?.length)],
   ];
 
   for (const [key, hasParsed] of fieldChecks) {
-    const src = source.lyricsKeys.find((k) => k.key === key);
+    const src =
+      source.lyricsKeys.find((k) => k.key === key)
+      || source.topLevel.find((k) => k.key === key);
     if (!src || !yamlFieldHasContent(lines, src)) continue;
     if (!hasParsed(doc)) {
       add(

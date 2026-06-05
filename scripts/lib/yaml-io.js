@@ -155,16 +155,17 @@ function parseLyricsObject(lines, startIdx) {
       continue;
     }
 
-    if (raw.match(/^\s{2}(?:dhvani|shlok):\s*\|\s*$/)) {
+    if (raw.match(/^\s{2}post_shlok:\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
-      lyrics.dhvani = text;
+      lyrics.post_shlok = text;
       i = next;
       continue;
     }
 
-    if (raw.match(/^\s{2}jabani:\s*\|\s*$/)) {
+    if (raw.match(/^\s{2}(?:dhvani|shlok|jabani):\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, baseIndent + 2);
-      lyrics._legacyJabani = text;
+      if (!lyrics._legacyPostPieces) lyrics._legacyPostPieces = [];
+      lyrics._legacyPostPieces.push(text);
       i = next;
       continue;
     }
@@ -175,62 +176,61 @@ function parseLyricsObject(lines, startIdx) {
   return { lyrics, next: i };
 }
 
-/** Keep pre_shlok / dhvani under lyrics; merge legacy top-level fields. */
+function pushPostPiece(pieces, text) {
+  const s = String(text || '').trim();
+  if (s) pieces.push(s);
+}
+
+/** Merge post_shlok and legacy dhvani / shlok / jabani into lyrics.post_shlok. */
 function normalizeLyricsDoc(doc) {
-  let out = hoistJabani(doc);
-  if (typeof out.lyrics !== 'object' || !out.lyrics) return out;
+  const out = { ...doc };
+  const postPieces = [];
+
+  pushPostPiece(postPieces, out.post_shlok);
+  pushPostPiece(postPieces, out.dhvani);
+  pushPostPiece(postPieces, out.shlok);
+  pushPostPiece(postPieces, out.jabani);
+  for (const piece of out._legacyPostPieces || []) pushPostPiece(postPieces, piece);
+  delete out.post_shlok;
+  delete out.dhvani;
+  delete out.shlok;
+  delete out.jabani;
+  delete out._legacyPostPieces;
+
+  if (typeof out.lyrics === 'string' || !out.lyrics) {
+    if (postPieces.length) {
+      out.lyrics = { post_shlok: postPieces.join('\n\n') };
+    }
+    if (out.pre_shlok) {
+      out.lyrics = typeof out.lyrics === 'object' ? out.lyrics : {};
+      if (!out.lyrics.pre_shlok) out.lyrics.pre_shlok = out.pre_shlok;
+    }
+    delete out.pre_shlok;
+    return out;
+  }
 
   const lyrics = { ...out.lyrics };
   if (out.pre_shlok && !lyrics.pre_shlok) lyrics.pre_shlok = out.pre_shlok;
-  if (out.dhvani && !lyrics.dhvani) lyrics.dhvani = out.dhvani;
   if (lyrics._legacyPreShlok) {
     if (!lyrics.pre_shlok) lyrics.pre_shlok = lyrics._legacyPreShlok;
     delete lyrics._legacyPreShlok;
   }
-
-  out = { ...out, lyrics };
   delete out.pre_shlok;
-  delete out.dhvani;
-  return out;
-}
 
-/** Narration after the song — not part of lyrics (legacy: nested under lyrics). */
-function hoistJabani(doc) {
-  if (!doc?.lyrics || typeof doc.lyrics === 'string') return doc;
+  pushPostPiece(postPieces, lyrics.post_shlok);
+  pushPostPiece(postPieces, lyrics.dhvani);
+  pushPostPiece(postPieces, lyrics.shlok);
+  pushPostPiece(postPieces, lyrics.jabani);
+  for (const piece of lyrics._legacyPostPieces || []) pushPostPiece(postPieces, piece);
+  delete lyrics.dhvani;
+  delete lyrics.shlok;
+  delete lyrics.jabani;
+  delete lyrics._legacyPostPieces;
 
-  const pieces = doc.jabani ? [doc.jabani] : [];
+  if (postPieces.length) lyrics.post_shlok = postPieces.join('\n\n');
+  else delete lyrics.post_shlok;
 
-  const stripFromPart = (part) => {
-    if (!part) return;
-    if (part._legacyJabani) {
-      pieces.push(part._legacyJabani);
-      delete part._legacyJabani;
-    }
-    if (part.jabani) {
-      pieces.push(part.jabani);
-      delete part.jabani;
-    }
-  };
-
-  if (doc.lyrics._legacyJabani) {
-    pieces.push(doc.lyrics._legacyJabani);
-    delete doc.lyrics._legacyJabani;
-  }
-  if (doc.lyrics.jabani) {
-    pieces.push(doc.lyrics.jabani);
-    delete doc.lyrics.jabani;
-  }
-  if (doc.lyrics.parts?.length) {
-    for (const part of doc.lyrics.parts) stripFromPart(part);
-  }
-
-  const jabani = pieces
-    .map((p) => String(p).trim())
-    .filter(Boolean)
-    .join('\n\n');
-  const out = { ...doc };
-  if (jabani) out.jabani = jabani;
-  else delete out.jabani;
+  out.lyrics = lyrics;
   return out;
 }
 
@@ -251,15 +251,16 @@ function loadBhajanDoc(text) {
       i = next;
       continue;
     }
-    if (line.match(/^dhvani:\s*\|\s*$/) || line.match(/^shlok:\s*\|\s*$/)) {
+    if (line.match(/^post_shlok:\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, 2);
-      doc.dhvani = text;
+      doc.post_shlok = text;
       i = next;
       continue;
     }
-    if (line.match(/^jabani:\s*\|\s*$/)) {
+    if (line.match(/^(?:dhvani|shlok|jabani):\s*\|\s*$/)) {
       const { text, next } = readIndentedBlock(lines, i + 1, 2);
-      doc.jabani = text;
+      if (!doc._legacyPostPieces) doc._legacyPostPieces = [];
+      doc._legacyPostPieces.push(text);
       i = next;
       continue;
     }
@@ -337,7 +338,7 @@ function dumpLyricsObject(lyrics) {
     out.push(`  sthayi_connect_text: ${lyrics.sthayi_connect_text}`);
   }
   if (lyrics.paragraphs?.length) out.push(...dumpParagraphList(lyrics.paragraphs, 2));
-  if (lyrics.dhvani) out.push(...dumpLiteralBlock('dhvani', lyrics.dhvani, 2));
+  if (lyrics.post_shlok) out.push(...dumpLiteralBlock('post_shlok', lyrics.post_shlok, 2));
   return out;
 }
 
@@ -353,7 +354,6 @@ function dumpBhajanDoc(doc) {
     out.push('lyrics: |');
     for (const line of String(doc.lyrics || '').split('\n')) out.push(`  ${line}`);
   }
-  if (doc.jabani) out.push(...dumpLiteralBlock('jabani', doc.jabani, 0));
   return out.join('\n') + '\n';
 }
 
@@ -430,7 +430,6 @@ function dumpFile(path, data, kind) {
 module.exports = {
   loadBhajanDoc,
   dumpBhajanDoc,
-  hoistJabani,
   loadSectionsDoc,
   dumpSectionsDoc,
   loadFile,

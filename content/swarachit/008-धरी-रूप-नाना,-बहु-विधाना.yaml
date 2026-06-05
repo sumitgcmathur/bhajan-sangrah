@@ -3,10 +3,10 @@ tarz: श्री रामचंद्र कृपालु भजुमन
 group: अम्बे भजन
 swarachit: true
 lyrics:
-  sthayi_connect: false
   sthayi: |
     धरी रूप नाना, बहु विधाना, जगत पथ दर्शित करि, 
     तुम करि कृपा, जगत माता, भक्त हेतु अवतरि।
+  sthayi_connect: false
   paragraphs:
     - |
       शिव शक्ति खेला, जग झमेला, बात कुछ ज्यादा बढ़ी, 

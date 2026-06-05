@@ -28,7 +28,6 @@ function prepareBhajanForRender(doc, section, config, opts = {}) {
     group: doc.group,
     swarachit: doc.swarachit,
     lyrics: enrichBhajanLyrics(doc.lyrics, sectionEntry, doc, config),
-    jabani: doc.jabani,
     id: opts.id || doc.id || anchorId(slug, title, index),
   };
 }

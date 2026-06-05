@@ -23,7 +23,7 @@ const state = {
   error: null,
   paraEditMode: 'paste',
   paraBulkDraft: null,
-  editOptional: { preShlok: false, dhvani: false, jabani: false },
+  editOptional: { preShlok: false, postShlok: false },
   previewHtml: null,
   previewBusy: false,
   editPanel: 'basic',
@@ -253,13 +253,12 @@ function emptyEditor() {
     tarz: '',
     group: '',
     swarachit: false,
-    jabani: '',
     lyrics: {
       sthayi: '',
       sthayi_connect: false,
       sthayi_connect_text: '',
       pre_shlok: '',
-      dhvani: '',
+      post_shlok: '',
       paragraphs: [{ type: 'antara', text: '' }],
       parts: null,
     },
@@ -456,8 +455,6 @@ function syncEditorFromDom() {
     e.group = readGroupValue();
   }
   e.swarachit = document.getElementById('f-swarachit')?.checked || false;
-  const jabEl = document.getElementById('f-jabani');
-  if (jabEl) e.jabani = jabEl.value.trim();
   const L = e.lyrics;
   const sthayiEl = document.getElementById('f-sthayi');
   if (sthayiEl) L.sthayi = sthayiEl.value.trim();
@@ -467,8 +464,8 @@ function syncEditorFromDom() {
   if (connectTextEl) L.sthayi_connect_text = connectTextEl.value.trim();
   const preEl = document.getElementById('f-pre-shlok');
   if (preEl) L.pre_shlok = preEl.value.trim();
-  const dhvEl = document.getElementById('f-dhvani');
-  if (dhvEl) L.dhvani = dhvEl.value.trim();
+  const postEl = document.getElementById('f-post-shlok');
+  if (postEl) L.post_shlok = postEl.value.trim();
   const legacy = document.getElementById('f-legacy');
   if (legacy) e.legacyLyricsText = legacy.value;
   flushParagraphEdits();
@@ -528,8 +525,7 @@ function initEditOptionalFromEditor(editor) {
   const L = editor?.lyrics || {};
   state.editOptional = {
     preShlok: Boolean((L.pre_shlok || '').trim()),
-    dhvani: Boolean((L.dhvani || '').trim()),
-    jabani: Boolean((editor?.jabani || '').trim()),
+    postShlok: Boolean((L.post_shlok || '').trim()),
   };
 }
 
@@ -545,8 +541,7 @@ function editNavHtml(e) {
   const active = state.editPanel || 'basic';
   const hasMoreContent =
     state.editOptional.preShlok ||
-    state.editOptional.dhvani ||
-    state.editOptional.jabani;
+    state.editOptional.postShlok;
   const moreBadge = hasMoreContent ? '<span class="edit-nav__badge" title="Has optional content">•</span>' : '';
   const items = [
     { id: 'basic', label: 'Basic' },
@@ -586,16 +581,10 @@ function optionalLyricsHtml(e, L) {
       <textarea id="f-pre-shlok" class="hi-field" lang="hi-IN" rows="3">${escapeHtml(L.pre_shlok)}</textarea>
     </div>`);
   }
-  if (o.dhvani) {
+  if (o.postShlok) {
     blocks.push(`<div class="lyrics-block">
-      <h3>Dhvani</h3>
-      <textarea id="f-dhvani" class="hi-field" lang="hi-IN" rows="3">${escapeHtml(L.dhvani)}</textarea>
-    </div>`);
-  }
-  if (o.jabani) {
-    blocks.push(`<div class="lyrics-block">
-      <h3>Jabani (explanation)</h3>
-      <textarea id="f-jabani" class="hi-field" lang="hi-IN" rows="4">${escapeHtml(e.jabani)}</textarea>
+      <h3>Post shlok</h3>
+      <textarea id="f-post-shlok" class="hi-field" lang="hi-IN" rows="4">${escapeHtml(L.post_shlok)}</textarea>
     </div>`);
   }
   const adds = [];
@@ -604,14 +593,9 @@ function optionalLyricsHtml(e, L) {
       '<button type="button" class="btn btn-add-optional" data-show-optional="preShlok">+ Opening shloka</button>',
     );
   }
-  if (!o.dhvani) {
+  if (!o.postShlok) {
     adds.push(
-      '<button type="button" class="btn btn-add-optional" data-show-optional="dhvani">+ Dhvani</button>',
-    );
-  }
-  if (!o.jabani) {
-    adds.push(
-      '<button type="button" class="btn btn-add-optional" data-show-optional="jabani">+ Jabani</button>',
+      '<button type="button" class="btn btn-add-optional" data-show-optional="postShlok">+ Post shlok</button>',
     );
   }
   if (!blocks.length && !adds.length) {
@@ -857,7 +841,7 @@ function renderInner() {
             </div>
             <div class="form-section edit-panel${editPanelHidden('more')}" id="edit-panel-more">
               <h2>More</h2>
-              <p class="hint">Optional opening shloka, dhvani, or jabani.</p>
+              <p class="hint">Optional opening or post shlok.</p>
               ${optionalLyricsHtml(e, L)}
             </div>
             <div class="form-section edit-panel edit-panel--preview${editPanelHidden('preview')}" id="edit-panel-preview">
