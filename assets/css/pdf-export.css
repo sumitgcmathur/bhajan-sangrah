@@ -508,8 +508,11 @@ body.pdf-export {
   margin: 0;
 }
 
-.pdf-bhajan-list .lyrics-aside--post-shlok {
+.pdf-bhajan-list .bhajan-card__post-shlok {
   margin-top: 0.75rem;
+}
+
+.pdf-bhajan-list .bhajan-card__post-shlok .lyrics-aside {
   padding-top: 0.55rem;
   border-top: 1px solid var(--pdf-border);
   font-size: 0.98em;

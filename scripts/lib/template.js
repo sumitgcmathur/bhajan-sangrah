@@ -1,4 +1,11 @@
-const { escapeHtml, lyricsToHtml, lyricsHasSthayi } = require('./escape');
+const {
+  escapeHtml,
+  lyricsToHtml,
+  lyricsHasSthayi,
+  extractPostShlok,
+  lyricsWithoutPostShlok,
+  postShlokToHtml,
+} = require('./escape');
 const { anchorId } = require('./slug');
 const { toDevaNum } = require('./lyrics-structure');
 const { landingBannerPath } = require('./banner-thumbs');
@@ -362,12 +369,17 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
   const toSthayi = hasSthayi
     ? `<a href="#${titleAnchor}" class="bhajan-card__to-sthayi" aria-label="भजन शीर्षक और स्थायी पर जाएँ">↑ स्थायी</a>`
     : '';
+  const postShlok = postShlokToHtml(extractPostShlok(b.lyrics));
+  const lyricsHtml = lyricsToHtml(lyricsWithoutPostShlok(b.lyrics), b.tarz, {
+    sthayiAnchorId: hasSthayi ? sthayiAnchor : null,
+  });
   return `<article class="bhajan-card" id="${id}">
   <header class="bhajan-card__head" id="${titleAnchor}">
     <h3 class="bhajan-card__title"><span class="bhajan-card__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}${sw}</h3>
   </header>
-  <div class="bhajan-card__lyrics">${lyricsToHtml(b.lyrics, b.tarz, { sthayiAnchorId: hasSthayi ? sthayiAnchor : null })}</div>
+  <div class="bhajan-card__lyrics">${lyricsHtml}</div>
   ${toSthayi}
+  ${postShlok}
 </article>`;
 }
 

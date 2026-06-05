@@ -131,7 +131,7 @@ Every public page shares:
 1. Optional banner image.
 2. Section title.
 3. Numbered **भजन सूची** (anchor index).
-4. **Bhajan cards** — title, lyrics HTML (pre_shlok, sthayi, antaras, commentary, post_shlok), “सूची ↑” back to index.
+4. **Bhajan cards** — title, lyrics HTML (pre_shlok, sthayi, antaras, commentary), “↑ स्थायी” when applicable, then `post_shlok`, “सूची ↑” back to index.
 
 **Home** (`index.html`): home banner + list of section links.
 

@@ -244,11 +244,42 @@ function renderLyricsPart(part, tarzHtml, opts = {}) {
     paraNum = nextVerse;
   }
 
-  if (part.post_shlok) {
-    chunks.push(renderLyricsAsideHtml(part.post_shlok, 'post-shlok'));
-  }
-
   return chunks.filter(Boolean).join('\n');
+}
+
+function extractPostShlok(lyrics) {
+  if (!lyrics) return '';
+  const pieces = [];
+  const add = (part) => {
+    const s = String(part?.post_shlok || '').trim();
+    if (s) pieces.push(s);
+  };
+  if (typeof lyrics === 'string') {
+    const norm = normalizeFromLegacy(lyrics);
+    if (norm.parts?.length) norm.parts.forEach(add);
+    else add(norm);
+    return pieces.join('\n\n');
+  }
+  if (lyrics.parts?.length) {
+    for (const part of lyrics.parts) add(part);
+    return pieces.join('\n\n');
+  }
+  return String(lyrics.post_shlok || '').trim();
+}
+
+function lyricsWithoutPostShlok(lyrics) {
+  if (!lyrics || typeof lyrics === 'string') return lyrics;
+  if (lyrics.parts?.length) {
+    return {
+      ...lyrics,
+      parts: lyrics.parts.map((part) => {
+        const { post_shlok, ...rest } = part;
+        return rest;
+      }),
+    };
+  }
+  const { post_shlok, ...rest } = lyrics;
+  return rest;
 }
 
 function lyricsHasSthayi(lyrics) {
@@ -325,6 +356,12 @@ function preShlokToHtml(preShlok) {
   return `<div class="bhajan-card__pre-shlok" aria-label="प्रारंभिक श्लोक">${body}</div>`;
 }
 
+function postShlokToHtml(postShlok) {
+  const body = renderLyricsAsideHtml(postShlok, 'post-shlok');
+  if (!body) return '';
+  return `<div class="bhajan-card__post-shlok">${body}</div>`;
+}
+
 function lyricsToHtml(lyrics, tarz, opts = {}) {
   if (isStructuredLyrics(lyrics) || typeof lyrics === 'string') {
     return lyricsStructureToHtml(lyrics, tarz, opts);
@@ -336,6 +373,9 @@ module.exports = {
   escapeHtml,
   lyricsToHtml,
   lyricsHasSthayi,
+  extractPostShlok,
+  lyricsWithoutPostShlok,
   preShlokToHtml,
+  postShlokToHtml,
   lyricsStructureToHtml,
 };

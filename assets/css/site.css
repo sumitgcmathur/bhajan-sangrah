@@ -1157,6 +1157,15 @@ body.search-panel-open {
   text-decoration: underline;
 }
 
+/* Post shlok after ↑ स्थायी (outside main lyrics flow) */
+.bhajan-card__post-shlok {
+  margin-top: 0.85rem;
+}
+
+.bhajan-card__post-shlok .lyrics-aside {
+  margin: 0;
+}
+
 .bhajan-card__lyrics .lyrics-sthayi {
   scroll-margin-top: calc(var(--scroll-header-h) + env(safe-area-inset-top, 0px) + 0.65rem);
 }
