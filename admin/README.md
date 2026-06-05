@@ -133,9 +133,9 @@ Red wavy underlines on Hindi fields (Hunspell in the browser; first load ~30–6
 
 ### Spell errors (all bhajans)
 
-**Sections** → **Spell errors (all bhajans)** (`#/spell-errors`), then **Scan all bhajans**. Progress: load YAML from GitHub → load dictionary (first time ~1–2 min) → check unique words. Lists unknown words by **use count**. Per word: **Correct all**, **Ignore all**, **Add all**; links open the editor.
+**Sections** → **Spell errors (all bhajans)** (`#/spell-errors`), then **Scan all bhajans**. Uses Hunspell plus a **bhajan allowlist** (common corpus words like हारे, करे, रे) and drops absurd suggestions (e.g. हारे→हरो). Still review before **Correct all** — use **Ignore all** for valid words the dictionary misses.
 
-Files: `admin/public/spellcheck.js`, `admin/public/spell-errors.js`, `admin/api/spell-fix.js`.
+Files: `admin/public/spellcheck.js`, `admin/public/spell-allowlist.js`, `admin/public/spell-errors.js`, `admin/api/spell-fix.js`.
 
 ## Voice typing (edit screen)
 

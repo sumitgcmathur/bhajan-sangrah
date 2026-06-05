@@ -4,6 +4,7 @@
  */
 
 import { normWord, tokenizeHindiWithOffsets } from './spell-tokens.js';
+import { BHAJAN_EXTRA, CORPUS_COMMON_WORDS } from './spell-allowlist.js';
 
 const ESPELLS_URL = 'https://esm.sh/espells@0.4.1';
 const DICT_AFF =
@@ -54,6 +55,12 @@ const DEFAULT_IGNORE = new Set([
   'तथास्तु',
   'कछु',
   'कछ',
+]);
+
+const ALLOWLIST = new Set([
+  ...DEFAULT_IGNORE,
+  ...BHAJAN_EXTRA.map((w) => normWord(w)),
+  ...CORPUS_COMMON_WORDS.map((w) => normWord(w)),
 ]);
 
 let checkerPromise = null;
@@ -248,11 +255,44 @@ export async function scanCorpusItems(items, { onProgress, signal, dictionaryRea
 }
 
 function shouldSkip(word) {
-  if (DEFAULT_IGNORE.has(word)) return true;
+  if (ALLOWLIST.has(word)) return true;
   if (loadWordSet(IGNORE_KEY).has(word)) return true;
   if (loadWordSet(CUSTOM_KEY).has(word)) return true;
   if (/^[०१२३४५६७८९\d]+$/.test(word)) return true;
   return false;
+}
+
+/** Grapheme-wise edit distance (Devanagari-safe). */
+function levenshtein(a, b) {
+  const sa = [...normWord(a)];
+  const sb = [...normWord(b)];
+  const m = sa.length;
+  const n = sb.length;
+  if (!m) return n;
+  if (!n) return m;
+  let prev = [...Array(n + 1).keys()];
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) {
+      const cost = sa[i - 1] === sb[j - 1] ? 0 : 1;
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+
+function maxEditDistance(word) {
+  const len = [...word].length;
+  if (len <= 3) return 1;
+  if (len <= 6) return 2;
+  return Math.max(2, Math.floor(len * 0.32));
+}
+
+/** Drop Hunspell guesses that are unrelated (e.g. हारे → हरो). */
+function filterPlausibleSuggestions(word, suggestions) {
+  const maxD = maxEditDistance(word);
+  return (suggestions || []).filter((s) => levenshtein(word, s) <= maxD);
 }
 
 async function getChecker() {
@@ -283,10 +323,18 @@ async function lookupWord(word) {
   }
   const spell = await getChecker();
   const { correct, forbidden } = spell.lookup(word);
-  const result = {
-    ok: correct && !forbidden,
-    suggestions: correct ? [] : spell.suggest(word).slice(0, MAX_SUGGESTIONS),
-  };
+  if (correct && !forbidden) {
+    const ok = { ok: true, suggestions: [] };
+    wordCache.set(word, ok);
+    return ok;
+  }
+  let suggestions = filterPlausibleSuggestions(word, spell.suggest(word).slice(0, MAX_SUGGESTIONS));
+  if (!suggestions.length) {
+    const ok = { ok: true, suggestions: [] };
+    wordCache.set(word, ok);
+    return ok;
+  }
+  const result = { ok: false, suggestions };
   wordCache.set(word, result);
   return result;
 }
