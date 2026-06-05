@@ -17,8 +17,6 @@ const CORPUS_JSON_URL = '/corpus-dictionary.json';
 const CORPUS_DIC_URL = '/corpus.dic';
 const DICT_PROBE_WORD = 'जय';
 const DICT_PROBE_SANSKRIT = 'त्र्यम्बकं';
-const CORPUS_JSON_URL = '/corpus-dictionary.json';
-const CORPUS_DIC_URL = '/corpus.dic';
 
 const MIN_WORD_LEN = 2;
 const MAX_SUGGESTIONS = 8;
