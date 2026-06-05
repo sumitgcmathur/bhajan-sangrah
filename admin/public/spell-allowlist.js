@@ -1,6 +1,6 @@
 /**
- * Words valid in bhajans but often missing from hi_IN Hunspell.
- * Merged with high-frequency tokens from this corpus (min 18× in content/).
+ * Extra allowlist on top of corpus-dictionary.json (all published bhajan words).
+ * Use for editor-only terms or words not yet in a rebuilt corpus dict.
  */
 
 /** Extra devotional / bhajan forms not always in the frequency cut. */

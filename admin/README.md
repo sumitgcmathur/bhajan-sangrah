@@ -135,9 +135,9 @@ Red wavy underlines on Hindi fields (Hunspell in the browser; first load ~30–6
 
 ### Spell errors (all bhajans)
 
-**Sections** → **Spell errors (all bhajans)** (`#/spell-errors`), then **Scan all bhajans**. Uses Hunspell plus a **bhajan allowlist** (common corpus words like हारे, करे, रे) and drops absurd suggestions (e.g. हारे→हरो). Still review before **Correct all** — use **Ignore all** for valid words the dictionary misses.
+**Sections** → **Spell errors (all bhajans)** (`#/spell-errors`), then **Scan all bhajans**. **Corpus-primary**: every word in published `content/` is valid; then Hindi (`hi_IN`) + Sanskrit (`sa_IN`) Hunspell + `corpus.dic`. Only flags words outside the sangrah with plausible typo suggestions. Regenerate word lists: `npm run build:corpus-dict` (also runs on `npm run build`).
 
-Files: `admin/public/spellcheck.js`, `admin/public/spell-allowlist.js`, `admin/public/spell-errors.js`, `admin/api/spell-fix.js`.
+Files: `admin/public/spellcheck.js`, `admin/public/corpus-dictionary.json`, `admin/public/corpus.dic`, `scripts/lib/corpus-dictionary.js`, `admin/api/spell-fix.js`.
 
 ## Voice typing (edit screen)
 

@@ -1235,10 +1235,15 @@ function endSpellCorpusOp() {
 function spellCorpusProgressLabel(sc) {
   const { phase, progress } = sc;
   const { current, total } = progress;
+  if (phase === 'corpus') {
+    return current
+      ? `Loading bhajan word list… (${current}s)`
+      : 'Loading bhajan word list…';
+  }
   if (phase === 'dict') {
     return current
-      ? `Loading Hindi dictionary… (${current}s — first time may take 1–2 min)`
-      : 'Loading Hindi dictionary… (first time may take 1–2 min)';
+      ? `Loading Hindi + Sanskrit dictionaries… (${current}s — first time may take 1–2 min)`
+      : 'Loading Hindi + Sanskrit dictionaries… (first time may take 1–2 min)';
   }
   if (phase === 'list') return 'Listing bhajan files…';
   if (phase === 'load') return `Loading bhajan text from GitHub… ${current}/${total}`;
@@ -1257,7 +1262,7 @@ function renderSpellCorpusBody() {
   if (sc.scanning) {
     const p = sc.progress;
     const indeterminate =
-      sc.phase === 'dict' || sc.phase === 'list' || sc.phase === 'tokenize';
+      sc.phase === 'corpus' || sc.phase === 'dict' || sc.phase === 'list' || sc.phase === 'tokenize';
     const pct = indeterminate ? 0 : p.total ? Math.round((p.current / p.total) * 100) : 0;
     const barClass = indeterminate
       ? 'spell-corpus-progress__bar spell-corpus-progress__bar--indeterminate'
@@ -1273,10 +1278,13 @@ function renderSpellCorpusBody() {
   </div>`;
   const report = sc.report;
   if (!report) {
-    return `${actions}<p class="hint">Tap <strong>Scan all bhajans</strong>. Steps: (1) Hindi dictionary, (2) load ~200 YAML files from GitHub, (3) check unique words, (4) show results. Use Cancel anytime.</p>`;
+    return `${actions}<p class="hint">Tap <strong>Scan all bhajans</strong>. Uses the published bhajan word list first, then Hindi + Sanskrit Hunspell. Only flags words <em>not</em> in the sangrah that have plausible typo fixes. Use Cancel anytime.</p>`;
   }
   if (!report.clusters.length) {
-    return `${actions}<p class="spell-ok">No unknown words in ${report.filesScanned} bhajan(s).</p>`;
+    const corpusNote = report.corpusWords
+      ? ` (${report.corpusWords.toLocaleString()} corpus words accepted)`
+      : '';
+    return `${actions}<p class="spell-ok">No likely typos in ${report.filesScanned} bhajan(s)${corpusNote}.</p>`;
   }
   const rows = report.clusters
     .map((c) => {

@@ -1,6 +1,6 @@
 /**
- * Inline Hindi spell check (Espells + Shreeshrii hindi-hunspell via CDN).
- * Red wavy underlines in editor fields; context menu: correct / ignore / add.
+ * Corpus-primary spell check: bhajan vocabulary + hi_IN + sa_IN Hunspell (Espells).
+ * Flags only words outside the sangrah that have plausible typo suggestions.
  */
 
 import { normWord, tokenizeHindiWithOffsets } from './spell-tokens.js';
@@ -9,9 +9,16 @@ import { BHAJAN_EXTRA, CORPUS_COMMON_WORDS } from './spell-allowlist.js';
 const ESPELLS_URL = 'https://esm.sh/espells@0.4.1';
 const DICT_AFF =
   'https://raw.githubusercontent.com/Shreeshrii/hindi-hunspell/master/Hindi/hi_IN.aff';
-const DICT_DIC =
+const DICT_DIC_HI =
   'https://raw.githubusercontent.com/Shreeshrii/hindi-hunspell/master/Hindi/hi_IN.dic';
+const DICT_DIC_SA =
+  'https://raw.githubusercontent.com/Shreeshrii/hindi-hunspell/master/Sanskrit/sa_IN.dic';
+const CORPUS_JSON_URL = '/corpus-dictionary.json';
+const CORPUS_DIC_URL = '/corpus.dic';
 const DICT_PROBE_WORD = 'जय';
+const DICT_PROBE_SANSKRIT = 'त्र्यम्बकं';
+const CORPUS_JSON_URL = '/corpus-dictionary.json';
+const CORPUS_DIC_URL = '/corpus.dic';
 
 const MIN_WORD_LEN = 2;
 const MAX_SUGGESTIONS = 8;
@@ -64,6 +71,8 @@ const ALLOWLIST = new Set([
 ]);
 
 let checkerPromise = null;
+let corpusPromise = null;
+let corpusWordSet = null;
 let menuEl = null;
 let activeTarget = null;
 let wordCache = new Map();
@@ -179,8 +188,46 @@ function abortIfNeeded(signal) {
 /**
  * @param {Array<{ path: string, title: string, texts: Array<{field:string,text:string}> }>} items
  */
-/** Load Hunspell once; call onProgress(seconds, 0, 'dict') while waiting. */
+/** Load corpus word list (all published bhajan tokens). */
+export async function ensureCorpusDictionary(signal) {
+  if (corpusWordSet) return corpusWordSet;
+  if (!corpusPromise) {
+    corpusPromise = (async () => {
+      try {
+        const res = await fetch(CORPUS_JSON_URL, { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const set = new Set((data.words || []).map((w) => normWord(w)).filter(Boolean));
+        if (!set.size) throw new Error('empty word list');
+        corpusWordSet = set;
+        return set;
+      } catch (e) {
+        console.warn('spell: corpus dictionary unavailable, using Hunspell only', e);
+        corpusWordSet = new Set();
+        return corpusWordSet;
+      }
+    })();
+  }
+  abortIfNeeded(signal);
+  return corpusPromise;
+}
+
+/** Load corpus + Hunspell (hi + sa + corpus.dic). */
 export async function ensureSpellDictionary(onProgress, signal) {
+  onProgress?.(0, 0, 'corpus');
+  const corpusStarted = Date.now();
+  const corpusTick = setInterval(() => {
+    if (signal?.aborted) return;
+    const sec = Math.floor((Date.now() - corpusStarted) / 1000);
+    onProgress?.(sec, 0, 'corpus');
+  }, 500);
+  try {
+    abortIfNeeded(signal);
+    await ensureCorpusDictionary(signal);
+  } finally {
+    clearInterval(corpusTick);
+  }
+
   onProgress?.(0, 0, 'dict');
   const started = Date.now();
   const tick = setInterval(() => {
@@ -214,9 +261,11 @@ export async function scanCorpusItems(items, { onProgress, signal, dictionaryRea
 
   const words = [...uniqueWords];
   const wordHits = new Map();
+  let corpusSkipped = 0;
   for (let i = 0; i < words.length; i++) {
     abortIfNeeded(signal);
     const w = words[i];
+    if (isInCorpus(w)) corpusSkipped += 1;
     wordHits.set(w, await lookupWord(w));
     if (i % 15 === 0 || i === words.length - 1) {
       onProgress?.(i + 1, words.length, 'words');
@@ -250,10 +299,21 @@ export async function scanCorpusItems(items, { onProgress, signal, dictionaryRea
     totalOccurrences: occurrences.length,
     filesScanned: items.length,
     uniqueWordsChecked: words.length,
+    corpusWords: corpusWordSet?.size ?? 0,
+    corpusSkipped,
   };
 }
 
+export function getCorpusWordCount() {
+  return corpusWordSet?.size ?? 0;
+}
+
+function isInCorpus(word) {
+  return Boolean(corpusWordSet?.has(word));
+}
+
 function shouldSkip(word) {
+  if (isInCorpus(word)) return true;
   if (ALLOWLIST.has(word)) return true;
   if (loadWordSet(IGNORE_KEY).has(word)) return true;
   if (loadWordSet(CUSTOM_KEY).has(word)) return true;
@@ -299,10 +359,17 @@ async function getChecker() {
     checkerPromise = (async () => {
       const { Espells } = await import(ESPELLS_URL);
       if (!Espells?.fromURL) throw new Error('Espells failed to load');
-      const spell = await Espells.fromURL({ aff: DICT_AFF, dic: DICT_DIC });
-      const probe = spell.lookup(normWord(DICT_PROBE_WORD));
-      if (!probe.correct) {
+      const spell = await Espells.fromURL({
+        aff: DICT_AFF,
+        dic: [DICT_DIC_HI, DICT_DIC_SA, CORPUS_DIC_URL],
+      });
+      const probeHi = spell.lookup(normWord(DICT_PROBE_WORD));
+      if (!probeHi.correct) {
         throw new Error('Hindi dictionary failed to load');
+      }
+      const probeSa = spell.lookup(normWord(DICT_PROBE_SANSKRIT));
+      if (!probeSa.correct) {
+        console.warn('spell: Sanskrit dictionary extension may not have loaded');
       }
       return spell;
     })().catch((e) => {
@@ -315,6 +382,7 @@ async function getChecker() {
 
 async function lookupWord(word) {
   if (wordCache.has(word)) return wordCache.get(word);
+  await ensureCorpusDictionary();
   if (shouldSkip(word)) {
     const ok = { ok: true, suggestions: [] };
     wordCache.set(word, ok);
@@ -722,8 +790,9 @@ function wrapField(input) {
 export function bindInlineSpellFields(root = document) {
   if (!root) return;
   ensureMenu();
-  root.querySelectorAll('textarea.hi-field, input.hi-field[type="text"]').forEach(wrapField);
-  getChecker().catch(() => {});
+  const fields = [...root.querySelectorAll('textarea.hi-field, input.hi-field[type="text"]')];
+  ensureSpellDictionary().catch(() => {});
+  fields.forEach(wrapField);
 }
 
 /** @returns {Promise<{ totalIssues: number }>} */

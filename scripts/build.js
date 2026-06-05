@@ -19,6 +19,7 @@ const {
   printSchemaWarnings,
   writeSchemaReport,
 } = require('./lib/bhajan-schema');
+const { writeCorpusDictionary } = require('./lib/corpus-dictionary');
 
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) return;
@@ -51,6 +52,8 @@ async function main() {
   printSchemaWarnings(schemaIssues, { githubActions: process.env.GITHUB_ACTIONS === 'true' });
   const schemaReport = writeSchemaReport(schemaIssues);
   if (schemaIssues.length) console.log(`Schema report: ${schemaReport}`);
+
+  writeCorpusDictionary(config);
 
   warnMissingThumbs(config);
 
