@@ -236,7 +236,7 @@ function hoistJabani(doc) {
 
 /** Parse a single bhajan YAML file */
 function loadBhajanDoc(text) {
-  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const lines = String(text || '').replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').split('\n');
   const doc = {};
   let i = 0;
   while (i < lines.length) {
@@ -359,7 +359,7 @@ function dumpBhajanDoc(doc) {
 
 /** Parse content/sections.yaml */
 function loadSectionsDoc(text) {
-  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const lines = String(text || '').replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').split('\n');
   const config = { sections: [] };
   let i = 0;
   let current = null;

@@ -14,6 +14,11 @@ const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
 const { buildSearchIndex, writeSearchIndex } = require('./lib/search-index');
 const { warnMissingThumbs } = require('./lib/banner-thumbs');
 const { writePwaArtifacts } = require('./lib/pwa');
+const {
+  validateAllBhajans,
+  printSchemaWarnings,
+  writeSchemaReport,
+} = require('./lib/bhajan-schema');
 
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) return;
@@ -41,6 +46,11 @@ async function main() {
   const base = config.base_url || '/';
   const sections = config.sections || [];
   const sectionCounts = countBhajansBySection(sections);
+
+  const schemaIssues = validateAllBhajans(config);
+  printSchemaWarnings(schemaIssues, { githubActions: process.env.GITHUB_ACTIONS === 'true' });
+  const schemaReport = writeSchemaReport(schemaIssues);
+  if (schemaIssues.length) console.log(`Schema report: ${schemaReport}`);
 
   warnMissingThumbs(config);
 
