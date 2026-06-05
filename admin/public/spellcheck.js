@@ -11,8 +11,7 @@ const DICT_AFF =
   'https://raw.githubusercontent.com/Shreeshrii/hindi-hunspell/master/Hindi/hi_IN.aff';
 const DICT_DIC_HI =
   'https://raw.githubusercontent.com/Shreeshrii/hindi-hunspell/master/Hindi/hi_IN.dic';
-const DICT_DIC_SA =
-  'https://raw.githubusercontent.com/Shreeshrii/hindi-hunspell/master/Sanskrit/sa_IN.dic';
+const DICT_DIC_SA = '/sanskrit-words.dic';
 const CORPUS_JSON_URL = '/corpus-dictionary.json';
 const CORPUS_DIC_URL = '/corpus.dic';
 const DICT_PROBE_WORD = 'जय';

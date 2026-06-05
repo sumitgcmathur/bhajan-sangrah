@@ -14,6 +14,7 @@
     "lint:typos": "node scripts/lint-typos.js",
     "lint:schema": "node scripts/lint-schema.js",
     "build:corpus-dict": "node scripts/build-corpus-dictionary.js",
+    "build:sanskrit-dict": "node scripts/build-sanskrit-dictionary.js",
     "spelling-report": "node scripts/spelling-report.js",
     "apply-spelling-standard": "node scripts/apply-spelling-standard.js",
     "admin:favicon": "node scripts/generate-admin-favicon.js",

@@ -20,6 +20,7 @@ const {
   writeSchemaReport,
 } = require('./lib/bhajan-schema');
 const { writeCorpusDictionary } = require('./lib/corpus-dictionary');
+const { writeSanskritDictionary } = require('./lib/sanskrit-dictionary');
 
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) return;
@@ -54,6 +55,7 @@ async function main() {
   if (schemaIssues.length) console.log(`Schema report: ${schemaReport}`);
 
   writeCorpusDictionary(config);
+  await writeSanskritDictionary();
 
   warnMissingThumbs(config);
 
