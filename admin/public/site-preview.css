@@ -36,6 +36,7 @@
   --scroll-header-h: 2.5rem;
   --pager-h: 2.65rem;
   --section-hero-fill: calc(100dvh - var(--mobile-bar-h) - env(safe-area-inset-bottom, 0px));
+  --bhajan-watermark-opacity: 0.07;
 }
 
 /* Dark theme: manual toggle */
@@ -77,6 +78,7 @@
     --accent-soft: #3a2828;
     --accent-glow: rgba(212, 120, 144, 0.15);
     --lyrics-marker: #a89088;
+    --bhajan-watermark-opacity: 0.05;
   }
 }
 
@@ -1100,6 +1102,35 @@ body.search-panel-open {
   margin-bottom: 1.5rem;
   scroll-margin-top: calc(var(--scroll-header-h) + env(safe-area-inset-top, 0px) + 0.65rem);
   box-shadow: 0 2px 10px var(--accent-glow);
+}
+
+/* Section banner as a faint centered watermark (sections with banner only) */
+.content-main--has-banner .bhajan-card,
+.preview-in-section--has-banner .bhajan-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.content-main--has-banner .bhajan-card::before,
+.preview-in-section--has-banner .bhajan-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--bhajan-watermark);
+  background-repeat: no-repeat;
+  background-position: center 50%;
+  background-size: auto min(68%, 15rem);
+  opacity: var(--bhajan-watermark-opacity);
+  pointer-events: none;
+  z-index: 0;
+  filter: saturate(0.8);
+}
+
+.content-main--has-banner .bhajan-card > *,
+.preview-in-section--has-banner .bhajan-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .bhajan-card__head {
