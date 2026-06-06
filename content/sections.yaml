@@ -3,8 +3,6 @@ base_url: /bhajan-sangrah/
 site_title: भजन संग्रह
 site_icon: assets/icons/favicon.jpg
 home_banner: assets/icons/LandingPage.jpg
-# Default: each antara ends with .... + refrain (first 3 words of sthayi, or sthayi_connect_text).
-# Per bhajan: `sthayi_connect: false` under lyrics: (or top-level) to disable; `sthayi_connect_text:` for custom refrain.
 sthayi_connect: true
 
 sections:
@@ -75,6 +73,7 @@ sections:
     google_path: AmbikaCharitra
     title: अम्बिका चरित्र
     banner: assets/icons/AmbikaCharitra.jpg
+    bhajan_order: file
   - slug: bhairav
     folder: bhairav
     google_path: bhairav
