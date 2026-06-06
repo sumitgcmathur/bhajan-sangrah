@@ -33,6 +33,7 @@ const state = {
     regex: false,
     caseInsensitive: false,
     preview: null,
+    selectedPaths: new Set(),
     busy: false,
     busyPhase: null,
     progress: null,
@@ -166,6 +167,7 @@ async function applyRouteFromHash() {
     endReplaceOp();
     state.error = null;
     state.replace.preview = null;
+    state.replace.selectedPaths = new Set();
     state.view = 'replace';
     render();
     return;
@@ -739,12 +741,18 @@ function renderInner() {
     const disabled = busy ? 'disabled' : '';
     const previewLabel =
       busy && r.busyPhase === 'preview' ? 'Searching…' : 'Preview matches';
-    const applyLabel = busy && r.busyPhase === 'apply' ? 'Applying…' : 'Apply to all matches';
+    const selectedCount = r.selectedPaths?.size ?? 0;
+    const applyAllLabel =
+      busy && r.busyPhase === 'apply' ? 'Applying…' : `Apply all (${prev?.filesAffected || 0})`;
+    const applySelLabel =
+      busy && r.busyPhase === 'apply'
+        ? 'Applying…'
+        : `Apply selected (${selectedCount})`;
     app.innerHTML = `
       ${topbar('Find & replace', 'sections')}
       <main class="replace-main">
         ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
-        <p class="hint">Search and replace across every bhajan YAML under <code>content/</code>. Preview first, then apply. Each changed file gets its own commit on <code>main</code>.</p>
+        <p class="hint">Search and replace across bhajan YAML under <code>content/</code>. Preview matches, tick the bhajans you want, then <strong>Apply all</strong> or <strong>Apply selected</strong>. Each changed file gets its own commit on <code>main</code>.</p>
         <label for="rep-find">Find</label>
         <textarea id="rep-find" class="replace-field" rows="3" ${disabled} placeholder="Text to find (min. 2 characters)">${escapeHtml(r.find)}</textarea>
         <label for="rep-replace">Replace with</label>
@@ -754,16 +762,19 @@ function renderInner() {
         ${busy ? replaceProgressHtml(r) : ''}
         <div class="replace-actions">
           <button type="button" class="btn btn-primary" id="rep-preview" ${busy ? 'disabled' : ''}>${previewLabel}</button>
-          <button type="button" class="btn" id="rep-apply" ${busy || !prev?.filesAffected ? 'disabled' : ''}>${applyLabel}</button>
+          <button type="button" class="btn" id="rep-apply-all" ${busy || !prev?.filesAffected ? 'disabled' : ''}>${applyAllLabel}</button>
+          <button type="button" class="btn" id="rep-apply-selected" ${busy || !prev?.filesAffected || selectedCount === 0 ? 'disabled' : ''}>${applySelLabel}</button>
           ${busy ? '<button type="button" class="btn btn-danger" id="rep-cancel">Cancel</button>' : ''}
         </div>
         ${prev && !busy ? renderReplacePreview(prev) : ''}
       </main>`;
     bindTopbar({ abortReplaceOnLeave: busy });
     document.getElementById('rep-preview')?.addEventListener('click', previewReplace);
-    document.getElementById('rep-apply')?.addEventListener('click', applyReplace);
+    document.getElementById('rep-apply-all')?.addEventListener('click', () => applyReplace('all'));
+    document.getElementById('rep-apply-selected')?.addEventListener('click', () => applyReplace('selected'));
     document.getElementById('rep-cancel')?.addEventListener('click', cancelReplaceOp);
     bindReplaceForm();
+    bindReplacePreview();
     return;
   }
 
@@ -873,22 +884,103 @@ function setPreviewStylesheet(on) {
   link.media = on ? 'all' : 'not all';
 }
 
+function replaceSelectedPaths() {
+  return state.replace.selectedPaths || new Set();
+}
+
+function replacePathsForMode(mode) {
+  const prev = state.replace.preview;
+  if (!prev?.files?.length) return [];
+  const allPaths = prev.files.map((f) => f.path).filter(Boolean);
+  if (mode === 'all') return allPaths;
+  const selected = replaceSelectedPaths();
+  return allPaths.filter((p) => selected.has(p));
+}
+
+function replaceMatchStats(paths) {
+  const prev = state.replace.preview;
+  const set = new Set(paths);
+  const files = (prev?.files || []).filter((f) => set.has(f.path));
+  return {
+    filesAffected: files.length,
+    totalMatches: files.reduce((n, f) => n + (f.count || 0), 0),
+  };
+}
+
 function renderReplacePreview(prev) {
   if (!prev.filesAffected) {
     return '<p class="hint replace-summary">No matches in ' + prev.filesScanned + ' file(s).</p>';
   }
+  const selected = replaceSelectedPaths();
   const rows = prev.files
-    .map(
-      (f) => `<li class="replace-hit">
-        <strong>${escapeHtml(f.name)}</strong> — ${f.count} match${f.count === 1 ? '' : 'es'}
+    .map((f) => {
+      const checked = selected.has(f.path);
+      return `<li class="replace-hit">
+        <label class="replace-hit__pick">
+          <input type="checkbox" class="rep-pick" data-path="${escapeAttr(f.path)}" ${checked ? 'checked' : ''}>
+          <span class="replace-hit__label"><strong>${escapeHtml(f.name)}</strong> — ${f.count} match${f.count === 1 ? '' : 'es'}</span>
+        </label>
         ${f.snippets?.length ? `<ul class="replace-snippets">${f.snippets.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ul>` : ''}
-      </li>`,
-    )
+      </li>`;
+    })
     .join('');
   return `<div class="replace-results">
     <p class="replace-summary"><strong>${prev.totalMatches}</strong> match(es) in <strong>${prev.filesAffected}</strong> of ${prev.filesScanned} bhajan file(s).</p>
+    <div class="replace-pick-actions">
+      <button type="button" class="btn" id="rep-select-all">Select all</button>
+      <button type="button" class="btn" id="rep-select-none">Select none</button>
+    </div>
     <ul class="replace-list">${rows}</ul>
   </div>`;
+}
+
+function syncReplaceSelectionFromDom() {
+  const selected = new Set();
+  document.querySelectorAll('.rep-pick:checked').forEach((el) => {
+    const p = el.dataset.path;
+    if (p) selected.add(p);
+  });
+  state.replace.selectedPaths = selected;
+}
+
+function updateReplaceApplyButtons() {
+  const selectedCount = replaceSelectedPaths().size;
+  const prev = state.replace.preview;
+  const applySel = document.getElementById('rep-apply-selected');
+  const applyAll = document.getElementById('rep-apply-all');
+  if (applySel) {
+    applySel.disabled =
+      state.replace.busy || !prev?.filesAffected || selectedCount === 0;
+    if (!state.replace.busy) {
+      applySel.textContent = `Apply selected (${selectedCount})`;
+    }
+  }
+  if (applyAll && !state.replace.busy && prev?.filesAffected) {
+    applyAll.textContent = `Apply all (${prev.filesAffected})`;
+  }
+}
+
+function bindReplacePreview() {
+  document.getElementById('rep-select-all')?.addEventListener('click', () => {
+    document.querySelectorAll('.rep-pick').forEach((el) => {
+      el.checked = true;
+    });
+    syncReplaceSelectionFromDom();
+    updateReplaceApplyButtons();
+  });
+  document.getElementById('rep-select-none')?.addEventListener('click', () => {
+    document.querySelectorAll('.rep-pick').forEach((el) => {
+      el.checked = false;
+    });
+    syncReplaceSelectionFromDom();
+    updateReplaceApplyButtons();
+  });
+  document.querySelectorAll('.rep-pick').forEach((el) => {
+    el.addEventListener('change', () => {
+      syncReplaceSelectionFromDom();
+      updateReplaceApplyButtons();
+    });
+  });
 }
 
 function replaceFindLength(text) {
@@ -927,6 +1019,7 @@ async function previewReplace() {
 
   const ac = beginReplaceOp('preview');
   state.replace.preview = null;
+  state.replace.selectedPaths = new Set();
   render();
 
   const payload = {
@@ -962,6 +1055,7 @@ async function previewReplace() {
     merged.files.sort((a, b) => b.count - a.count);
     merged.filesAffected = merged.files.length;
     state.replace.preview = merged;
+    state.replace.selectedPaths = new Set(merged.files.map((f) => f.path).filter(Boolean));
     endReplaceOp();
     state.error = null;
     render();
@@ -976,12 +1070,26 @@ async function previewReplace() {
   }
 }
 
-async function applyReplace() {
+async function applyReplace(mode = 'all') {
   readReplaceForm();
+  syncReplaceSelectionFromDom();
   const prev = state.replace.preview;
   if (!prev?.filesAffected) return;
+
+  const paths = replacePathsForMode(mode);
+  if (!paths.length) {
+    state.error = mode === 'selected' ? 'Select at least one bhajan.' : 'No files to update.';
+    render();
+    return;
+  }
+
+  const { filesAffected, totalMatches } = replaceMatchStats(paths);
+  const scope =
+    mode === 'selected'
+      ? `${filesAffected} selected bhajan(s)`
+      : `all ${filesAffected} matching bhajan(s)`;
   const msg =
-    `Replace «${state.replace.find.slice(0, 60)}» in ${prev.filesAffected} file(s) (${prev.totalMatches} total)?\n\n` +
+    `Replace «${state.replace.find.slice(0, 60)}» in ${scope} (${totalMatches} match${totalMatches === 1 ? '' : 'es'})?\n\n` +
     'This commits each changed file to main.';
   if (!confirm(msg)) return;
 
@@ -997,36 +1105,30 @@ async function applyReplace() {
   };
 
   try {
-    let paths = (prev.files || []).map((f) => f.path).filter(Boolean);
-    if (!paths.length) {
-      state.replace.progress.listing = true;
-      render();
-      paths = await replaceListPaths(ac.signal);
-    }
     const total = paths.length;
-    state.replace.progress.listing = false;
     state.replace.progress.total = total;
     render();
 
-    let totalMatches = 0;
+    let appliedMatches = 0;
     let filesUpdated = 0;
 
     for (let i = 0; i < paths.length; i += REPLACE_BATCH) {
       if (ac.signal.aborted) throw new DOMException('Aborted', 'AbortError');
       const batch = paths.slice(i, i + REPLACE_BATCH);
       const data = await replaceApplyBatch(batch, payload, ac.signal);
-      totalMatches += data.totalMatches || 0;
+      appliedMatches += data.totalMatches || 0;
       filesUpdated += data.filesUpdated || 0;
       state.replace.progress.current = Math.min(i + REPLACE_BATCH, total);
-      state.replace.progress.matches = totalMatches;
+      state.replace.progress.matches = appliedMatches;
       state.replace.progress.updated = filesUpdated;
       render();
     }
 
     endReplaceOp();
     state.replace.preview = null;
+    state.replace.selectedPaths = new Set();
     alert(
-      `Done: ${totalMatches} replacement(s) in ${filesUpdated} file(s).\n\nGitHub Actions will rebuild the site.`,
+      `Done: ${appliedMatches} replacement(s) in ${filesUpdated} file(s).\n\nGitHub Actions will rebuild the site.`,
     );
     render();
   } catch (e) {

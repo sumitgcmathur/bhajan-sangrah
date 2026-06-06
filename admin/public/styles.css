@@ -648,10 +648,34 @@ textarea {
   overflow-y: auto;
 }
 
+.replace-pick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 0.65rem;
+}
+
 .replace-hit {
   padding: 0.55rem 0;
   border-bottom: 1px solid var(--border);
   font-size: 0.92rem;
+}
+
+.replace-hit__pick {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.replace-hit__pick input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
+.replace-hit__label {
+  flex: 1;
+  min-width: 0;
 }
 
 .replace-hit:last-child {
