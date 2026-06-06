@@ -55,6 +55,7 @@ module.exports = async (req, res) => {
 
     const sectionOut = {
       ...section,
+      banner: section.banner || `assets/icons/${section.slug}.jpg`,
       bhajan_order: section.bhajan_order === 'file' ? 'file' : 'title',
     };
     sendJson(res, 200, { section: sectionOut, bhajans: sorted, groups });

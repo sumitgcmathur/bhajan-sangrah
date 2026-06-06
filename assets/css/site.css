@@ -189,7 +189,7 @@ body {
   gap: 0.4rem;
 }
 
-.sidebar-link--home .sidebar-link__icon {
+.sidebar-link__icon {
   flex-shrink: 0;
   width: 18px;
   height: 18px;

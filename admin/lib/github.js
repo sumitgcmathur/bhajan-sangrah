@@ -48,6 +48,16 @@ async function getFile(path, token) {
   }
 }
 
+async function getFileSha(filePath, token) {
+  try {
+    const data = await ghFetch(contentsPath(filePath), token);
+    return data.sha || null;
+  } catch (e) {
+    if (e.status === 404) return null;
+    throw e;
+  }
+}
+
 async function putFile(path, content, message, token, sha) {
   const body = {
     message,
@@ -55,6 +65,19 @@ async function putFile(path, content, message, token, sha) {
   };
   if (sha) body.sha = sha;
   return ghFetch(contentsPath(path), token, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+
+async function putFileBinary(filePath, buffer, message, token, sha) {
+  const body = {
+    message,
+    content: Buffer.from(buffer).toString('base64'),
+  };
+  if (sha) body.sha = sha;
+  return ghFetch(contentsPath(filePath), token, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -115,7 +138,9 @@ async function getGitHubUser(token) {
 
 module.exports = {
   getFile,
+  getFileSha,
   putFile,
+  putFileBinary,
   deleteFile,
   listDir,
   exchangeCode,

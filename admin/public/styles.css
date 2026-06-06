@@ -183,6 +183,91 @@ main { padding: 0.75rem; max-width: 42rem; margin: 0 auto; }
   font-size: 0.85rem;
 }
 
+.banner-upload {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--surface);
+}
+
+.banner-upload__title {
+  margin: 0 0 0.55rem;
+  font-size: 0.98rem;
+  color: var(--accent-dark);
+}
+
+.banner-upload__previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.banner-upload__fig {
+  margin: 0;
+  flex: 1 1 8rem;
+  min-width: 0;
+}
+
+.banner-upload__fig figcaption {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.banner-upload__hero {
+  display: block;
+  width: min(7rem, 100%);
+  aspect-ratio: 704 / 1522;
+  object-fit: cover;
+  border-radius: 0.35rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.banner-upload__thumb {
+  display: block;
+  width: min(4.5rem, 100%);
+  aspect-ratio: 704 / 1522;
+  object-fit: cover;
+  border-radius: 0.35rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.banner-upload__menu {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: cover;
+  border-radius: 0.35rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.banner-upload__pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  margin: 0;
+}
+
+.banner-upload__input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.banner-upload__hint {
+  margin: 0.45rem 0 0;
+  font-size: 0.85rem;
+}
+
 main.edit-main {
   max-width: 56rem;
   padding-bottom: calc(var(--action-bar-h) + 1.25rem + env(safe-area-inset-bottom, 0px));

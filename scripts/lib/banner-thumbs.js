@@ -4,6 +4,10 @@ const { ROOT, ASSETS } = require('./paths');
 
 const BANNERS_DIR = path.join(ASSETS, 'banners');
 const MENU_DIR = path.join(ASSETS, 'menu');
+/** Hero / PDF / source icon (portrait cover) */
+const SOURCE_WIDTH = 704;
+const SOURCE_HEIGHT = 1522;
+const SOURCE_JPEG_QUALITY = 88;
 /** Match section card aspect (704×1522); cover crop so every thumb is identical size */
 const THUMB_WIDTH = 352;
 const THUMB_HEIGHT = Math.round((THUMB_WIDTH * 1522) / 704);
@@ -11,6 +15,10 @@ const JPEG_QUALITY = 82;
 /** Square crops for left sidebar (same source as landing tiles) */
 const MENU_ICON_SIZE = 40;
 const MENU_JPEG_QUALITY = 78;
+
+function loadSharp() {
+  return require('sharp');
+}
 
 function resolveAsset(relPath) {
   return path.join(ROOT, relPath.replace(/\//g, path.sep));
@@ -30,7 +38,7 @@ async function writeThumb(srcRel, destAbs, { force = false } = {}) {
   }
   if (!force && !needsRebuild(srcAbs, destAbs)) return;
 
-  const sharp = require('sharp');
+  const sharp = loadSharp();
   await sharp(srcAbs)
     .rotate()
     .resize(THUMB_WIDTH, THUMB_HEIGHT, { fit: 'cover', position: 'centre' })
@@ -49,7 +57,7 @@ async function writeMenuIcon(srcRel, destAbs, { force = false } = {}) {
   }
   if (!force && !needsRebuild(srcAbs, destAbs)) return;
 
-  const sharp = require('sharp');
+  const sharp = loadSharp();
   await sharp(srcAbs)
     .rotate()
     .resize(MENU_ICON_SIZE, MENU_ICON_SIZE, { fit: 'fill' })
@@ -121,11 +129,64 @@ function sidebarMenuHomePath() {
   return 'assets/menu/home.jpg';
 }
 
+function defaultSectionIconPath(section) {
+  return `assets/icons/${section.slug}.jpg`;
+}
+
+function resolveSectionIconPath(section) {
+  return section?.banner || defaultSectionIconPath(section);
+}
+
+function homeIconPath(config) {
+  return config?.home_banner || 'assets/icons/LandingPage.jpg';
+}
+
+function thumbPathForSlug(slug) {
+  return `assets/banners/${slug}.jpg`;
+}
+
+function menuPathForSlug(slug) {
+  return `assets/menu/${slug}.jpg`;
+}
+
+/** Process upload → source 704×1522 + landing tile + menu icon buffers. */
+async function processBannerUpload(input) {
+  const sharp = loadSharp();
+  const source = await sharp(input)
+    .rotate()
+    .resize(SOURCE_WIDTH, SOURCE_HEIGHT, { fit: 'cover', position: 'centre' })
+    .jpeg({ quality: SOURCE_JPEG_QUALITY, mozjpeg: true })
+    .toBuffer();
+
+  const thumb = await sharp(source)
+    .resize(THUMB_WIDTH, THUMB_HEIGHT, { fit: 'cover', position: 'centre' })
+    .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
+    .toBuffer();
+
+  const menu = await sharp(source)
+    .resize(MENU_ICON_SIZE, MENU_ICON_SIZE, { fit: 'fill' })
+    .jpeg({ quality: MENU_JPEG_QUALITY, mozjpeg: true })
+    .toBuffer();
+
+  return { source, thumb, menu };
+}
+
 module.exports = {
+  SOURCE_WIDTH,
+  SOURCE_HEIGHT,
+  THUMB_WIDTH,
+  THUMB_HEIGHT,
+  MENU_ICON_SIZE,
   generateBannerThumbs,
   warnMissingThumbs,
+  processBannerUpload,
   landingBannerPath,
   landingHomeBannerPath,
   sidebarMenuIconPath,
   sidebarMenuHomePath,
+  defaultSectionIconPath,
+  resolveSectionIconPath,
+  homeIconPath,
+  thumbPathForSlug,
+  menuPathForSlug,
 };

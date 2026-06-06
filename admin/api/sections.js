@@ -20,13 +20,18 @@ module.exports = async (req, res) => {
       slug: s.slug,
       folder: s.folder,
       title: s.title,
-      banner: s.banner || '',
+      banner: s.banner || `assets/icons/${s.slug}.jpg`,
       grouped: Boolean(s.grouped),
       bhajan_order: s.bhajan_order === 'file' ? 'file' : 'title',
     }));
     sendJson(res, 200, {
       site_title: config.site_title,
       sthayi_connect: config.sthayi_connect,
+      home_banner: config.home_banner || '',
+      github: {
+        owner: process.env.GITHUB_OWNER || '',
+        repo: process.env.GITHUB_REPO || '',
+      },
       sections,
     });
   } catch (e) {

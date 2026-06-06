@@ -15,6 +15,10 @@ const state = {
   view: 'loading',
   login: null,
   sections: [],
+  homeBanner: '',
+  github: { owner: '', repo: '' },
+  bannerPreviewTs: 0,
+  bannerUploadBusy: false,
   section: null,
   bhajans: [],
   groupOptions: [],
@@ -517,6 +521,104 @@ async function replaceApplyBatch(paths, payload, signal) {
   });
 }
 
+function assetPreviewUrl(relPath) {
+  const p = String(relPath || '').trim();
+  const { owner, repo } = state.github || {};
+  if (!p || !owner || !repo) return '';
+  const t = state.bannerPreviewTs || 0;
+  return `https://raw.githubusercontent.com/${owner}/${repo}/main/${p}${t ? `?t=${t}` : ''}`;
+}
+
+const BANNER_MAX_BYTES = 3 * 1024 * 1024;
+
+function bannerUploadPanelHtml({ inputId, label, iconPath, thumbPath, menuPath, busy }) {
+  const iconUrl = assetPreviewUrl(iconPath);
+  const thumbUrl = assetPreviewUrl(thumbPath);
+  const menuUrl = assetPreviewUrl(menuPath);
+  return `<div class="banner-upload">
+    <h3 class="banner-upload__title">${escapeHtml(label)}</h3>
+    <div class="banner-upload__previews">
+      <figure class="banner-upload__fig">
+        <figcaption>Hero / PDF</figcaption>
+        ${iconUrl ? `<img class="banner-upload__hero" src="${escapeAttr(iconUrl)}" alt="">` : '<p class="hint">No image yet</p>'}
+      </figure>
+      <figure class="banner-upload__fig">
+        <figcaption>Landing tile</figcaption>
+        ${thumbUrl ? `<img class="banner-upload__thumb" src="${escapeAttr(thumbUrl)}" alt="">` : '<p class="hint">—</p>'}
+      </figure>
+      <figure class="banner-upload__fig">
+        <figcaption>Menu icon</figcaption>
+        ${menuUrl ? `<img class="banner-upload__menu" src="${escapeAttr(menuUrl)}" alt="">` : '<p class="hint">—</p>'}
+      </figure>
+    </div>
+    <label class="btn ${busy ? '' : 'btn-primary'} banner-upload__pick">
+      ${busy ? '<span class="spinner" aria-hidden="true"></span> Uploading…' : 'Update image'}
+      <input type="file" id="${inputId}" accept="image/jpeg,image/png,image/webp,image/gif" class="banner-upload__input" ${busy ? 'disabled' : ''}>
+    </label>
+    <p class="hint banner-upload__hint">Any photo (max 3 MB) — resized to 704×1522 (hero &amp; PDF), landing tile 352×761, menu 40×40. Commits to <code>main</code>.</p>
+  </div>`;
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result || '');
+      const comma = dataUrl.indexOf(',');
+      resolve(comma >= 0 ? dataUrl.slice(comma + 1) : dataUrl);
+    };
+    reader.onerror = () => reject(reader.error || new Error('Failed to read file'));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadBannerForTarget(target, file) {
+  if (!file || state.bannerUploadBusy) return;
+  if (file.size > 12 * 1024 * 1024) {
+    state.error = 'Image too large (max 12 MB).';
+    render();
+    return;
+  }
+
+  state.bannerUploadBusy = true;
+  state.error = null;
+  render();
+
+  try {
+    const image = await fileToBase64(file);
+    await api('/api/banner-upload', {
+      method: 'POST',
+      body: JSON.stringify({ target, image }),
+    });
+    const data = await api('/api/sections');
+    state.sections = data.sections;
+    state.homeBanner = data.home_banner || '';
+    state.github = data.github || state.github;
+    state.bannerPreviewTs = Date.now();
+    if (target !== 'home' && state.section?.slug === target) {
+      const sec = data.sections.find((s) => s.slug === target);
+      if (sec) {
+        state.section = { ...state.section, ...sec };
+      }
+      await loadBhajans(target);
+    }
+    state.bannerUploadBusy = false;
+    render();
+  } catch (e) {
+    state.bannerUploadBusy = false;
+    state.error = e.message;
+    render();
+  }
+}
+
+function bindBannerUpload(inputId, target) {
+  document.getElementById(inputId)?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (file) uploadBannerForTarget(target, file);
+  });
+}
+
 function errMsg(code) {
   const map = {
     not_allowed: 'This GitHub account is not allowed.',
@@ -864,9 +966,19 @@ function renderInner() {
     const options = state.sections
       .map((s) => `<option value="${escapeAttr(s.slug)}">${escapeHtml(s.title)}</option>`)
       .join('');
+    const homeIcon = state.homeBanner || 'assets/icons/LandingPage.jpg';
     app.innerHTML = `
       ${topbar('Sections', '')}
       <main>
+        ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
+        ${bannerUploadPanelHtml({
+          inputId: 'banner-upload-home',
+          label: 'Landing page image',
+          iconPath: homeIcon,
+          thumbPath: 'assets/banners/home.jpg',
+          menuPath: 'assets/menu/home.jpg',
+          busy: state.bannerUploadBusy,
+        })}
         <p class="hint">Choose a section to edit bhajans. Saves are committed to <code>main</code>.</p>
         <label for="section-pick">Section</label>
         <select id="section-pick" class="section-pick">${options}</select>
@@ -885,6 +997,7 @@ function renderInner() {
       navigateTo('#/spell-errors');
     });
     bindTopbar();
+    bindBannerUpload('banner-upload-home', 'home');
     attachPageBusyOverlay();
     return;
   }
@@ -955,10 +1068,21 @@ function renderInner() {
   if (state.view === 'bhajans') {
     const bhajanOrder = state.section?.bhajan_order === 'file' ? 'file' : 'title';
     const orderBusy = state.sectionOrderBusy;
+    const secSlug = state.section?.slug || '';
+    const secIcon = state.section?.banner || `assets/icons/${secSlug}.jpg`;
+    const secThumb = secSlug ? `assets/banners/${secSlug}.jpg` : '';
     app.innerHTML = `
       ${topbar(state.section.title, 'sections')}
       <main>
         ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
+        ${bannerUploadPanelHtml({
+          inputId: 'banner-upload-section',
+          label: 'Section banner image',
+          iconPath: secIcon,
+          thumbPath: secThumb,
+          menuPath: secSlug ? `assets/menu/${secSlug}.jpg` : '',
+          busy: state.bannerUploadBusy,
+        })}
         <div class="section-order-bar">
           <label for="section-bhajan-order">Bhajan index on site</label>
           <div class="section-order-bar__row">
@@ -989,6 +1113,7 @@ function renderInner() {
     document.getElementById('section-bhajan-order')?.addEventListener('change', (e) => {
       saveSectionBhajanOrder(e.target.value);
     });
+    bindBannerUpload('banner-upload-section', secSlug);
     attachPageBusyOverlay();
     return;
   }
@@ -1914,6 +2039,8 @@ async function init() {
     state.login = me.login;
     const data = await api('/api/sections');
     state.sections = data.sections;
+    state.homeBanner = data.home_banner || '';
+    state.github = data.github || { owner: '', repo: '' };
     state.view = 'loading';
     renderInner();
     await applyRouteFromHash();
