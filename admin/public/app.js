@@ -128,7 +128,6 @@ function editorSnapshot(editor) {
     title: (e.title || '').trim(),
     tarz: (e.tarz || '').trim(),
     group: (e.group || '').trim(),
-    swarachit: Boolean(e.swarachit),
     legacyLyricsText: e.legacyLyricsText || '',
     lyrics: {
       sthayi: (L.sthayi || '').trim(),
@@ -403,10 +402,8 @@ function emptyEditor() {
     title: '',
     tarz: '',
     group: '',
-    swarachit: false,
     lyrics: {
       sthayi: '',
-      sthayi_connect: false,
       sthayi_connect_text: '',
       pre_shlok: '',
       post_shlok: '',
@@ -605,7 +602,6 @@ function syncEditorFromDom() {
   if (document.getElementById('f-group-select')) {
     e.group = readGroupValue();
   }
-  e.swarachit = document.getElementById('f-swarachit')?.checked || false;
   const L = e.lyrics;
   const sthayiEl = document.getElementById('f-sthayi');
   if (sthayiEl) L.sthayi = sthayiEl.value.trim();
@@ -999,10 +995,6 @@ function renderInner() {
                     <input type="text" id="f-tarz" ${HI_FIELD} value="${escapeAttr(e.tarz)}">
                   </div>
                   ${groupBlock}
-                  <div class="check-row basic-grid__swarachit">
-                    <input type="checkbox" id="f-swarachit" ${e.swarachit ? 'checked' : ''}>
-                    <label for="f-swarachit">Swarachit</label>
-                  </div>
                 </div>
               </div>
             </div>

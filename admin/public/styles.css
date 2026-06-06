@@ -309,23 +309,17 @@ main.edit-main {
   min-width: 0;
 }
 
-.basic-grid__swarachit {
-  flex: 0 0 auto;
-  margin: 0;
-  white-space: nowrap;
-}
-
 @media (min-width: 480px) {
   .basic-grid__row2--group {
     display: grid;
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr;
     align-items: end;
     width: 100%;
   }
 
   .basic-grid__row2:not(.basic-grid__row2--group) {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
     align-items: end;
     width: 100%;
   }

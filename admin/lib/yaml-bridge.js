@@ -36,10 +36,8 @@ function docToEditor(doc) {
     title: d.title || '',
     tarz: d.tarz || '',
     group: d.group || '',
-    swarachit: Boolean(d.swarachit),
     lyrics: {
       sthayi: '',
-      sthayi_connect: false,
       sthayi_connect_text: '',
       pre_shlok: '',
       post_shlok: '',
@@ -81,7 +79,6 @@ function editorToDoc(editor) {
       title: (e.title || '').trim(),
       ...(e.tarz ? { tarz: e.tarz } : {}),
       ...(e.group ? { group: e.group } : {}),
-      ...(e.swarachit ? { swarachit: true } : {}),
       lyrics: String(e.legacyLyricsText).trim(),
     };
   }
@@ -106,7 +103,6 @@ function editorToDoc(editor) {
     title: (e.title || '').trim(),
     ...(e.tarz ? { tarz: e.tarz } : {}),
     ...(e.group ? { group: e.group } : {}),
-    ...(e.swarachit ? { swarachit: true } : {}),
     lyrics,
   };
 }
