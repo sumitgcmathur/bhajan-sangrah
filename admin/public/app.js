@@ -567,13 +567,38 @@ function fileToBase64(file) {
   });
 }
 
+function bannerUploadLabel(target) {
+  if (target === 'home') return 'landing page';
+  const sec = state.sections?.find((s) => s.slug === target) || state.section;
+  return sec?.title || target;
+}
+
+function confirmBannerUpload(target) {
+  const label = bannerUploadLabel(target);
+  return confirm(
+    `Update the ${label} banner image and commit to main?\n\n` +
+      'Hero/PDF and landing tile JPEGs will be replaced on the public site after rebuild.'
+  );
+}
+
+function confirmBhajanOrderChange(next) {
+  const sectionTitle = state.section?.title || state.section?.slug || 'this section';
+  const orderLabel =
+    next === 'file' ? 'Filename order (001-, 002-…)' : 'Title order (देवनागरी)';
+  return confirm(
+    `Change bhajan index for “${sectionTitle}” to ${orderLabel}?\n\n` +
+      'This commits sections.yaml to main and rebuilds the public site.'
+  );
+}
+
 async function uploadBannerForTarget(target, file) {
   if (!file || state.bannerUploadBusy) return;
-  if (file.size > 12 * 1024 * 1024) {
-    state.error = 'Image too large (max 12 MB).';
+  if (file.size > BANNER_MAX_BYTES) {
+    state.error = 'Image too large (max 3 MB).';
     render();
     return;
   }
+  if (!confirmBannerUpload(target)) return;
 
   state.bannerUploadBusy = true;
   state.error = null;
@@ -1103,8 +1128,16 @@ function renderInner() {
       if (!state.section?.slug) return;
       navigateTo(`#/spell-errors/s/${encodeURIComponent(state.section.slug)}`);
     });
-    document.getElementById('section-bhajan-order')?.addEventListener('change', (e) => {
-      saveSectionBhajanOrder(e.target.value);
+    document.getElementById('section-bhajan-order')?.addEventListener('change', async (e) => {
+      const select = e.target;
+      const prev = state.section?.bhajan_order === 'file' ? 'file' : 'title';
+      const next = select.value === 'file' ? 'file' : 'title';
+      if (next === prev) return;
+      if (!confirmBhajanOrderChange(next)) {
+        select.value = prev;
+        return;
+      }
+      await saveSectionBhajanOrder(next);
     });
     bindBannerUpload('banner-upload-section', secSlug);
     attachPageBusyOverlay();
