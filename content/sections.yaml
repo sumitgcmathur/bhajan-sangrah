@@ -68,6 +68,7 @@ sections:
     google_path: navratri
     title: नवरात्रि पूजन
     banner: assets/icons/Navratri.jpg
+    bhajan_order: file
   - slug: ambikacharitra
     folder: ambikacharitra
     google_path: AmbikaCharitra
