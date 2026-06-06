@@ -2,6 +2,7 @@ import { bindSpeechDictation, stopDictation, speechSupported } from './speech.js
 import { bindInlineSpellFields, spellCheckEditorFields, textsFromEditor } from './spellcheck.js';
 import {
   runCorpusSpellScan,
+  listSectionBhajanPaths,
   applyCorpusCorrection,
   ignoreCorpusWord,
   addCorpusWord,
@@ -26,6 +27,10 @@ const state = {
   editOptional: { preShlok: false, postShlok: false },
   previewHtml: null,
   previewBusy: false,
+  saving: false,
+  pageBusy: false,
+  pageBusyMessage: '',
+  editorBaseline: null,
   editPanel: 'basic',
   replace: {
     find: '',
@@ -40,6 +45,9 @@ const state = {
     abortCtrl: null,
   },
   spellCorpus: {
+    scope: 'all',
+    sectionSlug: null,
+    sectionTitle: null,
     scanning: false,
     phase: '',
     progress: { current: 0, total: 0 },
@@ -57,8 +65,8 @@ const GROUP_OTHER = '__other__';
 let lastSyncedRouteHash = '';
 let routeUseReplace = false;
 
-function parseRouteHash() {
-  const raw = (location.hash || '#/').replace(/^#/, '') || '/';
+function parseRouteFromHash(hash) {
+  const raw = (hash || '#/').replace(/^#/, '') || '/';
   const qIdx = raw.indexOf('?');
   const pathPart = qIdx >= 0 ? raw.slice(0, qIdx) : raw;
   const q = new URLSearchParams(qIdx >= 0 ? raw.slice(qIdx + 1) : '');
@@ -66,7 +74,12 @@ function parseRouteHash() {
 
   if (!parts.length || parts[0] === '') return { view: 'sections' };
   if (parts[0] === 'replace') return { view: 'replace' };
-  if (parts[0] === 'spell-errors') return { view: 'spell-errors' };
+  if (parts[0] === 'spell-errors') {
+    if (parts[1] === 's' && parts[2]) {
+      return { view: 'spell-errors', slug: decodeURIComponent(parts[2]) };
+    }
+    return { view: 'spell-errors' };
+  }
 
   if (parts[0] === 'edit') {
     const p = q.get('p');
@@ -84,11 +97,105 @@ function parseRouteHash() {
   return { view: 'sections' };
 }
 
+function parseRouteHash() {
+  return parseRouteFromHash(location.hash);
+}
+
+function loadingBlock(message, large = false) {
+  const spinnerClass = large ? 'spinner spinner--lg' : 'spinner';
+  return `<div class="loading-block" role="status" aria-live="polite"><span class="${spinnerClass}" aria-hidden="true"></span><p class="loading-block__text">${escapeHtml(message)}</p></div>`;
+}
+
+function pageBusyOverlayHtml() {
+  if (!state.pageBusy) return '';
+  return `<div class="page-busy">${loadingBlock(state.pageBusyMessage || 'Loading…', true)}</div>`;
+}
+
+function setPageBusy(message) {
+  state.pageBusy = true;
+  state.pageBusyMessage = message || 'Loading…';
+}
+
+function clearPageBusy() {
+  state.pageBusy = false;
+  state.pageBusyMessage = '';
+}
+
+function editorSnapshot(editor) {
+  const e = editor || {};
+  const L = e.lyrics || {};
+  return JSON.stringify({
+    title: (e.title || '').trim(),
+    tarz: (e.tarz || '').trim(),
+    group: (e.group || '').trim(),
+    swarachit: Boolean(e.swarachit),
+    legacyLyricsText: e.legacyLyricsText || '',
+    lyrics: {
+      sthayi: (L.sthayi || '').trim(),
+      sthayi_connect: L.sthayi_connect,
+      sthayi_connect_text: (L.sthayi_connect_text || '').trim(),
+      pre_shlok: (L.pre_shlok || '').trim(),
+      post_shlok: (L.post_shlok || '').trim(),
+      paragraphs: (L.paragraphs || []).map((p) => ({
+        type: p.type,
+        text: p.text || '',
+      })),
+    },
+  });
+}
+
+function markEditorSaved() {
+  if (state.view === 'edit' && state.editor) {
+    syncEditorFromDom();
+    state.editorBaseline = editorSnapshot(state.editor);
+  } else {
+    state.editorBaseline = null;
+  }
+}
+
+function isEditorDirty() {
+  if (state.view !== 'edit' || !state.editor || state.editorBaseline == null) return false;
+  syncEditorFromDom();
+  return editorSnapshot(state.editor) !== state.editorBaseline;
+}
+
+function confirmLeaveEdit() {
+  return confirm('You have unsaved changes. Leave without publishing?');
+}
+
+function isSameEditContext(route) {
+  if (!route) return false;
+  if (state.path) {
+    if (route.view === 'edit' && route.path === state.path) return true;
+    if (route.view === 'preview' && route.path === state.path) return true;
+    return false;
+  }
+  if (route.view === 'edit-new' && route.slug === state.section?.slug) return true;
+  return false;
+}
+
+function shouldConfirmLeave(targetRoute) {
+  return state.view === 'edit' && isEditorDirty() && !isSameEditContext(targetRoute);
+}
+
+function navigateTo(hash) {
+  const normalized = hash.startsWith('#') ? hash : `#${hash}`;
+  const targetRoute = parseRouteFromHash(normalized);
+  if (shouldConfirmLeave(targetRoute) && !confirmLeaveEdit()) return false;
+  location.hash = normalized;
+  return true;
+}
+
 function buildRouteHash() {
   if (state.view === 'login' || state.view === 'loading') return '#/';
   if (state.view === 'sections') return '#/';
   if (state.view === 'replace') return '#/replace';
-  if (state.view === 'spell-errors') return '#/spell-errors';
+  if (state.view === 'spell-errors') {
+    if (state.spellCorpus.scope === 'section' && state.spellCorpus.sectionSlug) {
+      return `#/spell-errors/s/${encodeURIComponent(state.spellCorpus.sectionSlug)}`;
+    }
+    return '#/spell-errors';
+  }
   if (state.view === 'bhajans' && state.section?.slug) {
     return `#/s/${encodeURIComponent(state.section.slug)}`;
   }
@@ -176,6 +283,26 @@ async function applyRouteFromHash() {
   if (route.view === 'spell-errors') {
     endSpellCorpusOp();
     state.error = null;
+    if (route.slug) {
+      const sec = state.sections.find((s) => s.slug === route.slug);
+      state.spellCorpus.scope = 'section';
+      state.spellCorpus.sectionSlug = route.slug;
+      state.spellCorpus.sectionTitle = sec?.title || route.slug;
+      if (sec) state.section = sec;
+      setPageBusy('Loading section…');
+      render();
+      try {
+        await loadBhajans(route.slug);
+      } catch {
+        /* back link still works via sectionSlug */
+      } finally {
+        clearPageBusy();
+      }
+    } else {
+      state.spellCorpus.scope = 'all';
+      state.spellCorpus.sectionSlug = null;
+      state.spellCorpus.sectionTitle = null;
+    }
     state.view = 'spell-errors';
     render();
     return;
@@ -188,9 +315,15 @@ async function applyRouteFromHash() {
       render();
       return;
     }
-    await loadBhajans(route.slug);
-    state.view = 'bhajans';
-    state.error = null;
+    setPageBusy('Loading section…');
+    render();
+    try {
+      await loadBhajans(route.slug);
+      state.view = 'bhajans';
+      state.error = null;
+    } finally {
+      clearPageBusy();
+    }
     render();
     return;
   }
@@ -202,44 +335,60 @@ async function applyRouteFromHash() {
       render();
       return;
     }
-    await loadBhajans(route.slug);
-    state.path = null;
-    state.sha = null;
-    state.editor = emptyEditor();
-    resetParagraphEditor();
-    initEditOptionalFromEditor(state.editor);
-    state.view = 'edit';
-    state.error = null;
+    setPageBusy('Opening new bhajan…');
+    render();
+    try {
+      await loadBhajans(route.slug);
+      state.path = null;
+      state.sha = null;
+      state.editor = emptyEditor();
+      resetParagraphEditor();
+      initEditOptionalFromEditor(state.editor);
+      state.view = 'edit';
+      state.error = null;
+      markEditorSaved();
+    } finally {
+      clearPageBusy();
+    }
     render();
     return;
   }
 
   if (route.view === 'edit' && route.path) {
+    setPageBusy('Loading bhajan…');
+    render();
     try {
       await loadEditorFromPath(route.path);
       state.view = 'edit';
       state.error = null;
-      render();
+      markEditorSaved();
     } catch (e) {
       state.error = e.message;
       state.view = 'sections';
+    } finally {
+      clearPageBusy();
       render();
     }
     return;
   }
 
   if (route.view === 'preview' && route.path) {
+    setPageBusy('Loading preview…');
+    render();
     try {
       await loadEditorFromPath(route.path);
       state.view = 'edit';
       state.editPanel = 'preview';
       state.error = null;
+      markEditorSaved();
+      clearPageBusy();
       render();
       await refreshPreview();
     } catch (e) {
       state.previewBusy = false;
       state.error = e.message;
       state.view = 'sections';
+      clearPageBusy();
       render();
     }
     return;
@@ -320,8 +469,8 @@ function replaceProgressHtml(r) {
   const { current, total, phase, matches = 0, updated = 0, listing } = r.progress;
   if (listing || total === 0) {
     return `<div class="replace-progress" role="status" aria-live="polite">
+      <div class="spell-corpus-progress__row"><span class="spinner" aria-hidden="true"></span><p class="replace-progress-label">${escapeHtml(phase === 'apply' ? 'Preparing apply…' : 'Loading file list…')}</p></div>
       <div class="replace-progress-track" aria-hidden="true"><div class="replace-progress-fill replace-progress-fill--pulse"></div></div>
-      <p class="replace-progress-label">${escapeHtml(phase === 'apply' ? 'Preparing apply…' : 'Loading file list…')}</p>
     </div>`;
   }
   const pct = Math.min(100, Math.round((current / total) * 100));
@@ -619,13 +768,13 @@ function previewListContext() {
 
 function previewPanelHtml() {
   if (state.previewBusy) {
-    return '<p class="loading">Building preview…</p>';
+    return loadingBlock('Building preview…');
   }
   if (state.previewHtml) {
     return `<div class="preview-site preview-site--section">${state.previewHtml}</div>
       <button type="button" class="btn" id="refresh-preview" style="margin-top:0.65rem">Refresh preview</button>`;
   }
-  return '<p class="loading">Building preview…</p>';
+  return loadingBlock('Building preview…');
 }
 
 function dictationStickyBtnHtml() {
@@ -642,29 +791,38 @@ function bhajanDisplayName(b) {
 }
 
 function bindTopbar(opts = {}) {
+  document.querySelector('[data-nav-home]')?.addEventListener('click', () => {
+    if (opts.abortReplaceOnLeave) state.replace.abortCtrl?.abort();
+    if (opts.abortSpellOnLeave) state.spellCorpus.abortCtrl?.abort();
+    if (state.view === 'replace') endReplaceOp();
+    if (state.view === 'spell-errors') endSpellCorpusOp();
+    state.error = null;
+    navigateTo('#/');
+  });
   document.querySelector('[data-back="sections"]')?.addEventListener('click', () => {
     if (opts.abortReplaceOnLeave) state.replace.abortCtrl?.abort();
     if (opts.abortSpellOnLeave) state.spellCorpus.abortCtrl?.abort();
     if (state.view === 'replace') endReplaceOp();
     if (state.view === 'spell-errors') endSpellCorpusOp();
     state.error = null;
-    location.hash = '#/';
+    navigateTo('#/');
   });
   document.querySelector('[data-back="bhajans"]')?.addEventListener('click', () => {
     if (opts.abortReplaceOnLeave) state.replace.abortCtrl?.abort();
     if (opts.abortSpellOnLeave) state.spellCorpus.abortCtrl?.abort();
     state.error = null;
-    if (state.section?.slug) location.hash = `#/s/${encodeURIComponent(state.section.slug)}`;
-    else location.hash = '#/';
+    const slug = state.section?.slug || state.spellCorpus.sectionSlug;
+    if (slug) navigateTo(`#/s/${encodeURIComponent(slug)}`);
+    else navigateTo('#/');
   });
   document.querySelector('[data-back="edit"]')?.addEventListener('click', () => {
     state.error = null;
     state.previewHtml = null;
     state.previewBusy = false;
     state.editPanel = 'basic';
-    if (state.path) location.hash = `#/edit?p=${encodeURIComponent(state.path)}`;
-    else if (state.section?.slug) location.hash = `#/s/${encodeURIComponent(state.section.slug)}/new`;
-    else location.hash = '#/';
+    if (state.path) navigateTo(`#/edit?p=${encodeURIComponent(state.path)}`);
+    else if (state.section?.slug) navigateTo(`#/s/${encodeURIComponent(state.section.slug)}/new`);
+    else navigateTo('#/');
   });
 }
 
@@ -676,7 +834,7 @@ function renderInner() {
     state.error = null;
   }
   if (state.view === 'loading') {
-    app.innerHTML = '<p class="loading">Loading…</p>';
+    app.innerHTML = loadingBlock('Loading…', true);
     return;
   }
 
@@ -711,26 +869,34 @@ function renderInner() {
       </main>`;
     document.getElementById('open-section').addEventListener('click', () => {
       const slug = document.getElementById('section-pick').value;
-      if (slug) location.hash = `#/s/${encodeURIComponent(slug)}`;
+      if (slug) navigateTo(`#/s/${encodeURIComponent(slug)}`);
     });
     document.getElementById('go-replace').addEventListener('click', () => {
-      location.hash = '#/replace';
+      navigateTo('#/replace');
     });
     document.getElementById('go-spell-errors')?.addEventListener('click', () => {
-      location.hash = '#/spell-errors';
+      navigateTo('#/spell-errors');
     });
+    bindTopbar();
+    app.innerHTML += pageBusyOverlayHtml();
     return;
   }
 
   if (state.view === 'spell-errors') {
+    const spellTitle =
+      state.spellCorpus.scope === 'section' && state.spellCorpus.sectionTitle
+        ? `Spell errors — ${state.spellCorpus.sectionTitle}`
+        : 'Spell errors (all)';
+    const spellBack = state.spellCorpus.scope === 'section' ? 'bhajans' : 'sections';
     app.innerHTML = `
-      ${topbar('Spell errors', 'sections')}
+      ${topbar(spellTitle, spellBack)}
       <main class="spell-corpus-main">
         ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
         ${renderSpellCorpusBody()}
       </main>`;
     bindTopbar({ abortSpellOnLeave: state.spellCorpus.scanning });
     bindSpellCorpusView();
+    app.innerHTML += pageBusyOverlayHtml();
     return;
   }
 
@@ -775,6 +941,7 @@ function renderInner() {
     document.getElementById('rep-cancel')?.addEventListener('click', cancelReplaceOp);
     bindReplaceForm();
     bindReplacePreview();
+    app.innerHTML += pageBusyOverlayHtml();
     return;
   }
 
@@ -783,6 +950,7 @@ function renderInner() {
       ${topbar(state.section.title, 'sections')}
       <main>
         <button type="button" class="btn btn-primary" id="add-bhajan" style="width:100%;margin-bottom:0.75rem">+ New bhajan</button>
+        <button type="button" class="btn" id="go-spell-section" style="width:100%;margin-bottom:0.75rem">Spell errors (this section)</button>
         ${state.bhajans.map((b) => `
           <div class="bhajan-item">
             <a class="list-btn" href="#/edit?p=${encodeURIComponent(b.path)}">${escapeHtml(bhajanDisplayName(b))}</a>
@@ -791,8 +959,13 @@ function renderInner() {
     bindTopbar();
     document.getElementById('add-bhajan').addEventListener('click', () => {
       if (!state.section?.slug) return;
-      location.hash = `#/s/${encodeURIComponent(state.section.slug)}/new`;
+      navigateTo(`#/s/${encodeURIComponent(state.section.slug)}/new`);
     });
+    document.getElementById('go-spell-section')?.addEventListener('click', () => {
+      if (!state.section?.slug) return;
+      navigateTo(`#/spell-errors/s/${encodeURIComponent(state.section.slug)}`);
+    });
+    app.innerHTML += pageBusyOverlayHtml();
     return;
   }
 
@@ -864,11 +1037,12 @@ function renderInner() {
         </div>
         <div class="sticky-actions">
           ${state.editPanel === 'preview' ? '' : dictationStickyBtnHtml()}
-          ${state.editPanel === 'preview' ? '<button type="button" class="btn btn-primary" id="save">Publish</button>' : ''}
+          ${state.editPanel === 'preview' ? publishBtnHtml() : ''}
           ${state.path ? '<button type="button" class="btn btn-danger" id="delete">Delete</button>' : ''}
         </div>
       </main>`;
     bindEditor();
+    app.innerHTML += pageBusyOverlayHtml();
     return;
   }
 }
@@ -1155,10 +1329,20 @@ function topbar(title, back) {
           ? '<button type="button" class="btn" data-back="edit">← Edit</button>'
           : '';
   return `<header class="topbar">
+    <button type="button" class="topbar-home" data-nav-home aria-label="Sections home" title="Home">
+      <img src="/favicon-32.png" alt="" width="24" height="24">
+    </button>
     ${backBtn}
     <h1>${escapeHtml(title)}</h1>
     <a class="btn" href="/api/auth/logout">Log out</a>
   </header>`;
+}
+
+function publishBtnHtml() {
+  if (state.saving) {
+    return '<button type="button" class="btn btn-primary" id="save" disabled><span class="spinner" aria-hidden="true"></span> Publishing…</button>';
+  }
+  return '<button type="button" class="btn btn-primary" id="save">Publish</button>';
 }
 
 function paraHtml(p, i) {
@@ -1369,18 +1553,26 @@ function renderSpellCorpusBody() {
     const barClass = indeterminate
       ? 'spell-corpus-progress__bar spell-corpus-progress__bar--indeterminate'
       : 'spell-corpus-progress__bar';
-    return `<p class="loading">${escapeHtml(spellCorpusProgressLabel(sc))}</p>
+    return `<div class="spell-corpus-progress__row"><span class="spinner" aria-hidden="true"></span><p class="loading-block__text">${escapeHtml(spellCorpusProgressLabel(sc))}</p></div>
       <div class="spell-corpus-progress${indeterminate ? ' spell-corpus-progress--indeterminate' : ''}" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100">
         <div class="${barClass}" style="width:${indeterminate ? '40%' : `${pct}%`}"></div>
       </div>
       <button type="button" class="btn btn-danger" id="spell-corpus-cancel">Cancel</button>`;
   }
+  const sectionScope = sc.scope === 'section' && sc.sectionTitle;
+  const scanPrimaryLabel = sectionScope
+    ? `Scan ${sc.sectionTitle}`
+    : 'Scan all bhajans';
   const actions = `<div class="spell-corpus-actions">
-    <button type="button" class="btn btn-primary" id="spell-corpus-scan">Scan all bhajans</button>
+    <button type="button" class="btn btn-primary" id="spell-corpus-scan">${escapeHtml(scanPrimaryLabel)}</button>
+    ${sectionScope ? '<button type="button" class="btn" id="spell-corpus-scan-all">Scan all bhajans</button>' : ''}
   </div>`;
   const report = sc.report;
   if (!report) {
-    return `${actions}<p class="hint">Tap <strong>Scan all bhajans</strong>. Uses the published bhajan word list first, then Hindi + Sanskrit Hunspell. Only flags words <em>not</em> in the sangrah that have plausible typo fixes. Use Cancel anytime.</p>`;
+    const hint = sectionScope
+      ? `Tap <strong>${escapeHtml(scanPrimaryLabel)}</strong> to check only this section, or <strong>Scan all bhajans</strong>. Uses the published word list first, then Hindi + Sanskrit Hunspell.`
+      : 'Tap <strong>Scan all bhajans</strong>. Uses the published bhajan word list first, then Hindi + Sanskrit Hunspell. Only flags words <em>not</em> in the sangrah that have plausible typo fixes.';
+    return `${actions}<p class="hint">${hint} Use Cancel anytime.</p>`;
   }
   if (!report.clusters.length) {
     const corpusNote = report.corpusWords
@@ -1431,7 +1623,8 @@ function renderSpellCorpusBody() {
 }
 
 function bindSpellCorpusView() {
-  document.getElementById('spell-corpus-scan')?.addEventListener('click', () => startSpellCorpusScan());
+  document.getElementById('spell-corpus-scan')?.addEventListener('click', () => startSpellCorpusScan('current'));
+  document.getElementById('spell-corpus-scan-all')?.addEventListener('click', () => startSpellCorpusScan('all'));
   document.getElementById('spell-corpus-cancel')?.addEventListener('click', () => {
     state.spellCorpus.abortCtrl?.abort();
     endSpellCorpusOp();
@@ -1464,7 +1657,7 @@ function bindSpellCorpusView() {
   });
 }
 
-async function startSpellCorpusScan() {
+async function startSpellCorpusScan(scanMode = 'current') {
   endSpellCorpusOp();
   state.error = null;
   state.spellCorpus.scanning = true;
@@ -1475,8 +1668,25 @@ async function startSpellCorpusScan() {
   render();
 
   try {
+    let pathsOnly;
+    if (scanMode === 'all') {
+      state.spellCorpus.scope = 'all';
+      state.spellCorpus.sectionSlug = null;
+      state.spellCorpus.sectionTitle = null;
+      pathsOnly = null;
+    } else if (state.spellCorpus.scope === 'section' && state.spellCorpus.sectionSlug) {
+      pathsOnly = await listSectionBhajanPaths(
+        api,
+        state.spellCorpus.sectionSlug,
+        state.spellCorpus.abortCtrl.signal,
+      );
+    } else {
+      pathsOnly = null;
+    }
+
     const report = await runCorpusSpellScan(api, {
       signal: state.spellCorpus.abortCtrl.signal,
+      paths: pathsOnly,
       onProgress: (current, total, phase) => {
         if (phase) state.spellCorpus.phase = phase;
         state.spellCorpus.progress = { current, total };
@@ -1540,8 +1750,8 @@ async function commitPublish() {
     return;
   }
 
-  const btn = document.getElementById('save');
-  if (btn) btn.disabled = true;
+  state.saving = true;
+  render();
 
   try {
     try {
@@ -1551,7 +1761,7 @@ async function commitPublish() {
           `Spell check: ${totalIssues} possible misspelling(s) (red underlines). Publish anyway?`,
         );
         if (!ok) {
-          if (btn) btn.disabled = false;
+          state.saving = false;
           state.editPanel = 'preview';
           render();
           return;
@@ -1589,16 +1799,18 @@ async function commitPublish() {
       ? `\n\nFile renamed to match title:\n${res.path.split('/').pop()}`
       : '';
     state.previewHtml = null;
+    state.saving = false;
+    markEditorSaved();
     alert(`Published — GitHub Actions will rebuild the public site.${renameNote}`);
     if (state.section?.slug) {
       await loadBhajans(state.section.slug);
-      location.hash = `#/s/${encodeURIComponent(state.section.slug)}`;
+      navigateTo(`#/s/${encodeURIComponent(state.section.slug)}`);
     } else {
-      location.hash = '#/';
+      navigateTo('#/');
     }
   } catch (e) {
     state.error = e.message;
-    if (btn) btn.disabled = false;
+    state.saving = false;
     render();
   }
 }
@@ -1611,9 +1823,9 @@ async function deleteEditor() {
     });
     if (state.section?.slug) {
       await loadBhajans(state.section.slug);
-      location.hash = `#/s/${encodeURIComponent(state.section.slug)}`;
+      navigateTo(`#/s/${encodeURIComponent(state.section.slug)}`);
     } else {
-      location.hash = '#/';
+      navigateTo('#/');
     }
   } catch (e) {
     state.error = e.message;
@@ -1642,6 +1854,7 @@ async function openFile(path) {
   await loadEditorFromPath(path);
   state.view = 'edit';
   state.error = null;
+  markEditorSaved();
   render();
 }
 
@@ -1672,7 +1885,22 @@ window.addEventListener('hashchange', () => {
     }
     return;
   }
+  const targetRoute = parseRouteFromHash(location.hash);
+  if (shouldConfirmLeave(targetRoute)) {
+    if (!confirmLeaveEdit()) {
+      routeUseReplace = true;
+      location.hash = lastSyncedRouteHash || buildRouteHash();
+      return;
+    }
+  }
   applyRouteFromHash();
+});
+
+window.addEventListener('beforeunload', (e) => {
+  if (isEditorDirty()) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
 });
 
 init();

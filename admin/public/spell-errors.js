@@ -43,10 +43,22 @@ export async function fetchEditorItems(api, paths, onProgress, signal) {
   return items;
 }
 
-export async function runCorpusSpellScan(api, { onProgress, signal } = {}) {
+/** Limit scan to one section folder (e.g. `shiv` → `content/shiv/…`). */
+export function filterPathsForSection(paths, sectionFolder) {
+  const prefix = `content/${sectionFolder}/`;
+  return (paths || []).filter((p) => String(p).startsWith(prefix));
+}
+
+export async function listSectionBhajanPaths(api, sectionSlug, signal) {
+  const data = await api(`/api/bhajans?section=${encodeURIComponent(sectionSlug)}`, { signal });
+  return (data.bhajans || []).map((b) => b.path).filter(Boolean);
+}
+
+export async function runCorpusSpellScan(api, { onProgress, signal, paths: pathsOnly } = {}) {
   await ensureSpellDictionary(onProgress, signal);
 
-  const paths = await listAllBhajanPaths(api, signal);
+  const paths =
+    pathsOnly != null ? pathsOnly : await listAllBhajanPaths(api, signal);
   onProgress?.(paths.length, paths.length, 'list');
   abortIfNeeded(signal);
 
