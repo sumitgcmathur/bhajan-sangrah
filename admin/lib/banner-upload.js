@@ -3,8 +3,8 @@ const { getFile, getFileSha, putFile, putFileBinary } = require('./github');
 const { parseSectionsYaml } = require('./yaml-bridge');
 
 const { dumpSectionsDoc } = require(path.join(__dirname, '..', '..', 'scripts', 'lib', 'yaml-io'));
+const { processBannerUpload } = require('./banner-resize');
 const {
-  processBannerUpload,
   homeIconPath,
   resolveSectionIconPath,
   defaultSectionIconPath,
@@ -34,7 +34,7 @@ async function uploadBannerImage(token, target, imageBuffer) {
     throw err;
   }
   if (imageBuffer.length > MAX_BYTES) {
-    const err = new Error('Image too large (max 12 MB)');
+    const err = new Error('Image too large (max 3 MB)');
     err.status = 400;
     throw err;
   }

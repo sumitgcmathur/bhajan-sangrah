@@ -17,7 +17,23 @@ const MENU_ICON_SIZE = 40;
 const MENU_JPEG_QUALITY = 78;
 
 function loadSharp() {
-  return require('sharp');
+  try {
+    return require('sharp');
+  } catch (_) {
+    /* fall through */
+  }
+  const candidates = [
+    path.join(ROOT, 'node_modules', 'sharp'),
+    path.join(ROOT, 'admin', 'node_modules', 'sharp'),
+  ];
+  for (const mod of candidates) {
+    try {
+      return require(mod);
+    } catch (_) {
+      /* try next */
+    }
+  }
+  throw new Error('sharp is not installed — npm install (repo root or admin/)');
 }
 
 function resolveAsset(relPath) {
