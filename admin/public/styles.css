@@ -153,6 +153,36 @@ body {
 
 main { padding: 0.75rem; max-width: 42rem; margin: 0 auto; }
 
+.section-order-bar {
+  margin-bottom: 0.85rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--surface);
+}
+
+.section-order-bar__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.section-order-pick {
+  flex: 1;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--bg);
+}
+
+.section-order-hint {
+  margin: 0.45rem 0 0;
+  font-size: 0.85rem;
+}
+
 main.edit-main {
   max-width: 56rem;
   padding-bottom: calc(var(--action-bar-h) + 1.25rem + env(safe-area-inset-bottom, 0px));

@@ -253,7 +253,8 @@ function renderSectionGrid(sections, base, config, sectionCounts) {
   return `<div class="section-grid">${cards}</div>`;
 }
 
-function bhajansByGroup(bhajans) {
+function bhajansByGroup(bhajans, section) {
+  const { sectionBhajanOrder, compareBhajanByTitle } = require('./sections');
   const groups = [];
   const seen = new Map();
   for (const b of bhajans) {
@@ -265,8 +266,10 @@ function bhajansByGroup(bhajans) {
     }
     seen.get(title).items.push(b);
   }
-  for (const g of groups) {
-    g.items.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'hi'));
+  if (sectionBhajanOrder(section) === 'title') {
+    for (const g of groups) {
+      g.items.sort(compareBhajanByTitle);
+    }
   }
   return groups;
 }
@@ -438,7 +441,7 @@ function renderIndex(config, sections, base, sectionCounts) {
 function renderSectionPage(section, bhajans, config, sections, base, sectionCounts) {
   const showSwarachitBadge = section.slug !== 'swarachit';
   const grouped = sectionUsesGroups(section, bhajans);
-  const groups = grouped ? bhajansByGroup(bhajans) : [];
+  const groups = grouped ? bhajansByGroup(bhajans, section) : [];
 
   let indexHtml;
   let heroHtml;

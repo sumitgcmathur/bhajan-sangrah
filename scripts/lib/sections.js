@@ -11,13 +11,27 @@ function compareBhajanByTitle(a, b) {
   return compareHi(a.title, b.title);
 }
 
+/** `file` = YAML filename order; `title` = देवनागरी title order (default). */
+function sectionBhajanOrder(section) {
+  const v = String(section?.bhajan_order || '')
+    .trim()
+    .toLowerCase();
+  if (v === 'file' || v === 'filename') return 'file';
+  return 'title';
+}
+
+function isGroupedSection(section) {
+  return section?.grouped === true || section?.grouped === 'true';
+}
+
 /**
- * Bhajan order on site: देवनागरी title order within each section.
- * Grouped sections (स्वरचित): group order unchanged; sort within each group in bhajansByGroup.
+ * Bhajan index order for site + admin list.
+ * Grouped sections (स्वरचित): group order from files; within-group sort in bhajansByGroup when title.
  */
 function sortBhajansForDisplay(section, bhajans) {
   if (!bhajans?.length) return bhajans;
-  if (section.grouped === true || section.grouped === 'true') return bhajans;
+  if (sectionBhajanOrder(section) === 'file') return bhajans;
+  if (isGroupedSection(section)) return bhajans;
   return [...bhajans].sort(compareBhajanByTitle);
 }
 
@@ -62,6 +76,8 @@ function countBhajansBySection(sections) {
 module.exports = {
   compareHi,
   compareBhajanByTitle,
+  sectionBhajanOrder,
+  isGroupedSection,
   sortBhajansForDisplay,
   loadSections,
   saveSections,

@@ -411,6 +411,9 @@ function dumpSectionsDoc(config) {
     out.push(`    title: ${s.title}`);
     if (s.banner) out.push(`    banner: ${s.banner}`);
     if (s.grouped) out.push('    grouped: true');
+    if (s.bhajan_order === 'file' || s.bhajan_order === 'title') {
+      out.push(`    bhajan_order: ${s.bhajan_order}`);
+    }
     if (s.sthayi_connect === true) out.push('    sthayi_connect: true');
     else if (s.sthayi_connect === false) out.push('    sthayi_connect: false');
   }

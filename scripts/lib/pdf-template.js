@@ -38,9 +38,9 @@ function renderPdfIndexItem(hrefId, labelHtml) {
 
 function assignBhajanIds(section, bhajans) {
   const grouped = sectionUsesGroups(section, bhajans);
-  if (grouped && bhajansByGroup(bhajans).some((g) => g.title)) {
+  if (grouped && bhajansByGroup(bhajans, section).some((g) => g.title)) {
     const out = [];
-    for (const g of bhajansByGroup(bhajans)) {
+    for (const g of bhajansByGroup(bhajans, section)) {
       if (!g.title) continue;
       for (const b of g.items) {
         out.push({ ...b, id: b.id });
@@ -55,7 +55,7 @@ function renderPdfIndexItemsForSection(section, bhajans, numRef) {
   const showSwarachitBadge = section.slug !== 'swarachit';
   const withIds = assignBhajanIds(section, bhajans);
   const grouped = sectionUsesGroups(section, bhajans);
-  const groups = grouped ? bhajansByGroup(withIds) : [];
+  const groups = grouped ? bhajansByGroup(withIds, section) : [];
 
   if (grouped && groups.some((g) => g.title)) {
     return groups
@@ -102,7 +102,7 @@ function renderPdfSectionIndex(section, bhajans) {
   const numRef = { n: 1 };
   const body = renderPdfIndexItemsForSection(section, bhajans, numRef);
   const grouped =
-    sectionUsesGroups(section, bhajans) && bhajansByGroup(bhajans).some((g) => g.title);
+    sectionUsesGroups(section, bhajans) && bhajansByGroup(bhajans, section).some((g) => g.title);
   return `<nav class="pdf-section-index${grouped ? ' pdf-section-index--grouped' : ''}" aria-label="भजन सूची">
   <h2 class="pdf-section-index__title">भजन सूची</h2>
   ${body}
@@ -170,7 +170,7 @@ function renderPdfBhajanCard(b, section, index, showSwarachitBadge) {
 function renderPdfSection(section, bhajans, resolveAsset) {
   const showSwarachitBadge = section.slug !== 'swarachit';
   const grouped = sectionUsesGroups(section, bhajans);
-  const groups = grouped ? bhajansByGroup(bhajans) : [];
+  const groups = grouped ? bhajansByGroup(bhajans, section) : [];
   const secId = sectionAnchorId(section.slug);
 
   let articlesHtml;

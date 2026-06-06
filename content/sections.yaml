@@ -13,6 +13,7 @@ sections:
     google_path: Aarti
     title: आरती
     banner: assets/icons/aarti.jpg
+    bhajan_order: file
   - slug: shiv
     folder: shiv
     google_path: shiv

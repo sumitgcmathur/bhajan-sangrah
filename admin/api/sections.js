@@ -22,6 +22,7 @@ module.exports = async (req, res) => {
       title: s.title,
       banner: s.banner || '',
       grouped: Boolean(s.grouped),
+      bhajan_order: s.bhajan_order === 'file' ? 'file' : 'title',
     }));
     sendJson(res, 200, {
       site_title: config.site_title,

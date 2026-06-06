@@ -53,7 +53,11 @@ module.exports = async (req, res) => {
       ? [...seenGroups].sort((a, b) => a.localeCompare(b, 'hi'))
       : [];
 
-    sendJson(res, 200, { section, bhajans: sorted, groups });
+    const sectionOut = {
+      ...section,
+      bhajan_order: section.bhajan_order === 'file' ? 'file' : 'title',
+    };
+    sendJson(res, 200, { section: sectionOut, bhajans: sorted, groups });
   } catch (e) {
     sendJson(res, 500, { error: e.message });
   }

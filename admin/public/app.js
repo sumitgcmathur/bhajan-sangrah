@@ -30,6 +30,7 @@ const state = {
   saving: false,
   pageBusy: false,
   pageBusyMessage: '',
+  sectionOrderBusy: false,
   editorBaseline: null,
   editPanel: 'basic',
   replace: {
@@ -836,7 +837,7 @@ function renderInner() {
   stopDictation();
   const showPreviewCss = state.view === 'edit' && state.editPanel === 'preview';
   setPreviewStylesheet(showPreviewCss);
-  if (state.view !== 'edit' && state.view !== 'replace' && state.view !== 'spell-errors') {
+  if (state.view === 'sections') {
     state.error = null;
   }
   if (state.view === 'loading') {
@@ -952,9 +953,23 @@ function renderInner() {
   }
 
   if (state.view === 'bhajans') {
+    const bhajanOrder = state.section?.bhajan_order === 'file' ? 'file' : 'title';
+    const orderBusy = state.sectionOrderBusy;
     app.innerHTML = `
       ${topbar(state.section.title, 'sections')}
       <main>
+        ${state.error ? `<p class="err">${escapeHtml(state.error)}</p>` : ''}
+        <div class="section-order-bar">
+          <label for="section-bhajan-order">Bhajan index on site</label>
+          <div class="section-order-bar__row">
+            <select id="section-bhajan-order" class="section-order-pick" ${orderBusy ? 'disabled' : ''}>
+              <option value="title" ${bhajanOrder === 'title' ? 'selected' : ''}>Title order (देवनागरी)</option>
+              <option value="file" ${bhajanOrder === 'file' ? 'selected' : ''}>Filename order (001-, 002-…)</option>
+            </select>
+            ${orderBusy ? '<span class="spinner" aria-hidden="true"></span>' : ''}
+          </div>
+          <p class="hint section-order-hint">Controls numbering on the public section page. Rebuild deploys after commit to <code>main</code>.</p>
+        </div>
         <button type="button" class="btn btn-primary" id="add-bhajan" style="width:100%;margin-bottom:0.75rem">+ New bhajan</button>
         <button type="button" class="btn" id="go-spell-section" style="width:100%;margin-bottom:0.75rem">Spell errors (this section)</button>
         ${state.bhajans.map((b) => `
@@ -970,6 +985,9 @@ function renderInner() {
     document.getElementById('go-spell-section')?.addEventListener('click', () => {
       if (!state.section?.slug) return;
       navigateTo(`#/spell-errors/s/${encodeURIComponent(state.section.slug)}`);
+    });
+    document.getElementById('section-bhajan-order')?.addEventListener('change', (e) => {
+      saveSectionBhajanOrder(e.target.value);
     });
     attachPageBusyOverlay();
     return;
@@ -1838,8 +1856,38 @@ async function deleteEditor() {
 async function loadBhajans(slug) {
   const data = await api(`/api/bhajans?section=${encodeURIComponent(slug)}`);
   state.bhajans = data.bhajans;
-  state.section = data.section;
+  const order = data.section?.bhajan_order === 'file' ? 'file' : 'title';
+  state.section = { ...data.section, bhajan_order: order };
   state.groupOptions = data.groups || [];
+  const i = state.sections.findIndex((s) => s.slug === slug);
+  if (i >= 0) state.sections[i] = { ...state.sections[i], bhajan_order: order };
+}
+
+async function saveSectionBhajanOrder(order) {
+  if (!state.section?.slug || state.sectionOrderBusy) return;
+  const next = order === 'file' ? 'file' : 'title';
+  if (state.section.bhajan_order === next) return;
+
+  state.sectionOrderBusy = true;
+  state.error = null;
+  render();
+
+  try {
+    const data = await api('/api/section-settings', {
+      method: 'PATCH',
+      body: JSON.stringify({ slug: state.section.slug, bhajan_order: next }),
+    });
+    state.section = { ...state.section, ...data.section, bhajan_order: next };
+    const i = state.sections.findIndex((s) => s.slug === state.section.slug);
+    if (i >= 0) state.sections[i] = { ...state.sections[i], bhajan_order: next };
+    await loadBhajans(state.section.slug);
+    state.sectionOrderBusy = false;
+    render();
+  } catch (e) {
+    state.sectionOrderBusy = false;
+    state.error = e.message;
+    render();
+  }
 }
 
 async function loadEditorFromPath(path) {
