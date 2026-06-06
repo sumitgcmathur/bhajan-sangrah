@@ -111,6 +111,16 @@ function pageBusyOverlayHtml() {
   return `<div class="page-busy">${loadingBlock(state.pageBusyMessage || 'Loading…', true)}</div>`;
 }
 
+/** Append overlay without replacing innerHTML (+= would drop click handlers). */
+function attachPageBusyOverlay() {
+  app.querySelector('.page-busy')?.remove();
+  if (!state.pageBusy) return;
+  const tpl = document.createElement('template');
+  tpl.innerHTML = pageBusyOverlayHtml();
+  const overlay = tpl.content.firstElementChild;
+  if (overlay) app.appendChild(overlay);
+}
+
 function setPageBusy(message) {
   state.pageBusy = true;
   state.pageBusyMessage = message || 'Loading…';
@@ -874,7 +884,7 @@ function renderInner() {
       navigateTo('#/spell-errors');
     });
     bindTopbar();
-    app.innerHTML += pageBusyOverlayHtml();
+    attachPageBusyOverlay();
     return;
   }
 
@@ -892,7 +902,7 @@ function renderInner() {
       </main>`;
     bindTopbar({ abortSpellOnLeave: state.spellCorpus.scanning });
     bindSpellCorpusView();
-    app.innerHTML += pageBusyOverlayHtml();
+    attachPageBusyOverlay();
     return;
   }
 
@@ -937,7 +947,7 @@ function renderInner() {
     document.getElementById('rep-cancel')?.addEventListener('click', cancelReplaceOp);
     bindReplaceForm();
     bindReplacePreview();
-    app.innerHTML += pageBusyOverlayHtml();
+    attachPageBusyOverlay();
     return;
   }
 
@@ -961,7 +971,7 @@ function renderInner() {
       if (!state.section?.slug) return;
       navigateTo(`#/spell-errors/s/${encodeURIComponent(state.section.slug)}`);
     });
-    app.innerHTML += pageBusyOverlayHtml();
+    attachPageBusyOverlay();
     return;
   }
 
@@ -1034,7 +1044,7 @@ function renderInner() {
         </div>
       </main>`;
     bindEditor();
-    app.innerHTML += pageBusyOverlayHtml();
+    attachPageBusyOverlay();
     return;
   }
 }
