@@ -1,7 +1,6 @@
 const { requireAuth, sendJson } = require('../lib/http');
 const { getFile } = require('../lib/github');
 const { parseSectionsYaml } = require('../lib/yaml-bridge');
-
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
     sendJson(res, 405, { error: 'Method not allowed' });

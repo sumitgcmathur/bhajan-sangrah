@@ -1,6 +1,7 @@
 const { requireAuth, sendJson } = require('../lib/http');
 const { getFile, listDir } = require('../lib/github');
 const { parseSectionsYaml, parseBhajanYaml } = require('../lib/yaml-bridge');
+const { sortBhajansForDisplay } = require('../../scripts/lib/sections');
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
@@ -35,22 +36,24 @@ module.exports = async (req, res) => {
       yamlFiles.map(async (f) => {
         const filePath = `content/${folder}/${f.name}`;
         let title = '';
+        let group = '';
         const file = await getFile(filePath, session.accessToken);
         if (file) {
           const doc = parseBhajanYaml(file.content);
           title = (doc.title || '').trim();
-          const g = (doc.group || '').trim();
-          if (g) seenGroups.add(g);
+          group = (doc.group || '').trim();
+          if (group) seenGroups.add(group);
         }
-        return { name: f.name, path: filePath, title };
+        return { name: f.name, path: filePath, title, group };
       }),
     );
 
+    const sorted = sortBhajansForDisplay(section, bhajans);
     const groups = section.grouped
       ? [...seenGroups].sort((a, b) => a.localeCompare(b, 'hi'))
       : [];
 
-    sendJson(res, 200, { section, bhajans, groups });
+    sendJson(res, 200, { section, bhajans: sorted, groups });
   } catch (e) {
     sendJson(res, 500, { error: e.message });
   }

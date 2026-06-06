@@ -265,6 +265,9 @@ function bhajansByGroup(bhajans) {
     }
     seen.get(title).items.push(b);
   }
+  for (const g of groups) {
+    g.items.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'hi'));
+  }
   return groups;
 }
 

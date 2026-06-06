@@ -8,6 +8,7 @@ const {
   listBhajanFiles,
   loadBhajan,
   countBhajansBySection,
+  sortBhajansForDisplay,
 } = require('./lib/sections');
 const { prepareBhajanForRender } = require('./lib/bhajan-render');
 const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
@@ -85,7 +86,8 @@ async function main() {
       const data = loadBhajan(path.join(sectionFolder(section), f));
       return { ...data, _file: f };
     });
-    const enriched = bhajans.map((b, i) => prepareBhajanForRender(b, section, config, { index: i }));
+    const sorted = sortBhajansForDisplay(section, bhajans);
+    const enriched = sorted.map((b, i) => prepareBhajanForRender(b, section, config, { index: i }));
     fs.writeFileSync(
       path.join(DOCS, `${section.slug}.html`),
       renderSectionPage(section, enriched, config, sections, base, sectionCounts),

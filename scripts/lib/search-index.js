@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { sectionFolder, listBhajanFiles, loadBhajan } = require('./sections');
+const { sectionFolder, listBhajanFiles, loadBhajan, sortBhajansForDisplay } = require('./sections');
 const { anchorId } = require('./slug');
 
 function pageUrl(base, page) {
@@ -49,8 +49,9 @@ function buildSearchIndex(sections, base) {
   const items = [];
   for (const section of sections) {
     const files = listBhajanFiles(section);
-    files.forEach((f, i) => {
-      const b = loadBhajan(path.join(sectionFolder(section), f));
+    const bhajans = files.map((f) => loadBhajan(path.join(sectionFolder(section), f)));
+    const sorted = sortBhajansForDisplay(section, bhajans);
+    sorted.forEach((b, i) => {
       const id = b.id || anchorId(section.slug, b.title, i);
       items.push({
         title: b.title || '',
