@@ -8,7 +8,7 @@ const {
 } = require('./escape');
 const { anchorId } = require('./slug');
 const { toDevaNum } = require('./lyrics-structure');
-const { landingBannerPath, sidebarMenuIconPath, sidebarMenuHomePath } = require('./banner-thumbs');
+const { landingBannerPath } = require('./banner-thumbs');
 
 function pageUrl(base, page) {
   if (!page) return base || './';
@@ -30,10 +30,8 @@ function renderSidebarHomeIcon(src) {
 
 function renderSidebarHomeItem(config, base, home, currentSlug) {
   const active = currentSlug == null ? ' is-active' : '';
-  const iconRel = config.home_banner
-    ? sidebarMenuHomePath()
-    : config.site_icon || 'assets/icons/favicon.jpg';
-  const src = pageUrl(base, iconRel);
+  const iconSrc = config.site_icon || 'assets/icons/favicon.jpg';
+  const src = pageUrl(base, iconSrc);
   return `<li class="sidebar-nav__item sidebar-nav__item--home">
   <a class="sidebar-link sidebar-link--home${active}" href="${home}">
   ${renderSidebarHomeIcon(src)}
@@ -52,11 +50,7 @@ function renderNav(sections, base, currentSlug, sectionCounts) {
       const active = s.slug === currentSlug ? ' is-active' : '';
       const count = countBySlug.get(s.slug) ?? 0;
       const countHtml = `<span class="sidebar-link__count">${formatSidebarCount(count)}</span>`;
-      const menuIcon = s.banner
-        ? renderSidebarHomeIcon(pageUrl(base, sidebarMenuIconPath(s)))
-        : '';
       return `<li><a class="sidebar-link${active}" href="${href}" aria-label="${escapeHtml(s.title)}, ${count} भजन">
-  ${menuIcon}
   <span class="sidebar-link__body">
     <span class="sidebar-link__label">${escapeHtml(s.title)}</span>
     ${countHtml}

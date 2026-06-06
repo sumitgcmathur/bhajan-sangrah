@@ -97,7 +97,8 @@ Upload accepts JPEG, PNG, WebP, or GIF (max **3 MB**). The server resizes and co
 |--------|------|------|
 | Hero & PDF | `assets/icons/…` or `home_banner` path | 704×1522 JPEG |
 | Landing grid tile | `assets/banners/{slug\|home}.jpg` | 352×761 JPEG |
-| Sidebar menu icon | `assets/menu/{slug\|home}.jpg` | 40×40 JPEG |
+
+The left sidebar stays text-only (section menu icons are not shown on the public site).
 
 If `home_banner` or `section.banner` is missing in `sections.yaml`, the first upload sets the default path. GitHub Actions rebuilds the public site after each commit.
 

@@ -8,8 +8,6 @@ const SOURCE_JPEG_QUALITY = 88;
 const THUMB_WIDTH = 352;
 const THUMB_HEIGHT = Math.round((THUMB_WIDTH * 1522) / 704);
 const JPEG_QUALITY = 82;
-const MENU_ICON_SIZE = 40;
-const MENU_JPEG_QUALITY = 78;
 
 /** Vercel installs deps under admin/; scripts/lib cannot resolve sharp from repo root. */
 function loadSharp() {
@@ -28,7 +26,7 @@ function loadSharp() {
   }
 }
 
-/** Process upload → source 704×1522 + landing tile + menu icon buffers. */
+/** Process upload → source 704×1522 + landing tile buffers. */
 async function processBannerUpload(input) {
   const sharp = loadSharp();
   const source = await sharp(input)
@@ -42,12 +40,7 @@ async function processBannerUpload(input) {
     .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
     .toBuffer();
 
-  const menu = await sharp(source)
-    .resize(MENU_ICON_SIZE, MENU_ICON_SIZE, { fit: 'fill' })
-    .jpeg({ quality: MENU_JPEG_QUALITY, mozjpeg: true })
-    .toBuffer();
-
-  return { source, thumb, menu };
+  return { source, thumb };
 }
 
 module.exports = { processBannerUpload };

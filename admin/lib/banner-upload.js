@@ -9,9 +9,7 @@ const {
   resolveSectionIconPath,
   defaultSectionIconPath,
   thumbPathForSlug,
-  menuPathForSlug,
   landingHomeBannerPath,
-  sidebarMenuHomePath,
 } = require(path.join(__dirname, '..', '..', 'scripts', 'lib', 'banner-thumbs'));
 
 const SECTIONS_PATH = 'content/sections.yaml';
@@ -47,18 +45,16 @@ async function uploadBannerImage(token, target, imageBuffer) {
   }
 
   const config = parseSectionsYaml(secFile.content);
-  const { source, thumb, menu } = await processBannerUpload(imageBuffer);
+  const { source, thumb } = await processBannerUpload(imageBuffer);
 
   let iconRel;
   let thumbRel;
-  let menuRel;
   let yamlChanged = false;
   let label;
 
   if (target === 'home') {
     iconRel = homeIconPath(config);
     thumbRel = landingHomeBannerPath();
-    menuRel = sidebarMenuHomePath();
     label = 'landing page';
     if (!config.home_banner) {
       config.home_banner = iconRel;
@@ -78,14 +74,12 @@ async function uploadBannerImage(token, target, imageBuffer) {
     }
     iconRel = resolveSectionIconPath(section);
     thumbRel = thumbPathForSlug(section.slug);
-    menuRel = menuPathForSlug(section.slug);
   }
 
   const msg = `admin: update ${label} banner image`;
 
   await commitBinary(iconRel, source, msg, token);
   await commitBinary(thumbRel, thumb, msg, token);
-  await commitBinary(menuRel, menu, msg, token);
 
   if (yamlChanged) {
     const header = '# Master section index — edit via add-section.js or directly\n';
@@ -97,7 +91,6 @@ async function uploadBannerImage(token, target, imageBuffer) {
     target,
     icon: iconRel,
     thumb: thumbRel,
-    menu: menuRel,
     yamlUpdated: yamlChanged,
   };
 }

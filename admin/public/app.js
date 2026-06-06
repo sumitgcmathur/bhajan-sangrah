@@ -531,10 +531,9 @@ function assetPreviewUrl(relPath) {
 
 const BANNER_MAX_BYTES = 3 * 1024 * 1024;
 
-function bannerUploadPanelHtml({ inputId, label, iconPath, thumbPath, menuPath, busy }) {
+function bannerUploadPanelHtml({ inputId, label, iconPath, thumbPath, busy }) {
   const iconUrl = assetPreviewUrl(iconPath);
   const thumbUrl = assetPreviewUrl(thumbPath);
-  const menuUrl = assetPreviewUrl(menuPath);
   return `<div class="banner-upload">
     <h3 class="banner-upload__title">${escapeHtml(label)}</h3>
     <div class="banner-upload__previews">
@@ -546,16 +545,12 @@ function bannerUploadPanelHtml({ inputId, label, iconPath, thumbPath, menuPath, 
         <figcaption>Landing tile</figcaption>
         ${thumbUrl ? `<img class="banner-upload__thumb" src="${escapeAttr(thumbUrl)}" alt="">` : '<p class="hint">—</p>'}
       </figure>
-      <figure class="banner-upload__fig">
-        <figcaption>Menu icon</figcaption>
-        ${menuUrl ? `<img class="banner-upload__menu" src="${escapeAttr(menuUrl)}" alt="">` : '<p class="hint">—</p>'}
-      </figure>
     </div>
     <label class="btn ${busy ? '' : 'btn-primary'} banner-upload__pick">
       ${busy ? '<span class="spinner" aria-hidden="true"></span> Uploading…' : 'Update image'}
       <input type="file" id="${inputId}" accept="image/jpeg,image/png,image/webp,image/gif" class="banner-upload__input" ${busy ? 'disabled' : ''}>
     </label>
-    <p class="hint banner-upload__hint">Any photo (max 3 MB) — resized to 704×1522 (hero &amp; PDF), landing tile 352×761, menu 40×40. Commits to <code>main</code>.</p>
+    <p class="hint banner-upload__hint">Any photo (max 3 MB) — resized to 704×1522 (hero &amp; PDF) and landing tile 352×761. Commits to <code>main</code>.</p>
   </div>`;
 }
 
@@ -976,7 +971,6 @@ function renderInner() {
           label: 'Landing page image',
           iconPath: homeIcon,
           thumbPath: 'assets/banners/home.jpg',
-          menuPath: 'assets/menu/home.jpg',
           busy: state.bannerUploadBusy,
         })}
         <p class="hint">Choose a section to edit bhajans. Saves are committed to <code>main</code>.</p>
@@ -1080,7 +1074,6 @@ function renderInner() {
           label: 'Section banner image',
           iconPath: secIcon,
           thumbPath: secThumb,
-          menuPath: secSlug ? `assets/menu/${secSlug}.jpg` : '',
           busy: state.bannerUploadBusy,
         })}
         <div class="section-order-bar">
