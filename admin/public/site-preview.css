@@ -1040,7 +1040,7 @@ body.search-panel-open {
 
 .bhajan-index__num {
   font-weight: 600;
-  color: var(--muted);
+  color: inherit;
   margin-right: 0.2em;
 }
 
@@ -1133,7 +1133,7 @@ body.search-panel-open {
 
 .bhajan-card__num {
   font-weight: 600;
-  color: var(--muted);
+  color: inherit;
   margin-right: 0.15em;
 }
 
