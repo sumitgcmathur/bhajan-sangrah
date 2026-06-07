@@ -3,7 +3,6 @@
 @page {
   size: A4;
   margin: 16mm 14mm 24mm 14mm;
-  border: 1.25pt solid #e0d0c4;
   background: #faf6f0;
 
   @bottom-center {
@@ -402,70 +401,73 @@ body.pdf-export {
   margin-top: 0.5rem;
 }
 
-/* Bhajan cards — match site.css light-theme article styling */
+/* Bhajan cards — one per page; short bhajans leave blank space at bottom only */
 .pdf-bhajan-list .bhajan-card {
   background: var(--pdf-surface);
-  border: 1px solid var(--pdf-border);
-  border-radius: 0.5rem;
+  border: none;
+  border-radius: 0;
   padding: 1rem 0.75rem 1.15rem;
-  margin-bottom: 1.25rem;
-  box-shadow: 0 1px 8px var(--pdf-accent-glow);
+  margin: 0;
+  box-shadow: none;
+  min-height: var(--pdf-page-body-height);
+  box-sizing: border-box;
   page-break-before: always;
   break-before: page;
   page-break-inside: auto;
   break-inside: auto;
+  page-break-after: auto;
 }
 
 .pdf-bhajan-list .bhajan-card.om-frame {
-  padding: 1.75rem 1.35rem 1.65rem;
-  border-color: rgba(155, 45, 74, 0.22);
+  padding: 1.05rem 1.1rem 1rem;
 }
 
 .pdf-bhajan-list .om-frame__edge {
   position: absolute;
   pointer-events: none;
   color: var(--pdf-accent);
-  opacity: 0.34;
-  font-size: 0.78rem;
-  line-height: 1;
-  letter-spacing: 0.38em;
-  overflow: hidden;
-  white-space: nowrap;
+  opacity: 0.38;
   z-index: 2;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.pdf-bhajan-list .om-frame__om {
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1;
 }
 
 .pdf-bhajan-list .om-frame__edge--top {
-  top: 0.42rem;
-  left: 0.55rem;
-  right: 0.55rem;
+  top: 0.2rem;
+  left: 0.4rem;
+  right: 0.4rem;
+  flex-direction: row;
 }
 
 .pdf-bhajan-list .om-frame__edge--bottom {
-  bottom: 0.38rem;
-  left: 0.55rem;
-  right: 0.55rem;
-  transform: rotate(180deg);
+  bottom: 0.18rem;
+  left: 0.4rem;
+  right: 0.4rem;
+  flex-direction: row;
 }
 
 .pdf-bhajan-list .om-frame__edge--left,
 .pdf-bhajan-list .om-frame__edge--right {
-  top: 2rem;
-  bottom: 1.85rem;
-  width: 1.15em;
-  white-space: normal;
-  letter-spacing: 0.28em;
+  top: 1rem;
+  bottom: 0.8rem;
+  width: 1em;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
 .pdf-bhajan-list .om-frame__edge--left {
-  left: 0.26rem;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
+  left: 0.16rem;
 }
 
 .pdf-bhajan-list .om-frame__edge--right {
-  right: 0.26rem;
-  writing-mode: vertical-lr;
-  text-orientation: mixed;
+  right: 0.16rem;
 }
 
 /* Per-card banner watermark (same tiling idea as the public site; no position:fixed) */

@@ -377,12 +377,13 @@ function flattenBhajansForNav(bhajans, section, grouped, groups) {
 }
 
 function renderOmFrameDecor() {
-  const horiz = 'ॐ\u00a0'.repeat(52);
-  const vert = 'ॐ\u00a0'.repeat(16);
+  const om = '<span class="om-frame__om">ॐ</span>';
+  const horiz = om.repeat(20);
+  const vert = om.repeat(10);
   return `<div class="om-frame__edge om-frame__edge--top" aria-hidden="true">${horiz}</div>
   <div class="om-frame__edge om-frame__edge--bottom" aria-hidden="true">${horiz}</div>
-  <div class="om-frame__edge om-frame__edge--left" aria-hidden="true"><span>${vert}</span></div>
-  <div class="om-frame__edge om-frame__edge--right" aria-hidden="true"><span>${vert}</span></div>`;
+  <div class="om-frame__edge om-frame__edge--left" aria-hidden="true">${vert}</div>
+  <div class="om-frame__edge om-frame__edge--right" aria-hidden="true">${vert}</div>`;
 }
 
 function renderBhajanCard(b, section, index, showSwarachitBadge) {
