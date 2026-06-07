@@ -614,7 +614,7 @@ body.pdf-export {
 
 .pdf-bhajan-list .bhajan-card__num {
   font-weight: 600;
-  color: var(--pdf-muted);
+  color: inherit;
   margin-right: 0.15em;
 }
 
