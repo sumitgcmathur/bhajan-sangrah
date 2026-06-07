@@ -187,7 +187,15 @@ function renderPdfSection(section, bhajans, resolveAsset, watermarkBySlug = {}) 
   const grouped = sectionUsesGroups(section, bhajans);
   const groups = grouped ? bhajansByGroup(bhajans, section) : [];
   const secId = sectionAnchorId(section.slug);
-  const watermarkUrl = watermarkBySlug[section.slug] || '';
+  let watermarkUrl = '';
+  if (section.banner) {
+    const thumbRel = landingBannerPath(section);
+    const wmAssets = thumbRel
+      ? resolvePdfAsset(resolveAsset, thumbRel, { section })
+      : { thumb: '', full: '' };
+    watermarkUrl =
+      wmAssets.thumb || wmAssets.full || watermarkBySlug[section.slug] || '';
+  }
 
   let articlesHtml;
 
@@ -223,14 +231,21 @@ function renderPdfSection(section, bhajans, resolveAsset, watermarkBySlug = {}) 
 
   const bannerClass = watermarkUrl ? ' pdf-section--has-banner' : '';
   const bannerStyle = watermarkUrl ? pdfWatermarkStyleAttr(watermarkUrl) : '';
+  const pageDecor = `<div class="pdf-page-decor" aria-hidden="true">
+  ${watermarkUrl ? '<div class="pdf-page-watermark"></div>' : ''}
+  <div class="pdf-page-frame">${renderOmFrameDecor()}</div>
+</div>`;
 
   return `${renderPdfBannerPage(section, resolveAsset)}
 <section class="pdf-section${bannerClass}" id="${secId}"${bannerStyle}>
+  ${pageDecor}
+  <div class="pdf-section__content">
   <header class="pdf-section__head">
     <h1 class="pdf-section__title">${escapeHtml(section.title)}</h1>
   </header>
   ${renderPdfSectionIndex(section, bhajans)}
   ${articlesHtml}
+  </div>
 </section>`;
 }
 
@@ -308,7 +323,6 @@ ${toolbar}
   </div>
 </section>
 ${renderPdfLanding(config, sectionPayloads, resolveAsset)}
-<div class="pdf-page-frame" aria-hidden="true">${renderOmFrameDecor()}</div>
 ${sectionsHtml}
 ${toolbarScript}
 </body>
