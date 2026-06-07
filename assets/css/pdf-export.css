@@ -2,7 +2,8 @@
 
 @page {
   size: A4;
-  margin: 22mm 18mm 24mm 18mm;
+  margin: var(--pdf-page-margin-top) var(--pdf-page-margin-x) var(--pdf-page-margin-bottom)
+    var(--pdf-page-margin-x);
   background: #faf6f0;
 
   @bottom-center {
@@ -30,9 +31,15 @@
   --pdf-lyrics-marker: #7a6258;
   --pdf-lyrics-odd: #2c1810;
   --pdf-lyrics-even: #2c1810;
-  --pdf-page-body-height: 255mm;
-  --pdf-landing-pad-block: 9mm;
-  --pdf-landing-header-block: 13mm;
+  /* Must match @page margins — 255mm overflowed printable area → empty page 2 + tile spill */
+  --pdf-page-margin-top: 28mm;
+  --pdf-page-margin-bottom: 24mm;
+  --pdf-page-margin-x: 18mm;
+  --pdf-page-body-height: calc(
+    297mm - var(--pdf-page-margin-top) - var(--pdf-page-margin-bottom)
+  );
+  --pdf-landing-pad-block: 7mm;
+  --pdf-landing-header-block: 11mm;
   --pdf-landing-grid-h: calc(
     var(--pdf-page-body-height) - var(--pdf-landing-pad-block) - var(--pdf-landing-header-block)
   );
@@ -47,10 +54,11 @@
       var(--pdf-landing-rows)
   );
   --pdf-thumb-aspect: 352 / 761;
-  --pdf-frame-ring-inset: 7mm;
-  --pdf-content-pad-top: 18mm;
-  --pdf-content-pad-x: 15mm;
-  --pdf-content-pad-bottom: 12mm;
+  --pdf-frame-ring-inset: 5mm;
+  --pdf-content-pad-top: 10mm;
+  --pdf-content-pad-x: 12mm;
+  --pdf-content-pad-bottom: 10mm;
+  --pdf-flow-pad-top: 9mm;
   --pdf-frame-om-color: rgba(155, 45, 74, 0.38);
 }
 
@@ -77,8 +85,12 @@ body.pdf-export {
   position: relative;
   height: var(--pdf-page-body-height);
   max-height: var(--pdf-page-body-height);
+  min-height: 0;
   padding: 0;
   page-break-after: always;
+  break-after: page;
+  page-break-inside: avoid;
+  break-inside: avoid-page;
   background: #2a1420;
   overflow: hidden;
   box-sizing: border-box;
@@ -109,20 +121,27 @@ body.pdf-export {
   font-size: 0.95rem;
 }
 
-.pdf-banner-page {
+section.pdf-banner-page {
   position: relative;
-  min-height: var(--pdf-page-body-height);
+  height: var(--pdf-page-body-height);
+  max-height: var(--pdf-page-body-height);
+  min-height: 0;
   padding: 0;
-  page-break-after: always;
-  break-after: page;
-  background: #2a1420;
-  overflow: hidden;
-}
-
-/* New section banner after prior section content — not a double break with .pdf-section */
-.pdf-section + section.pdf-banner-page {
   page-break-before: always;
   break-before: page;
+  page-break-after: always;
+  break-after: page;
+  page-break-inside: avoid;
+  break-inside: avoid-page;
+  background: #2a1420;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* First section banner follows landing (landing already ends the page) */
+section.pdf-banner-page--first {
+  page-break-before: auto;
+  break-before: auto;
 }
 
 .pdf-banner {
@@ -135,7 +154,9 @@ body.pdf-export {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--pdf-page-body-height);
+  height: 100%;
+  min-height: 0;
+  max-height: var(--pdf-page-body-height);
   width: 100%;
   overflow: hidden;
 }
@@ -209,15 +230,19 @@ body.pdf-export {
   max-height: calc(var(--pdf-page-body-height) - 32mm);
 }
 
-/* Section index — 14 categories on one A4 sheet (5×3, portrait aspect, no crop) */
+/* Landing — exactly one sheet; height must not exceed printable area */
 .pdf-landing {
+  page-break-before: always;
+  break-before: page;
   page-break-after: always;
+  break-after: page;
   page-break-inside: avoid;
   break-inside: avoid-page;
   height: var(--pdf-page-body-height);
   max-height: var(--pdf-page-body-height);
+  min-height: 0;
   box-sizing: border-box;
-  padding: 4mm 5mm 5mm;
+  padding: 4mm 4mm 4mm;
   background: var(--pdf-surface);
   border: none;
   border-radius: 0;
@@ -225,18 +250,18 @@ body.pdf-export {
 }
 
 .pdf-landing__title {
-  margin: 0 0 1.5mm;
-  font-size: 1.5rem;
+  margin: 0 0 1mm;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--pdf-accent);
   text-align: center;
 }
 
 .pdf-landing__stats {
-  margin: 0 0 3mm;
+  margin: 0 0 2mm;
   text-align: center;
   color: var(--pdf-muted);
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 
 .pdf-landing__stats strong {
@@ -315,7 +340,6 @@ body.pdf-export {
   background: rgba(255, 253, 249, 0.92);
   border: 1px solid var(--pdf-border);
   border-radius: 4px;
-  page-break-inside: avoid;
 }
 
 .pdf-section-index__title {
@@ -460,12 +484,18 @@ body.pdf-export {
   right: 0;
 }
 
-/* Opaque front matter hides the fixed page frame underneath */
+/* Opaque front matter — no ॐ frame visible on cover / landing / banners */
 .pdf-cover,
 .pdf-landing,
-.pdf-banner-page {
+section.pdf-banner-page {
   position: relative;
   z-index: 8;
+  background-color: var(--pdf-surface);
+}
+
+.pdf-cover,
+section.pdf-banner-page {
+  background-color: #2a1420;
 }
 
 .pdf-section {
@@ -481,6 +511,16 @@ body.pdf-export {
   position: relative;
   z-index: 1;
   padding: var(--pdf-content-pad-top) var(--pdf-content-pad-x) var(--pdf-content-pad-bottom);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Section title + index stay together; never open a section mid-page */
+.pdf-section-intro {
+  page-break-inside: avoid;
+  break-inside: avoid-page;
+  page-break-after: avoid;
+  break-after: avoid-page;
 }
 
 .pdf-section__head {
@@ -568,7 +608,7 @@ body.pdf-export {
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 0.15rem 0 0.65rem;
+  padding: var(--pdf-flow-pad-top) 0 0.65rem;
   margin: 0;
   box-shadow: none;
   box-sizing: border-box;
@@ -577,11 +617,17 @@ body.pdf-export {
   page-break-inside: auto;
   break-inside: auto;
   page-break-after: auto;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.pdf-bhajan-list .bhajan-card:first-child {
+  padding-top: 0;
 }
 
 .pdf-bhajan-list .bhajan-card + .bhajan-card {
   margin-top: 1.1rem;
-  padding-top: 0.55rem;
+  padding-top: calc(var(--pdf-flow-pad-top) + 0.55rem);
 }
 
 .pdf-bhajan-list .bhajan-card__head {
@@ -595,6 +641,13 @@ body.pdf-export {
 }
 
 /* Keep each antara / stanza block on one page */
+.pdf-bhajan-list .bhajan-card__lyrics,
+.pdf-bhajan-list .bhajan-card__pre-shlok,
+.pdf-bhajan-list .bhajan-card__post-shlok {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
 .pdf-bhajan-list .bhajan-card__lyrics p,
 .pdf-bhajan-list .bhajan-card__pre-shlok,
 .pdf-bhajan-list .bhajan-card__post-shlok,
@@ -606,6 +659,9 @@ body.pdf-export {
 .pdf-bhajan-list .lyrics-pre-shlok {
   page-break-inside: avoid;
   break-inside: avoid;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding-top: 0.15rem;
 }
 
 .pdf-bhajan-list .bhajan-card__lyrics p {

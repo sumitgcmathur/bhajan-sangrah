@@ -152,11 +152,12 @@ function renderPdfBannerFill(assets, alt) {
 </figure>`;
 }
 
-function renderPdfBannerPage(section, resolveAsset) {
+function renderPdfBannerPage(section, resolveAsset, { firstSection = false } = {}) {
   if (!section.banner) return '';
   const assets = resolvePdfAsset(resolveAsset, section.banner, { section });
   if (!assets.full) return '';
-  return `<section class="pdf-banner-page" aria-label="${escapeHtml(section.title)}">
+  const firstClass = firstSection ? ' pdf-banner-page--first' : '';
+  return `<section class="pdf-banner-page${firstClass}" aria-label="${escapeHtml(section.title)}">
   ${renderPdfBannerFill(assets, section.title)}
 </section>`;
 }
@@ -175,7 +176,7 @@ function renderPdfBhajanCard(b, section, index, showSwarachitBadge) {
   return html;
 }
 
-function renderPdfSection(section, bhajans, resolveAsset) {
+function renderPdfSection(section, bhajans, resolveAsset, { firstSection = false } = {}) {
   const showSwarachitBadge = section.slug !== 'swarachit';
   const grouped = sectionUsesGroups(section, bhajans);
   const groups = grouped ? bhajansByGroup(bhajans, section) : [];
@@ -213,13 +214,15 @@ function renderPdfSection(section, bhajans, resolveAsset) {
       .join('\n')}</div>`;
   }
 
-  return `${renderPdfBannerPage(section, resolveAsset)}
+  return `${renderPdfBannerPage(section, resolveAsset, { firstSection })}
 <section class="pdf-section" id="${secId}">
   <div class="pdf-section__content">
+  <div class="pdf-section-intro">
   <header class="pdf-section__head">
     <h1 class="pdf-section__title">${escapeHtml(section.title)}</h1>
   </header>
   ${renderPdfSectionIndex(section, bhajans)}
+  </div>
   ${articlesHtml}
   </div>
 </section>`;
@@ -266,7 +269,9 @@ function renderPdfDocument(config, sectionPayloads, options = {}) {
   const showToolbar = Boolean(options.showPrintToolbar);
 
   const sectionsHtml = sectionPayloads
-    .map(({ section, bhajans }) => renderPdfSection(section, bhajans, resolveAsset))
+    .map(({ section, bhajans }, i) =>
+      renderPdfSection(section, bhajans, resolveAsset, { firstSection: i === 0 })
+    )
     .join('\n');
 
   const coverBanner = coverAssets.full
