@@ -419,7 +419,15 @@ body.pdf-export {
 }
 
 .pdf-bhajan-list .bhajan-card.om-frame {
+  position: relative;
   padding: 1.05rem 1.1rem 1rem;
+}
+
+.pdf-bhajan-list .om-frame__ring {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .pdf-bhajan-list .om-frame__edge {
@@ -492,7 +500,7 @@ body.pdf-export {
   print-color-adjust: exact;
 }
 
-.pdf-bhajan-list .pdf-bhajan-card--watermark > * {
+.pdf-bhajan-list .pdf-bhajan-card--watermark > *:not(.om-frame__ring) {
   position: relative;
   z-index: 1;
 }

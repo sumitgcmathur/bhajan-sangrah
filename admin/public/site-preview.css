@@ -1112,7 +1112,15 @@ body.search-panel-open {
 .bhajan-card.om-frame {
   position: relative;
   border: none;
+  box-shadow: none;
   padding: 1.05rem 1.2rem 1rem;
+}
+
+.om-frame__ring {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .om-frame__edge {
@@ -1192,8 +1200,8 @@ body.search-panel-open {
   filter: saturate(0.8);
 }
 
-.content-main--has-banner .bhajan-card > *,
-.preview-in-section--has-banner .bhajan-card > * {
+.content-main--has-banner .bhajan-card > *:not(.om-frame__ring),
+.preview-in-section--has-banner .bhajan-card > *:not(.om-frame__ring) {
   position: relative;
   z-index: 1;
 }

@@ -380,10 +380,12 @@ function renderOmFrameDecor() {
   const om = '<span class="om-frame__om">ॐ</span>';
   const horiz = om.repeat(20);
   const vert = om.repeat(10);
-  return `<div class="om-frame__edge om-frame__edge--top" aria-hidden="true">${horiz}</div>
-  <div class="om-frame__edge om-frame__edge--bottom" aria-hidden="true">${horiz}</div>
-  <div class="om-frame__edge om-frame__edge--left" aria-hidden="true">${vert}</div>
-  <div class="om-frame__edge om-frame__edge--right" aria-hidden="true">${vert}</div>`;
+  return `<div class="om-frame__ring" aria-hidden="true">
+  <div class="om-frame__edge om-frame__edge--top">${horiz}</div>
+  <div class="om-frame__edge om-frame__edge--bottom">${horiz}</div>
+  <div class="om-frame__edge om-frame__edge--left">${vert}</div>
+  <div class="om-frame__edge om-frame__edge--right">${vert}</div>
+</div>`;
 }
 
 function renderBhajanCard(b, section, index, showSwarachitBadge) {
