@@ -1136,13 +1136,12 @@ body.search-panel-open {
   justify-content: flex-start;
   align-items: center;
   gap: 0.1rem;
-  overflow: hidden;
 }
 
 .om-frame__om {
   display: block;
   font-size: 0.76rem;
-  line-height: 1;
+  line-height: 1.25;
 }
 
 .om-frame__corner {
@@ -1181,6 +1180,11 @@ body.search-panel-open {
   left: var(--om-frame-corner);
   right: var(--om-frame-corner);
   flex-direction: row;
+  align-items: flex-end;
+  gap: 0.16rem;
+  padding-top: 0.06em;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .om-frame__edge--bottom {
@@ -1188,6 +1192,11 @@ body.search-panel-open {
   left: var(--om-frame-corner);
   right: var(--om-frame-corner);
   flex-direction: row;
+  align-items: flex-end;
+  gap: 0.16rem;
+  padding-bottom: 0.02em;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .om-frame__edge--left,
@@ -1197,6 +1206,8 @@ body.search-panel-open {
   width: 1em;
   flex-direction: column;
   gap: 0.06rem;
+  overflow-x: visible;
+  overflow-y: hidden;
 }
 
 .om-frame__edge--left {

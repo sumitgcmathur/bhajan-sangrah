@@ -452,13 +452,12 @@ body.pdf-export {
   justify-content: flex-start;
   align-items: center;
   gap: 0.08rem;
-  overflow: hidden;
 }
 
 .pdf-bhajan-list .om-frame__om {
   display: block;
   font-size: 0.72rem;
-  line-height: 1;
+  line-height: 1.25;
 }
 
 .pdf-bhajan-list .om-frame__corner {
@@ -496,6 +495,11 @@ body.pdf-export {
   left: var(--om-frame-corner);
   right: var(--om-frame-corner);
   flex-direction: row;
+  align-items: flex-end;
+  gap: 0.14rem;
+  padding-top: 0.06em;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .pdf-bhajan-list .om-frame__edge--bottom {
@@ -503,6 +507,11 @@ body.pdf-export {
   left: var(--om-frame-corner);
   right: var(--om-frame-corner);
   flex-direction: row;
+  align-items: flex-end;
+  gap: 0.14rem;
+  padding-bottom: 0.02em;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .pdf-bhajan-list .om-frame__edge--left,
@@ -512,6 +521,8 @@ body.pdf-export {
   width: 1em;
   flex-direction: column;
   gap: 0.05rem;
+  overflow-x: visible;
+  overflow-y: hidden;
 }
 
 .pdf-bhajan-list .om-frame__edge--left {
