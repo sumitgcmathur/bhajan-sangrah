@@ -15,15 +15,15 @@ function pageUrl(base, page) {
   return `${base || './'}${page}`;
 }
 
-/** CSS custom property for a faint section-banner watermark on bhajan cards. */
+/** One viewport-sized section banner watermark (page level, not per bhajan card). */
 function sectionWatermarkAttrs(section, base, { preview = false } = {}) {
-  if (!section?.banner) return { classSuffix: '', styleAttr: '' };
+  if (!section?.banner) return { classSuffix: '', markup: '' };
   const url = pageUrl(base, section.banner).replace(/'/g, '%27');
-  const classSuffix = preview ? ' preview-in-section--has-banner' : ' content-main--has-banner';
-  return {
-    classSuffix,
-    styleAttr: ` style="--bhajan-watermark: url('${url}')"`,
-  };
+  const classSuffix = preview
+    ? ' preview-in-section--page-watermark'
+    : ' content-main--page-watermark';
+  const markup = `<div class="section-page-watermark" aria-hidden="true"><img class="section-page-watermark__img" src="${url}" alt="" loading="lazy" decoding="async"></div>`;
+  return { classSuffix, markup };
 }
 
 function formatBhajanCount(n) {
@@ -511,7 +511,8 @@ function renderSectionPage(section, bhajans, config, sections, base, sectionCoun
   const wm = sectionWatermarkAttrs(section, base);
   const body = `${heroHtml || ''}
 ${renderSectionScrollHeader(section.title, navList.length)}
-<main class="content-main content-main--section${wm.classSuffix}"${wm.styleAttr} data-section-title="${escapeHtml(section.title)}" data-section-slug="${escapeHtml(section.slug)}" data-bhajan-nav="${navJson}">
+<main class="content-main content-main--section${wm.classSuffix}" data-section-title="${escapeHtml(section.title)}" data-section-slug="${escapeHtml(section.slug)}" data-bhajan-nav="${navJson}">
+  ${wm.markup}
   <h1 class="section-title">${escapeHtml(section.title)}</h1>
   ${indexHtml}
   ${articlesHtml}

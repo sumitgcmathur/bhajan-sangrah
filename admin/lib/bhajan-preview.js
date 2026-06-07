@@ -8,7 +8,7 @@ function renderBhajanPreviewCard(editor, section, config = {}, opts = {}) {
   const { html } = renderBhajanCardFromDoc(editorToDoc(editor), sectionEntry, config, opts);
   const base = config.base_url || '/';
   const wm = sectionWatermarkAttrs(sectionEntry, base, { preview: true });
-  return `<div class="preview-in-section${wm.classSuffix}"${wm.styleAttr}><div class="bhajan-list">${html}</div></div>`;
+  return `<div class="preview-in-section${wm.classSuffix}">${wm.markup}<div class="bhajan-list">${html}</div></div>`;
 }
 
 module.exports = { renderBhajanPreviewCard };

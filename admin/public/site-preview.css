@@ -36,10 +36,7 @@
   --scroll-header-h: 2.5rem;
   --pager-h: 2.65rem;
   --section-hero-fill: calc(100dvh - var(--mobile-bar-h) - env(safe-area-inset-bottom, 0px));
-  --bhajan-watermark-opacity: 0.045;
-  --bhajan-watermark-tile-w: 100%;
-  --bhajan-watermark-repeat: repeat-y;
-  --bhajan-watermark-position: top left;
+  --section-page-watermark-opacity: 0.05;
 }
 
 /* Dark theme: manual toggle */
@@ -60,7 +57,7 @@
   --accent-soft: #3a2828;
   --accent-glow: rgba(212, 120, 144, 0.15);
   --lyrics-marker: #a89088;
-  --bhajan-watermark-opacity: 0.032;
+  --section-page-watermark-opacity: 0.035;
 }
 
 /* Dark theme: system preference when user has not chosen light */
@@ -82,7 +79,7 @@
     --accent-soft: #3a2828;
     --accent-glow: rgba(212, 120, 144, 0.15);
     --lyrics-marker: #a89088;
-    --bhajan-watermark-opacity: 0.032;
+    --section-page-watermark-opacity: 0.035;
   }
 }
 
@@ -1223,33 +1220,44 @@ body.search-panel-open {
   opacity: 0.3;
 }
 
-/* Section banner as a faint tiled watermark (sections with banner only) */
-.content-main--has-banner .bhajan-card,
-.preview-in-section--has-banner .bhajan-card {
-  position: relative;
+/* Section page watermark — one cover image per viewport (aligned with PDF export) */
+.content-main--page-watermark,
+.preview-in-section--page-watermark {
   isolation: isolate;
-  overflow: hidden;
 }
 
-.content-main--has-banner .bhajan-card::before,
-.preview-in-section--has-banner .bhajan-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: var(--bhajan-watermark);
-  background-repeat: var(--bhajan-watermark-repeat);
-  background-position: var(--bhajan-watermark-position);
-  background-size: var(--bhajan-watermark-tile-w) auto;
-  opacity: var(--bhajan-watermark-opacity);
-  pointer-events: none;
+.section-page-watermark {
+  position: sticky;
+  top: 0;
+  height: 0;
   z-index: 0;
-  filter: saturate(0.8);
+  pointer-events: none;
 }
 
-.content-main--has-banner .bhajan-card > *:not(.om-frame__ring),
-.preview-in-section--has-banner .bhajan-card > *:not(.om-frame__ring) {
+.section-page-watermark__img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  object-fit: cover;
+  object-position: center;
+  opacity: var(--section-page-watermark-opacity);
+  pointer-events: none;
+  filter: saturate(0.85);
+}
+
+.content-main--page-watermark > *:not(.section-page-watermark),
+.preview-in-section--page-watermark > *:not(.section-page-watermark) {
   position: relative;
   z-index: 1;
+}
+
+.content-main--page-watermark .bhajan-card,
+.preview-in-section--page-watermark .bhajan-card {
+  background: transparent;
+  box-shadow: none;
 }
 
 .bhajan-card__head {
@@ -1635,13 +1643,6 @@ body.search-panel-open {
 }
 
 @media (min-width: 768px) {
-  :root {
-    /* Capped tiles: left-aligned, repeat to fill remaining width and height */
-    --bhajan-watermark-tile-w: min(26rem, 100%);
-    --bhajan-watermark-repeat: repeat;
-    --bhajan-watermark-position: top left;
-  }
-
   .mobile-bar__btn[data-action="menu"] {
     display: none;
   }
@@ -1743,7 +1744,6 @@ body.search-panel-open {
 
 @media (min-width: 1024px) {
   :root {
-    --bhajan-watermark-tile-w: min(22rem, 100%);
     --banner-h: min(68vh, 720px);
     --banner-img-max-h: min(66vh, 700px);
     --banner-img-max-w: min(94vw, 960px);
