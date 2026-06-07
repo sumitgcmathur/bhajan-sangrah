@@ -36,7 +36,7 @@
   --scroll-header-h: 2.5rem;
   --pager-h: 2.65rem;
   --section-hero-fill: calc(100dvh - var(--mobile-bar-h) - env(safe-area-inset-bottom, 0px));
-  --bhajan-watermark-opacity: 0.07;
+  --bhajan-watermark-opacity: 0.045;
 }
 
 /* Dark theme: manual toggle */
@@ -57,6 +57,7 @@
   --accent-soft: #3a2828;
   --accent-glow: rgba(212, 120, 144, 0.15);
   --lyrics-marker: #a89088;
+  --bhajan-watermark-opacity: 0.032;
 }
 
 /* Dark theme: system preference when user has not chosen light */
@@ -78,7 +79,7 @@
     --accent-soft: #3a2828;
     --accent-glow: rgba(212, 120, 144, 0.15);
     --lyrics-marker: #a89088;
-    --bhajan-watermark-opacity: 0.05;
+    --bhajan-watermark-opacity: 0.032;
   }
 }
 
