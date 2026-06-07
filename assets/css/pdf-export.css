@@ -31,8 +31,20 @@
   --pdf-lyrics-odd: #2c1810;
   --pdf-lyrics-even: #2c1810;
   --pdf-page-body-height: 255mm;
+  --pdf-landing-pad-block: 11mm;
+  --pdf-landing-header-block: 15mm;
+  --pdf-landing-grid-h: calc(
+    var(--pdf-page-body-height) - var(--pdf-landing-pad-block) - var(--pdf-landing-header-block)
+  );
+  --pdf-landing-row-h: calc((var(--pdf-landing-grid-h) - 3mm) / 2);
+  --pdf-landing-card-text-h: 8mm;
+  --pdf-landing-media-h: calc(var(--pdf-landing-row-h) - var(--pdf-landing-card-text-h));
+  --pdf-frame-inset-top: 16mm;
+  --pdf-frame-inset-right: 14mm;
+  --pdf-frame-inset-bottom: 24mm;
+  --pdf-frame-inset-left: 14mm;
   --pdf-watermark-opacity: 0.07;
-  --pdf-watermark-tile-w: min(22rem, 100%);
+  --pdf-page-watermark-size: 70%;
 }
 
 * {
@@ -181,32 +193,34 @@ body.pdf-export {
   max-height: calc(var(--pdf-page-body-height) - 28mm);
 }
 
-/* Section index — all categories on one A4 sheet (14 sections ≈ 4×4 grid) */
+/* Section index — 14 categories on one A4 sheet (7×2 grid, explicit mm heights for print) */
 .pdf-landing {
   page-break-after: always;
   page-break-inside: avoid;
   break-inside: avoid-page;
-  min-height: var(--pdf-page-body-height);
+  height: var(--pdf-page-body-height);
+  max-height: var(--pdf-page-body-height);
   box-sizing: border-box;
-  padding: 0.85rem 0.95rem 0.9rem;
+  padding: 5mm 6mm 6mm;
   background: var(--pdf-surface);
   border: 1px solid var(--pdf-border);
   border-radius: 4px;
+  overflow: hidden;
 }
 
 .pdf-landing__title {
-  margin: 0 0 0.3rem;
-  font-size: 1.45rem;
+  margin: 0 0 1.5mm;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--pdf-accent);
   text-align: center;
 }
 
 .pdf-landing__stats {
-  margin: 0 0 0.75rem;
+  margin: 0 0 3mm;
   text-align: center;
   color: var(--pdf-muted);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
 }
 
 .pdf-landing__stats strong {
@@ -214,15 +228,17 @@ body.pdf-export {
 }
 
 .pdf-landing__grid {
+  height: var(--pdf-landing-grid-h);
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.5rem 0.55rem;
-  align-content: start;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: var(--pdf-landing-row-h) var(--pdf-landing-row-h);
+  gap: 3mm 3.5mm;
 }
 
 .pdf-landing__card {
   display: flex;
   flex-direction: column;
+  height: 100%;
   text-decoration: none;
   color: inherit;
   border: 1px solid var(--pdf-border);
@@ -233,39 +249,47 @@ body.pdf-export {
   break-inside: avoid;
 }
 
-.pdf-landing__card-img {
-  display: block;
-  width: 100%;
-  height: 20mm;
-  max-height: 20mm;
-  aspect-ratio: 352 / 420;
-  object-fit: cover;
-  object-position: center top;
+.pdf-landing__card-media {
+  flex: 0 0 var(--pdf-landing-media-h);
+  height: var(--pdf-landing-media-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #2a1420;
+  overflow: hidden;
 }
 
-.pdf-landing__card-img--empty {
-  min-height: 0;
-  height: 20mm;
-  max-height: 20mm;
+.pdf-landing__card-media--empty {
   background: var(--pdf-border);
 }
 
+.pdf-landing__card-img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center center;
+}
+
 .pdf-landing__card-title {
-  padding: 0.28rem 0.35rem 0.1rem;
-  font-size: 0.74rem;
+  flex-shrink: 0;
+  padding: 0.22rem 0.25rem 0.06rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.25;
   color: var(--pdf-accent-dark);
   text-align: center;
 }
 
 .pdf-landing__card-count {
-  padding: 0 0.35rem 0.28rem;
-  font-size: 0.66rem;
+  flex-shrink: 0;
+  padding: 0 0.25rem 0.2rem;
+  font-size: 0.6rem;
   color: var(--pdf-muted);
   text-align: center;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .pdf-section-index {
@@ -285,10 +309,12 @@ body.pdf-export {
 }
 
 .pdf-section__title {
-  font-size: 1.45rem;
+  font-size: 2rem;
   font-weight: 700;
-  margin: 0 0 0.75rem;
-  color: var(--pdf-accent);
+  margin: 0;
+  color: var(--pdf-accent-dark);
+  letter-spacing: 0.02em;
+  line-height: 1.25;
 }
 
 .pdf-index__badge {
@@ -308,24 +334,144 @@ body.pdf-export {
   color: var(--pdf-accent-dark);
 }
 
-.pdf-section {
-  page-break-before: always;
-  padding: 0.5rem 0.65rem 1rem;
-  background: var(--pdf-surface);
-  border-radius: 4px;
-  position: relative;
+/* ॐ page border — fixed on every printed sheet (not per bhajan) */
+.pdf-page-frame {
+  position: fixed;
+  top: var(--pdf-frame-inset-top);
+  right: var(--pdf-frame-inset-right);
+  bottom: var(--pdf-frame-inset-bottom);
+  left: var(--pdf-frame-inset-left);
+  pointer-events: none;
+  z-index: 4;
 }
 
-/* One full-page banner watermark per printed sheet (sections with banner) */
+.pdf-page-frame .om-frame__ring {
+  position: absolute;
+  inset: 3mm;
+  pointer-events: none;
+}
+
+.pdf-page-frame .om-frame__edge {
+  position: absolute;
+  pointer-events: none;
+  color: var(--pdf-accent);
+  opacity: 0.38;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.08rem;
+}
+
+.pdf-page-frame .om-frame__om {
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+.pdf-page-frame .om-frame__corner {
+  position: absolute;
+  width: 1em;
+  text-align: center;
+  color: var(--pdf-accent);
+  opacity: 0.38;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.pdf-page-frame .om-frame__corner--tl {
+  top: 0;
+  left: 0;
+}
+
+.pdf-page-frame .om-frame__corner--tr {
+  top: 0;
+  right: 0;
+}
+
+.pdf-page-frame .om-frame__corner--bl {
+  bottom: 0;
+  left: 0;
+}
+
+.pdf-page-frame .om-frame__corner--br {
+  bottom: 0;
+  right: 0;
+}
+
+.pdf-page-frame .om-frame__edge--top {
+  top: 0;
+  left: 1em;
+  right: 1em;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0.14rem;
+  padding-top: 0.06em;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+.pdf-page-frame .om-frame__edge--bottom {
+  bottom: 0;
+  left: 1em;
+  right: 1em;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0.14rem;
+  padding-bottom: 0.02em;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+.pdf-page-frame .om-frame__edge--left,
+.pdf-page-frame .om-frame__edge--right {
+  top: 1em;
+  bottom: 1em;
+  width: 1em;
+  flex-direction: column;
+  gap: 0.05rem;
+  overflow-x: visible;
+  overflow-y: hidden;
+}
+
+.pdf-page-frame .om-frame__edge--left {
+  left: 0;
+}
+
+.pdf-page-frame .om-frame__edge--right {
+  right: 0;
+}
+
+/* Opaque front matter hides the fixed page frame underneath */
+.pdf-cover,
+.pdf-landing,
+.pdf-banner-page {
+  position: relative;
+  z-index: 8;
+}
+
+.pdf-section {
+  page-break-before: always;
+  padding: 2mm 3mm 0.75rem;
+  background: transparent;
+  border-radius: 0;
+  position: relative;
+  z-index: 6;
+}
+
+/* One centered watermark per printed page (sections with banner) */
 .pdf-section--has-banner::before {
   content: "";
   position: fixed;
-  inset: 0;
-  z-index: -1;
+  top: var(--pdf-frame-inset-top);
+  right: var(--pdf-frame-inset-right);
+  bottom: var(--pdf-frame-inset-bottom);
+  left: var(--pdf-frame-inset-left);
+  z-index: 0;
   background-image: var(--pdf-watermark);
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: cover;
+  background-size: var(--pdf-page-watermark-size) auto;
   opacity: var(--pdf-watermark-opacity);
   pointer-events: none;
   -webkit-print-color-adjust: exact;
@@ -342,12 +488,15 @@ body.pdf-export {
 }
 
 .pdf-section__head {
-  margin-bottom: 1rem;
-  padding: 0.65rem 0.75rem 0.7rem;
-  border: 1px solid var(--pdf-border);
-  border-left: 5px solid var(--pdf-accent);
-  border-radius: 0.35rem;
-  background: var(--pdf-surface);
+  margin-bottom: 1.15rem;
+  padding: 0.9rem 1rem 0.95rem;
+  border: 2px solid var(--pdf-border);
+  border-left: 8px solid var(--pdf-accent);
+  border-radius: 0.4rem;
+  background: linear-gradient(135deg, var(--pdf-accent-soft) 0%, var(--pdf-surface) 62%);
+  text-align: center;
+  page-break-after: avoid;
+  break-after: avoid-page;
 }
 
 .pdf-index {
@@ -418,13 +567,13 @@ body.pdf-export {
   margin-top: 0.5rem;
 }
 
-/* Bhajan cards — flow naturally; keep stanzas / paragraphs intact */
+/* Bhajan cards — flow naturally inside page border; keep stanzas intact */
 .pdf-bhajan-list .bhajan-card {
-  background: var(--pdf-surface);
+  background: transparent;
   border: none;
   border-radius: 0;
-  padding: 1rem 0.75rem 1.15rem;
-  margin: 0 0 1.1rem;
+  padding: 0.35rem 0.5rem 0.5rem;
+  margin: 0;
   box-shadow: none;
   box-sizing: border-box;
   page-break-before: auto;
@@ -434,140 +583,14 @@ body.pdf-export {
   page-break-after: auto;
 }
 
-.pdf-bhajan-list .bhajan-card:last-child {
-  margin-bottom: 0;
-}
-
-.pdf-bhajan-list .bhajan-card.om-frame {
-  --om-frame-inset: 3mm;
-  --om-frame-corner: 1em;
-  position: relative;
-  padding: 11mm 12mm 10.5mm;
-}
-
-.pdf-bhajan-list .om-frame__ring {
-  position: absolute;
-  inset: var(--om-frame-inset);
-  pointer-events: none;
-  z-index: 2;
-}
-
-.pdf-bhajan-list .om-frame__edge {
-  position: absolute;
-  pointer-events: none;
-  color: var(--pdf-accent);
-  opacity: 0.38;
-  z-index: 2;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 0.08rem;
-}
-
-.pdf-bhajan-list .om-frame__om {
-  display: block;
-  font-size: 0.72rem;
-  line-height: 1.25;
-}
-
-.pdf-bhajan-list .om-frame__corner {
-  position: absolute;
-  width: var(--om-frame-corner);
+.pdf-bhajan-end {
+  margin: 0.45rem 0 1.15rem;
   text-align: center;
-  color: var(--pdf-accent);
-  opacity: 0.38;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.pdf-bhajan-list .om-frame__corner--tl {
-  top: 0;
-  left: 0;
-}
-
-.pdf-bhajan-list .om-frame__corner--tr {
-  top: 0;
-  right: 0;
-}
-
-.pdf-bhajan-list .om-frame__corner--bl {
-  bottom: 0;
-  left: 0;
-}
-
-.pdf-bhajan-list .om-frame__corner--br {
-  bottom: 0;
-  right: 0;
-}
-
-.pdf-bhajan-list .om-frame__edge--top {
-  top: 0;
-  left: var(--om-frame-corner);
-  right: var(--om-frame-corner);
-  flex-direction: row;
-  align-items: flex-end;
-  gap: 0.14rem;
-  padding-top: 0.06em;
-  overflow-x: hidden;
-  overflow-y: visible;
-}
-
-.pdf-bhajan-list .om-frame__edge--bottom {
-  bottom: 0;
-  left: var(--om-frame-corner);
-  right: var(--om-frame-corner);
-  flex-direction: row;
-  align-items: flex-end;
-  gap: 0.14rem;
-  padding-bottom: 0.02em;
-  overflow-x: hidden;
-  overflow-y: visible;
-}
-
-.pdf-bhajan-list .om-frame__edge--left,
-.pdf-bhajan-list .om-frame__edge--right {
-  top: var(--om-frame-corner);
-  bottom: var(--om-frame-corner);
-  width: 1em;
-  flex-direction: column;
-  gap: 0.05rem;
-  overflow-x: visible;
-  overflow-y: hidden;
-}
-
-.pdf-bhajan-list .om-frame__edge--left {
-  left: 0;
-}
-
-.pdf-bhajan-list .om-frame__edge--right {
-  right: 0;
-}
-
-/* Per-card banner watermark (same tiling idea as the public site; no position:fixed) */
-.pdf-bhajan-list .pdf-bhajan-card--watermark {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-
-.pdf-bhajan-list .pdf-bhajan-card--watermark::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: var(--pdf-watermark);
-  background-repeat: repeat;
-  background-position: top left;
-  background-size: var(--pdf-watermark-tile-w) auto;
-  opacity: var(--pdf-watermark-opacity);
-  pointer-events: none;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
-}
-
-.pdf-bhajan-list .pdf-bhajan-card--watermark > *:not(.om-frame__ring) {
-  position: relative;
-  z-index: 1;
+  font-size: 0.82rem;
+  letter-spacing: 0.2em;
+  color: var(--pdf-muted);
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 .pdf-bhajan-list .bhajan-card__head {
