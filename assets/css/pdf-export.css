@@ -43,11 +43,10 @@
   --pdf-content-pad-top: 11mm;
   --pdf-content-pad-x: 10mm;
   --pdf-content-pad-bottom: 9mm;
-  /* Match web bhajan-card watermark (site.css) — page-level in PDF */
+  /* Match web bhajan-card watermark (site.css) — per card, not per section */
   --pdf-watermark-opacity: 0.045;
-  /* Small cached tile (see pdf-watermark.js WM_WIDTH) — fast repeat in Chromium */
   --pdf-watermark-tile-w: 200px;
-  --pdf-watermark-repeat: repeat;
+  --pdf-watermark-repeat: repeat-y;
   --pdf-watermark-position: top left;
 }
 
@@ -467,8 +466,16 @@ body.pdf-export {
   z-index: 2;
 }
 
-/* Tiled section watermark (scrolls with section — not position:fixed) */
-.pdf-section--has-banner::before {
+/*
+ * Faint tiled watermark on each bhajan card (same model as site.css).
+ * Never on the whole .pdf-section — Chromium rasterizes that as one multi-page bitmap (600MB+).
+ */
+.pdf-section--has-banner .pdf-bhajan-list .bhajan-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.pdf-section--has-banner .pdf-bhajan-list .bhajan-card::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -482,6 +489,11 @@ body.pdf-export {
   pointer-events: none;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+}
+
+.pdf-section--has-banner .pdf-bhajan-list .bhajan-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .pdf-section__content {
