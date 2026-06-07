@@ -177,27 +177,30 @@ body.pdf-export {
   max-height: calc(var(--pdf-page-body-height) - 28mm);
 }
 
+/* Section index — all categories on one A4 sheet (14 sections ≈ 5×3 grid) */
 .pdf-landing {
   page-break-after: always;
-  padding: 0.85rem 0.9rem 1rem;
+  page-break-inside: avoid;
+  break-inside: avoid-page;
+  padding: 0.4rem 0.5rem 0.45rem;
   background: var(--pdf-surface);
   border: 1px solid var(--pdf-border);
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .pdf-landing__title {
-  margin: 0 0 0.35rem;
-  font-size: 1.55rem;
+  margin: 0 0 0.15rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--pdf-accent);
   text-align: center;
 }
 
 .pdf-landing__stats {
-  margin: 0 0 0.85rem;
+  margin: 0 0 0.35rem;
   text-align: center;
   color: var(--pdf-muted);
-  font-size: 0.95rem;
+  font-size: 0.72rem;
 }
 
 .pdf-landing__stats strong {
@@ -206,8 +209,8 @@ body.pdf-export {
 
 .pdf-landing__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.55rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.22rem 0.28rem;
 }
 
 .pdf-landing__card {
@@ -216,39 +219,46 @@ body.pdf-export {
   text-decoration: none;
   color: inherit;
   border: 1px solid var(--pdf-border);
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
   background: var(--pdf-bg);
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 .pdf-landing__card-img {
   display: block;
   width: 100%;
-  aspect-ratio: 704 / 1522;
+  height: 10mm;
+  max-height: 10mm;
+  aspect-ratio: 5 / 2;
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
   background: #2a1420;
 }
 
 .pdf-landing__card-img--empty {
-  min-height: 4rem;
+  min-height: 0;
+  height: 10mm;
+  max-height: 10mm;
   background: var(--pdf-border);
 }
 
 .pdf-landing__card-title {
-  padding: 0.35rem 0.4rem 0.15rem;
-  font-size: 0.82rem;
+  padding: 0.12rem 0.18rem 0.04rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.2;
   color: var(--pdf-accent-dark);
   text-align: center;
 }
 
 .pdf-landing__card-count {
-  padding: 0 0.4rem 0.35rem;
-  font-size: 0.72rem;
+  padding: 0 0.18rem 0.1rem;
+  font-size: 0.52rem;
   color: var(--pdf-muted);
   text-align: center;
+  line-height: 1.2;
 }
 
 .pdf-section-index {
@@ -419,13 +429,15 @@ body.pdf-export {
 }
 
 .pdf-bhajan-list .bhajan-card.om-frame {
+  --om-frame-inset: 3mm;
+  --om-frame-corner: 9mm;
   position: relative;
-  padding: 1.05rem 1.1rem 1rem;
+  padding: 11mm 12mm 10.5mm;
 }
 
 .pdf-bhajan-list .om-frame__ring {
   position: absolute;
-  inset: 0;
+  inset: var(--om-frame-inset);
   pointer-events: none;
   z-index: 2;
 }
@@ -450,34 +462,34 @@ body.pdf-export {
 }
 
 .pdf-bhajan-list .om-frame__edge--top {
-  top: 0.2rem;
-  left: 0.4rem;
-  right: 0.4rem;
+  top: 0;
+  left: var(--om-frame-corner);
+  right: var(--om-frame-corner);
   flex-direction: row;
 }
 
 .pdf-bhajan-list .om-frame__edge--bottom {
-  bottom: 0.18rem;
-  left: 0.4rem;
-  right: 0.4rem;
+  bottom: 0;
+  left: var(--om-frame-corner);
+  right: var(--om-frame-corner);
   flex-direction: row;
 }
 
 .pdf-bhajan-list .om-frame__edge--left,
 .pdf-bhajan-list .om-frame__edge--right {
-  top: 0.4rem;
-  bottom: 0.35rem;
+  top: var(--om-frame-corner);
+  bottom: var(--om-frame-corner);
   width: 1em;
   flex-direction: column;
   gap: 0.05rem;
 }
 
 .pdf-bhajan-list .om-frame__edge--left {
-  left: 0.16rem;
+  left: 0;
 }
 
 .pdf-bhajan-list .om-frame__edge--right {
-  right: 0.16rem;
+  right: 0;
 }
 
 /* Per-card banner watermark (same tiling idea as the public site; no position:fixed) */

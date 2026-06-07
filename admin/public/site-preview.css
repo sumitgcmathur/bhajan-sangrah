@@ -1110,15 +1110,17 @@ body.search-panel-open {
 
 /* ॐ frame only — no line border (web) */
 .bhajan-card.om-frame {
+  --om-frame-inset: 0.34rem;
+  --om-frame-corner: 1.1rem;
   position: relative;
   border: none;
   box-shadow: none;
-  padding: 1.05rem 1.2rem 1rem;
+  padding: 1.4rem 1.55rem 1.35rem;
 }
 
 .om-frame__ring {
   position: absolute;
-  inset: 0;
+  inset: var(--om-frame-inset);
   pointer-events: none;
   z-index: 2;
 }
@@ -1144,34 +1146,34 @@ body.search-panel-open {
 }
 
 .om-frame__edge--top {
-  top: 0.22rem;
-  left: 0.45rem;
-  right: 0.45rem;
+  top: 0;
+  left: var(--om-frame-corner);
+  right: var(--om-frame-corner);
   flex-direction: row;
 }
 
 .om-frame__edge--bottom {
-  bottom: 0.2rem;
-  left: 0.45rem;
-  right: 0.45rem;
+  bottom: 0;
+  left: var(--om-frame-corner);
+  right: var(--om-frame-corner);
   flex-direction: row;
 }
 
 .om-frame__edge--left,
 .om-frame__edge--right {
-  top: 0.42rem;
-  bottom: 0.38rem;
+  top: var(--om-frame-corner);
+  bottom: var(--om-frame-corner);
   width: 1em;
   flex-direction: column;
   gap: 0.06rem;
 }
 
 .om-frame__edge--left {
-  left: 0.18rem;
+  left: 0;
 }
 
 .om-frame__edge--right {
-  right: 0.18rem;
+  right: 0;
 }
 
 :root[data-theme="dark"] .om-frame__edge {
