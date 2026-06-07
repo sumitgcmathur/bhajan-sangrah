@@ -410,7 +410,62 @@ body.pdf-export {
   padding: 1rem 0.75rem 1.15rem;
   margin-bottom: 1.25rem;
   box-shadow: 0 1px 8px var(--pdf-accent-glow);
+  page-break-before: always;
+  break-before: page;
   page-break-inside: auto;
+  break-inside: auto;
+}
+
+.pdf-bhajan-list .bhajan-card.om-frame {
+  padding: 1.75rem 1.35rem 1.65rem;
+  border-color: rgba(155, 45, 74, 0.22);
+}
+
+.pdf-bhajan-list .om-frame__edge {
+  position: absolute;
+  pointer-events: none;
+  color: var(--pdf-accent);
+  opacity: 0.34;
+  font-size: 0.78rem;
+  line-height: 1;
+  letter-spacing: 0.38em;
+  overflow: hidden;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.pdf-bhajan-list .om-frame__edge--top {
+  top: 0.42rem;
+  left: 0.55rem;
+  right: 0.55rem;
+}
+
+.pdf-bhajan-list .om-frame__edge--bottom {
+  bottom: 0.38rem;
+  left: 0.55rem;
+  right: 0.55rem;
+  transform: rotate(180deg);
+}
+
+.pdf-bhajan-list .om-frame__edge--left,
+.pdf-bhajan-list .om-frame__edge--right {
+  top: 2rem;
+  bottom: 1.85rem;
+  width: 1.15em;
+  white-space: normal;
+  letter-spacing: 0.28em;
+}
+
+.pdf-bhajan-list .om-frame__edge--left {
+  left: 0.26rem;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.pdf-bhajan-list .om-frame__edge--right {
+  right: 0.26rem;
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
 }
 
 /* Per-card banner watermark (same tiling idea as the public site; no position:fixed) */
@@ -446,6 +501,26 @@ body.pdf-export {
   border-bottom: 2px solid var(--pdf-bg-alt);
   position: relative;
   page-break-after: avoid;
+  break-after: avoid-page;
+}
+
+/* Keep each antara / stanza block on one page */
+.pdf-bhajan-list .bhajan-card__lyrics p,
+.pdf-bhajan-list .bhajan-card__pre-shlok,
+.pdf-bhajan-list .bhajan-card__post-shlok,
+.pdf-bhajan-list .bhajan-card__post-shlok .lyrics-aside,
+.pdf-bhajan-list .bhajan-tarz,
+.pdf-bhajan-list .lyrics-antara,
+.pdf-bhajan-list .lyrics-sthayi,
+.pdf-bhajan-list .lyrics-aside,
+.pdf-bhajan-list .lyrics-pre-shlok {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.pdf-bhajan-list .bhajan-card__lyrics p {
+  orphans: 3;
+  widows: 3;
 }
 
 .pdf-bhajan-list .bhajan-card__head::after {

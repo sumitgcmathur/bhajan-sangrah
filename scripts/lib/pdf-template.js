@@ -171,10 +171,9 @@ function renderPdfBhajanCard(b, section, index, showSwarachitBadge, watermarkUrl
   html = html.replace(/\s*<a class="bhajan-card__to-(?:index|sthayi)"[^>]*>[\s\S]*?<\/a>/g, '');
   html = html.replace('class="bhajan-badge"', 'class="bhajan-badge pdf-bhajan-badge"');
   if (watermarkUrl) {
-    const wmClass = 'bhajan-card pdf-bhajan-card--watermark';
     html = html.replace(
-      '<article class="bhajan-card"',
-      `<article class="${wmClass}"${pdfWatermarkStyleAttr(watermarkUrl)}`
+      '<article class="bhajan-card om-frame"',
+      `<article class="bhajan-card om-frame pdf-bhajan-card--watermark"${pdfWatermarkStyleAttr(watermarkUrl)}`
     );
   }
   return html;

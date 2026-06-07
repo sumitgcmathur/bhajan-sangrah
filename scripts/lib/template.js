@@ -376,6 +376,15 @@ function flattenBhajansForNav(bhajans, section, grouped, groups) {
   });
 }
 
+function renderOmFrameDecor() {
+  const horiz = 'ॐ\u00a0'.repeat(52);
+  const vert = 'ॐ\u00a0'.repeat(16);
+  return `<div class="om-frame__edge om-frame__edge--top" aria-hidden="true">${horiz}</div>
+  <div class="om-frame__edge om-frame__edge--bottom" aria-hidden="true">${horiz}</div>
+  <div class="om-frame__edge om-frame__edge--left" aria-hidden="true"><span>${vert}</span></div>
+  <div class="om-frame__edge om-frame__edge--right" aria-hidden="true"><span>${vert}</span></div>`;
+}
+
 function renderBhajanCard(b, section, index, showSwarachitBadge) {
   const id = b.id || anchorId(section.slug, b.title, index);
   const num = index + 1;
@@ -390,7 +399,8 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
   const lyricsHtml = lyricsToHtml(lyricsWithoutPostShlok(b.lyrics), b.tarz, {
     sthayiAnchorId: hasSthayi ? sthayiAnchor : null,
   });
-  return `<article class="bhajan-card" id="${id}">
+  return `<article class="bhajan-card om-frame" id="${id}">
+  ${renderOmFrameDecor()}
   <header class="bhajan-card__head" id="${titleAnchor}">
     <h3 class="bhajan-card__title"><span class="bhajan-card__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}${sw}</h3>
   </header>
@@ -530,4 +540,5 @@ module.exports = {
   renderGroupedBhajanIndexList,
   renderSectionHero,
   renderBhajanCard,
+  renderOmFrameDecor,
 };
