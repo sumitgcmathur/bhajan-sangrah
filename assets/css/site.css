@@ -1119,8 +1119,8 @@ body.search-panel-open {
   inset: 0;
   background-image: var(--bhajan-watermark);
   background-repeat: no-repeat;
-  background-position: center 50%;
-  background-size: auto min(68%, 15rem);
+  background-position: center center;
+  background-size: 100% auto;
   opacity: var(--bhajan-watermark-opacity);
   pointer-events: none;
   z-index: 0;
