@@ -9,6 +9,7 @@ const {
   bhajansByGroup,
   sectionUsesGroups,
   renderBhajanCard,
+  renderOmFrameDecor,
 } = require('./template');
 
 function sectionAnchorId(slug) {
@@ -160,23 +161,6 @@ function renderPdfBannerPage(section, resolveAsset) {
 </section>`;
 }
 
-/** Page ॐ ring — count tuned for A4; edges use space-between in CSS for even spacing. */
-function renderPdfOmFrameDecor() {
-  const om = '<span class="om-frame__om">ॐ</span>';
-  const horiz = om.repeat(52);
-  const vert = om.repeat(78);
-  return `<div class="om-frame__ring" aria-hidden="true">
-  <span class="om-frame__corner om-frame__corner--tl om-frame__om">ॐ</span>
-  <span class="om-frame__corner om-frame__corner--tr om-frame__om">ॐ</span>
-  <span class="om-frame__corner om-frame__corner--bl om-frame__om">ॐ</span>
-  <span class="om-frame__corner om-frame__corner--br om-frame__om">ॐ</span>
-  <div class="om-frame__edge om-frame__edge--top">${horiz}</div>
-  <div class="om-frame__edge om-frame__edge--bottom">${horiz}</div>
-  <div class="om-frame__edge om-frame__edge--left">${vert}</div>
-  <div class="om-frame__edge om-frame__edge--right">${vert}</div>
-</div>`;
-}
-
 function stripBhajanCardOmFrame(html) {
   return html
     .replace(/<article class="bhajan-card om-frame"/g, '<article class="bhajan-card"')
@@ -312,7 +296,7 @@ ${toolbar}
   </div>
 </section>
 ${renderPdfLanding(config, sectionPayloads, resolveAsset)}
-<div class="pdf-page-frame" aria-hidden="true">${renderPdfOmFrameDecor()}</div>
+<div class="pdf-page-frame" aria-hidden="true">${renderOmFrameDecor()}</div>
 ${sectionsHtml}
 ${toolbarScript}
 </body>

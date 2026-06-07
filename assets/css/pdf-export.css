@@ -36,13 +36,21 @@
   --pdf-landing-grid-h: calc(
     var(--pdf-page-body-height) - var(--pdf-landing-pad-block) - var(--pdf-landing-header-block)
   );
-  --pdf-landing-cols: 5;
-  --pdf-landing-rows: 3;
+  --pdf-landing-cols: 4;
+  --pdf-landing-rows: 4;
+  --pdf-landing-grid-gap: 2mm;
+  --pdf-landing-row-h: calc(
+    (
+        var(--pdf-landing-grid-h) -
+          (var(--pdf-landing-rows) - 1) * var(--pdf-landing-grid-gap)
+      ) /
+      var(--pdf-landing-rows)
+  );
   --pdf-thumb-aspect: 352 / 761;
-  --pdf-frame-ring-inset: 5mm;
-  --pdf-content-pad-top: 15mm;
-  --pdf-content-pad-x: 14mm;
-  --pdf-content-pad-bottom: 11mm;
+  --pdf-frame-ring-inset: 7mm;
+  --pdf-content-pad-top: 18mm;
+  --pdf-content-pad-x: 15mm;
+  --pdf-content-pad-bottom: 12mm;
   --pdf-frame-om-color: rgba(155, 45, 74, 0.38);
 }
 
@@ -69,8 +77,6 @@ body.pdf-export {
   position: relative;
   height: var(--pdf-page-body-height);
   max-height: var(--pdf-page-body-height);
-  display: flex;
-  flex-direction: column;
   padding: 0;
   page-break-after: always;
   background: #2a1420;
@@ -79,8 +85,12 @@ body.pdf-export {
 }
 
 .pdf-cover__text {
-  flex-shrink: 0;
-  padding: 8mm 12mm 10mm;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  padding: 10mm 12mm 11mm;
   text-align: center;
   background: linear-gradient(180deg, transparent 0%, rgba(42, 20, 32, 0.92) 35%, #2a1420 100%);
   color: #fce8ec;
@@ -104,8 +114,15 @@ body.pdf-export {
   min-height: var(--pdf-page-body-height);
   padding: 0;
   page-break-after: always;
+  break-after: page;
   background: #2a1420;
   overflow: hidden;
+}
+
+/* New section banner after prior section content — not a double break with .pdf-section */
+.pdf-section + section.pdf-banner-page {
+  page-break-before: always;
+  break-before: page;
 }
 
 .pdf-banner {
@@ -124,9 +141,9 @@ body.pdf-export {
 }
 
 .pdf-cover .pdf-banner--fill {
-  flex: 1 1 0;
-  min-height: 0;
-  max-height: 100%;
+  position: absolute;
+  inset: 0;
+  min-height: 100%;
 }
 
 /* PDF-only: CSS gradient fill (no blurred photo — smaller print raster) */
@@ -189,7 +206,7 @@ body.pdf-export {
 }
 
 .pdf-cover .pdf-banner__img {
-  max-height: calc(var(--pdf-page-body-height) - 28mm);
+  max-height: calc(var(--pdf-page-body-height) - 32mm);
 }
 
 /* Section index — 14 categories on one A4 sheet (5×3, portrait aspect, no crop) */
@@ -230,9 +247,9 @@ body.pdf-export {
   height: var(--pdf-landing-grid-h);
   display: grid;
   grid-template-columns: repeat(var(--pdf-landing-cols), minmax(0, 1fr));
-  grid-template-rows: repeat(var(--pdf-landing-rows), minmax(0, 1fr));
-  gap: 2mm 2.5mm;
-  align-content: center;
+  grid-template-rows: repeat(var(--pdf-landing-rows), var(--pdf-landing-row-h));
+  gap: var(--pdf-landing-grid-gap);
+  align-content: start;
 }
 
 .pdf-landing__card {
@@ -246,8 +263,6 @@ body.pdf-export {
   border-radius: 3px;
   overflow: hidden;
   background: var(--pdf-bg);
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 
 .pdf-landing__card-media {
@@ -336,7 +351,7 @@ body.pdf-export {
   color: var(--pdf-accent-dark);
 }
 
-/* ॐ page border — one fixed layer for the whole export (fast in Chromium) */
+/* ॐ page border — matches site.css om-frame (corners + inset edges) */
 .pdf-page-frame {
   --om-frame-corner: 1em;
   position: fixed;
@@ -357,27 +372,29 @@ body.pdf-export {
 .pdf-page-frame .om-frame__edge {
   position: absolute;
   pointer-events: none;
+  user-select: none;
   color: var(--pdf-frame-om-color);
   z-index: 2;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  gap: 0;
+  gap: 0.1rem;
 }
 
 .pdf-page-frame .om-frame__om {
   display: block;
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   line-height: 1.25;
 }
 
 .pdf-page-frame .om-frame__corner {
   position: absolute;
-  width: 1em;
+  width: var(--om-frame-corner);
   text-align: center;
   color: var(--pdf-frame-om-color);
   z-index: 3;
   pointer-events: none;
+  user-select: none;
 }
 
 .pdf-page-frame .om-frame__corner--tl {
@@ -402,30 +419,37 @@ body.pdf-export {
 
 .pdf-page-frame .om-frame__edge--top {
   top: 0;
-  left: var(--om-frame-corner, 1em);
-  right: var(--om-frame-corner, 1em);
+  left: var(--om-frame-corner);
+  right: var(--om-frame-corner);
   flex-direction: row;
   align-items: flex-end;
-  padding-top: 0.04em;
+  gap: 0.16rem;
+  padding-top: 0.06em;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .pdf-page-frame .om-frame__edge--bottom {
   bottom: 0;
-  left: var(--om-frame-corner, 1em);
-  right: var(--om-frame-corner, 1em);
+  left: var(--om-frame-corner);
+  right: var(--om-frame-corner);
   flex-direction: row;
-  align-items: flex-start;
-  padding-bottom: 0.04em;
+  align-items: flex-end;
+  gap: 0.16rem;
+  padding-bottom: 0.02em;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .pdf-page-frame .om-frame__edge--left,
 .pdf-page-frame .om-frame__edge--right {
-  top: var(--om-frame-corner, 1em);
-  bottom: var(--om-frame-corner, 1em);
+  top: var(--om-frame-corner);
+  bottom: var(--om-frame-corner);
   width: 1em;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  gap: 0.06rem;
+  overflow-x: visible;
+  overflow-y: hidden;
 }
 
 .pdf-page-frame .om-frame__edge--left {
@@ -445,7 +469,7 @@ body.pdf-export {
 }
 
 .pdf-section {
-  page-break-before: always;
+  page-break-before: auto;
   padding: 0;
   background: transparent;
   border-radius: 0;
@@ -457,10 +481,6 @@ body.pdf-export {
   position: relative;
   z-index: 1;
   padding: var(--pdf-content-pad-top) var(--pdf-content-pad-x) var(--pdf-content-pad-bottom);
-}
-
-.pdf-section:first-of-type {
-  page-break-before: auto;
 }
 
 .pdf-section__head {
