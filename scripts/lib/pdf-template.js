@@ -160,11 +160,11 @@ function renderPdfBannerPage(section, resolveAsset) {
 </section>`;
 }
 
-/** Lighter ॐ ring for PDF — fewer glyphs; rgba color in CSS (no opacity → stays vector). */
+/** Page ॐ ring — count tuned for A4; edges use space-between in CSS for even spacing. */
 function renderPdfOmFrameDecor() {
   const om = '<span class="om-frame__om">ॐ</span>';
-  const horiz = om.repeat(28);
-  const vert = om.repeat(56);
+  const horiz = om.repeat(52);
+  const vert = om.repeat(78);
   return `<div class="om-frame__ring" aria-hidden="true">
   <span class="om-frame__corner om-frame__corner--tl om-frame__om">ॐ</span>
   <span class="om-frame__corner om-frame__corner--tr om-frame__om">ॐ</span>
@@ -188,8 +188,7 @@ function renderPdfBhajanCard(b, section, index, showSwarachitBadge) {
   html = html.replace(/\s*<a class="bhajan-card__to-(?:index|sthayi)"[^>]*>[\s\S]*?<\/a>/g, '');
   html = html.replace('class="bhajan-badge"', 'class="bhajan-badge pdf-bhajan-badge"');
   html = stripBhajanCardOmFrame(html);
-  return `${html}
-<p class="pdf-bhajan-end" aria-hidden="true">********</p>`;
+  return html;
 }
 
 function renderPdfSection(section, bhajans, resolveAsset) {
