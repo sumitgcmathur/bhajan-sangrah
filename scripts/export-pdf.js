@@ -13,6 +13,7 @@ const { loadSections } = require('./lib/sections');
 const { renderPdfDocument, pathToFileURL } = require('./lib/pdf-template');
 const { loadAllSectionPayloads } = require('./lib/pdf-payloads');
 const { createPdfAssetResolver } = require('./lib/pdf-assets');
+const { buildPdfWatermarks } = require('./lib/pdf-watermark');
 const { PDF_PAGE_OPTS } = require('./lib/pdf-print');
 
 const OUT_DIR = path.join(ROOT, 'output');
@@ -117,7 +118,7 @@ async function exportPdfWithSystemChrome(htmlPath, pdfPath) {
 
   try {
     const page = await browser.newPage();
-    await page.goto(fileUrl, { waitUntil: 'networkidle0', timeout: 120000 });
+    await page.goto(fileUrl, { waitUntil: 'load', timeout: 120000 });
     await page.evaluateHandle(() => document.fonts.ready);
     await writePdf(page, htmlPath, pdfPath);
   } finally {
@@ -206,9 +207,11 @@ async function main() {
   const payloads = loadAllSectionPayloads(config);
 
   const resolveAsset = await createPdfAssetResolver(config, payloads);
+  const watermarkBySlug = await buildPdfWatermarks(payloads);
 
   const html = renderPdfDocument(config, payloads, {
     resolveAsset,
+    watermarkBySlug,
   });
   fs.mkdirSync(OUT_DIR, { recursive: true });
   fs.writeFileSync(DEFAULT_HTML, html, 'utf8');

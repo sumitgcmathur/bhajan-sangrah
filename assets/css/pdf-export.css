@@ -313,7 +313,6 @@ body.pdf-export {
   pointer-events: none;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
-  filter: saturate(0.8);
 }
 
 .pdf-section--has-banner > * {

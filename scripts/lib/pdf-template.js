@@ -167,7 +167,7 @@ function renderPdfBhajanCard(b, section, index, showSwarachitBadge) {
   return html;
 }
 
-function renderPdfSection(section, bhajans, resolveAsset) {
+function renderPdfSection(section, bhajans, resolveAsset, watermarkBySlug = {}) {
   const showSwarachitBadge = section.slug !== 'swarachit';
   const grouped = sectionUsesGroups(section, bhajans);
   const groups = grouped ? bhajansByGroup(bhajans, section) : [];
@@ -207,13 +207,10 @@ function renderPdfSection(section, bhajans, resolveAsset) {
 
   let wmClass = '';
   let wmStyle = '';
-  if (section.banner) {
-    const wmAssets = resolvePdfAsset(resolveAsset, section.banner, { section });
-    if (wmAssets.full) {
-      const wmUrl = String(wmAssets.full).replace(/'/g, '%27');
-      wmClass = ' pdf-section--has-banner';
-      wmStyle = ` style="--pdf-watermark: url('${wmUrl}')"`;
-    }
+  const wmUrl = watermarkBySlug[section.slug];
+  if (wmUrl) {
+    wmClass = ' pdf-section--has-banner';
+    wmStyle = ` style="--pdf-watermark: url('${String(wmUrl).replace(/'/g, '%27')}')"`;
   }
 
   return `${renderPdfBannerPage(section, resolveAsset)}
@@ -266,8 +263,11 @@ function renderPdfDocument(config, sectionPayloads, options = {}) {
     : { full: '', blur: '', thumb: '' };
   const showToolbar = Boolean(options.showPrintToolbar);
 
+  const watermarkBySlug = options.watermarkBySlug || {};
   const sectionsHtml = sectionPayloads
-    .map(({ section, bhajans }) => renderPdfSection(section, bhajans, resolveAsset))
+    .map(({ section, bhajans }) =>
+      renderPdfSection(section, bhajans, resolveAsset, watermarkBySlug)
+    )
     .join('\n');
 
   const coverBanner = coverAssets.full
