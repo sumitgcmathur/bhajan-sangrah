@@ -9,7 +9,6 @@ const {
   bhajansByGroup,
   sectionUsesGroups,
   renderBhajanCard,
-  renderOmFrameDecor,
 } = require('./template');
 
 function sectionAnchorId(slug) {
@@ -161,10 +160,21 @@ function renderPdfBannerPage(section, resolveAsset) {
 </section>`;
 }
 
-function pdfWatermarkStyleAttr(watermarkUrl) {
-  if (!watermarkUrl) return '';
-  const safe = String(watermarkUrl).replace(/'/g, '%27');
-  return ` style="--pdf-watermark: url('${safe}')"`;
+/** Lighter ॐ ring for PDF — fewer glyphs; rgba color in CSS (no opacity → stays vector). */
+function renderPdfOmFrameDecor() {
+  const om = '<span class="om-frame__om">ॐ</span>';
+  const horiz = om.repeat(28);
+  const vert = om.repeat(56);
+  return `<div class="om-frame__ring" aria-hidden="true">
+  <span class="om-frame__corner om-frame__corner--tl om-frame__om">ॐ</span>
+  <span class="om-frame__corner om-frame__corner--tr om-frame__om">ॐ</span>
+  <span class="om-frame__corner om-frame__corner--bl om-frame__om">ॐ</span>
+  <span class="om-frame__corner om-frame__corner--br om-frame__om">ॐ</span>
+  <div class="om-frame__edge om-frame__edge--top">${horiz}</div>
+  <div class="om-frame__edge om-frame__edge--bottom">${horiz}</div>
+  <div class="om-frame__edge om-frame__edge--left">${vert}</div>
+  <div class="om-frame__edge om-frame__edge--right">${vert}</div>
+</div>`;
 }
 
 function stripBhajanCardOmFrame(html) {
@@ -182,12 +192,11 @@ function renderPdfBhajanCard(b, section, index, showSwarachitBadge) {
 <p class="pdf-bhajan-end" aria-hidden="true">********</p>`;
 }
 
-function renderPdfSection(section, bhajans, resolveAsset, watermarkBySlug = {}) {
+function renderPdfSection(section, bhajans, resolveAsset) {
   const showSwarachitBadge = section.slug !== 'swarachit';
   const grouped = sectionUsesGroups(section, bhajans);
   const groups = grouped ? bhajansByGroup(bhajans, section) : [];
   const secId = sectionAnchorId(section.slug);
-  const watermarkUrl = section.banner ? watermarkBySlug[section.slug] || '' : '';
 
   let articlesHtml;
 
@@ -221,10 +230,8 @@ function renderPdfSection(section, bhajans, resolveAsset, watermarkBySlug = {}) 
       .join('\n')}</div>`;
   }
 
-  const bannerClass = watermarkUrl ? ' pdf-section--has-banner' : '';
-  const bannerStyle = watermarkUrl ? pdfWatermarkStyleAttr(watermarkUrl) : '';
   return `${renderPdfBannerPage(section, resolveAsset)}
-<section class="pdf-section${bannerClass}" id="${secId}"${bannerStyle}>
+<section class="pdf-section" id="${secId}">
   <div class="pdf-section__content">
   <header class="pdf-section__head">
     <h1 class="pdf-section__title">${escapeHtml(section.title)}</h1>
@@ -275,11 +282,8 @@ function renderPdfDocument(config, sectionPayloads, options = {}) {
     : { full: '', blur: '', thumb: '' };
   const showToolbar = Boolean(options.showPrintToolbar);
 
-  const watermarkBySlug = options.watermarkBySlug || {};
   const sectionsHtml = sectionPayloads
-    .map(({ section, bhajans }) =>
-      renderPdfSection(section, bhajans, resolveAsset, watermarkBySlug)
-    )
+    .map(({ section, bhajans }) => renderPdfSection(section, bhajans, resolveAsset))
     .join('\n');
 
   const coverBanner = coverAssets.full
@@ -309,7 +313,7 @@ ${toolbar}
   </div>
 </section>
 ${renderPdfLanding(config, sectionPayloads, resolveAsset)}
-<div class="pdf-page-frame" aria-hidden="true">${renderOmFrameDecor()}</div>
+<div class="pdf-page-frame" aria-hidden="true">${renderPdfOmFrameDecor()}</div>
 ${sectionsHtml}
 ${toolbarScript}
 </body>

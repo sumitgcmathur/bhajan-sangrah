@@ -43,11 +43,7 @@
   --pdf-content-pad-top: 11mm;
   --pdf-content-pad-x: 10mm;
   --pdf-content-pad-bottom: 9mm;
-  /* Match web bhajan-card watermark (site.css) — per card, not per section */
-  --pdf-watermark-opacity: 0.045;
-  --pdf-watermark-tile-w: 200px;
-  --pdf-watermark-repeat: repeat-y;
-  --pdf-watermark-position: top left;
+  --pdf-frame-om-color: rgba(155, 45, 74, 0.38);
 }
 
 * {
@@ -361,8 +357,7 @@ body.pdf-export {
 .pdf-page-frame .om-frame__edge {
   position: absolute;
   pointer-events: none;
-  color: var(--pdf-accent);
-  opacity: 0.38;
+  color: var(--pdf-frame-om-color);
   z-index: 2;
   display: flex;
   justify-content: flex-start;
@@ -380,8 +375,7 @@ body.pdf-export {
   position: absolute;
   width: 1em;
   text-align: center;
-  color: var(--pdf-accent);
-  opacity: 0.38;
+  color: var(--pdf-frame-om-color);
   z-index: 3;
   pointer-events: none;
 }
@@ -464,36 +458,6 @@ body.pdf-export {
   border-radius: 0;
   position: relative;
   z-index: 2;
-}
-
-/*
- * Faint tiled watermark on each bhajan card (same model as site.css).
- * Never on the whole .pdf-section — Chromium rasterizes that as one multi-page bitmap (600MB+).
- */
-.pdf-section--has-banner .pdf-bhajan-list .bhajan-card {
-  position: relative;
-  isolation: isolate;
-}
-
-.pdf-section--has-banner .pdf-bhajan-list .bhajan-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: var(--pdf-watermark);
-  background-repeat: var(--pdf-watermark-repeat);
-  background-position: var(--pdf-watermark-position);
-  background-size: var(--pdf-watermark-tile-w) auto;
-  opacity: var(--pdf-watermark-opacity);
-  filter: saturate(0.8);
-  pointer-events: none;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
-}
-
-.pdf-section--has-banner .pdf-bhajan-list .bhajan-card > * {
-  position: relative;
-  z-index: 1;
 }
 
 .pdf-section__content {
