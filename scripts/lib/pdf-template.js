@@ -162,6 +162,12 @@ function renderPdfBannerPage(section, resolveAsset, { firstSection = false } = {
 </section>`;
 }
 
+function pdfWatermarkStyleAttr(watermarkUrl) {
+  if (!watermarkUrl) return '';
+  const safe = String(watermarkUrl).replace(/'/g, '%27');
+  return ` style="--pdf-watermark: url('${safe}')"`;
+}
+
 function stripBhajanCardOmFrame(html) {
   return html
     .replace(/<article class="bhajan-card om-frame"/g, '<article class="bhajan-card"')
@@ -176,11 +182,16 @@ function renderPdfBhajanCard(b, section, index, showSwarachitBadge) {
   return html;
 }
 
-function renderPdfSection(section, bhajans, resolveAsset, { firstSection = false } = {}) {
+function renderPdfSection(section, bhajans, resolveAsset, opts = {}) {
+  const { firstSection = false } = opts;
+  const watermarkBySlug = opts.watermarkBySlug || {};
   const showSwarachitBadge = section.slug !== 'swarachit';
   const grouped = sectionUsesGroups(section, bhajans);
   const groups = grouped ? bhajansByGroup(bhajans, section) : [];
   const secId = sectionAnchorId(section.slug);
+  const watermarkUrl = section.banner ? watermarkBySlug[section.slug] || '' : '';
+  const bannerClass = watermarkUrl ? ' pdf-section--has-banner' : '';
+  const bannerStyle = watermarkUrl ? pdfWatermarkStyleAttr(watermarkUrl) : '';
 
   let articlesHtml;
 
@@ -215,7 +226,7 @@ function renderPdfSection(section, bhajans, resolveAsset, { firstSection = false
   }
 
   return `${renderPdfBannerPage(section, resolveAsset, { firstSection })}
-<section class="pdf-section" id="${secId}">
+<section class="pdf-section${bannerClass}" id="${secId}"${bannerStyle}>
   <div class="pdf-section__content">
   <div class="pdf-section-intro">
   <header class="pdf-section__head">
@@ -268,9 +279,13 @@ function renderPdfDocument(config, sectionPayloads, options = {}) {
     : { full: '', blur: '', thumb: '' };
   const showToolbar = Boolean(options.showPrintToolbar);
 
+  const watermarkBySlug = options.watermarkBySlug || {};
   const sectionsHtml = sectionPayloads
     .map(({ section, bhajans }, i) =>
-      renderPdfSection(section, bhajans, resolveAsset, { firstSection: i === 0 })
+      renderPdfSection(section, bhajans, resolveAsset, {
+        firstSection: i === 0,
+        watermarkBySlug,
+      })
     )
     .join('\n');
 

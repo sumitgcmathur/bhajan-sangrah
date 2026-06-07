@@ -60,6 +60,9 @@
   --pdf-content-pad-bottom: 10mm;
   --pdf-flow-pad-top: 9mm;
   --pdf-frame-om-color: rgba(155, 45, 74, 0.38);
+  /* PDF watermark: one small centered image per card — never repeat (see pdf-export.css) */
+  --pdf-watermark-opacity: 0.045;
+  --pdf-watermark-size: 42%;
 }
 
 * {
@@ -601,6 +604,36 @@ section.pdf-banner-page {
 
 .pdf-bhajan-list {
   margin-top: 0.5rem;
+}
+
+/*
+ * Section watermark on bhajan cards — PDF-safe subset of site.css.
+ * OK: one 200px JPEG, no-repeat, centered per card (~20–35 MB total export).
+ * BAD: repeat / repeat-y / position:fixed / full-section ::before → 300–600 MB PDFs.
+ */
+.pdf-section--has-banner .pdf-bhajan-list .bhajan-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.pdf-section--has-banner .pdf-bhajan-list .bhajan-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--pdf-watermark);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: var(--pdf-watermark-size) auto;
+  opacity: var(--pdf-watermark-opacity);
+  pointer-events: none;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.pdf-section--has-banner .pdf-bhajan-list .bhajan-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Bhajan cards — flow naturally inside page border; keep stanzas intact */
