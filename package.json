@@ -22,6 +22,7 @@
     "serve": "npx --yes serve docs -l 3000"
   },
   "devDependencies": {
+    "pdf-lib": "^1.17.1",
     "puppeteer": "^24.0.0",
     "puppeteer-core": "^24.0.0",
     "sharp": "^0.33.5"

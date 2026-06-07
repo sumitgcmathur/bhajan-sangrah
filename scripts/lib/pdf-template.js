@@ -152,20 +152,13 @@ function renderPdfBannerFill(assets, alt) {
 </figure>`;
 }
 
-function renderPdfBannerPage(section, resolveAsset, { firstSection = false } = {}) {
+function renderPdfBannerPage(section, resolveAsset) {
   if (!section.banner) return '';
   const assets = resolvePdfAsset(resolveAsset, section.banner, { section });
   if (!assets.full) return '';
-  const firstClass = firstSection ? ' pdf-banner-page--first' : '';
-  return `<section class="pdf-banner-page${firstClass}" aria-label="${escapeHtml(section.title)}">
+  return `<section class="pdf-banner-page" aria-label="${escapeHtml(section.title)}">
   ${renderPdfBannerFill(assets, section.title)}
 </section>`;
-}
-
-function pdfWatermarkStyleAttr(watermarkUrl) {
-  if (!watermarkUrl) return '';
-  const safe = String(watermarkUrl).replace(/'/g, '%27');
-  return ` style="--pdf-watermark: url('${safe}')"`;
 }
 
 function stripBhajanCardOmFrame(html) {
@@ -182,16 +175,11 @@ function renderPdfBhajanCard(b, section, index, showSwarachitBadge) {
   return html;
 }
 
-function renderPdfSection(section, bhajans, resolveAsset, opts = {}) {
-  const { firstSection = false } = opts;
-  const watermarkBySlug = opts.watermarkBySlug || {};
+function renderPdfSectionContent(section, bhajans, resolveAsset) {
   const showSwarachitBadge = section.slug !== 'swarachit';
   const grouped = sectionUsesGroups(section, bhajans);
   const groups = grouped ? bhajansByGroup(bhajans, section) : [];
   const secId = sectionAnchorId(section.slug);
-  const watermarkUrl = section.banner ? watermarkBySlug[section.slug] || '' : '';
-  const bannerClass = watermarkUrl ? ' pdf-section--has-banner' : '';
-  const bannerStyle = watermarkUrl ? pdfWatermarkStyleAttr(watermarkUrl) : '';
 
   let articlesHtml;
 
@@ -225,8 +213,7 @@ function renderPdfSection(section, bhajans, resolveAsset, opts = {}) {
       .join('\n')}</div>`;
   }
 
-  return `${renderPdfBannerPage(section, resolveAsset, { firstSection })}
-<section class="pdf-section${bannerClass}" id="${secId}"${bannerStyle}>
+  return `<section class="pdf-section" id="${secId}">
   <div class="pdf-section__content">
   <div class="pdf-section-intro">
   <header class="pdf-section__head">
@@ -237,6 +224,12 @@ function renderPdfSection(section, bhajans, resolveAsset, opts = {}) {
   ${articlesHtml}
   </div>
 </section>`;
+}
+
+/** One section = one PDF chunk (banner + content). Watermark is chunk-level in pdf-chunk-render.js */
+function renderPdfSectionChunkBody(section, bhajans, resolveAsset) {
+  return `${renderPdfBannerPage(section, resolveAsset)}
+${renderPdfSectionContent(section, bhajans, resolveAsset)}`;
 }
 
 const PRINT_TOOLBAR = `<div class="pdf-print-toolbar no-print" role="region" aria-label="मुद्रण">
@@ -279,14 +272,8 @@ function renderPdfDocument(config, sectionPayloads, options = {}) {
     : { full: '', blur: '', thumb: '' };
   const showToolbar = Boolean(options.showPrintToolbar);
 
-  const watermarkBySlug = options.watermarkBySlug || {};
   const sectionsHtml = sectionPayloads
-    .map(({ section, bhajans }, i) =>
-      renderPdfSection(section, bhajans, resolveAsset, {
-        firstSection: i === 0,
-        watermarkBySlug,
-      })
-    )
+    .map(({ section, bhajans }) => renderPdfSectionChunkBody(section, bhajans, resolveAsset))
     .join('\n');
 
   const coverBanner = coverAssets.full
@@ -325,6 +312,11 @@ ${toolbarScript}
 
 module.exports = {
   renderPdfDocument,
+  renderPdfSectionChunkBody,
+  renderPdfLanding,
+  renderPdfBannerFill,
+  renderPdfBannerPage,
+  resolvePdfAsset,
   sectionAnchorId,
   pathToFileURL,
   assetFileURL,

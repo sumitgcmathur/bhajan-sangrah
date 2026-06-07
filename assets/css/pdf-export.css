@@ -1,17 +1,10 @@
-/* Print/PDF export — single long document (see scripts/export-pdf.js) */
+/* Print/PDF export — chunked chunks (see scripts/export-pdf.js); page labels in pdf-merge.js */
 
 @page {
   size: A4;
   margin: var(--pdf-page-margin-top) var(--pdf-page-margin-x) var(--pdf-page-margin-bottom)
     var(--pdf-page-margin-x);
   background: #faf6f0;
-
-  @bottom-center {
-    content: counter(page) ' / ' counter(pages);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 9pt;
-    color: #5c4a42;
-  }
 }
 
 /* Palette aligned with assets/css/site.css (light theme) */
@@ -60,8 +53,7 @@
   --pdf-content-pad-bottom: 10mm;
   --pdf-flow-pad-top: 9mm;
   --pdf-frame-om-color: rgba(155, 45, 74, 0.38);
-  /* Full-bleed cover needs lower opacity than web tiles (web uses 0.045 on repeat-y) */
-  --pdf-watermark-opacity: 0.016;
+  --pdf-chunk-watermark-opacity: 0.016;
 }
 
 * {
@@ -129,8 +121,6 @@ section.pdf-banner-page {
   max-height: var(--pdf-page-body-height);
   min-height: 0;
   padding: 0;
-  page-break-before: always;
-  break-before: page;
   page-break-after: always;
   break-after: page;
   page-break-inside: avoid;
@@ -140,10 +130,17 @@ section.pdf-banner-page {
   box-sizing: border-box;
 }
 
-/* First section banner follows landing (landing already ends the page) */
-section.pdf-banner-page--first {
+/* Chunk docs: cover/landing and section banner are first on their sheet — no extra break-before */
+.pdf-export--chunk .pdf-landing,
+.pdf-export--chunk section.pdf-banner-page {
   page-break-before: auto;
   break-before: auto;
+}
+
+/* Merged multi-section flows (preview HTML only) */
+.pdf-export:not(.pdf-export--chunk) section.pdf-banner-page {
+  page-break-before: always;
+  break-before: page;
 }
 
 .pdf-banner {
@@ -606,31 +603,33 @@ section.pdf-banner-page {
 }
 
 /*
- * Per-section watermark on bhajan cards only (matches web — not index/title).
- * position:absolute + cover per card — NOT position:fixed (fixed paints every section
- * image on every page, so one slug e.g. bhairav dominated the whole PDF).
+ * Chunk export: one fixed watermark per section PDF (correct section, every content page).
+ * Monolithic preview HTML has no chunk watermark.
  */
-.pdf-section--has-banner .pdf-bhajan-list .bhajan-card {
-  position: relative;
-  isolation: isolate;
+.pdf-chunk-watermark {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
-.pdf-section--has-banner .pdf-bhajan-list .bhajan-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: var(--pdf-watermark);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: var(--pdf-watermark-opacity);
+.pdf-chunk-watermark__img {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: var(--pdf-chunk-watermark-opacity);
   pointer-events: none;
+  z-index: 0;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
-.pdf-section--has-banner .pdf-bhajan-list .bhajan-card > * {
+.pdf-export--has-chunk-watermark .pdf-section__content {
   position: relative;
   z-index: 1;
 }

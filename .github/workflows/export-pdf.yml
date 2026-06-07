@@ -9,7 +9,7 @@ on:
 jobs:
   export-pdf:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -22,7 +22,7 @@ jobs:
 
       - name: Strip UTF-8 BOM from scripts
         run: |
-          node -e "const fs=require('fs');for(const p of['scripts/export-pdf.js']){const b=fs.readFileSync(p);if(b[0]===0xef&&b[1]===0xbb&&b[2]===0xbf){fs.writeFileSync(p,b.subarray(3));console.log('Stripped BOM:',p);}}"
+          node -e "const fs=require('fs');for(const p of['scripts/export-pdf.js','scripts/lib/pdf-chunk-render.js','scripts/lib/pdf-chunk-print.js','scripts/lib/pdf-merge.js','scripts/lib/pdf-page-spec.js']){const b=fs.readFileSync(p);if(b[0]===0xef&&b[1]===0xbb&&b[2]===0xbf){fs.writeFileSync(p,b.subarray(3));console.log('Stripped BOM:',p);}}"
 
       - name: Export PDF
         run: node scripts/export-pdf.js
