@@ -38,6 +38,8 @@
   --section-hero-fill: calc(100dvh - var(--mobile-bar-h) - env(safe-area-inset-bottom, 0px));
   --bhajan-watermark-opacity: 0.045;
   --bhajan-watermark-tile-w: 100%;
+  --bhajan-watermark-repeat: repeat-y;
+  --bhajan-watermark-position: top left;
 }
 
 /* Dark theme: manual toggle */
@@ -1120,8 +1122,8 @@ body.search-panel-open {
   position: absolute;
   inset: 0;
   background-image: var(--bhajan-watermark);
-  background-repeat: repeat-y;
-  background-position: top center;
+  background-repeat: var(--bhajan-watermark-repeat);
+  background-position: var(--bhajan-watermark-position);
   background-size: var(--bhajan-watermark-tile-w) auto;
   opacity: var(--bhajan-watermark-opacity);
   pointer-events: none;
@@ -1519,8 +1521,10 @@ body.search-panel-open {
 
 @media (min-width: 768px) {
   :root {
-    /* Portrait banner at full card width → one tile taller than the card on wide layouts */
+    /* Capped tiles: left-aligned, repeat to fill remaining width and height */
     --bhajan-watermark-tile-w: min(26rem, 100%);
+    --bhajan-watermark-repeat: repeat;
+    --bhajan-watermark-position: top left;
   }
 
   .mobile-bar__btn[data-action="menu"] {
