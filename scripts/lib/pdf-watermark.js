@@ -4,8 +4,8 @@ const { ROOT } = require('./paths');
 const { landingBannerPath } = require('./banner-thumbs');
 const { pathToFileURL } = require('./pdf-assets');
 
-/** Cached JPEG for PDF page watermarks (one per page, object-fit:cover — no repeat). */
-/** Never use background-repeat on tall/fixed areas — Chromium flattens tiles into huge bitmaps. */
+/** Cached JPEG for PDF bhajan-card watermarks (cover, no-repeat — never position:fixed). */
+/** Fixed layers paint on every page; repeat-y flattens to huge bitmaps (300–600 MB). */
 const WM_WIDTH = 480;
 const CACHE_DIR = path.join(ROOT, 'output', '.pdf-watermark-cache');
 
