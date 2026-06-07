@@ -26,6 +26,9 @@ jobs:
 
       - name: Export PDF
         run: node scripts/export-pdf.js
+        env:
+          CI: true
+          PDF_RENDER_TIMEOUT_MS: 600000
 
       - name: Verify PDF output
         run: |

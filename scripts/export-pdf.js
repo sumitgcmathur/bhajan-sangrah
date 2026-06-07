@@ -19,6 +19,8 @@ const { PDF_PAGE_OPTS } = require('./lib/pdf-print');
 const OUT_DIR = path.join(ROOT, 'output');
 const DEFAULT_HTML = path.join(OUT_DIR, 'pdf-export.html');
 const DEFAULT_PDF = path.join(OUT_DIR, 'bhajan-sangrah.pdf');
+/** Puppeteer default is 30s — large exports need much longer (especially in CI). */
+const PDF_RENDER_TIMEOUT_MS = Number(process.env.PDF_RENDER_TIMEOUT_MS) || (process.env.CI ? 600_000 : 180_000);
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -59,11 +61,16 @@ function findChrome() {
   return null;
 }
 
-async function writePdf(page, htmlPath, pdfPath) {
+async function writePdf(page, pdfPath) {
   await page.emulateMediaType('print');
   fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
-  await page.pdf({ path: pdfPath, ...PDF_PAGE_OPTS });
-  console.log(`PDF written: ${pdfPath}`);
+  await page.pdf({
+    path: pdfPath,
+    ...PDF_PAGE_OPTS,
+    timeout: PDF_RENDER_TIMEOUT_MS,
+  });
+  const mb = (fs.statSync(pdfPath).size / (1024 * 1024)).toFixed(1);
+  console.log(`PDF written: ${pdfPath} (${mb} MB)`);
 }
 
 async function exportPdfWithPuppeteer(htmlPath, pdfPath) {
@@ -73,14 +80,16 @@ async function exportPdfWithPuppeteer(htmlPath, pdfPath) {
   const browser = await puppeteer.launch({
     headless: true,
     args: chromiumLaunchArgs(),
+    protocolTimeout: PDF_RENDER_TIMEOUT_MS,
   });
 
   try {
     const page = await browser.newPage();
-    await page.goto(fileUrl, { waitUntil: 'load', timeout: 120000 });
+    page.setDefaultTimeout(PDF_RENDER_TIMEOUT_MS);
+    await page.goto(fileUrl, { waitUntil: 'load', timeout: PDF_RENDER_TIMEOUT_MS });
     await page.evaluateHandle(() => document.fonts.ready);
     console.log('Rendering PDF with Puppeteer…');
-    await writePdf(page, htmlPath, pdfPath);
+    await writePdf(page, pdfPath);
   } finally {
     await browser.close();
   }
@@ -115,13 +124,16 @@ async function exportPdfWithSystemChrome(htmlPath, pdfPath) {
     executablePath: chrome,
     headless: true,
     args: chromiumLaunchArgs(),
+    protocolTimeout: PDF_RENDER_TIMEOUT_MS,
   });
 
   try {
     const page = await browser.newPage();
-    await page.goto(fileUrl, { waitUntil: 'load', timeout: 120000 });
+    page.setDefaultTimeout(PDF_RENDER_TIMEOUT_MS);
+    await page.goto(fileUrl, { waitUntil: 'load', timeout: PDF_RENDER_TIMEOUT_MS });
     await page.evaluateHandle(() => document.fonts.ready);
-    await writePdf(page, htmlPath, pdfPath);
+    console.log('Rendering PDF with system Chrome…');
+    await writePdf(page, pdfPath);
   } finally {
     await browser.close();
   }
@@ -143,22 +155,26 @@ async function exportPdfWithChromeCli(htmlPath, pdfPath) {
   fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
   const fileUrl = pathToFileURL(htmlPath);
   const pdfAbs = path.resolve(pdfPath);
+  const chromeArgs = [
+    '--headless=new',
+    '--disable-gpu',
+    '--allow-file-access-from-files',
+    '--print-background',
+    '--no-pdf-header-footer',
+    ...chromiumLaunchArgs(),
+    `--print-to-pdf=${pdfAbs}`,
+    fileUrl,
+  ];
+  // virtual-time-budget exits before large PDFs finish; use only on Windows hang workaround.
+  if (process.platform === 'win32') {
+    chromeArgs.splice(3, 0, '--virtual-time-budget=180000');
+  }
   try {
-    await execFileAsync(
-      chrome,
-      [
-        '--headless=new',
-        '--disable-gpu',
-        '--allow-file-access-from-files',
-        '--virtual-time-budget=45000',
-        '--print-background',
-        '--no-pdf-header-footer',
-        ...chromiumLaunchArgs(),
-        `--print-to-pdf=${pdfAbs}`,
-        fileUrl,
-      ],
-      { timeout: 600000, maxBuffer: 20 * 1024 * 1024 }
-    );
+    console.log('Rendering PDF with Chrome CLI…');
+    await execFileAsync(chrome, chromeArgs, {
+      timeout: PDF_RENDER_TIMEOUT_MS,
+      maxBuffer: 20 * 1024 * 1024,
+    });
   } catch (err) {
     // Headless Chrome often prints the PDF then hangs or exits non-zero on Windows.
     if (!pdfLooksReady(pdfAbs)) throw err;
@@ -171,32 +187,30 @@ async function exportPdfWithChromeCli(htmlPath, pdfPath) {
 
 async function exportPdf(htmlPath, pdfPath) {
   const errors = [];
+  const attempts = process.env.CI
+    ? [
+        ['Puppeteer', exportPdfWithPuppeteer],
+        ['Chrome CLI', exportPdfWithChromeCli],
+        ['Chrome + puppeteer-core', exportPdfWithSystemChrome],
+      ]
+    : [
+        ['Puppeteer', exportPdfWithPuppeteer],
+        ['Chrome + puppeteer-core', exportPdfWithSystemChrome],
+        ['Chrome CLI', exportPdfWithChromeCli],
+      ];
 
-  try {
-    require.resolve('puppeteer');
+  for (const [label, fn] of attempts) {
     try {
-      await exportPdfWithPuppeteer(htmlPath, pdfPath);
+      if (label === 'Puppeteer') require.resolve('puppeteer');
+      await fn(htmlPath, pdfPath);
       return;
     } catch (e) {
-      errors.push(`Puppeteer: ${e.message}`);
+      if (e.code === 'MODULE_NOT_FOUND' && label === 'Puppeteer') {
+        errors.push(`${label}: package not installed`);
+      } else {
+        errors.push(`${label}: ${e.message}`);
+      }
     }
-  } catch (e) {
-    if (e.code !== 'MODULE_NOT_FOUND') throw e;
-    errors.push('Puppeteer: package not installed');
-  }
-
-  try {
-    await exportPdfWithSystemChrome(htmlPath, pdfPath);
-    return;
-  } catch (e) {
-    errors.push(`Chrome + puppeteer-core: ${e.message}`);
-  }
-
-  try {
-    await exportPdfWithChromeCli(htmlPath, pdfPath);
-    return;
-  } catch (e) {
-    errors.push(`Chrome CLI: ${e.message}`);
   }
 
   throw new Error(`PDF export failed:\n${errors.map((x) => `  - ${x}`).join('\n')}`);
