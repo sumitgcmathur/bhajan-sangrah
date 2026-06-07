@@ -430,7 +430,7 @@ body.pdf-export {
 
 .pdf-bhajan-list .bhajan-card.om-frame {
   --om-frame-inset: 3mm;
-  --om-frame-corner: 9mm;
+  --om-frame-corner: 1em;
   position: relative;
   padding: 11mm 12mm 10.5mm;
 }
@@ -459,6 +459,36 @@ body.pdf-export {
   display: block;
   font-size: 0.72rem;
   line-height: 1;
+}
+
+.pdf-bhajan-list .om-frame__corner {
+  position: absolute;
+  width: var(--om-frame-corner);
+  text-align: center;
+  color: var(--pdf-accent);
+  opacity: 0.38;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.pdf-bhajan-list .om-frame__corner--tl {
+  top: 0;
+  left: 0;
+}
+
+.pdf-bhajan-list .om-frame__corner--tr {
+  top: 0;
+  right: 0;
+}
+
+.pdf-bhajan-list .om-frame__corner--bl {
+  bottom: 0;
+  left: 0;
+}
+
+.pdf-bhajan-list .om-frame__corner--br {
+  bottom: 0;
+  right: 0;
 }
 
 .pdf-bhajan-list .om-frame__edge--top {

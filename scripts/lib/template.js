@@ -381,6 +381,10 @@ function renderOmFrameDecor() {
   const horiz = om.repeat(48);
   const vert = om.repeat(96);
   return `<div class="om-frame__ring" aria-hidden="true">
+  <span class="om-frame__corner om-frame__corner--tl om-frame__om">ॐ</span>
+  <span class="om-frame__corner om-frame__corner--tr om-frame__om">ॐ</span>
+  <span class="om-frame__corner om-frame__corner--bl om-frame__om">ॐ</span>
+  <span class="om-frame__corner om-frame__corner--br om-frame__om">ॐ</span>
   <div class="om-frame__edge om-frame__edge--top">${horiz}</div>
   <div class="om-frame__edge om-frame__edge--bottom">${horiz}</div>
   <div class="om-frame__edge om-frame__edge--left">${vert}</div>
