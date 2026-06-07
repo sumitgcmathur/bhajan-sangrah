@@ -162,12 +162,6 @@ function renderPdfBannerPage(section, resolveAsset, { firstSection = false } = {
 </section>`;
 }
 
-function pdfWatermarkStyleAttr(watermarkUrl) {
-  if (!watermarkUrl) return '';
-  const safe = String(watermarkUrl).replace(/'/g, '%27');
-  return ` style="--pdf-watermark: url('${safe}')"`;
-}
-
 function stripBhajanCardOmFrame(html) {
   return html
     .replace(/<article class="bhajan-card om-frame"/g, '<article class="bhajan-card"')
@@ -191,7 +185,6 @@ function renderPdfSection(section, bhajans, resolveAsset, opts = {}) {
   const secId = sectionAnchorId(section.slug);
   const watermarkUrl = section.banner ? watermarkBySlug[section.slug] || '' : '';
   const bannerClass = watermarkUrl ? ' pdf-section--has-banner' : '';
-  const bannerStyle = watermarkUrl ? pdfWatermarkStyleAttr(watermarkUrl) : '';
 
   let articlesHtml;
 
@@ -225,8 +218,13 @@ function renderPdfSection(section, bhajans, resolveAsset, opts = {}) {
       .join('\n')}</div>`;
   }
 
+  const watermarkLayer = watermarkUrl
+    ? `<div class="pdf-section-watermark" aria-hidden="true"><img class="pdf-section-watermark__img" src="${watermarkUrl}" alt=""></div>`
+    : '';
+
   return `${renderPdfBannerPage(section, resolveAsset, { firstSection })}
-<section class="pdf-section${bannerClass}" id="${secId}"${bannerStyle}>
+<section class="pdf-section${bannerClass}" id="${secId}">
+  ${watermarkLayer}
   <div class="pdf-section__content">
   <div class="pdf-section-intro">
   <header class="pdf-section__head">

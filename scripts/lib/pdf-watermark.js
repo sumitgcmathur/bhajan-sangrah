@@ -4,9 +4,9 @@ const { ROOT } = require('./paths');
 const { landingBannerPath } = require('./banner-thumbs');
 const { pathToFileURL } = require('./pdf-assets');
 
-/** Small JPEG for PDF bhajan-card watermarks (centered, no-repeat in pdf-export.css). */
-/** Never use repeat/position:fixed in print CSS — Chromium rasterizes huge bitmaps (300–600 MB). */
-const WM_WIDTH = 200;
+/** Cached JPEG for PDF page watermarks (one per page, object-fit:cover — no repeat). */
+/** Never use background-repeat on tall/fixed areas — Chromium flattens tiles into huge bitmaps. */
+const WM_WIDTH = 480;
 const CACHE_DIR = path.join(ROOT, 'output', '.pdf-watermark-cache');
 
 function loadSharp() {
