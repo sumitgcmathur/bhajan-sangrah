@@ -32,7 +32,8 @@
   --pdf-lyrics-odd: #2c1810;
   --pdf-lyrics-even: #2c1810;
   --pdf-page-body-height: 255mm;
-  --pdf-watermark-opacity: 0.045;
+  --pdf-watermark-opacity: 0.07;
+  --pdf-watermark-tile-w: min(22rem, 100%);
 }
 
 * {
@@ -410,6 +411,33 @@ body.pdf-export {
   margin-bottom: 1.25rem;
   box-shadow: 0 1px 8px var(--pdf-accent-glow);
   page-break-inside: auto;
+}
+
+/* Per-card banner watermark (same tiling idea as the public site; no position:fixed) */
+.pdf-bhajan-list .pdf-bhajan-card--watermark {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.pdf-bhajan-list .pdf-bhajan-card--watermark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--pdf-watermark);
+  background-repeat: repeat;
+  background-position: top left;
+  background-size: var(--pdf-watermark-tile-w) auto;
+  opacity: var(--pdf-watermark-opacity);
+  pointer-events: none;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.pdf-bhajan-list .pdf-bhajan-card--watermark > * {
+  position: relative;
+  z-index: 1;
 }
 
 .pdf-bhajan-list .bhajan-card__head {

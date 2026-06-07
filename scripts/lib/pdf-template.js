@@ -160,10 +160,23 @@ function renderPdfBannerPage(section, resolveAsset) {
 </section>`;
 }
 
-function renderPdfBhajanCard(b, section, index, showSwarachitBadge) {
+function pdfWatermarkStyleAttr(watermarkUrl) {
+  if (!watermarkUrl) return '';
+  const safe = String(watermarkUrl).replace(/'/g, '%27');
+  return ` style="--pdf-watermark: url('${safe}')"`;
+}
+
+function renderPdfBhajanCard(b, section, index, showSwarachitBadge, watermarkUrl) {
   let html = renderBhajanCard(b, section, index, showSwarachitBadge);
   html = html.replace(/\s*<a class="bhajan-card__to-(?:index|sthayi)"[^>]*>[\s\S]*?<\/a>/g, '');
   html = html.replace('class="bhajan-badge"', 'class="bhajan-badge pdf-bhajan-badge"');
+  if (watermarkUrl) {
+    const wmClass = 'bhajan-card pdf-bhajan-card--watermark';
+    html = html.replace(
+      '<article class="bhajan-card"',
+      `<article class="${wmClass}"${pdfWatermarkStyleAttr(watermarkUrl)}`
+    );
+  }
   return html;
 }
 
@@ -172,6 +185,7 @@ function renderPdfSection(section, bhajans, resolveAsset, watermarkBySlug = {}) 
   const grouped = sectionUsesGroups(section, bhajans);
   const groups = grouped ? bhajansByGroup(bhajans, section) : [];
   const secId = sectionAnchorId(section.slug);
+  const watermarkUrl = watermarkBySlug[section.slug] || '';
 
   let articlesHtml;
 
@@ -190,7 +204,9 @@ function renderPdfSection(section, bhajans, resolveAsset, watermarkBySlug = {}) 
     articlesHtml = groupsWithIds
       .map((g) => {
         const cards = g.items
-          .map((b) => renderPdfBhajanCard(b, section, bhajanIndex++, showSwarachitBadge))
+          .map((b) =>
+            renderPdfBhajanCard(b, section, bhajanIndex++, showSwarachitBadge, watermarkUrl)
+          )
           .join('\n');
         return `<section class="bhajan-group">
   <h2 class="bhajan-group__title">${escapeHtml(g.title)}</h2>
@@ -201,20 +217,12 @@ function renderPdfSection(section, bhajans, resolveAsset, watermarkBySlug = {}) 
   } else {
     const withIds = bhajans.map((b) => ({ ...b, id: b.id }));
     articlesHtml = `<div class="bhajan-list pdf-bhajan-list">${withIds
-      .map((b, i) => renderPdfBhajanCard(b, section, i, showSwarachitBadge))
+      .map((b, i) => renderPdfBhajanCard(b, section, i, showSwarachitBadge, watermarkUrl))
       .join('\n')}</div>`;
   }
 
-  let wmClass = '';
-  let wmStyle = '';
-  const wmUrl = watermarkBySlug[section.slug];
-  if (wmUrl) {
-    wmClass = ' pdf-section--has-banner';
-    wmStyle = ` style="--pdf-watermark: url('${String(wmUrl).replace(/'/g, '%27')}')"`;
-  }
-
   return `${renderPdfBannerPage(section, resolveAsset)}
-<section class="pdf-section${wmClass}" id="${secId}"${wmStyle}>
+<section class="pdf-section" id="${secId}">
   <header class="pdf-section__head">
     <h1 class="pdf-section__title">${escapeHtml(section.title)}</h1>
   </header>
