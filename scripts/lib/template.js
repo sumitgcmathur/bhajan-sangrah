@@ -378,8 +378,8 @@ function flattenBhajansForNav(bhajans, section, grouped, groups) {
 
 function renderOmFrameDecor() {
   const om = '<span class="om-frame__om">ॐ</span>';
-  const horiz = om.repeat(20);
-  const vert = om.repeat(10);
+  const horiz = om.repeat(48);
+  const vert = om.repeat(96);
   return `<div class="om-frame__ring" aria-hidden="true">
   <div class="om-frame__edge om-frame__edge--top">${horiz}</div>
   <div class="om-frame__edge om-frame__edge--bottom">${horiz}</div>

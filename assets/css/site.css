@@ -1131,9 +1131,10 @@ body.search-panel-open {
   opacity: 0.38;
   z-index: 2;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   align-items: center;
-  gap: 0;
+  gap: 0.1rem;
+  overflow: hidden;
 }
 
 .om-frame__om {
@@ -1158,11 +1159,11 @@ body.search-panel-open {
 
 .om-frame__edge--left,
 .om-frame__edge--right {
-  top: 1.05rem;
-  bottom: 0.85rem;
+  top: 0.42rem;
+  bottom: 0.38rem;
   width: 1em;
   flex-direction: column;
-  justify-content: space-evenly;
+  gap: 0.06rem;
 }
 
 .om-frame__edge--left {

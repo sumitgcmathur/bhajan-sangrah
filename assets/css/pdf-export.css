@@ -437,8 +437,10 @@ body.pdf-export {
   opacity: 0.38;
   z-index: 2;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   align-items: center;
+  gap: 0.08rem;
+  overflow: hidden;
 }
 
 .pdf-bhajan-list .om-frame__om {
@@ -463,11 +465,11 @@ body.pdf-export {
 
 .pdf-bhajan-list .om-frame__edge--left,
 .pdf-bhajan-list .om-frame__edge--right {
-  top: 1rem;
-  bottom: 0.8rem;
+  top: 0.4rem;
+  bottom: 0.35rem;
   width: 1em;
   flex-direction: column;
-  justify-content: space-evenly;
+  gap: 0.05rem;
 }
 
 .pdf-bhajan-list .om-frame__edge--left {
