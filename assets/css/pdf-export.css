@@ -53,7 +53,7 @@
   --pdf-content-pad-bottom: 10mm;
   --pdf-flow-pad-top: 9mm;
   --pdf-frame-om-color: rgba(155, 45, 74, 0.38);
-  --pdf-chunk-watermark-opacity: 0.016;
+  --pdf-chunk-watermark-opacity: 0.05;
 }
 
 * {
