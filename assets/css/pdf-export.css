@@ -32,6 +32,7 @@
   --pdf-lyrics-odd: #2c1810;
   --pdf-lyrics-even: #2c1810;
   --pdf-page-body-height: 255mm;
+  --pdf-watermark-opacity: 0.045;
 }
 
 * {
@@ -295,6 +296,29 @@ body.pdf-export {
   padding: 0.5rem 0.65rem 1rem;
   background: var(--pdf-surface);
   border-radius: 4px;
+  position: relative;
+}
+
+/* One full-page banner watermark per printed sheet (sections with banner) */
+.pdf-section--has-banner::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--pdf-watermark);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: var(--pdf-watermark-opacity);
+  pointer-events: none;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  filter: saturate(0.8);
+}
+
+.pdf-section--has-banner > * {
+  position: relative;
+  z-index: 1;
 }
 
 .pdf-section:first-of-type {

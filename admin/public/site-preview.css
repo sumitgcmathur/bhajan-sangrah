@@ -1105,7 +1105,7 @@ body.search-panel-open {
   box-shadow: 0 2px 10px var(--accent-glow);
 }
 
-/* Section banner as a faint centered watermark (sections with banner only) */
+/* Section banner as a faint tiled watermark (sections with banner only) */
 .content-main--has-banner .bhajan-card,
 .preview-in-section--has-banner .bhajan-card {
   position: relative;
@@ -1119,8 +1119,8 @@ body.search-panel-open {
   position: absolute;
   inset: 0;
   background-image: var(--bhajan-watermark);
-  background-repeat: no-repeat;
-  background-position: center center;
+  background-repeat: repeat-y;
+  background-position: top center;
   background-size: 100% auto;
   opacity: var(--bhajan-watermark-opacity);
   pointer-events: none;

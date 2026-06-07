@@ -205,8 +205,19 @@ function renderPdfSection(section, bhajans, resolveAsset) {
       .join('\n')}</div>`;
   }
 
+  let wmClass = '';
+  let wmStyle = '';
+  if (section.banner) {
+    const wmAssets = resolvePdfAsset(resolveAsset, section.banner, { section });
+    if (wmAssets.full) {
+      const wmUrl = String(wmAssets.full).replace(/'/g, '%27');
+      wmClass = ' pdf-section--has-banner';
+      wmStyle = ` style="--pdf-watermark: url('${wmUrl}')"`;
+    }
+  }
+
   return `${renderPdfBannerPage(section, resolveAsset)}
-<section class="pdf-section" id="${secId}">
+<section class="pdf-section${wmClass}" id="${secId}"${wmStyle}>
   <header class="pdf-section__head">
     <h1 class="pdf-section__title">${escapeHtml(section.title)}</h1>
   </header>
