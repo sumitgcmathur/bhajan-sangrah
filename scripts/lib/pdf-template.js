@@ -296,7 +296,7 @@ function renderPdfDocument(config, sectionPayloads, options = {}) {
 </head>
 <body class="pdf-export${showToolbar ? ' pdf-export--with-toolbar' : ''}">
 ${toolbar}
-<section class="pdf-cover pdf-banner-page">
+<section class="pdf-cover">
   ${coverBanner}
   <div class="pdf-cover__text">
     <h1 class="pdf-cover__title">${escapeHtml(config.site_title || 'भजन संग्रह')}</h1>

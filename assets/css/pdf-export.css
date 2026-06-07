@@ -56,12 +56,15 @@ body.pdf-export {
 
 .pdf-cover {
   position: relative;
-  min-height: var(--pdf-page-body-height);
+  height: var(--pdf-page-body-height);
+  max-height: var(--pdf-page-body-height);
   display: flex;
   flex-direction: column;
   padding: 0;
   page-break-after: always;
   background: #2a1420;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .pdf-cover__text {
@@ -110,8 +113,9 @@ body.pdf-export {
 }
 
 .pdf-cover .pdf-banner--fill {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-height: 0;
+  max-height: 100%;
 }
 
 /* PDF-only: CSS gradient fill (no blurred photo — smaller print raster) */
@@ -177,30 +181,32 @@ body.pdf-export {
   max-height: calc(var(--pdf-page-body-height) - 28mm);
 }
 
-/* Section index — all categories on one A4 sheet (14 sections ≈ 5×3 grid) */
+/* Section index — all categories on one A4 sheet (14 sections ≈ 4×4 grid) */
 .pdf-landing {
   page-break-after: always;
   page-break-inside: avoid;
   break-inside: avoid-page;
-  padding: 0.4rem 0.5rem 0.45rem;
+  min-height: var(--pdf-page-body-height);
+  box-sizing: border-box;
+  padding: 0.85rem 0.95rem 0.9rem;
   background: var(--pdf-surface);
   border: 1px solid var(--pdf-border);
   border-radius: 4px;
 }
 
 .pdf-landing__title {
-  margin: 0 0 0.15rem;
-  font-size: 1.1rem;
+  margin: 0 0 0.3rem;
+  font-size: 1.45rem;
   font-weight: 700;
   color: var(--pdf-accent);
   text-align: center;
 }
 
 .pdf-landing__stats {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.75rem;
   text-align: center;
   color: var(--pdf-muted);
-  font-size: 0.72rem;
+  font-size: 0.88rem;
 }
 
 .pdf-landing__stats strong {
@@ -209,8 +215,9 @@ body.pdf-export {
 
 .pdf-landing__grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.22rem 0.28rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem 0.55rem;
+  align-content: start;
 }
 
 .pdf-landing__card {
@@ -219,7 +226,7 @@ body.pdf-export {
   text-decoration: none;
   color: inherit;
   border: 1px solid var(--pdf-border);
-  border-radius: 3px;
+  border-radius: 4px;
   overflow: hidden;
   background: var(--pdf-bg);
   page-break-inside: avoid;
@@ -229,9 +236,9 @@ body.pdf-export {
 .pdf-landing__card-img {
   display: block;
   width: 100%;
-  height: 10mm;
-  max-height: 10mm;
-  aspect-ratio: 5 / 2;
+  height: 20mm;
+  max-height: 20mm;
+  aspect-ratio: 352 / 420;
   object-fit: cover;
   object-position: center top;
   background: #2a1420;
@@ -239,26 +246,26 @@ body.pdf-export {
 
 .pdf-landing__card-img--empty {
   min-height: 0;
-  height: 10mm;
-  max-height: 10mm;
+  height: 20mm;
+  max-height: 20mm;
   background: var(--pdf-border);
 }
 
 .pdf-landing__card-title {
-  padding: 0.12rem 0.18rem 0.04rem;
-  font-size: 0.58rem;
+  padding: 0.28rem 0.35rem 0.1rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.3;
   color: var(--pdf-accent-dark);
   text-align: center;
 }
 
 .pdf-landing__card-count {
-  padding: 0 0.18rem 0.1rem;
-  font-size: 0.52rem;
+  padding: 0 0.35rem 0.28rem;
+  font-size: 0.66rem;
   color: var(--pdf-muted);
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .pdf-section-index {
@@ -411,21 +418,24 @@ body.pdf-export {
   margin-top: 0.5rem;
 }
 
-/* Bhajan cards — one per page; short bhajans leave blank space at bottom only */
+/* Bhajan cards — flow naturally; keep stanzas / paragraphs intact */
 .pdf-bhajan-list .bhajan-card {
   background: var(--pdf-surface);
   border: none;
   border-radius: 0;
   padding: 1rem 0.75rem 1.15rem;
-  margin: 0;
+  margin: 0 0 1.1rem;
   box-shadow: none;
-  min-height: var(--pdf-page-body-height);
   box-sizing: border-box;
-  page-break-before: always;
-  break-before: page;
+  page-break-before: auto;
+  break-before: auto;
   page-break-inside: auto;
   break-inside: auto;
   page-break-after: auto;
+}
+
+.pdf-bhajan-list .bhajan-card:last-child {
+  margin-bottom: 0;
 }
 
 .pdf-bhajan-list .bhajan-card.om-frame {
