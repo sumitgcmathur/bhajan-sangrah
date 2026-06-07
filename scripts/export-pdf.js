@@ -77,8 +77,9 @@ async function exportPdfWithPuppeteer(htmlPath, pdfPath) {
 
   try {
     const page = await browser.newPage();
-    await page.goto(fileUrl, { waitUntil: 'networkidle0', timeout: 120000 });
+    await page.goto(fileUrl, { waitUntil: 'load', timeout: 120000 });
     await page.evaluateHandle(() => document.fonts.ready);
+    console.log('Rendering PDF with Puppeteer…');
     await writePdf(page, htmlPath, pdfPath);
   } finally {
     await browser.close();
@@ -220,7 +221,9 @@ async function main() {
   const total = payloads.reduce((n, p) => n + p.bhajans.length, 0);
   console.log(`Exporting ${payloads.length} sections, ${total} bhajans…`);
 
+  const t0 = Date.now();
   await exportPdf(DEFAULT_HTML, pdfPath);
+  console.log(`PDF export finished in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
 }
 
 main().catch((err) => {

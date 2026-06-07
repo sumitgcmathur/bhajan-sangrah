@@ -45,7 +45,8 @@
   --pdf-content-pad-bottom: 9mm;
   /* Match web bhajan-card watermark (site.css) — page-level in PDF */
   --pdf-watermark-opacity: 0.045;
-  --pdf-watermark-tile-w: 100%;
+  /* Small cached tile (see pdf-watermark.js WM_WIDTH) — fast repeat in Chromium */
+  --pdf-watermark-tile-w: 200px;
   --pdf-watermark-repeat: repeat;
   --pdf-watermark-position: top left;
 }
@@ -340,37 +341,16 @@ body.pdf-export {
   color: var(--pdf-accent-dark);
 }
 
-/* Page decor — fixed to each printed sheet (inside @page margins; inset 0) */
-.pdf-page-decor {
+/* ॐ page border — one fixed layer for the whole export (fast in Chromium) */
+.pdf-page-frame {
+  --om-frame-corner: 1em;
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   pointer-events: none;
-  z-index: 0;
-}
-
-.pdf-page-watermark {
-  position: absolute;
-  inset: 0;
-  background-image: var(--pdf-watermark);
-  background-repeat: var(--pdf-watermark-repeat);
-  background-position: var(--pdf-watermark-position);
-  background-size: var(--pdf-watermark-tile-w) auto;
-  opacity: var(--pdf-watermark-opacity);
-  filter: saturate(0.8);
-  pointer-events: none;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
-}
-
-.pdf-page-frame {
-  --om-frame-corner: 1em;
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
+  z-index: 4;
 }
 
 .pdf-page-frame .om-frame__ring {
@@ -487,9 +467,26 @@ body.pdf-export {
   z-index: 2;
 }
 
+/* Tiled section watermark (scrolls with section — not position:fixed) */
+.pdf-section--has-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--pdf-watermark);
+  background-repeat: var(--pdf-watermark-repeat);
+  background-position: var(--pdf-watermark-position);
+  background-size: var(--pdf-watermark-tile-w) auto;
+  opacity: var(--pdf-watermark-opacity);
+  filter: saturate(0.8);
+  pointer-events: none;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
 .pdf-section__content {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   padding: var(--pdf-content-pad-top) var(--pdf-content-pad-x) var(--pdf-content-pad-bottom);
 }
 

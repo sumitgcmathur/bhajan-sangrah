@@ -5,7 +5,8 @@ const { landingBannerPath } = require('./banner-thumbs');
 const { pathToFileURL } = require('./pdf-assets');
 
 /** Small JPEG for per-page PDF watermark (full banner × position:fixed is very slow in Chromium). */
-const WM_WIDTH = 280;
+/** Keep small — large tiles × position:fixed/repeat stall Chromium PDF raster. */
+const WM_WIDTH = 200;
 const CACHE_DIR = path.join(ROOT, 'output', '.pdf-watermark-cache');
 
 function loadSharp() {
