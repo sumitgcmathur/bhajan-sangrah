@@ -1425,17 +1425,23 @@ body.search-panel-open {
   display: block;
 }
 
-/* Couplet / multiline stanza: tighter than gap between separate antaras */
-.bhajan-lyrics--standard .lyrics-antara--block .lyrics-line,
-.bhajan-lyrics--standard p.lyrics-sthayi .lyrics-line,
-.bhajan-card__pre-shlok .lyrics-line {
+/*
+ * Multiline stanza (e.g. अष्टक): YAML lines join with <br> in one line box.
+ * Avoid display:block per YAML line — that gaps wider than soft-wrapped text.
+ */
+.bhajan-lyrics--standard .lyrics-antara--block,
+.bhajan-lyrics--standard p.lyrics-sthayi,
+.bhajan-card__pre-shlok .lyrics-pre-shlok,
+.bhajan-lyrics--standard .lyrics-aside p {
   line-height: 1.52;
 }
 
-.bhajan-lyrics--standard .lyrics-antara--block .lyrics-line + .lyrics-line,
-.bhajan-lyrics--standard p.lyrics-sthayi .lyrics-line + .lyrics-line,
-.bhajan-card__pre-shlok .lyrics-line + .lyrics-line {
-  margin-top: -0.12em;
+.bhajan-lyrics--standard .lyrics-antara--block .lyrics-line,
+.bhajan-lyrics--standard p.lyrics-sthayi .lyrics-line,
+.bhajan-card__pre-shlok .lyrics-line,
+.bhajan-lyrics--standard .lyrics-aside .lyrics-line {
+  display: inline;
+  line-height: inherit;
 }
 
 .bhajan-lyrics--standard .lyrics-refrain {

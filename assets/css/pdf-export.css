@@ -839,16 +839,19 @@ section.pdf-banner-page {
   display: block;
 }
 
-.pdf-bhajan-list .lyrics-antara--block .lyrics-line,
-.pdf-bhajan-list p.lyrics-sthayi .lyrics-line,
-.pdf-bhajan-list .bhajan-card__pre-shlok .lyrics-line {
+.pdf-bhajan-list .lyrics-antara--block,
+.pdf-bhajan-list p.lyrics-sthayi,
+.pdf-bhajan-list .bhajan-card__pre-shlok .lyrics-pre-shlok,
+.pdf-bhajan-list .lyrics-aside p {
   line-height: 1.52;
 }
 
-.pdf-bhajan-list .lyrics-antara--block .lyrics-line + .lyrics-line,
-.pdf-bhajan-list p.lyrics-sthayi .lyrics-line + .lyrics-line,
-.pdf-bhajan-list .bhajan-card__pre-shlok .lyrics-line + .lyrics-line {
-  margin-top: -0.12em;
+.pdf-bhajan-list .lyrics-antara--block .lyrics-line,
+.pdf-bhajan-list p.lyrics-sthayi .lyrics-line,
+.pdf-bhajan-list .bhajan-card__pre-shlok .lyrics-line,
+.pdf-bhajan-list .lyrics-aside .lyrics-line {
+  display: inline;
+  line-height: inherit;
 }
 
 .pdf-bhajan-list .lyrics-antara {

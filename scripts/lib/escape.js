@@ -80,7 +80,7 @@ function renderBlockLines(lines, opts = {}) {
     }
   }
 
-  return { html: out.join('\n'), nextVerse: n };
+  return { html: out.join('<br>\n'), nextVerse: n };
 }
 
 function lyricsAntaraStripeClass(verseNum) {
@@ -342,7 +342,9 @@ function renderShlokBlockHtml(text, className) {
   if (!body) return '';
 
   const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
-  const html = lines.map((l) => `<span class="lyrics-line">${escapeHtml(l)}</span>`).join('\n');
+  const html = lines
+    .map((l) => `<span class="lyrics-line">${escapeHtml(l)}</span>`)
+    .join('<br>\n');
   return `<p class="${className}">${html}</p>`;
 }
 
