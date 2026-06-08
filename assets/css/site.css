@@ -1337,10 +1337,6 @@ body.search-panel-open {
   margin: 0;
 }
 
-.bhajan-card__post-shlok .lyrics-line {
-  display: block;
-}
-
 .bhajan-card__lyrics .lyrics-sthayi {
   scroll-margin-top: calc(var(--scroll-header-h) + env(safe-area-inset-top, 0px) + 0.65rem);
 }
@@ -1432,6 +1428,7 @@ body.search-panel-open {
 .bhajan-lyrics--standard .lyrics-antara--block,
 .bhajan-lyrics--standard p.lyrics-sthayi,
 .bhajan-card__pre-shlok .lyrics-pre-shlok,
+.bhajan-card__post-shlok .lyrics-post-shlok,
 .bhajan-lyrics--standard .lyrics-aside p {
   line-height: 1.52;
 }
@@ -1439,6 +1436,7 @@ body.search-panel-open {
 .bhajan-lyrics--standard .lyrics-antara--block .lyrics-line,
 .bhajan-lyrics--standard p.lyrics-sthayi .lyrics-line,
 .bhajan-card__pre-shlok .lyrics-line,
+.bhajan-card__post-shlok .lyrics-line,
 .bhajan-lyrics--standard .lyrics-aside .lyrics-line {
   display: inline;
   line-height: inherit;
@@ -1470,10 +1468,6 @@ body.search-panel-open {
 
 .bhajan-lyrics--standard .lyrics-aside p {
   margin: 0;
-}
-
-.bhajan-lyrics--standard .lyrics-aside .lyrics-line {
-  display: block;
 }
 
 /* Opening shloka before main lyrics (legacy card wrapper — prefer lyrics.pre_shlok) */

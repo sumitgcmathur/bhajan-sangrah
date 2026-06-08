@@ -846,6 +846,7 @@ section.pdf-banner-page {
 .pdf-bhajan-list .bhajan-lyrics--standard .lyrics-antara--block,
 .pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-sthayi,
 .pdf-bhajan-list .bhajan-card__pre-shlok .lyrics-pre-shlok,
+.pdf-bhajan-list .bhajan-card__post-shlok .lyrics-post-shlok,
 .pdf-bhajan-list .lyrics-aside p {
   line-height: 1.52;
 }
@@ -853,6 +854,7 @@ section.pdf-banner-page {
 .pdf-bhajan-list .bhajan-lyrics--standard .lyrics-antara--block .lyrics-line,
 .pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-sthayi .lyrics-line,
 .pdf-bhajan-list .bhajan-card__pre-shlok .lyrics-line,
+.pdf-bhajan-list .bhajan-card__post-shlok .lyrics-line,
 .pdf-bhajan-list .lyrics-aside .lyrics-line {
   display: inline;
   line-height: inherit;
