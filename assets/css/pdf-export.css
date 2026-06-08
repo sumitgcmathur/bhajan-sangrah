@@ -769,6 +769,10 @@ section.pdf-banner-page {
 
 .pdf-bhajan-list .bhajan-lyrics--standard .lyrics-antara {
   margin: 0 0 0.75rem;
+}
+
+/* Single-line antaras only — multiline blocks use 1.52 below */
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-antara:not(.lyrics-antara--block):not(.lyrics-sthayi) {
   line-height: 1.85;
 }
 
@@ -839,23 +843,19 @@ section.pdf-banner-page {
   display: block;
 }
 
-.pdf-bhajan-list .lyrics-antara--block,
-.pdf-bhajan-list p.lyrics-sthayi,
+.pdf-bhajan-list .bhajan-lyrics--standard .lyrics-antara--block,
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-sthayi,
 .pdf-bhajan-list .bhajan-card__pre-shlok .lyrics-pre-shlok,
 .pdf-bhajan-list .lyrics-aside p {
   line-height: 1.52;
 }
 
-.pdf-bhajan-list .lyrics-antara--block .lyrics-line,
-.pdf-bhajan-list p.lyrics-sthayi .lyrics-line,
+.pdf-bhajan-list .bhajan-lyrics--standard .lyrics-antara--block .lyrics-line,
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-sthayi .lyrics-line,
 .pdf-bhajan-list .bhajan-card__pre-shlok .lyrics-line,
 .pdf-bhajan-list .lyrics-aside .lyrics-line {
   display: inline;
   line-height: inherit;
-}
-
-.pdf-bhajan-list .lyrics-antara {
-  margin: 0.35rem 0;
 }
 
 .pdf-bhajan-list .lyrics-marker {
