@@ -376,10 +376,13 @@ function flattenBhajansForNav(bhajans, section, grouped, groups) {
   });
 }
 
-function renderOmFrameDecor() {
+function renderOmFrameDecor(opts = {}) {
+  const horizRepeat = opts.horizontalRepeat ?? 48;
+  /* Page frame ≈ one viewport; bhajan cards (e.g. चालीसा) need many more vertical ॐ */
+  const vertRepeat = opts.verticalRepeat ?? 96;
   const om = '<span class="om-frame__om">ॐ</span>';
-  const horiz = om.repeat(48);
-  const vert = om.repeat(96);
+  const horiz = om.repeat(horizRepeat);
+  const vert = om.repeat(vertRepeat);
   return `<div class="om-frame__ring" aria-hidden="true">
   <span class="om-frame__corner om-frame__corner--tl om-frame__om">ॐ</span>
   <span class="om-frame__corner om-frame__corner--tr om-frame__om">ॐ</span>
@@ -407,7 +410,7 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
     sthayiAnchorId: hasSthayi ? sthayiAnchor : null,
   });
   return `<article class="bhajan-card om-frame" id="${id}">
-  ${renderOmFrameDecor()}
+  ${renderOmFrameDecor({ verticalRepeat: 400 })}
   <header class="bhajan-card__head" id="${titleAnchor}">
     <h3 class="bhajan-card__title"><span class="bhajan-card__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}${sw}</h3>
   </header>
