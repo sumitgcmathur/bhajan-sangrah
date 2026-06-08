@@ -47,9 +47,9 @@
       var(--pdf-landing-rows)
   );
   --pdf-thumb-aspect: 352 / 761;
-  --pdf-frame-ring-inset: 5mm;
+  --pdf-frame-ring-inset: 4mm;
   --pdf-content-pad-top: 10mm;
-  --pdf-content-pad-x: 12mm;
+  --pdf-content-pad-x: 9mm;
   --pdf-content-pad-bottom: 10mm;
   --pdf-flow-pad-top: 9mm;
   --pdf-frame-om-color: rgba(155, 45, 74, 0.38);

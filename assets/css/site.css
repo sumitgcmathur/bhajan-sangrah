@@ -1583,9 +1583,18 @@ body.search-panel-open {
   }
 
   .content-main {
-    --content-pad-x: 0.65rem;
-    --card-pad-x: 0.7rem;
+    --content-pad-x: 0.35rem;
+    --card-pad-x: 0.4rem;
     padding: 1rem var(--content-pad-x) 1.25rem;
+  }
+
+  .bhajan-card.om-frame {
+    --om-frame-inset: 0.15rem;
+    --om-frame-corner: 0.75em;
+  }
+
+  .bhajan-card.om-frame .om-frame__om {
+    font-size: 0.68rem;
   }
 
   .content-main--section {
