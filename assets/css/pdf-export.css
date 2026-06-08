@@ -873,6 +873,12 @@ section.pdf-banner-page {
   font-style: normal;
 }
 
+.pdf-bhajan-list .stanza-gap {
+  display: block;
+  height: 0.75rem;
+  margin: 0;
+}
+
 .pdf-bhajan-list .lyrics-post-shlok {
   margin: 0;
 }

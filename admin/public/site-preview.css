@@ -230,17 +230,36 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-.sidebar-link.is-active .sidebar-link__count,
-.sidebar-link:hover .sidebar-link__count {
+.sidebar-link.is-active .sidebar-link__count {
   color: var(--sidebar-active);
 }
 
-.sidebar-link:hover,
 .sidebar-link.is-active {
   color: var(--sidebar-active);
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.22);
   border-left-color: var(--sidebar-active);
+}
+
+@media (hover: hover) {
+  .sidebar-link:hover:not(.is-active) .sidebar-link__count {
+    color: rgba(252, 232, 236, 0.92);
+  }
+
+  .sidebar-link:hover:not(.is-active) {
+    color: var(--sidebar-text);
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.1);
+    border-left-color: rgba(255, 255, 255, 0.45);
+  }
+}
+
+.sidebar-link:focus-visible:not(.is-active) {
+  color: var(--sidebar-text);
+  background: rgba(255, 255, 255, 0.1);
+  border-left-color: rgba(255, 255, 255, 0.45);
+  outline: 2px solid rgba(255, 255, 255, 0.55);
+  outline-offset: 1px;
 }
 
 .mobile-bar__when-banner,
@@ -1486,9 +1505,9 @@ body.search-panel-open {
 }
 
 .stanza-gap {
-  height: 0.9rem;
+  display: block;
+  height: 0.75rem;
   margin: 0;
-  visibility: hidden;
 }
 
 /* ---- Mobile: bottom bar, collapsible sidebar ---- */

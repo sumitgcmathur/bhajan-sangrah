@@ -44,22 +44,34 @@ function lineWithoutEndDanda(line) {
     .trim();
 }
 
-/**
- * Render a multiline block like an antara; last line gets endMarker or ॥n॥.
- * @param {string[]} lines
- * @param {{ verseNum?: number, endMarker?: string }} opts
- */
-function renderBlockLines(lines, opts = {}) {
-  if (!lines.length) return { html: '', nextVerse: opts.verseNum ?? 1 };
+const STANZA_GAP = '<span class="stanza-gap" aria-hidden="true"></span>';
 
+/** Split on blank YAML lines — each group is one visual stanza. */
+function splitLineGroups(lines) {
+  const groups = [];
+  let buf = [];
+  for (const line of lines) {
+    const t = String(line || '').trim();
+    if (!t) {
+      if (buf.length) {
+        groups.push(buf);
+        buf = [];
+      }
+      continue;
+    }
+    buf.push(t);
+  }
+  if (buf.length) groups.push(buf);
+  return groups;
+}
+
+function renderBlockLinesGroup(lines, opts, verseRef) {
   const out = [];
-  let n = opts.verseNum ?? 1;
   const couplet = lines.length >= 2;
   const fixedMarker = opts.endMarker;
 
   for (let i = 0; i < lines.length; i++) {
-    const t = lines[i].trim();
-    if (!t) continue;
+    const t = lines[i];
     if (isRefrainLine(t)) {
       out.push(`<span class="lyrics-refrain">${escapeHtml(t)}</span>`);
       continue;
@@ -70,17 +82,35 @@ function renderBlockLines(lines, opts = {}) {
 
     if (tagLast) {
       const core = lineWithoutEndDanda(t);
-      const marker = fixedMarker != null ? fixedMarker : formatDandaVerse(n);
+      const marker = fixedMarker != null ? fixedMarker : formatDandaVerse(verseRef.n);
       out.push(
         `<span class="lyrics-line">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></span>`
       );
-      if (!fixedMarker) n += 1;
+      if (!fixedMarker) verseRef.n += 1;
     } else {
       out.push(`<span class="lyrics-line">${escapeHtml(t)}</span>`);
     }
   }
 
-  return { html: out.join('<br>\n'), nextVerse: n };
+  return out.join('<br>\n');
+}
+
+/**
+ * Render a multiline block like an antara; last line gets endMarker or ॥n॥.
+ * Blank YAML lines → stanza-gap between groups.
+ * @param {string[]} lines
+ * @param {{ verseNum?: number, endMarker?: string }} opts
+ */
+function renderBlockLines(lines, opts = {}) {
+  const groups = splitLineGroups(lines);
+  if (!groups.length) return { html: '', nextVerse: opts.verseNum ?? 1 };
+
+  const verseRef = { n: opts.verseNum ?? 1 };
+  const html = groups
+    .map((g) => renderBlockLinesGroup(g, opts, verseRef))
+    .join(`\n${STANZA_GAP}\n`);
+
+  return { html, nextVerse: verseRef.n };
 }
 
 function lyricsAntaraStripeClass(verseNum) {
@@ -154,7 +184,7 @@ function renderParagraphHtml(text, verseNum, opts = {}) {
   const stripe = lyricsAntaraStripeClass(verseNum);
 
   if (isMultilineParagraph(body)) {
-    const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
+    const lines = body.split('\n');
     const { html, nextVerse } = renderBlockLines(lines, { verseNum });
     return {
       html: `<p class="lyrics-antara lyrics-antara--block ${stripe}">${html}</p>`,
@@ -178,7 +208,7 @@ function renderSthayiHtml(sthayi, anchorId) {
   const idAttr = anchorId ? ` id="${escapeHtml(anchorId)}"` : '';
 
   if (isMultilineParagraph(body)) {
-    const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
+    const lines = body.split('\n');
     const { html } = renderBlockLines(lines, { endMarker });
     return `<p${idAttr} class="lyrics-antara lyrics-antara--block lyrics-sthayi lyrics-antara--even">${html}</p>`;
   }
@@ -341,10 +371,11 @@ function renderShlokBlockHtml(text, className) {
   const body = String(text || '').trim();
   if (!body) return '';
 
-  const lines = body.split('\n').map((l) => l.trim()).filter(Boolean);
-  const html = lines
-    .map((l) => `<span class="lyrics-line">${escapeHtml(l)}</span>`)
-    .join('<br>\n');
+  const html = splitLineGroups(body.split('\n'))
+    .map((g) =>
+      g.map((l) => `<span class="lyrics-line">${escapeHtml(l)}</span>`).join('<br>\n')
+    )
+    .join(`\n${STANZA_GAP}\n`);
   return `<p class="${className}">${html}</p>`;
 }
 
