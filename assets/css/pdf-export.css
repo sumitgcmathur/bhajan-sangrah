@@ -54,6 +54,10 @@
   --pdf-flow-pad-top: 9mm;
   --pdf-frame-om-color: rgba(155, 45, 74, 0.38);
   --pdf-chunk-watermark-opacity: 0.05;
+  /* Bhajan lyrics rhythm — keep in sync with assets/css/site.css */
+  --lyrics-line-height: 1.52;
+  --lyrics-antara-gap: 0.75rem;
+  --lyrics-stanza-gap: 0.75rem;
 }
 
 * {
@@ -767,15 +771,6 @@ section.pdf-banner-page {
   color: var(--pdf-text);
 }
 
-.pdf-bhajan-list .bhajan-lyrics--standard .lyrics-antara {
-  margin: 0 0 0.75rem;
-}
-
-/* Single-line antaras only — multiline blocks use 1.52 below */
-.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-antara:not(.lyrics-antara--block):not(.lyrics-sthayi) {
-  line-height: 1.85;
-}
-
 .pdf-bhajan-list .tarz {
   color: var(--pdf-muted);
   margin: 0.35rem 0;
@@ -794,11 +789,7 @@ section.pdf-banner-page {
   font-size: 0.98em;
   color: var(--pdf-muted);
   text-align: left;
-  line-height: 1.75;
-}
-
-.pdf-bhajan-list .lyrics-aside p {
-  margin: 0;
+  line-height: normal;
 }
 
 .pdf-bhajan-list .bhajan-card__pre-shlok {
@@ -808,7 +799,7 @@ section.pdf-banner-page {
   font-size: 0.98em;
   color: var(--pdf-muted);
   text-align: left;
-  line-height: 1.75;
+  line-height: normal;
 }
 
 .pdf-bhajan-list .lyrics-pre-shlok {
@@ -827,35 +818,34 @@ section.pdf-banner-page {
   font-size: 0.98em;
   color: var(--pdf-muted);
   text-align: left;
-  line-height: 1.75;
+  line-height: normal;
 }
 
 .pdf-bhajan-list .bhajan-card__lyrics {
   font-size: 1.05rem;
-  line-height: 1.9;
+  line-height: normal;
 }
 
-.pdf-bhajan-list .bhajan-card__lyrics p {
-  margin: 0 0 0.45rem;
-}
-
-.pdf-bhajan-list .lyrics-line {
-  display: block;
-}
-
-.pdf-bhajan-list .bhajan-lyrics--standard .lyrics-antara--block,
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-antara,
 .pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-sthayi,
 .pdf-bhajan-list .bhajan-card__pre-shlok .lyrics-pre-shlok,
 .pdf-bhajan-list .bhajan-card__post-shlok .lyrics-post-shlok,
 .pdf-bhajan-list .lyrics-aside p {
-  line-height: 1.52;
+  line-height: var(--lyrics-line-height);
+  margin: 0 0 var(--lyrics-antara-gap);
 }
 
-.pdf-bhajan-list .bhajan-lyrics--standard .lyrics-antara--block .lyrics-line,
-.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-sthayi .lyrics-line,
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-antara:last-child,
+.pdf-bhajan-list .bhajan-lyrics--standard p.lyrics-sthayi:last-child {
+  margin-bottom: 0;
+}
+
+.pdf-bhajan-list .bhajan-lyrics--standard .lyrics-line,
+.pdf-bhajan-list .bhajan-lyrics--standard .lyrics-refrain,
 .pdf-bhajan-list .bhajan-card__pre-shlok .lyrics-line,
 .pdf-bhajan-list .bhajan-card__post-shlok .lyrics-line,
-.pdf-bhajan-list .lyrics-aside .lyrics-line {
+.pdf-bhajan-list .lyrics-aside .lyrics-line,
+.pdf-bhajan-list .lyrics-aside .lyrics-refrain {
   display: inline;
   line-height: inherit;
 }
@@ -875,7 +865,7 @@ section.pdf-banner-page {
 
 .pdf-bhajan-list .stanza-gap {
   display: block;
-  height: 0.75rem;
+  height: var(--lyrics-stanza-gap);
   margin: 0;
 }
 

@@ -37,6 +37,9 @@
   --pager-h: 2.65rem;
   --section-hero-fill: calc(100dvh - var(--mobile-bar-h) - env(safe-area-inset-bottom, 0px));
   --section-page-watermark-opacity: 0.05;
+  --lyrics-line-height: 1.52;
+  --lyrics-antara-gap: 0.75rem;
+  --lyrics-stanza-gap: 0.75rem;
 }
 
 /* Dark theme: manual toggle */
@@ -1347,14 +1350,11 @@ body.search-panel-open {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   text-align: left;
-  line-height: 1.75;
+  line-height: normal;
   font-size: 0.98em;
   color: var(--muted);
 }
 
-.bhajan-card__post-shlok .lyrics-aside p {
-  margin: 0;
-}
 
 .bhajan-card__lyrics .lyrics-sthayi {
   scroll-margin-top: calc(var(--scroll-header-h) + env(safe-area-inset-top, 0px) + 0.65rem);
@@ -1391,11 +1391,7 @@ body.search-panel-open {
 
 .bhajan-card__lyrics {
   font-size: clamp(1.1rem, 3.5vw, 1.2rem);
-  line-height: 1.9;
-}
-
-.bhajan-card__lyrics p {
-  margin: 0 0 0.5rem;
+  line-height: normal;
 }
 
 /* Standard lyrics layout (तर्ज, स्थाई, numbered अंतरे) */
@@ -1412,11 +1408,6 @@ body.search-panel-open {
   font-weight: 500;
 }
 
-.bhajan-lyrics--standard .lyrics-antara {
-  margin: 0 0 1rem;
-  line-height: 1.85;
-}
-
 /*
  * Verse stripes: odd = heading (--accent-dark); even = index links (--link).
  * स्थायी counts as para 0 (even).
@@ -1430,33 +1421,26 @@ body.search-panel-open {
   color: var(--lyrics-even);
 }
 
-.bhajan-lyrics--standard .lyrics-antara--block {
-  margin-bottom: 0.75rem;
-}
-
-/* One display row per YAML line (see renderBlockLines in escape.js) */
-.bhajan-lyrics--standard .lyrics-line,
-.bhajan-card__pre-shlok .lyrics-line {
-  display: block;
-}
-
-/*
- * Multiline stanza (e.g. अष्टक): YAML lines join with <br> in one line box.
- * Avoid display:block per YAML line — that gaps wider than soft-wrapped text.
- */
-.bhajan-lyrics--standard .lyrics-antara--block,
+.bhajan-lyrics--standard p.lyrics-antara,
 .bhajan-lyrics--standard p.lyrics-sthayi,
 .bhajan-card__pre-shlok .lyrics-pre-shlok,
 .bhajan-card__post-shlok .lyrics-post-shlok,
 .bhajan-lyrics--standard .lyrics-aside p {
-  line-height: 1.52;
+  line-height: var(--lyrics-line-height);
+  margin: 0 0 var(--lyrics-antara-gap);
 }
 
-.bhajan-lyrics--standard .lyrics-antara--block .lyrics-line,
-.bhajan-lyrics--standard p.lyrics-sthayi .lyrics-line,
+.bhajan-lyrics--standard p.lyrics-antara:last-child,
+.bhajan-lyrics--standard p.lyrics-sthayi:last-child {
+  margin-bottom: 0;
+}
+
+.bhajan-lyrics--standard .lyrics-line,
+.bhajan-lyrics--standard .lyrics-refrain,
 .bhajan-card__pre-shlok .lyrics-line,
 .bhajan-card__post-shlok .lyrics-line,
-.bhajan-lyrics--standard .lyrics-aside .lyrics-line {
+.bhajan-lyrics--standard .lyrics-aside .lyrics-line,
+.bhajan-lyrics--standard .lyrics-aside .lyrics-refrain {
   display: inline;
   line-height: inherit;
 }
@@ -1480,13 +1464,9 @@ body.search-panel-open {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   text-align: left;
-  line-height: 1.75;
+  line-height: normal;
   font-size: 0.98em;
   color: var(--muted);
-}
-
-.bhajan-lyrics--standard .lyrics-aside p {
-  margin: 0;
 }
 
 /* Opening shloka before main lyrics (legacy card wrapper — prefer lyrics.pre_shlok) */
@@ -1495,7 +1475,7 @@ body.search-panel-open {
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);
   text-align: left;
-  line-height: 1.75;
+  line-height: normal;
   font-size: 0.98em;
   color: var(--muted);
 }
@@ -1506,7 +1486,7 @@ body.search-panel-open {
 
 .stanza-gap {
   display: block;
-  height: 0.75rem;
+  height: var(--lyrics-stanza-gap);
   margin: 0;
 }
 
@@ -1657,15 +1637,11 @@ body.search-panel-open {
 
   .bhajan-card__lyrics {
     font-size: 1.15rem;
-    line-height: 1.95;
+    line-height: normal;
   }
 
   .bhajan-lyrics--standard {
     max-width: none;
-  }
-
-  .bhajan-lyrics--standard .lyrics-antara {
-    margin-bottom: 0.85rem;
   }
 
   .section-grid {

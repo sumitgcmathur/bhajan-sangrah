@@ -195,7 +195,7 @@ function renderParagraphHtml(text, verseNum, opts = {}) {
   const core = lineWithoutEndDanda(body);
   const marker = formatDandaVerse(verseNum);
   return {
-    html: `<p class="lyrics-antara ${stripe}">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></p>`,
+    html: `<p class="lyrics-antara lyrics-antara--block ${stripe}"><span class="lyrics-line">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(marker)}</span></span></p>`,
     nextVerse: verseNum + 1,
   };
 }
@@ -214,7 +214,7 @@ function renderSthayiHtml(sthayi, anchorId) {
   }
 
   const core = lineWithoutEndDanda(body);
-  return `<p${idAttr} class="lyrics-antara lyrics-sthayi lyrics-antara--even">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(endMarker)}</span></p>`;
+  return `<p${idAttr} class="lyrics-antara lyrics-antara--block lyrics-sthayi lyrics-antara--even"><span class="lyrics-line">${escapeHtml(core)}<span class="lyrics-marker">${escapeHtml(endMarker)}</span></span></p>`;
 }
 
 function isCommentaryItem(item) {
