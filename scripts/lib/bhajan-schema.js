@@ -7,6 +7,7 @@ const { sectionFolder, listBhajanFiles } = require('./sections');
 /** Top-level bhajan YAML keys the parser accepts */
 const DOC_KEYS = new Set([
   'title',
+  'romantitle',
   'tarz',
   'group',
   'swarachit',
@@ -214,11 +215,21 @@ function validateBhajanYaml(text, relPath) {
   const hasTitle = source.topLevel.some((k) => k.key === 'title');
   if (!hasTitle) add('error', 'missing_title', 'Missing required field: title');
 
+  const hasRomanTitle = source.topLevel.some((k) => k.key === 'romantitle');
+  if (!hasRomanTitle) add('error', 'missing_romantitle', 'Missing required field: romantitle');
+
   const titleKey = source.topLevel.find((k) => k.key === 'title');
   if (titleKey) {
     const titleLine = lines[titleKey.line - 1] || '';
     const titleVal = titleLine.replace(/^title:\s*/, '').trim();
     if (!titleVal) add('error', 'empty_title', 'title is empty', titleKey.line);
+  }
+
+  const romanTitleKey = source.topLevel.find((k) => k.key === 'romantitle');
+  if (romanTitleKey) {
+    const romanLine = lines[romanTitleKey.line - 1] || '';
+    const romanVal = romanLine.replace(/^romantitle:\s*/, '').trim();
+    if (!romanVal) add('error', 'empty_romantitle', 'romantitle is empty', romanTitleKey.line);
   }
 
   if (source.lyricsMode === 'missing') {

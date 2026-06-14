@@ -51,40 +51,43 @@
 
   /* ---- Collapsible bhajan index (sections without banner) ---- */
   function initCollapsibleIndex() {
-    var nav = document.getElementById('bhajan-index');
-    if (!nav || !nav.classList.contains('bhajan-index--collapsible')) return;
-    var toggle = nav.querySelector('.bhajan-index__toggle');
-    var panel = document.getElementById('bhajan-index-panel');
-    if (!toggle || !panel) return;
+    document.querySelectorAll('.bhajan-index--collapsible').forEach(function (nav) {
+      var toggle = nav.querySelector('.bhajan-index__toggle');
+      var panel = nav.querySelector('.bhajan-index__panel');
+      if (!toggle || !panel) return;
+      var storageKey =
+        nav.id === 'master-bhajan-index'
+          ? 'bhajan-sangrah-master-index-open'
+          : STORAGE_INDEX_OPEN;
 
-    function setOpen(open) {
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      panel.hidden = !open;
-      toggle.querySelector('.bhajan-index__toggle-text').textContent = open
-        ? 'भजन सूची छिपाएँ'
-        : 'भजन सूची दिखाएँ';
+      function setOpen(open) {
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        panel.hidden = !open;
+        toggle.querySelector('.bhajan-index__toggle-text').textContent = open
+          ? 'भजन सूची छिपाएँ'
+          : 'भजन सूची दिखाएँ';
+        try {
+          localStorage.setItem(storageKey, open ? '1' : '0');
+        } catch (e) {}
+      }
+
+      var defaultOpen = nav.id === 'master-bhajan-index' ? false : !isMobile();
       try {
-        localStorage.setItem(STORAGE_INDEX_OPEN, open ? '1' : '0');
+        var saved = localStorage.getItem(storageKey);
+        if (saved === '1') defaultOpen = true;
+        if (saved === '0') defaultOpen = false;
       } catch (e) {}
-    }
+      if (window.location.hash && panel.querySelector('a[href="' + window.location.hash + '"]')) {
+        defaultOpen = true;
+      }
+      setOpen(defaultOpen);
 
-    var defaultOpen = false;
-    if (!isMobile()) defaultOpen = true;
-    try {
-      var saved = localStorage.getItem(STORAGE_INDEX_OPEN);
-      if (saved === '1') defaultOpen = true;
-      if (saved === '0') defaultOpen = false;
-    } catch (e) {}
-    if (window.location.hash && nav.querySelector('a[href="' + window.location.hash + '"]')) {
-      defaultOpen = true;
-    }
-    setOpen(defaultOpen);
+      toggle.addEventListener('click', function () {
+        setOpen(panel.hidden);
+      });
 
-    toggle.addEventListener('click', function () {
-      setOpen(panel.hidden);
+      bindBhajanIndexLinks(panel);
     });
-
-    bindBhajanIndexLinks(panel);
   }
 
   function openCollapsibleIndexIfNeeded() {
@@ -100,6 +103,89 @@
     try {
       localStorage.setItem(STORAGE_INDEX_OPEN, '1');
     } catch (e) {}
+  }
+
+  /* ---- Devanagari / Roman title toggle on indexes ---- */
+  var STORAGE_SCRIPT = 'bhajan-sangrah-script';
+
+  function getSavedScript() {
+    try {
+      var s = localStorage.getItem(STORAGE_SCRIPT);
+      if (s === 'roman' || s === 'deva') return s;
+    } catch (e) {}
+    return 'deva';
+  }
+
+  function saveScript(script) {
+    try {
+      localStorage.setItem(STORAGE_SCRIPT, script);
+    } catch (e) {}
+  }
+
+  function compareSortKeys(a, b) {
+    return String(a || '').localeCompare(String(b || ''), undefined, { sensitivity: 'base' });
+  }
+
+  function renumberIndexList(ul) {
+    ul.querySelectorAll(':scope > li').forEach(function (li, i) {
+      var num = li.querySelector('.bhajan-index__num');
+      if (num) num.textContent = i + 1 + '.';
+    });
+  }
+
+  function sortIndexList(ul, script) {
+    var items = Array.prototype.slice.call(ul.querySelectorAll(':scope > li'));
+    if (items.length < 2) return;
+    items.sort(function (a, b) {
+      var ka = a.getAttribute('data-sort-' + (script === 'roman' ? 'roman' : 'deva')) || '';
+      var kb = b.getAttribute('data-sort-' + (script === 'roman' ? 'roman' : 'deva')) || '';
+      return compareSortKeys(ka, kb);
+    });
+    items.forEach(function (li) {
+      ul.appendChild(li);
+    });
+    renumberIndexList(ul);
+  }
+
+  function applyScriptToIndexNav(nav, script) {
+    nav.querySelectorAll('.script-toggle__btn').forEach(function (btn) {
+      var active = btn.getAttribute('data-script') === script;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+
+    nav.querySelectorAll('.bhajan-index__title[data-title-deva]').forEach(function (el) {
+      var deva = el.getAttribute('data-title-deva') || '';
+      var roman = el.getAttribute('data-title-roman') || deva;
+      el.textContent = script === 'roman' ? roman : deva;
+    });
+
+    if (nav.getAttribute('data-title-order') === 'true' && script === 'roman') {
+      nav.querySelectorAll('.content-index').forEach(function (ul) {
+        sortIndexList(ul, 'roman');
+      });
+    } else if (nav.getAttribute('data-title-order') === 'true' && script === 'deva') {
+      nav.querySelectorAll('.content-index').forEach(function (ul) {
+        sortIndexList(ul, 'deva');
+      });
+    }
+  }
+
+  function initScriptToggle() {
+    var script = getSavedScript();
+    document.querySelectorAll('.bhajan-index').forEach(function (nav) {
+      applyScriptToIndexNav(nav, script);
+      nav.querySelectorAll('.script-toggle__btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var next = btn.getAttribute('data-script');
+          if (!next || next === getSavedScript()) return;
+          saveScript(next);
+          document.querySelectorAll('.bhajan-index').forEach(function (n) {
+            applyScriptToIndexNav(n, next);
+          });
+        });
+      });
+    });
   }
 
   function scrollToElementTop(el) {
@@ -350,6 +436,7 @@
   }
 
   initCollapsibleIndex();
+  initScriptToggle();
   initToolbarIndexButton();
   initSectionScrollUi();
   initSectionHeroIndex();

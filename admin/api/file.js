@@ -57,7 +57,13 @@ module.exports = async (req, res) => {
         sendJson(res, 400, { error: 'title required' });
         return;
       }
+      const romantitle = (doc.romantitle || '').trim();
+      if (!romantitle) {
+        sendJson(res, 400, { error: 'romantitle required' });
+        return;
+      }
       doc.title = title;
+      doc.romantitle = romantitle;
       const yaml = serializeBhajanDoc(doc);
       const message = body.message || `admin: update ${title}`;
       let sha = body.sha;
@@ -117,7 +123,13 @@ module.exports = async (req, res) => {
         sendJson(res, 400, { error: 'title required' });
         return;
       }
+      const romantitle = (doc.romantitle || '').trim();
+      if (!romantitle) {
+        sendJson(res, 400, { error: 'romantitle required' });
+        return;
+      }
       doc.title = title;
+      doc.romantitle = romantitle;
       const fileName = bhajanFilename(title, names.size, names);
       const filePath = `content/${folder}/${fileName}`;
       const yaml = serializeBhajanDoc(doc);

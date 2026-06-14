@@ -22,8 +22,10 @@ function prepareBhajanForRender(doc, section, config, opts = {}) {
   const sectionEntry = resolveSection(section, config);
   const slug = sectionEntry.slug || section.slug || 'preview';
   const title = String(doc.title || '').trim() || 'Untitled';
+  const romantitle = String(doc.romantitle || '').trim() || title;
   return {
     title,
+    romantitle,
     tarz: doc.tarz,
     group: doc.group,
     swarachit: doc.swarachit,

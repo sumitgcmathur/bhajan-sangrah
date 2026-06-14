@@ -77,6 +77,7 @@
 
   function matchesItem(item, words) {
     if (textMatchesQuery(item.title || '', words)) return true;
+    if (textMatchesQuery(item.romantitle || '', words)) return true;
     var lines = itemLines(item);
     for (var i = 0; i < lines.length; i++) {
       if (textMatchesQuery(lines[i], words)) return true;

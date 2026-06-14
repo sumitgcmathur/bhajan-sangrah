@@ -141,6 +141,7 @@ function editorSnapshot(editor) {
   const L = e.lyrics || {};
   return JSON.stringify({
     title: (e.title || '').trim(),
+    romantitle: (e.romantitle || '').trim(),
     tarz: (e.tarz || '').trim(),
     group: (e.group || '').trim(),
     legacyLyricsText: e.legacyLyricsText || '',
@@ -415,6 +416,7 @@ async function applyRouteFromHash() {
 function emptyEditor() {
   return {
     title: '',
+    romantitle: '',
     tarz: '',
     group: '',
     lyrics: {
@@ -731,6 +733,8 @@ function syncEditorFromDom() {
   if (!titleEl) return;
   const e = state.editor;
   e.title = titleEl.value.trim();
+  const romanEl = document.getElementById('f-romantitle');
+  if (romanEl) e.romantitle = romanEl.value.trim();
   e.tarz = document.getElementById('f-tarz')?.value.trim() || '';
   if (document.getElementById('f-group-select')) {
     e.group = readGroupValue();
@@ -1167,6 +1171,10 @@ function renderInner() {
                 <div class="basic-grid__title">
                   <label for="f-title">Title</label>
                   <input type="text" id="f-title" ${HI_FIELD} value="${escapeAttr(e.title)}">
+                </div>
+                <div class="basic-grid__romantitle">
+                  <label for="f-romantitle">Roman title</label>
+                  <input type="text" id="f-romantitle" value="${escapeAttr(e.romantitle)}" placeholder="Same title in roman script" autocomplete="off" spellcheck="false">
                 </div>
                 <div class="basic-grid__row2${showGroup ? ' basic-grid__row2--group' : ''}">
                   <div class="basic-grid__tarz">
@@ -1668,6 +1676,12 @@ async function refreshPreview() {
     render();
     return;
   }
+  if (!state.editor?.romantitle?.trim()) {
+    state.error = 'Roman title is required for preview.';
+    state.editPanel = 'basic';
+    render();
+    return;
+  }
 
   state.previewHtml = null;
   state.previewBusy = true;
@@ -1916,6 +1930,12 @@ async function commitPublish() {
   collectEditor();
   if (!state.editor?.title?.trim()) {
     state.error = 'Title is required before publishing.';
+    state.editPanel = 'basic';
+    render();
+    return;
+  }
+  if (!state.editor?.romantitle?.trim()) {
+    state.error = 'Roman title is required before publishing.';
     state.editPanel = 'basic';
     render();
     return;

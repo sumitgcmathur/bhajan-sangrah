@@ -73,13 +73,8 @@ async function main() {
   copyDir(path.join(ASSETS), path.join(DOCS, 'assets'));
   await writePwaArtifacts(DOCS, config, base);
 
-  fs.writeFileSync(
-    path.join(DOCS, 'index.html'),
-    renderIndex(config, sections, base, sectionCounts),
-    'utf8'
-  );
-
   let total = 0;
+  const allBhajanEntries = [];
   for (const section of sections) {
     const files = listBhajanFiles(section);
     const bhajans = files.map((f) => {
@@ -88,6 +83,9 @@ async function main() {
     });
     const sorted = sortBhajansForDisplay(section, bhajans);
     const enriched = sorted.map((b, i) => prepareBhajanForRender(b, section, config, { index: i }));
+    for (const bhajan of enriched) {
+      allBhajanEntries.push({ bhajan, section });
+    }
     fs.writeFileSync(
       path.join(DOCS, `${section.slug}.html`),
       renderSectionPage(section, enriched, config, sections, base, sectionCounts),
@@ -96,6 +94,12 @@ async function main() {
     total += enriched.length;
     console.log(`${section.slug}: ${enriched.length} bhajans`);
   }
+
+  fs.writeFileSync(
+    path.join(DOCS, 'index.html'),
+    renderIndex(config, sections, base, sectionCounts, allBhajanEntries),
+    'utf8'
+  );
 
   const searchItems = buildSearchIndex(sections, base);
   writeSearchIndex(path.join(DOCS, 'assets', 'search-index.json'), searchItems);

@@ -397,6 +397,10 @@ main.edit-main {
   margin-bottom: 0.35rem;
 }
 
+.basic-grid__romantitle {
+  margin-bottom: 0.35rem;
+}
+
 .basic-grid__row2 {
   display: flex;
   flex-wrap: wrap;

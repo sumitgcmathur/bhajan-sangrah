@@ -345,6 +345,7 @@ function dumpLyricsObject(lyrics) {
 function dumpBhajanDoc(doc) {
   const out = [];
   out.push(`title: ${doc.title}`);
+  out.push(`romantitle: ${doc.romantitle || doc.title}`);
   if (doc.tarz) out.push(`tarz: ${doc.tarz}`);
   if (doc.group) out.push(`group: ${doc.group}`);
   if (doc.swarachit) out.push('swarachit: true');

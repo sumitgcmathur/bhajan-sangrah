@@ -24,6 +24,11 @@ module.exports = async (req, res) => {
       sendJson(res, 400, { error: 'title required' });
       return;
     }
+    const romantitle = String(editor.romantitle || '').trim();
+    if (!romantitle) {
+      sendJson(res, 400, { error: 'romantitle required' });
+      return;
+    }
 
     const section = {
       slug: String(body.sectionSlug || 'preview').trim() || 'preview',

@@ -5,6 +5,7 @@ const readline = require('readline');
 const { loadSections, sectionFolder, listBhajanFiles } = require('./lib/sections');
 const { bhajanFilename } = require('./lib/slug');
 const { dumpBhajanDoc } = require('./lib/yaml-io');
+const { devanagariToRoman } = require('./lib/devanagari-roman');
 
 function ask(rl, q) {
   return new Promise((resolve) => rl.question(q, resolve));
@@ -37,6 +38,7 @@ async function main() {
   }
 
   const title = (await ask(rl, 'Title: ')).trim();
+  const romantitle = (await ask(rl, 'Roman title: ')).trim() || devanagariToRoman(title);
   const tarz = (await ask(rl, 'Tarz (optional): ')).trim();
   const sw = (await ask(rl, 'Swarachit? (y/N): ')).trim().toLowerCase();
   const lyrics = await readMultiline(rl);
@@ -46,7 +48,7 @@ async function main() {
   const existing = new Set(listBhajanFiles(section));
   const filename = bhajanFilename(title, existing.size, existing);
 
-  const doc = { title, lyrics };
+  const doc = { title, romantitle, lyrics };
   if (tarz) doc.tarz = tarz;
   if (sw === 'y' || sw === 'yes') doc.swarachit = true;
 

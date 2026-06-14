@@ -7,8 +7,16 @@ function compareHi(a, b) {
   return String(a || '').localeCompare(String(b || ''), 'hi');
 }
 
+function compareEn(a, b) {
+  return String(a || '').localeCompare(String(b || ''), 'en', { sensitivity: 'base' });
+}
+
 function compareBhajanByTitle(a, b) {
   return compareHi(a.title, b.title);
+}
+
+function compareBhajanByRomanTitle(a, b) {
+  return compareEn(a.romantitle || a.title, b.romantitle || b.title);
 }
 
 /** `file` = YAML filename order; `title` = देवनागरी title order (default). */
@@ -28,11 +36,19 @@ function isGroupedSection(section) {
  * Bhajan index order for site + admin list.
  * Grouped sections (स्वरचित): group order from files; within-group sort in bhajansByGroup when title.
  */
-function sortBhajansForDisplay(section, bhajans) {
+function sortBhajansForDisplay(section, bhajans, { byRoman = false } = {}) {
   if (!bhajans?.length) return bhajans;
   if (sectionBhajanOrder(section) === 'file') return bhajans;
   if (isGroupedSection(section)) return bhajans;
-  return [...bhajans].sort(compareBhajanByTitle);
+  const cmp = byRoman ? compareBhajanByRomanTitle : compareBhajanByTitle;
+  return [...bhajans].sort(cmp);
+}
+
+/** All bhajans across sections for the landing-page master index (always title order). */
+function sortAllBhajansByTitle(entries, { byRoman = false } = {}) {
+  if (!entries?.length) return entries;
+  const cmp = byRoman ? compareBhajanByRomanTitle : compareBhajanByTitle;
+  return [...entries].sort(cmp);
 }
 
 function loadSections() {
@@ -75,10 +91,13 @@ function countBhajansBySection(sections) {
 
 module.exports = {
   compareHi,
+  compareEn,
   compareBhajanByTitle,
+  compareBhajanByRomanTitle,
   sectionBhajanOrder,
   isGroupedSection,
   sortBhajansForDisplay,
+  sortAllBhajansByTitle,
   loadSections,
   saveSections,
   sectionFolder,
