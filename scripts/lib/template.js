@@ -298,60 +298,31 @@ function bhajanNumberLabel(num) {
   return `${num}.`;
 }
 
-function indexSortKey(text) {
-  return String(text || '')
-    .trim()
-    .toLowerCase()
-    .normalize('NFC');
-}
-
-function renderIndexTitleText(b) {
-  const deva = escapeHtml(b.title);
-  const roman = escapeHtml(b.romantitle || b.title);
-  if (deva === roman) {
-    return `<span class="bhajan-index__title">${deva}</span>`;
-  }
-  return `<span class="bhajan-index__title" data-title-deva="${deva}" data-title-roman="${roman}">${deva}</span>`;
-}
-
-function renderScriptToggle() {
-  return `<div class="script-toggle" role="group" aria-label="Title language">
-  <button type="button" class="script-toggle__btn is-active" data-script="hindi" aria-pressed="true">Hindi</button>
-  <button type="button" class="script-toggle__btn" data-script="english" aria-pressed="false">English</button>
-</div>`;
-}
-
 function wrapCollapsibleBhajanIndex(innerHtml, count, opts = {}) {
   const id = opts.id || 'bhajan-index';
   const panelId = opts.panelId || 'bhajan-index-panel';
   const label = opts.label || 'भजन सूची';
-  const titleOrder = opts.titleOrder ? ' data-title-order="true"' : '';
   const extraClass = opts.extraClass ? ` ${opts.extraClass}` : '';
   const openByDefault = opts.defaultOpen === true;
   const defaultOpenAttr = openByDefault ? ' data-default-open="true"' : '';
   const expandedAttr = openByDefault ? 'true' : 'false';
   const toggleText = openByDefault ? 'भजन सूची छिपाएँ' : 'भजन सूची दिखाएँ';
   const panelHidden = openByDefault ? '' : ' hidden';
-  return `<nav class="bhajan-index bhajan-index--collapsible${extraClass}" id="${id}" aria-label="${escapeHtml(label)}"${titleOrder}${defaultOpenAttr}>
-  <div class="bhajan-index__head">
-    <button type="button" class="bhajan-index__toggle" aria-expanded="${expandedAttr}" aria-controls="${panelId}">
-      <span class="bhajan-index__toggle-text">${toggleText}</span>
-      <span class="bhajan-index__count">(${count})</span>
-    </button>
-    ${renderScriptToggle()}
-  </div>
+  return `<nav class="bhajan-index bhajan-index--collapsible${extraClass}" id="${id}" aria-label="${escapeHtml(label)}"${defaultOpenAttr}>
+  <button type="button" class="bhajan-index__toggle" aria-expanded="${expandedAttr}" aria-controls="${panelId}">
+    <span class="bhajan-index__toggle-text">${toggleText}</span>
+    <span class="bhajan-index__count">(${count})</span>
+  </button>
   <div class="bhajan-index__panel" id="${panelId}"${panelHidden}>${innerHtml}</div>
 </nav>`;
 }
 
 function renderBhajanIndexItem(b, opts = {}) {
   const { href, num, sectionTitle } = opts;
-  const sortDeva = indexSortKey(b.title);
-  const sortRoman = indexSortKey(b.romantitle || b.title);
   const sectionHtml = sectionTitle
     ? ` <span class="bhajan-index__section">(${escapeHtml(sectionTitle)})</span>`
     : '';
-  return `<li data-sort-deva="${escapeHtml(sortDeva)}" data-sort-roman="${escapeHtml(sortRoman)}"><a href="${href}"><span class="bhajan-index__num">${bhajanNumberLabel(num)}</span>${renderIndexTitleText(b)}${sectionHtml}</a></li>`;
+  return `<li><a href="${href}"><span class="bhajan-index__num">${bhajanNumberLabel(num)}</span>${escapeHtml(b.title)}${sectionHtml}</a></li>`;
 }
 
 function renderBhajanIndexList(bhajans, section, opts = {}) {
@@ -399,31 +370,12 @@ function renderGroupedBhajanIndexList(groups, section, opts = {}) {
 }
 
 function renderBhajanIndex(bhajans, section) {
-  const { sectionBhajanOrder } = require('./sections');
-  const titleOrder = sectionBhajanOrder(section) === 'title';
-  return wrapCollapsibleBhajanIndex(renderBhajanIndexList(bhajans, section), bhajans.length, {
-    titleOrder,
-  });
+  return wrapCollapsibleBhajanIndex(renderBhajanIndexList(bhajans, section), bhajans.length);
 }
 
 function renderGroupedBhajanIndex(groups, section) {
-  const { sectionBhajanOrder } = require('./sections');
   const total = groups.reduce((n, g) => n + (g.title ? g.items.length : 0), 0);
-  const titleOrder = sectionBhajanOrder(section) === 'title';
-  return wrapCollapsibleBhajanIndex(renderGroupedBhajanIndexList(groups, section), total, {
-    titleOrder,
-  });
-}
-
-function renderInlineBhajanIndex(indexPanelHtml, section) {
-  const { sectionBhajanOrder } = require('./sections');
-  const titleOrder = sectionBhajanOrder(section) === 'title';
-  return `<nav class="section-hero__index bhajan-index bhajan-index--inline" id="bhajan-index" aria-label="भजन सूची"${titleOrder ? ' data-title-order="true"' : ''}>
-  <div class="bhajan-index__head bhajan-index__head--inline">
-    ${renderScriptToggle()}
-  </div>
-  ${indexPanelHtml}
-</nav>`;
+  return wrapCollapsibleBhajanIndex(renderGroupedBhajanIndexList(groups, section), total);
 }
 
 function renderSectionHero(section, base, indexPanelHtml) {
@@ -431,7 +383,9 @@ function renderSectionHero(section, base, indexPanelHtml) {
   if (!banner) return '';
   return `<div class="section-hero" id="section-hero">
   <div class="section-hero__banner">${banner}</div>
-  ${renderInlineBhajanIndex(indexPanelHtml, section)}
+  <nav class="section-hero__index bhajan-index bhajan-index--inline" id="bhajan-index" aria-label="भजन सूची">
+    ${indexPanelHtml}
+  </nav>
 </div>`;
 }
 
@@ -544,7 +498,6 @@ function renderMasterBhajanIndex(allEntries, base) {
     id: 'master-bhajan-index',
     panelId: 'master-bhajan-index-panel',
     label: 'सभी भजन — शीर्षकानुसार',
-    titleOrder: true,
     extraClass: 'bhajan-index--master',
     defaultOpen: true,
   });
@@ -657,8 +610,6 @@ module.exports = {
   renderBhajanIndexList,
   renderGroupedBhajanIndexList,
   renderMasterBhajanIndex,
-  renderScriptToggle,
-  renderIndexTitleText,
   renderBhajanCard,
   renderOmFrameDecor,
 };

@@ -524,15 +524,23 @@ function enrichBhajanLyrics(lyrics, section, doc = {}, config = {}) {
     delete out.sthayi_connect;
     return out;
   }
-  return {
+  const connectText =
+    lyrics.sthayi_connect_text || doc?.sthayi_connect_text || undefined;
+  const enriched = {
     ...lyrics,
     sthayi_connect: true,
-    ...(lyrics.sthayi_connect_text
-      ? {}
-      : doc?.sthayi_connect_text
-        ? { sthayi_connect_text: doc.sthayi_connect_text }
-        : {}),
+    ...(connectText ? { sthayi_connect_text: connectText } : {}),
   };
+  if (enriched.parts?.length) {
+    enriched.parts = enriched.parts.map((part) => ({
+      ...part,
+      sthayi_connect: part.sthayi_connect === false ? false : true,
+      ...(part.sthayi_connect_text || !connectText
+        ? {}
+        : { sthayi_connect_text: connectText }),
+    }));
+  }
+  return enriched;
 }
 
 module.exports = {

@@ -55,7 +55,6 @@ function buildSearchIndex(sections, base) {
       const id = b.id || anchorId(section.slug, b.title, i);
       items.push({
         title: b.title || '',
-        romantitle: b.romantitle || '',
         section: section.title,
         slug: section.slug,
         id,

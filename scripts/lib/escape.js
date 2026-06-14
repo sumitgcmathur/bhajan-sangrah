@@ -144,21 +144,33 @@ function normalizeConnectWords(text) {
     .filter(Boolean);
 }
 
-/** First N words of sthayi for inline refrain; longer sthayi gets trailing ... */
-function sthayiConnectSuffixFromSthayi(sthayi) {
-  const words = normalizeConnectWords(sthayi);
+/** First N words for inline refrain tail; longer text gets trailing ... */
+function sthayiConnectSuffixFromText(text) {
+  const words = normalizeConnectWords(text);
   if (words.length <= STHAYI_CONNECT_MAX_WORDS) return words.join(' ');
   return `${words.slice(0, STHAYI_CONNECT_MAX_WORDS).join(' ')}...`;
 }
 
 /** Explicit YAML `sthayi_connect_text`, else truncated sthayi. */
 function resolveSthayiConnectSuffix(part) {
+  if (!isSthayiConnectEnabled(part)) return null;
   const explicit = String(part?.sthayi_connect_text || '').trim();
-  if (explicit) {
-    return normalizeConnectWords(explicit).join(' ');
-  }
-  if (!isSthayiConnectEnabled(part) || !part.sthayi) return null;
-  return sthayiConnectSuffixFromSthayi(part.sthayi);
+  if (explicit) return sthayiConnectSuffixFromText(explicit);
+  if (!part.sthayi) return null;
+  return sthayiConnectSuffixFromText(part.sthayi);
+}
+
+function partWithConnectInheritance(part, root) {
+  if (!part || typeof part !== 'object') return part;
+  return {
+    ...part,
+    ...(part.sthayi_connect === undefined && root?.sthayi_connect !== undefined
+      ? { sthayi_connect: root.sthayi_connect }
+      : {}),
+    ...(!String(part.sthayi_connect_text || '').trim() && root?.sthayi_connect_text
+      ? { sthayi_connect_text: root.sthayi_connect_text }
+      : {}),
+  };
 }
 
 function appendSthayiConnectToParagraph(text, suffix) {
@@ -326,7 +338,7 @@ function lyricsHasSthayi(lyrics) {
 
 function lyricsStructureToHtml(lyrics, tarz, opts = {}) {
   const tarzHtml = tarz
-    ? `<p class="lyrics-tarz">तर्ज — ${escapeHtml(String(tarz).trim())}</p>`
+    ? `<p class="lyrics-tarz">लय — ${escapeHtml(String(tarz).trim())}</p>`
     : '';
 
   if (!lyrics) return tarzHtml ? `<div class="bhajan-lyrics bhajan-lyrics--standard">${tarzHtml}</div>` : '';
@@ -342,7 +354,7 @@ function lyricsStructureToHtml(lyrics, tarz, opts = {}) {
       post_shlok: norm.post_shlok,
     }];
   } else if (lyrics.parts?.length) {
-    parts = lyrics.parts;
+    parts = lyrics.parts.map((p) => partWithConnectInheritance(p, lyrics));
   } else if (isStructuredLyrics(lyrics)) {
     parts = [
       {

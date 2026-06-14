@@ -34,7 +34,6 @@ function docToEditor(doc) {
   const lyrics = d.lyrics;
   const out = {
     title: d.title || '',
-    romantitle: d.romantitle || '',
     tarz: d.tarz || '',
     group: d.group || '',
     lyrics: {
@@ -78,7 +77,6 @@ function editorToDoc(editor) {
   if (e.legacyLyricsText && String(e.legacyLyricsText).trim()) {
     return {
       title: (e.title || '').trim(),
-      romantitle: (e.romantitle || '').trim(),
       ...(e.tarz ? { tarz: e.tarz } : {}),
       ...(e.group ? { group: e.group } : {}),
       lyrics: String(e.legacyLyricsText).trim(),
@@ -103,7 +101,6 @@ function editorToDoc(editor) {
 
   return {
     title: (e.title || '').trim(),
-    romantitle: (e.romantitle || '').trim(),
     ...(e.tarz ? { tarz: e.tarz } : {}),
     ...(e.group ? { group: e.group } : {}),
     lyrics,
