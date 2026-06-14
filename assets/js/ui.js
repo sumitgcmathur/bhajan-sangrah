@@ -105,22 +105,8 @@
     } catch (e) {}
   }
 
-  /* ---- Devanagari / Roman title toggle on indexes ---- */
-  var STORAGE_SCRIPT = 'bhajan-sangrah-script';
-
-  function getSavedScript() {
-    try {
-      var s = localStorage.getItem(STORAGE_SCRIPT);
-      if (s === 'roman' || s === 'deva') return s;
-    } catch (e) {}
-    return 'deva';
-  }
-
-  function saveScript(script) {
-    try {
-      localStorage.setItem(STORAGE_SCRIPT, script);
-    } catch (e) {}
-  }
+  /* ---- Hindi / English title toggle on indexes ---- */
+  var INDEX_SCRIPT = 'hindi';
 
   function compareSortKeys(a, b) {
     return String(a || '').localeCompare(String(b || ''), undefined, { sensitivity: 'base' });
@@ -137,8 +123,8 @@
     var items = Array.prototype.slice.call(ul.querySelectorAll(':scope > li'));
     if (items.length < 2) return;
     items.sort(function (a, b) {
-      var ka = a.getAttribute('data-sort-' + (script === 'roman' ? 'roman' : 'deva')) || '';
-      var kb = b.getAttribute('data-sort-' + (script === 'roman' ? 'roman' : 'deva')) || '';
+      var ka = a.getAttribute('data-sort-' + (script === 'english' ? 'roman' : 'deva')) || '';
+      var kb = b.getAttribute('data-sort-' + (script === 'english' ? 'roman' : 'deva')) || '';
       return compareSortKeys(ka, kb);
     });
     items.forEach(function (li) {
@@ -157,29 +143,29 @@
     nav.querySelectorAll('.bhajan-index__title[data-title-deva]').forEach(function (el) {
       var deva = el.getAttribute('data-title-deva') || '';
       var roman = el.getAttribute('data-title-roman') || deva;
-      el.textContent = script === 'roman' ? roman : deva;
+      el.textContent = script === 'english' ? roman : deva;
     });
 
-    if (nav.getAttribute('data-title-order') === 'true' && script === 'roman') {
+    if (nav.getAttribute('data-title-order') === 'true' && script === 'english') {
       nav.querySelectorAll('.content-index').forEach(function (ul) {
-        sortIndexList(ul, 'roman');
+        sortIndexList(ul, 'english');
       });
-    } else if (nav.getAttribute('data-title-order') === 'true' && script === 'deva') {
+    } else if (nav.getAttribute('data-title-order') === 'true' && script === 'hindi') {
       nav.querySelectorAll('.content-index').forEach(function (ul) {
-        sortIndexList(ul, 'deva');
+        sortIndexList(ul, 'hindi');
       });
     }
   }
 
   function initScriptToggle() {
-    var script = getSavedScript();
+    INDEX_SCRIPT = 'hindi';
     document.querySelectorAll('.bhajan-index').forEach(function (nav) {
-      applyScriptToIndexNav(nav, script);
+      applyScriptToIndexNav(nav, INDEX_SCRIPT);
       nav.querySelectorAll('.script-toggle__btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var next = btn.getAttribute('data-script');
-          if (!next || next === getSavedScript()) return;
-          saveScript(next);
+          if (!next || next === INDEX_SCRIPT) return;
+          INDEX_SCRIPT = next;
           document.querySelectorAll('.bhajan-index').forEach(function (n) {
             applyScriptToIndexNav(n, next);
           });

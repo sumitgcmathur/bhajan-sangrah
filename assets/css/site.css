@@ -999,20 +999,18 @@ body.search-panel-open {
 }
 
 .bhajan-index__section {
-  display: block;
-  margin-top: 0.12rem;
-  font-size: 0.82rem;
+  font-size: 0.88em;
   font-weight: 500;
   color: var(--muted);
 }
 
 .content-index--master a {
-  display: block;
+  display: inline;
 }
 
 .bhajan-index--master {
-  margin-top: 0.5rem;
-  margin-bottom: 2rem;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .bhajan-index__panel {

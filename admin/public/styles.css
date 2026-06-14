@@ -7,9 +7,43 @@
   --accent-dark: #6b1f32;
   --border: #e0d0c4;
   --danger: #b3261e;
+  --on-accent: #fff;
+  --input-bg: #fffdf9;
+  --danger-bg: #fde8e8;
+  --success: #1a5c2e;
+  --overlay: rgba(250, 246, 240, 0.82);
+  --shadow: rgba(44, 24, 16, 0.1);
+  --shadow-lg: rgba(44, 24, 16, 0.18);
+  --spell-loading-bg: rgba(255, 253, 249, 0.92);
+  --accent-hover-bg: rgba(155, 45, 74, 0.08);
   --font: "Noto Sans Devanagari", system-ui, sans-serif;
   --bar-h: 3.25rem;
   --action-bar-h: 3.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1210;
+    --surface: #2a1e1a;
+    --text: #f5ebe6;
+    --muted: #c4b0a8;
+    --accent: #d47890;
+    --accent-dark: #e8a0b0;
+    --border: #3d2e28;
+    --danger: #f2b8b5;
+    --input-bg: #241816;
+    --danger-bg: #3a2220;
+    --success: #7fd4a0;
+    --overlay: rgba(26, 18, 16, 0.88);
+    --shadow: rgba(0, 0, 0, 0.28);
+    --shadow-lg: rgba(0, 0, 0, 0.45);
+    --spell-loading-bg: rgba(42, 30, 26, 0.92);
+    --accent-hover-bg: rgba(212, 120, 144, 0.12);
+  }
+}
+
+html {
+  color-scheme: light dark;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -69,7 +103,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(250, 246, 240, 0.82);
+  background: var(--overlay);
   backdrop-filter: blur(2px);
 }
 
@@ -136,12 +170,12 @@ body {
 
 .btn-primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   border-color: var(--accent-dark);
 }
 
 .btn-danger {
-  color: #fff;
+  color: var(--on-accent);
   background: var(--danger);
   border-color: var(--danger);
 }
@@ -175,7 +209,8 @@ main { padding: 0.75rem; max-width: 42rem; margin: 0 auto; }
   padding: 0.45rem 0.55rem;
   border: 1px solid var(--border);
   border-radius: 0.4rem;
-  background: var(--bg);
+  background: var(--input-bg);
+  color: var(--text);
 }
 
 .section-order-hint {
@@ -298,7 +333,7 @@ main.edit-main {
 
 .edit-nav__btn.is-active {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   border-color: var(--accent-dark);
 }
 
@@ -309,7 +344,7 @@ main.edit-main {
 }
 
 .edit-nav__btn.is-active .edit-nav__badge {
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .edit-nav__hint {
@@ -495,7 +530,7 @@ main.edit-main {
 .login-card p { color: var(--muted); margin: 0 0 1rem; }
 
 .err {
-  background: #fde8e8;
+  background: var(--danger-bg);
   color: var(--danger);
   padding: 0.65rem;
   border-radius: 0.35rem;
@@ -568,7 +603,8 @@ input[type="text"], textarea, select {
   padding: 0.55rem 0.65rem;
   border: 1px solid var(--border);
   border-radius: 0.35rem;
-  background: #fff;
+  background: var(--input-bg);
+  color: var(--text);
 }
 
 textarea {
@@ -622,7 +658,7 @@ textarea {
   padding: 0.3rem 0.4rem;
   border: 1px solid var(--border);
   border-radius: 0.3rem;
-  background: #fff;
+  background: var(--input-bg);
 }
 
 .para-row__tools {
@@ -659,7 +695,7 @@ textarea {
   padding-bottom: max(0.65rem, env(safe-area-inset-bottom, 0px));
   background: var(--surface);
   border-top: 1px solid var(--border);
-  box-shadow: 0 -4px 16px rgba(44, 24, 16, 0.1);
+  box-shadow: 0 -4px 16px var(--shadow);
 }
 
 .sticky-actions .btn {
@@ -681,9 +717,9 @@ textarea {
 
 .sticky-actions .dictation-global.is-active {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   border-color: var(--accent-dark);
-  box-shadow: 0 0 0 2px rgba(155, 45, 74, 0.25);
+  box-shadow: 0 0 0 2px var(--accent-hover-bg);
 }
 
 .hint { font-size: 0.85rem; color: var(--muted); margin: 0.35rem 0 0; }
@@ -704,7 +740,7 @@ textarea {
 
 .para-mode-btn.is-active {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   border-color: var(--accent-dark);
 }
 
@@ -729,7 +765,7 @@ textarea {
   font-size: 0.88rem;
   text-align: center;
   background: var(--accent-dark);
-  color: #fff;
+  color: var(--on-accent);
   border-radius: 0.4rem;
   pointer-events: none;
 }
@@ -766,7 +802,7 @@ textarea {
   margin: 0.75rem 0 0.5rem;
   padding: 0.75rem;
   border-radius: 0.5rem;
-  background: rgba(155, 45, 74, 0.06);
+  background: var(--accent-hover-bg);
   border: 1px solid var(--border);
 }
 
@@ -883,7 +919,7 @@ textarea {
 /* Inline Hindi spell check (mirror underlines) */
 .spell-wrap {
   position: relative;
-  background: #fff;
+  background: var(--input-bg);
   border-radius: 0.35rem;
 }
 
@@ -914,7 +950,7 @@ textarea {
 }
 
 .spell-wrap__input[data-spell-loading] {
-  background: rgba(255, 253, 249, 0.92) !important;
+  background: var(--spell-loading-bg) !important;
 }
 
 .spell-menu {
@@ -926,7 +962,7 @@ textarea {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 0.4rem;
-  box-shadow: 0 6px 24px rgba(44, 24, 16, 0.18);
+  box-shadow: 0 6px 24px var(--shadow-lg);
 }
 
 .spell-menu__word {
@@ -959,7 +995,7 @@ textarea {
 
 .spell-menu__item:hover,
 .spell-menu__item:focus {
-  background: rgba(155, 45, 74, 0.08);
+  background: var(--accent-hover-bg);
   outline: none;
 }
 
@@ -1028,7 +1064,7 @@ textarea {
 
 .spell-ok {
   margin: 0.75rem 0;
-  color: #1a5c2e;
+  color: var(--success);
 }
 
 .spell-corpus-list {

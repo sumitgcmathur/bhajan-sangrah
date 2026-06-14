@@ -310,9 +310,9 @@ function renderIndexTitleText(b) {
 }
 
 function renderScriptToggle() {
-  return `<div class="script-toggle" role="group" aria-label="Title script">
-  <button type="button" class="script-toggle__btn is-active" data-script="deva" aria-pressed="true">देव</button>
-  <button type="button" class="script-toggle__btn" data-script="roman" aria-pressed="false">Roman</button>
+  return `<div class="script-toggle" role="group" aria-label="Title language">
+  <button type="button" class="script-toggle__btn is-active" data-script="hindi" aria-pressed="true">Hindi</button>
+  <button type="button" class="script-toggle__btn" data-script="english" aria-pressed="false">English</button>
 </div>`;
 }
 
@@ -339,9 +339,9 @@ function renderBhajanIndexItem(b, opts = {}) {
   const sortDeva = indexSortKey(b.title);
   const sortRoman = indexSortKey(b.romantitle || b.title);
   const sectionHtml = sectionTitle
-    ? `<span class="bhajan-index__section">${escapeHtml(sectionTitle)}</span>`
+    ? ` <span class="bhajan-index__section">(${escapeHtml(sectionTitle)})</span>`
     : '';
-  return `<li data-sort-deva="${escapeHtml(sortDeva)}" data-sort-roman="${escapeHtml(sortRoman)}"><a href="${href}"><span class="bhajan-index__num">${bhajanNumberLabel(num)}</span> ${renderIndexTitleText(b)}${sectionHtml}</a></li>`;
+  return `<li data-sort-deva="${escapeHtml(sortDeva)}" data-sort-roman="${escapeHtml(sortRoman)}"><a href="${href}"><span class="bhajan-index__num">${bhajanNumberLabel(num)}</span>${renderIndexTitleText(b)}${sectionHtml}</a></li>`;
 }
 
 function renderBhajanIndexList(bhajans, section, opts = {}) {
@@ -549,8 +549,8 @@ function renderIndex(config, sections, base, sectionCounts, allBhajanEntries) {
 <main class="content-main content-main--home">
   <h1 class="home-title">${escapeHtml(config.site_title)}</h1>
   ${renderHomeStats(totalBhajans, sections.length)}
-  ${masterIndex}
   ${renderSectionGrid(sections, base, config, counts)}
+  ${masterIndex}
 </main>`;
 
   return renderPage({
