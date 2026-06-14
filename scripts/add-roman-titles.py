@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add romantitle to all bhajan YAML files (mirrors scripts/add-roman-titles.js)."""
+"""Regenerate romantitle on all bhajan YAML files from title (mirrors scripts/lib/devanagari-roman.js)."""
 from __future__ import annotations
 
 import re
@@ -24,8 +24,10 @@ CONS = {
 }
 MATRA = {
     "ा": "aa", "ि": "i", "ी": "ee", "ु": "u", "ू": "oo", "ृ": "ri", "े": "e",
-    "ै": "ai", "ो": "o", "ौ": "au", "ं": "n", "ः": "h", "्": "", "ॅ": "e", "ॉ": "o",
+    "ै": "ai", "ो": "o", "ौ": "au", "ः": "h", "्": "", "ॅ": "e", "ॉ": "o",
 }
+SKIP_MARK = {"\u0901", "\u0902", "\u093c", "\u25cc"}
+CONS_RE = r"bcdfghjklmnpqrstvwxyzsh"
 
 
 def is_devanagari(ch: str) -> bool:
@@ -51,7 +53,7 @@ def transliterate_word(word: str) -> str:
             out.append(ch)
             i += 1
             continue
-        if ch == "़":
+        if ch in SKIP_MARK or ch == "़":
             i += 1
             continue
         cons = None
@@ -65,6 +67,8 @@ def transliterate_word(word: str) -> str:
             i += 1
         if cons:
             vowel = "a"
+            while i < len(chars) and chars[i] in SKIP_MARK:
+                i += 1
             if i < len(chars) and chars[i] in MATRA:
                 m = MATRA[chars[i]]
                 vowel = "" if m == "" else m
@@ -75,20 +79,45 @@ def transliterate_word(word: str) -> str:
             out.append(INDEP[ch])
             i += 1
             continue
-        out.append(ch)
         i += 1
+    return re.sub(r"aa+", "aa", "".join(out))
+
+
+def normalize_roman_word(word: str) -> str:
+    if not word or not re.search(r"[a-zA-Z]", word):
+        return word
+    w = re.sub(r"[\u0900-\u097F\u25CC\u0300-\u036F]", "", word)
+    if not re.search(r"[a-zA-Z]", w):
+        return w
+    w = re.sub(rf"([{CONS_RE}])a$", r"\1", w, flags=re.I)
+    w = re.sub(rf"([{CONS_RE}])ee$", r"\1i", w, flags=re.I)
+    return w
+
+
+def normalize_roman_title(text: str) -> str:
+    parts = re.split(r"(\s+|[-–—,;:.!?()]+)", text or "")
+    out = []
+    for part in parts:
+        if part.strip() and re.search(r"[a-zA-Z]", part):
+            normed = normalize_roman_word(part)
+            if part[:1].isupper():
+                normed = title_case_word(normed)
+            out.append(normed)
+        else:
+            out.append(part)
     return "".join(out)
 
 
 def devanagari_to_roman(text: str) -> str:
-    parts = re.split(r"(\s+|[-–—,;:.!?()]+)", str(text or ""))
+    parts = re.split(r"(\s+|[-–—,;:.!?()]+)", text or "")
     out = []
     for part in parts:
         if part.strip() and re.search(r"[\u0900-\u097F]", part):
             out.append(title_case_word(transliterate_word(part)))
         else:
             out.append(part)
-    return re.sub(r"\s+", " ", "".join(out)).strip()
+    raw = re.sub(r"\s+", " ", "".join(out)).strip()
+    return normalize_roman_title(raw)
 
 
 def parse_sections() -> list[str]:
@@ -100,19 +129,27 @@ def parse_sections() -> list[str]:
     return folders
 
 
-def has_romantitle(text: str) -> bool:
-    for line in text.splitlines():
-        if line.startswith("romantitle:"):
-            val = line.split(":", 1)[1].strip()
-            return bool(val)
-    return False
-
-
 def get_title(text: str) -> str | None:
     for line in text.splitlines():
         if line.startswith("title:"):
             return line.split(":", 1)[1].strip()
     return None
+
+
+def replace_romantitle(text: str, roman: str) -> str:
+    lines = text.splitlines(keepends=True)
+    out = []
+    replaced = False
+    for line in lines:
+        if line.startswith("romantitle:"):
+            nl = "\n" if line.endswith("\n") else ""
+            out.append(f"romantitle: {roman}{nl}")
+            replaced = True
+        else:
+            out.append(line)
+    if not replaced:
+        return insert_romantitle(text, roman)
+    return "".join(out)
 
 
 def insert_romantitle(text: str, roman: str) -> str:
@@ -125,34 +162,24 @@ def insert_romantitle(text: str, roman: str) -> str:
             nl = "\n" if line.endswith("\n") else ""
             out.append(f"romantitle: {roman}{nl}")
             inserted = True
-    if not inserted:
-        out.insert(0, f"romantitle: {roman}\n")
     return "".join(out)
 
 
 def main() -> int:
-    updated = skipped = 0
+    updated = 0
     for folder in parse_sections():
         dir_path = CONTENT / folder
         if not dir_path.is_dir():
             continue
         for path in sorted(dir_path.glob("*.yaml"), key=lambda p: p.name):
             text = path.read_text(encoding="utf-8-sig")
-            if has_romantitle(text):
-                skipped += 1
-                continue
             title = get_title(text)
             if not title:
-                print(f"skip (no title): {path.relative_to(ROOT)}", file=sys.stderr)
                 continue
             roman = devanagari_to_roman(title)
-            path.write_text(insert_romantitle(text, roman), encoding="utf-8")
+            path.write_text(replace_romantitle(text, roman), encoding="utf-8")
             updated += 1
-            try:
-                print(path.relative_to(ROOT).as_posix())
-            except UnicodeEncodeError:
-                print(str(path.relative_to(ROOT)).encode("ascii", "backslashreplace").decode())
-    print(f"\nDone: {updated} updated, {skipped} already had romantitle")
+    print(f"Done: {updated} romantitles refreshed")
     return 0
 
 

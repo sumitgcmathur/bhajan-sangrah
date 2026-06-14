@@ -170,9 +170,13 @@ function renderToolbarIndexIcon() {
 </svg>`;
 }
 
-function renderMobileBar(isSectionPage) {
-  const indexBtn = isSectionPage
-    ? `<button type="button" class="mobile-bar__btn" data-action="index" aria-label="भजन सूची पर जाएँ">${renderToolbarIndexIcon()}</button>`
+function renderMobileBar(isSectionPage, isHomePage) {
+  const showIndex = isSectionPage || isHomePage;
+  const indexLabel = isHomePage && !isSectionPage
+    ? 'सभी भजन सूची पर जाएँ'
+    : 'भजन सूची पर जाएँ';
+  const indexBtn = showIndex
+    ? `<button type="button" class="mobile-bar__btn" data-action="index" aria-label="${indexLabel}">${renderToolbarIndexIcon()}</button>`
     : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">≡</span></button>
@@ -201,6 +205,7 @@ function renderPage(opts) {
   const { pageTitle, body, config, sections, base, currentSlug, bodyClass = '', sectionCounts } =
     opts;
   const isSectionPage = bodyClass.includes('page-section');
+  const isHomePage = bodyClass.includes('page-home');
   return `<!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -213,7 +218,7 @@ ${renderSidebar(config, sections, base, currentSlug, sectionCounts)}
 ${body}
 </div>
 </div>
-${renderMobileBar(isSectionPage)}
+${renderMobileBar(isSectionPage, isHomePage)}
 ${renderSearchPanel()}
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/theme.js')}"></script>

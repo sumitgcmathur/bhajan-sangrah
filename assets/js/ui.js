@@ -90,10 +90,14 @@
     });
   }
 
+  function getIndexNav() {
+    return document.getElementById('bhajan-index') || document.getElementById('master-bhajan-index');
+  }
+
   function openCollapsibleIndexIfNeeded() {
-    var nav = document.getElementById('bhajan-index');
+    var nav = getIndexNav();
     if (!nav || !nav.classList.contains('bhajan-index--collapsible')) return;
-    var panel = document.getElementById('bhajan-index-panel');
+    var panel = nav.querySelector('.bhajan-index__panel');
     var toggle = nav.querySelector('.bhajan-index__toggle');
     if (!panel || !toggle || !panel.hidden) return;
     toggle.setAttribute('aria-expanded', 'true');
@@ -101,7 +105,11 @@
     var label = toggle.querySelector('.bhajan-index__toggle-text');
     if (label) label.textContent = 'भजन सूची छिपाएँ';
     try {
-      localStorage.setItem(STORAGE_INDEX_OPEN, '1');
+      var storageKey =
+        nav.id === 'master-bhajan-index'
+          ? 'bhajan-sangrah-master-index-open'
+          : STORAGE_INDEX_OPEN;
+      localStorage.setItem(storageKey, '1');
     } catch (e) {}
   }
 
@@ -189,7 +197,7 @@
   }
 
   function scrollToBhajanIndex() {
-    var nav = document.getElementById('bhajan-index');
+    var nav = getIndexNav();
     if (!nav) return;
     openCollapsibleIndexIfNeeded();
     /* Drop #bhajan-* hash so the browser does not snap back to the card */

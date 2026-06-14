@@ -71,14 +71,18 @@ const MATRA = {
   'ै': 'ai',
   'ो': 'o',
   'ौ': 'au',
-  'ं': 'n',
   'ः': 'h',
   '्': '',
   'ॅ': 'e',
   'ॉ': 'o',
 };
 
+/** Bindu, chandrabindu, nukta, dotted-circle placeholders — omit from roman titles. */
+const SKIP_MARK = new Set(['\u0901', '\u0902', '\u093C', '\u25CC']);
+
 const NUKT = { '़': '' };
+
+const CONSONANT_RE = /[bcdfghjklmnpqrstvwxyzsh]/i;
 
 function isDevanagari(ch) {
   const c = ch.codePointAt(0);
@@ -103,7 +107,7 @@ function transliterateWord(word) {
       continue;
     }
 
-    if (NUKT[ch] !== undefined) {
+    if (SKIP_MARK.has(ch) || NUKT[ch] !== undefined) {
       i += 1;
       continue;
     }
@@ -123,13 +127,10 @@ function transliterateWord(word) {
 
     if (cons) {
       let vowel = 'a';
+      while (i < chars.length && SKIP_MARK.has(chars[i])) i += 1;
       if (i < chars.length && MATRA[chars[i]] !== undefined) {
         const m = MATRA[chars[i]];
-        if (m === '') {
-          vowel = '';
-        } else {
-          vowel = m;
-        }
+        vowel = m === '' ? '' : m;
         i += 1;
       }
       out += CONS[cons] + vowel;
@@ -142,15 +143,36 @@ function transliterateWord(word) {
       continue;
     }
 
-    out += ch;
     i += 1;
   }
-  return out.replace(/aa+/g, 'aa').replace(/([^aeiou])a\b/g, '$1');
+  return out.replace(/aa+/g, 'aa');
+}
+
+/** Trim schwa, long vowels, and leftover Indic marks from one roman word. */
+function normalizeRomanWord(word) {
+  if (!word || !/[a-zA-Z]/.test(word)) return word;
+  let w = word.replace(/[\u0900-\u097F\u25CC\u0300-\u036F]/g, '');
+  if (!/[a-zA-Z]/.test(w)) return w;
+  w = w.replace(/([bcdfghjklmnpqrstvwxyzsh])a$/i, '$1');
+  w = w.replace(/([bcdfghjklmnpqrstvwxyzsh])ee$/i, '$1i');
+  return w;
+}
+
+function normalizeRomanTitle(text) {
+  return String(text || '')
+    .split(/(\s+|[-–—,;:.!?()]+)/)
+    .map((part) => {
+      if (!part.trim() || !/[a-zA-Z]/.test(part)) return part;
+      const normalized = normalizeRomanWord(part);
+      if (/^[A-Z]/.test(part)) return titleCaseWord(normalized);
+      return normalized;
+    })
+    .join('');
 }
 
 /** Transliterate a Devanagari title to roman script (word title case). */
 function devanagariToRoman(text) {
-  return String(text || '')
+  const raw = String(text || '')
     .split(/(\s+|[-–—,;:.!?()]+)/)
     .map((part) => {
       if (!part.trim() || !/[\u0900-\u097F]/.test(part)) return part;
@@ -159,6 +181,12 @@ function devanagariToRoman(text) {
     .join('')
     .replace(/\s+/g, ' ')
     .trim();
+  return normalizeRomanTitle(raw);
 }
 
-module.exports = { devanagariToRoman, transliterateWord };
+module.exports = {
+  devanagariToRoman,
+  transliterateWord,
+  normalizeRomanTitle,
+  normalizeRomanWord,
+};
