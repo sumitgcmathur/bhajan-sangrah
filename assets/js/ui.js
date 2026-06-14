@@ -71,7 +71,7 @@
         } catch (e) {}
       }
 
-      var defaultOpen = nav.id === 'master-bhajan-index' ? false : !isMobile();
+      var defaultOpen = nav.getAttribute('data-default-open') === 'true' || !isMobile();
       try {
         var saved = localStorage.getItem(storageKey);
         if (saved === '1') defaultOpen = true;
