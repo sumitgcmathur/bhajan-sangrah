@@ -7,6 +7,13 @@
     return document.body.classList.contains('bar-hidden');
   }
 
+  function syncChromeToggleVisibility() {
+    var pager = document.getElementById('bhajan-pager');
+    var mobileToggle = document.querySelector('.mobile-bar .mobile-bar__btn--chrome');
+    var pagerShown = Boolean(pager && !pager.hidden && !isChromeHidden());
+    if (mobileToggle) mobileToggle.hidden = pagerShown;
+  }
+
   function syncPagerChromeLayout() {
     var pager = document.getElementById('bhajan-pager');
     if (!pager) return;
@@ -14,6 +21,7 @@
     if (isChromeHidden()) {
       pager.hidden = true;
       document.body.classList.remove('pager-visible');
+      syncChromeToggleVisibility();
       return;
     }
 
@@ -22,11 +30,13 @@
       var pastHero = hero.getBoundingClientRect().bottom <= window.innerHeight * 0.88;
       document.body.classList.toggle('pager-visible', pastHero);
       pager.hidden = !pastHero;
+      syncChromeToggleVisibility();
       return;
     }
 
     document.body.classList.add('pager-visible');
     pager.hidden = false;
+    syncChromeToggleVisibility();
   }
 
   function setChromeVisible(visible) {

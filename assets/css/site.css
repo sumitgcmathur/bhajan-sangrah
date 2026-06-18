@@ -325,6 +325,14 @@ body.bar-hidden .mobile-bar {
   display: flex;
 }
 
+body:not(.bar-hidden) .mobile-bar-restore {
+  display: none !important;
+}
+
+body.bar-hidden .mobile-bar-restore:not([hidden]) {
+  display: flex !important;
+}
+
 .chrome-toggle-btn {
   display: flex;
   align-items: center;
@@ -387,6 +395,11 @@ body.bar-hidden .mobile-bar {
   border-radius: 0.3rem;
   background: var(--surface);
   color: var(--accent-dark);
+}
+
+.mobile-bar__btn.chrome-toggle-btn[hidden],
+.mobile-bar__btn--chrome[hidden] {
+  display: none !important;
 }
 
 .mobile-bar__icon {
