@@ -141,22 +141,13 @@ After changing `assets/css/site.css`, run `npm run admin:preview-css` so the adm
 
 ### Edit screen (inline)
 
-Red wavy underlines on Hindi fields (Hunspell in the browser; first load ~30–60s).
-
-- **Phone / tablet:** **Long-press** or **select** a flagged word.
-- **Desktop:** **Right-click**, **double-click**, or **select** the word.
-- Menu: **suggestions**, **Ignore**, **Add to dictionary** (this browser).
-- **Publish** warns if flagged words remain.
+Red underlines on likely typos in Hindi fields (Hunspell in the browser; first load ~30–60s). Fields are for editing only — use **Spell errors** to apply corrections in bulk. **Publish** warns if flagged words remain.
 
 ### Spell errors (all bhajans)
 
 **Sections** → **Spell errors (all bhajans)** (`#/spell-errors`), then **Scan all bhajans**. **Corpus-primary**: every word in published `content/` is valid; then Hindi (`hi_IN`) + word-only Sanskrit (`sanskrit-words.dic`) + `corpus.dic`. Only flags words outside the sangrah with plausible typo suggestions. Regenerate word lists: `npm run build:corpus-dict` and `npm run build:sanskrit-dict` (both run on `npm run build`).
 
 Files: `admin/public/spellcheck.js`, `admin/public/corpus-dictionary.json`, `admin/public/corpus.dic`, `admin/public/sanskrit-words.dic`, `scripts/lib/corpus-dictionary.js`, `scripts/lib/sanskrit-dictionary.js`, `admin/api/spell-fix.js`.
-
-## Voice typing (edit screen)
-
-On phones, the edit screen’s bottom bar has a **mic** button when the browser supports the Web Speech API (Chrome on Android, Safari on iOS 14.5+). Focus a field, tap mic, and dictate in Hindi (`hi-IN`). Tap again to stop. If the mic button is missing, use the **microphone on your Hindi keyboard** (Gboard / iOS).
 
 ## Local dev
 

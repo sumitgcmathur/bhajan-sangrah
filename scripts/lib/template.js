@@ -170,6 +170,18 @@ function renderToolbarIndexIcon() {
 </svg>`;
 }
 
+function renderToolbarBarHideIcon() {
+  return `<svg class="mobile-bar__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+}
+
+function renderToolbarBarShowIcon() {
+  return `<svg class="mobile-bar__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+}
+
 function renderMobileBar(isSectionPage, isHomePage) {
   const showIndex = isSectionPage || isHomePage;
   const indexLabel = isHomePage && !isSectionPage
@@ -178,12 +190,20 @@ function renderMobileBar(isSectionPage, isHomePage) {
   const indexBtn = showIndex
     ? `<button type="button" class="mobile-bar__btn" data-action="index" aria-label="${indexLabel}">${renderToolbarIndexIcon()}</button>`
     : '';
+  const barToggle = isSectionPage
+    ? `<button type="button" class="mobile-bar__btn" data-action="bar-toggle" aria-pressed="false" aria-label="मेनू छिपाएँ">${renderToolbarBarHideIcon()}</button>`
+    : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">≡</span></button>
   ${indexBtn}
   <button type="button" class="mobile-bar__btn search-toggle" aria-expanded="false" aria-controls="bhajan-search-panel" aria-label="भजन खोजें">${renderToolbarSearchIcon()}</button>
   <button type="button" class="mobile-bar__btn" data-action="theme" aria-pressed="false" aria-label="गहरा रंग"><span class="mobile-bar__icon mobile-bar__icon--theme" aria-hidden="true">☽</span></button>
+  ${barToggle}
 </nav>`;
+}
+
+function renderBarRestoreFab() {
+  return `<button type="button" class="mobile-bar-restore" id="mobile-bar-restore" hidden aria-label="मेनू दिखाएँ">${renderToolbarBarShowIcon()}</button>`;
 }
 
 function renderSectionScrollHeader(sectionTitle, total) {
@@ -219,6 +239,7 @@ ${body}
 </div>
 </div>
 ${renderMobileBar(isSectionPage, isHomePage)}
+${isSectionPage ? renderBarRestoreFab() : ''}
 ${renderSearchPanel()}
 <script src="${pageUrl(base, 'assets/js/nav.js')}"></script>
 <script src="${pageUrl(base, 'assets/js/theme.js')}"></script>
@@ -306,12 +327,10 @@ function wrapCollapsibleBhajanIndex(innerHtml, count, opts = {}) {
   const openByDefault = opts.defaultOpen === true;
   const defaultOpenAttr = openByDefault ? ' data-default-open="true"' : '';
   const expandedAttr = openByDefault ? 'true' : 'false';
-  const toggleText = openByDefault ? 'भजन सूची छिपाएँ' : 'भजन सूची दिखाएँ';
   const panelHidden = openByDefault ? '' : ' hidden';
   return `<nav class="bhajan-index bhajan-index--collapsible${extraClass}" id="${id}" aria-label="${escapeHtml(label)}"${defaultOpenAttr}>
   <button type="button" class="bhajan-index__toggle" aria-expanded="${expandedAttr}" aria-controls="${panelId}">
-    <span class="bhajan-index__toggle-text">${toggleText}</span>
-    <span class="bhajan-index__count">(${count})</span>
+    <span class="bhajan-index__toggle-text">${escapeHtml(label)}</span>
   </button>
   <div class="bhajan-index__panel" id="${panelId}"${panelHidden}>${innerHtml}</div>
 </nav>`;

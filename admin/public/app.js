@@ -1,4 +1,3 @@
-import { bindSpeechDictation, stopDictation, speechSupported } from './speech.js';
 import { bindInlineSpellFields, spellCheckEditorFields, textsFromEditor } from './spellcheck.js';
 import {
   runCorpusSpellScan,
@@ -831,16 +830,7 @@ function editNavHtml(e) {
     { id: 'preview', label: 'Preview' },
   ];
   if (e.legacyLyricsText) items.push({ id: 'legacy', label: 'Legacy' });
-  const parts = [];
-  if (speechSupported()) parts.push('Mic → focused field');
-  const coarse =
-    typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
-  parts.push(
-    coarse
-      ? 'Spell: long-press flagged word, or select it'
-      : 'Spell: right-click, double-click, or select flagged word',
-  );
-  const hint = parts.join(' · ');
+  const hint = 'Likely typos show as red underlines. Use Spell errors to correct.';
   const buttons = items
     .map(
       (p) =>
@@ -906,13 +896,6 @@ function previewPanelHtml() {
   return loadingBlock('Building preview…');
 }
 
-function dictationStickyBtnHtml() {
-  if (!speechSupported()) return '';
-  return `<button type="button" class="btn dictation-global" id="dictation-global" aria-label="Dictate into focused field (Hindi)" aria-pressed="false" title="Dictate into focused field">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-4.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-  </button>`;
-}
-
 function bhajanDisplayName(b) {
   const title = (b.title || '').trim();
   if (title) return title;
@@ -956,7 +939,6 @@ function bindTopbar(opts = {}) {
 }
 
 function renderInner() {
-  stopDictation();
   const showPreviewCss = state.view === 'edit' && state.editPanel === 'preview';
   setPreviewStylesheet(showPreviewCss);
   if (state.view === 'sections') {
@@ -1207,7 +1189,6 @@ function renderInner() {
           </div>
         </div>
         <div class="sticky-actions">
-          ${state.editPanel === 'preview' ? '' : dictationStickyBtnHtml()}
           ${state.editPanel === 'preview' ? publishBtnHtml() : ''}
           ${state.path ? '<button type="button" class="btn btn-danger" id="delete">Delete</button>' : ''}
         </div>
@@ -1638,7 +1619,6 @@ function bindEditor() {
 
   document.getElementById('save')?.addEventListener('click', () => commitPublish());
   document.getElementById('delete')?.addEventListener('click', deleteEditor);
-  bindSpeechDictation(app);
   bindInlineSpellFields(app);
 }
 

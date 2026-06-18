@@ -1,5 +1,6 @@
 (function () {
   var STORAGE_INDEX_OPEN = 'bhajan-sangrah-index-open';
+  var STORAGE_BAR_VISIBLE = 'bhajan-sangrah-bar-visible';
   var sectionNavApi = null;
 
   function prefersReducedMotion() {
@@ -63,9 +64,6 @@
       function setOpen(open) {
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         panel.hidden = !open;
-        toggle.querySelector('.bhajan-index__toggle-text').textContent = open
-          ? 'भजन सूची छिपाएँ'
-          : 'भजन सूची दिखाएँ';
         try {
           localStorage.setItem(storageKey, open ? '1' : '0');
         } catch (e) {}
@@ -102,8 +100,6 @@
     if (!panel || !toggle || !panel.hidden) return;
     toggle.setAttribute('aria-expanded', 'true');
     panel.hidden = false;
-    var label = toggle.querySelector('.bhajan-index__toggle-text');
-    if (label) label.textContent = 'भजन सूची छिपाएँ';
     try {
       var storageKey =
         nav.id === 'master-bhajan-index'
@@ -144,6 +140,41 @@
         e.preventDefault();
         scrollToBhajanIndex();
       });
+    });
+  }
+
+  /* ---- Section pages: hide/show bottom bar for more reading space ---- */
+  function initBarToggle() {
+    if (!document.body.classList.contains('page-section')) return;
+    var bar = document.querySelector('.mobile-bar');
+    var toggle = bar && bar.querySelector('[data-action="bar-toggle"]');
+    var restore = document.getElementById('mobile-bar-restore');
+    if (!toggle) return;
+
+    function setBarVisible(visible) {
+      document.body.classList.toggle('bar-hidden', !visible);
+      toggle.setAttribute('aria-pressed', visible ? 'false' : 'true');
+      toggle.setAttribute('aria-label', visible ? 'मेनू छिपाएँ' : 'मेनू दिखाएँ');
+      if (restore) restore.hidden = visible;
+      try {
+        localStorage.setItem(STORAGE_BAR_VISIBLE, visible ? '1' : '0');
+      } catch (e) {}
+    }
+
+    var barVisible = true;
+    try {
+      var saved = localStorage.getItem(STORAGE_BAR_VISIBLE);
+      if (saved === '0') barVisible = false;
+    } catch (e) {}
+    setBarVisible(barVisible);
+
+    toggle.addEventListener('click', function (e) {
+      e.preventDefault();
+      setBarVisible(document.body.classList.contains('bar-hidden'));
+    });
+    restore?.addEventListener('click', function (e) {
+      e.preventDefault();
+      setBarVisible(true);
     });
   }
 
@@ -362,6 +393,7 @@
 
   initCollapsibleIndex();
   initToolbarIndexButton();
+  initBarToggle();
   initSectionScrollUi();
   initSectionHeroIndex();
   initIndexAnchorScroll();
