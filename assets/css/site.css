@@ -318,33 +318,37 @@ body.bar-hidden .mobile-bar {
   right: max(0.5rem, env(safe-area-inset-right, 0px));
   bottom: max(0.35rem, env(safe-area-inset-bottom, 0px));
   z-index: 510;
-  align-items: center;
-  justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  padding: 0;
-  font-family: var(--font);
-  color: var(--muted);
-  background: transparent;
-  border: none;
-  border-radius: 0.25rem;
-  opacity: 0.38;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+  margin: 0;
 }
 
 .mobile-bar-restore:not([hidden]) {
   display: flex;
 }
 
-.mobile-bar-restore:hover,
-.mobile-bar-restore:focus-visible {
-  opacity: 0.72;
+.chrome-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 1.65rem;
+  height: 1.65rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  background: var(--surface);
+  color: var(--accent-dark);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chrome-toggle-btn:hover,
+.chrome-toggle-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent-dark);
   outline: none;
 }
 
-.chrome-restore__icon,
 .chrome-toggle__icon {
   width: 1.05rem;
   height: 1.05rem;
@@ -355,12 +359,6 @@ body.bar-hidden .mobile-bar {
 .mobile-bar__btn--chrome {
   flex: 0 0 auto;
   max-width: 2.5rem;
-  box-sizing: border-box;
-  border: 1px solid var(--border);
-  border-radius: 0.3rem;
-  background: var(--surface);
-  color: var(--accent-dark);
-  opacity: 1;
 }
 
 .mobile-bar__btn {
@@ -378,6 +376,17 @@ body.bar-hidden .mobile-bar {
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-bar__btn.chrome-toggle-btn {
+  width: 1.65rem;
+  min-width: 1.65rem;
+  min-height: 1.65rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  background: var(--surface);
+  color: var(--accent-dark);
 }
 
 .mobile-bar__icon {
@@ -1138,39 +1147,6 @@ body.search-panel-open {
   flex-shrink: 0;
   align-items: center;
   gap: 0.1rem;
-}
-
-.bhajan-pager__chrome {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  width: 1.65rem;
-  height: 1.65rem;
-  margin: 0;
-  padding: 0;
-  border: 1px solid var(--border);
-  border-radius: 0.3rem;
-  background: var(--surface);
-  color: var(--accent-dark);
-  opacity: 1;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.bhajan-pager__chrome:hover,
-.bhajan-pager__chrome:focus-visible {
-  border-color: var(--accent);
-  color: var(--accent-dark);
-  outline: none;
-}
-
-.mobile-bar__btn--chrome:hover,
-.mobile-bar__btn--chrome:focus-visible {
-  border-color: var(--accent);
-  color: var(--accent-dark);
-  outline: none;
 }
 
 .bhajan-index {
