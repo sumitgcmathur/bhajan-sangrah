@@ -355,8 +355,12 @@ body.bar-hidden .mobile-bar {
 .mobile-bar__btn--chrome {
   flex: 0 0 auto;
   max-width: 2.5rem;
-  color: var(--muted);
-  opacity: 0.72;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  background: var(--surface);
+  color: var(--accent-dark);
+  opacity: 1;
 }
 
 .mobile-bar__btn {
@@ -1140,14 +1144,16 @@ body.search-panel-open {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   width: 1.65rem;
   height: 1.65rem;
   margin: 0;
   padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  opacity: 0.55;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  background: var(--surface);
+  color: var(--accent-dark);
+  opacity: 1;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -1155,7 +1161,15 @@ body.search-panel-open {
 
 .bhajan-pager__chrome:hover,
 .bhajan-pager__chrome:focus-visible {
-  opacity: 0.85;
+  border-color: var(--accent);
+  color: var(--accent-dark);
+  outline: none;
+}
+
+.mobile-bar__btn--chrome:hover,
+.mobile-bar__btn--chrome:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent-dark);
   outline: none;
 }
 

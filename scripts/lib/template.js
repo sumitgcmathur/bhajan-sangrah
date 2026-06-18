@@ -172,7 +172,7 @@ function renderToolbarIndexIcon() {
 
 function renderChromeHideIcon() {
   return `<svg class="chrome-toggle__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M9 10.5l3 3 3-3" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M9 10.5l3 3 3-3" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 }
 
