@@ -432,22 +432,16 @@ function flattenBhajansForNav(bhajans, section, grouped, groups) {
   });
 }
 
-function renderOmFrameDecor(opts = {}) {
-  const horizRepeat = opts.horizontalRepeat ?? 48;
-  /* Page frame ≈ one viewport; bhajan cards (e.g. चालीसा) need many more vertical ॐ */
-  const vertRepeat = opts.verticalRepeat ?? 96;
-  const om = '<span class="om-frame__om">ॐ</span>';
-  const horiz = om.repeat(horizRepeat);
-  const vert = om.repeat(vertRepeat);
+function renderOmFrameDecor() {
   return `<div class="om-frame__ring" aria-hidden="true">
   <span class="om-frame__corner om-frame__corner--tl om-frame__om">ॐ</span>
   <span class="om-frame__corner om-frame__corner--tr om-frame__om">ॐ</span>
   <span class="om-frame__corner om-frame__corner--bl om-frame__om">ॐ</span>
   <span class="om-frame__corner om-frame__corner--br om-frame__om">ॐ</span>
-  <div class="om-frame__edge om-frame__edge--top">${horiz}</div>
-  <div class="om-frame__edge om-frame__edge--bottom">${horiz}</div>
-  <div class="om-frame__edge om-frame__edge--left">${vert}</div>
-  <div class="om-frame__edge om-frame__edge--right">${vert}</div>
+  <div class="om-frame__edge om-frame__edge--top"></div>
+  <div class="om-frame__edge om-frame__edge--bottom"></div>
+  <div class="om-frame__edge om-frame__edge--left"></div>
+  <div class="om-frame__edge om-frame__edge--right"></div>
 </div>`;
 }
 
@@ -466,7 +460,7 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
     sthayiAnchorId: hasSthayi ? sthayiAnchor : null,
   });
   return `<article class="bhajan-card om-frame" id="${id}">
-  ${renderOmFrameDecor({ verticalRepeat: 400 })}
+  ${renderOmFrameDecor()}
   <header class="bhajan-card__head" id="${titleAnchor}">
     <h3 class="bhajan-card__title"><span class="bhajan-card__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}${sw}</h3>
   </header>
