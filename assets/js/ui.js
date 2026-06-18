@@ -3,6 +3,46 @@
   var STORAGE_BAR_VISIBLE = 'bhajan-sangrah-bar-visible';
   var sectionNavApi = null;
 
+  function isChromeHidden() {
+    return document.body.classList.contains('bar-hidden');
+  }
+
+  function syncPagerChromeLayout() {
+    var pager = document.getElementById('bhajan-pager');
+    if (!pager) return;
+
+    if (isChromeHidden()) {
+      pager.hidden = true;
+      document.body.classList.remove('pager-visible');
+      return;
+    }
+
+    var hero = document.getElementById('section-hero');
+    if (hero) {
+      var pastHero = hero.getBoundingClientRect().bottom <= window.innerHeight * 0.88;
+      document.body.classList.toggle('pager-visible', pastHero);
+      pager.hidden = !pastHero;
+      return;
+    }
+
+    document.body.classList.add('pager-visible');
+    pager.hidden = false;
+  }
+
+  function setChromeVisible(visible) {
+    document.body.classList.toggle('bar-hidden', !visible);
+    document.querySelectorAll('[data-action="bar-toggle"]').forEach(function (btn) {
+      btn.setAttribute('aria-pressed', visible ? 'false' : 'true');
+      btn.setAttribute('aria-label', visible ? 'पट्टी छिपाएँ' : 'पट्टी दिखाएँ');
+    });
+    var restore = document.getElementById('mobile-bar-restore');
+    if (restore) restore.hidden = visible;
+    syncPagerChromeLayout();
+    try {
+      localStorage.setItem(STORAGE_BAR_VISIBLE, visible ? '1' : '0');
+    } catch (e) {}
+  }
+
   function prefersReducedMotion() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
@@ -143,38 +183,27 @@
     });
   }
 
-  /* ---- Section pages: hide/show bottom bar for more reading space ---- */
+  /* ---- Section pages: hide/show bottom chrome for more reading space ---- */
   function initBarToggle() {
     if (!document.body.classList.contains('page-section')) return;
-    var bar = document.querySelector('.mobile-bar');
-    var toggle = bar && bar.querySelector('[data-action="bar-toggle"]');
-    var restore = document.getElementById('mobile-bar-restore');
-    if (!toggle) return;
 
-    function setBarVisible(visible) {
-      document.body.classList.toggle('bar-hidden', !visible);
-      toggle.setAttribute('aria-pressed', visible ? 'false' : 'true');
-      toggle.setAttribute('aria-label', visible ? 'मेनू छिपाएँ' : 'मेनू दिखाएँ');
-      if (restore) restore.hidden = visible;
-      try {
-        localStorage.setItem(STORAGE_BAR_VISIBLE, visible ? '1' : '0');
-      } catch (e) {}
-    }
-
-    var barVisible = true;
+    var chromeVisible = true;
     try {
       var saved = localStorage.getItem(STORAGE_BAR_VISIBLE);
-      if (saved === '0') barVisible = false;
+      if (saved === '0') chromeVisible = false;
     } catch (e) {}
-    setBarVisible(barVisible);
+    setChromeVisible(chromeVisible);
 
-    toggle.addEventListener('click', function (e) {
+    document.addEventListener('click', function (e) {
+      var toggle = e.target.closest('[data-action="bar-toggle"]');
+      if (!toggle || toggle.id === 'mobile-bar-restore') return;
       e.preventDefault();
-      setBarVisible(document.body.classList.contains('bar-hidden'));
+      setChromeVisible(isChromeHidden());
     });
-    restore?.addEventListener('click', function (e) {
+
+    document.getElementById('mobile-bar-restore')?.addEventListener('click', function (e) {
       e.preventDefault();
-      setBarVisible(true);
+      setChromeVisible(true);
     });
   }
 
@@ -211,12 +240,7 @@
   }
 
   function syncHeroPagerLayout() {
-    var hero = document.getElementById('section-hero');
-    var pager = document.getElementById('bhajan-pager');
-    if (!hero) return;
-    var pastHero = hero.getBoundingClientRect().bottom <= window.innerHeight * 0.88;
-    document.body.classList.toggle('pager-visible', pastHero);
-    if (pager) pager.hidden = !pastHero;
+    syncPagerChromeLayout();
   }
 
   function initSectionScrollUi() {
@@ -314,8 +338,7 @@
       window.addEventListener('scroll', syncHeroPagerLayout, { passive: true });
       window.addEventListener('resize', syncHeroPagerLayout);
     } else if (pager) {
-      document.body.classList.add('pager-visible');
-      pager.hidden = false;
+      syncPagerChromeLayout();
     }
 
     if (window.location.hash) {
@@ -347,8 +370,8 @@
     }
 
     if (pager) {
-      pager.hidden = false;
       pager.addEventListener('click', function (e) {
+        if (e.target.closest('[data-action="bar-toggle"]')) return;
         var a = e.target.closest('.bhajan-pager__link');
         if (!a || a.classList.contains('is-disabled')) {
           e.preventDefault();

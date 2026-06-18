@@ -170,15 +170,15 @@ function renderToolbarIndexIcon() {
 </svg>`;
 }
 
-function renderToolbarBarHideIcon() {
-  return `<svg class="mobile-bar__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+function renderChromeHideIcon() {
+  return `<svg class="chrome-toggle__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M9 10.5l3 3 3-3" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 }
 
-function renderToolbarBarShowIcon() {
-  return `<svg class="mobile-bar__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+function renderChromeRestoreIcon() {
+  return `<svg class="chrome-restore__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M9 13.5l3-3 3 3" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 }
 
@@ -191,7 +191,7 @@ function renderMobileBar(isSectionPage, isHomePage) {
     ? `<button type="button" class="mobile-bar__btn" data-action="index" aria-label="${indexLabel}">${renderToolbarIndexIcon()}</button>`
     : '';
   const barToggle = isSectionPage
-    ? `<button type="button" class="mobile-bar__btn" data-action="bar-toggle" aria-pressed="false" aria-label="मेनू छिपाएँ">${renderToolbarBarHideIcon()}</button>`
+    ? `<button type="button" class="mobile-bar__btn mobile-bar__btn--chrome" data-action="bar-toggle" aria-pressed="false" aria-label="पट्टी छिपाएँ">${renderChromeHideIcon()}</button>`
     : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
   <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">≡</span></button>
@@ -203,7 +203,7 @@ function renderMobileBar(isSectionPage, isHomePage) {
 }
 
 function renderBarRestoreFab() {
-  return `<button type="button" class="mobile-bar-restore" id="mobile-bar-restore" hidden aria-label="मेनू दिखाएँ">${renderToolbarBarShowIcon()}</button>`;
+  return `<button type="button" class="mobile-bar-restore" id="mobile-bar-restore" hidden aria-label="पट्टी दिखाएँ">${renderChromeRestoreIcon()}</button>`;
 }
 
 function renderSectionScrollHeader(sectionTitle, total) {
@@ -217,7 +217,10 @@ function renderBhajanPager() {
   return `<nav class="bhajan-pager" id="bhajan-pager" aria-label="पिछला अगला भजन" hidden>
   <a class="bhajan-pager__link bhajan-pager__prev" id="bhajan-pager-prev" href="#">← पिछला</a>
   <span class="bhajan-pager__status" id="bhajan-pager-status"></span>
-  <a class="bhajan-pager__link bhajan-pager__next" id="bhajan-pager-next" href="#">अगला →</a>
+  <div class="bhajan-pager__tail">
+    <a class="bhajan-pager__link bhajan-pager__next" id="bhajan-pager-next" href="#">अगला →</a>
+    <button type="button" class="bhajan-pager__chrome" data-action="bar-toggle" aria-pressed="false" aria-label="पट्टी छिपाएँ">${renderChromeHideIcon()}</button>
+  </div>
 </nav>`;
 }
 

@@ -1,3 +1,4 @@
+/** Bhajan Sangrah admin — Vercel root `admin/` */
 import { bindInlineSpellFields, spellCheckEditorFields, textsFromEditor } from './spellcheck.js';
 import {
   runCorpusSpellScan,
