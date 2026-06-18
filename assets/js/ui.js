@@ -1,6 +1,5 @@
 (function () {
   var STORAGE_INDEX_OPEN = 'bhajan-sangrah-index-open';
-  var STORAGE_BAR_VISIBLE = 'bhajan-sangrah-bar-visible';
   var sectionNavApi = null;
 
   function isChromeHidden() {
@@ -48,9 +47,6 @@
     var restore = document.getElementById('mobile-bar-restore');
     if (restore) restore.hidden = visible;
     syncPagerChromeLayout();
-    try {
-      localStorage.setItem(STORAGE_BAR_VISIBLE, visible ? '1' : '0');
-    } catch (e) {}
   }
 
   function prefersReducedMotion() {
@@ -197,12 +193,7 @@
   function initBarToggle() {
     if (!document.body.classList.contains('page-section')) return;
 
-    var chromeVisible = true;
-    try {
-      var saved = localStorage.getItem(STORAGE_BAR_VISIBLE);
-      if (saved === '0') chromeVisible = false;
-    } catch (e) {}
-    setChromeVisible(chromeVisible);
+    setChromeVisible(true);
 
     document.addEventListener('click', function (e) {
       var toggle = e.target.closest('[data-action="bar-toggle"]');
