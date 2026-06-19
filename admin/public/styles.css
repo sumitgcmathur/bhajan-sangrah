@@ -449,6 +449,47 @@ main.edit-main {
   min-width: 0;
 }
 
+.basic-grid__tags {
+  margin-top: 0.75rem;
+}
+
+.tags-fieldset {
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+  padding: 0.65rem 0.75rem 0.75rem;
+  margin: 0;
+}
+
+.tags-fieldset legend {
+  padding: 0 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.tag-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 1rem;
+  margin-top: 0.35rem;
+}
+
+.tag-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.tag-check--sw {
+  margin-bottom: 0.35rem;
+}
+
+.tags-hint {
+  margin: 0.35rem 0 0;
+}
+
 @media (min-width: 480px) {
   .basic-grid__row2--group {
     display: grid;

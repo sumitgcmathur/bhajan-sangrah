@@ -143,6 +143,8 @@ function editorSnapshot(editor) {
     title: (e.title || '').trim(),
     tarz: (e.tarz || '').trim(),
     group: (e.group || '').trim(),
+    swarachit: Boolean(e.swarachit),
+    also_in: [...(e.also_in || [])].sort(),
     legacyLyricsText: e.legacyLyricsText || '',
     lyrics: {
       sthayi: (L.sthayi || '').trim(),
@@ -417,6 +419,8 @@ function emptyEditor() {
     title: '',
     tarz: '',
     group: '',
+    swarachit: false,
+    also_in: [],
     lyrics: {
       sthayi: '',
       sthayi_connect_text: '',
@@ -694,6 +698,45 @@ function readGroupValue() {
   return sel.value.trim();
 }
 
+function tagSectionChoices() {
+  const current = state.section?.slug;
+  return (state.sections || []).filter((s) => s.slug !== current);
+}
+
+function readAlsoInFromDom() {
+  return [...document.querySelectorAll('.f-also-in:checked')]
+    .map((el) => el.dataset.slug)
+    .filter(Boolean);
+}
+
+function tagsFieldHtml(editor) {
+  const alsoIn = new Set(editor.also_in || []);
+  const choices = tagSectionChoices();
+  const checks = choices
+    .map(
+      (s) => `<label class="tag-check">
+      <input type="checkbox" class="f-also-in" data-slug="${escapeAttr(s.slug)}" ${alsoIn.has(s.slug) ? 'checked' : ''}>
+      <span>${escapeHtml(s.title)}</span>
+    </label>`,
+    )
+    .join('');
+  const swarachitHint =
+    state.section?.slug === 'swarachit'
+      ? '<p class="hint tags-hint">In स्वरचित, <strong>Group</strong> also lists the bhajan under that section title automatically.</p>'
+      : '';
+  return `
+    <fieldset class="tags-fieldset">
+      <legend>Tags &amp; cross-listing</legend>
+      <label class="tag-check tag-check--sw">
+        <input type="checkbox" id="f-swarachit" ${editor.swarachit ? 'checked' : ''}>
+        <span>स्वरचित (original composition)</span>
+      </label>
+      <p class="hint tags-hint">Also show in sections (file stays in ${escapeHtml(state.section?.title || 'this folder')}):</p>
+      <div class="tag-checks">${checks || '<p class="hint">No other sections.</p>'}</div>
+      ${swarachitHint}
+    </fieldset>`;
+}
+
 /** One block per antara; blank line separates blocks. Commentary blocks start with [commentary]. */
 function bulkTextToParagraphs(text) {
   return String(text || '')
@@ -734,6 +777,11 @@ function syncEditorFromDom() {
   e.tarz = document.getElementById('f-tarz')?.value.trim() || '';
   if (document.getElementById('f-group-select')) {
     e.group = readGroupValue();
+  }
+  const swEl = document.getElementById('f-swarachit');
+  if (swEl) e.swarachit = swEl.checked;
+  if (document.querySelector('.f-also-in')) {
+    e.also_in = readAlsoInFromDom();
   }
   const L = e.lyrics;
   const sthayiEl = document.getElementById('f-sthayi');
@@ -1157,6 +1205,9 @@ function renderInner() {
                     <input type="text" id="f-tarz" ${HI_FIELD} value="${escapeAttr(e.tarz)}">
                   </div>
                   ${groupBlock}
+                </div>
+                <div class="basic-grid__tags">
+                  ${tagsFieldHtml(e)}
                 </div>
               </div>
             </div>

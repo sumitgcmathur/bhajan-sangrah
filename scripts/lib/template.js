@@ -455,8 +455,10 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
   const id = b.id || anchorId(section.slug, b.title, index);
   const num = index + 1;
   const sw = showSwarachitBadge && b.swarachit ? '<span class="bhajan-badge">स्वरचित</span>' : '';
+  const hideFromBadge =
+    b.swarachit && showSwarachitBadge && b._primarySection?.slug === 'swarachit';
   const fromSection =
-    b._isCrossListed && b._primarySection
+    b._isCrossListed && b._primarySection && !hideFromBadge
       ? `<span class="bhajan-badge bhajan-badge--from">${escapeHtml(b._primarySection.title)}</span>`
       : '';
   const sthayiAnchor = `${id}-sthayi`;
