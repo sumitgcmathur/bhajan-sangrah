@@ -80,3 +80,9 @@ sections:
     google_path: bhairav
     title: भैरव भजन
     banner: assets/icons/KalBhairav.jpg
+  - slug: mantra
+    folder: mantra
+    google_path: mantra
+    title: वैदिक मंत्र
+    banner: assets/icons/MoolTatva.jpg
+    bhajan_order: file
