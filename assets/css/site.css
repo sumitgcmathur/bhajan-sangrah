@@ -41,6 +41,13 @@
   --lyrics-line-height: 1.52;
   --lyrics-antara-gap: 0.75rem;
   --lyrics-stanza-gap: 0.75rem;
+  --scrollbar-size: 8px;
+  --scrollbar-track: rgba(44, 24, 16, 0.06);
+  --scrollbar-thumb: rgba(155, 45, 74, 0.38);
+  --scrollbar-thumb-hover: rgba(107, 31, 50, 0.58);
+  --scrollbar-sidebar-track: rgba(255, 255, 255, 0.07);
+  --scrollbar-sidebar-thumb: rgba(255, 255, 255, 0.32);
+  --scrollbar-sidebar-thumb-hover: rgba(255, 255, 255, 0.5);
 }
 
 /* Dark theme: manual toggle */
@@ -62,6 +69,12 @@
   --accent-glow: rgba(212, 120, 144, 0.15);
   --lyrics-marker: #a89088;
   --section-page-watermark-opacity: 0.035;
+  --scrollbar-track: rgba(255, 255, 255, 0.06);
+  --scrollbar-thumb: rgba(212, 120, 144, 0.45);
+  --scrollbar-thumb-hover: rgba(232, 160, 176, 0.65);
+  --scrollbar-sidebar-track: rgba(255, 255, 255, 0.05);
+  --scrollbar-sidebar-thumb: rgba(255, 255, 255, 0.22);
+  --scrollbar-sidebar-thumb-hover: rgba(255, 255, 255, 0.38);
 }
 
 /* Dark theme: system preference when user has not chosen light */
@@ -84,6 +97,12 @@
     --accent-glow: rgba(212, 120, 144, 0.15);
     --lyrics-marker: #a89088;
     --section-page-watermark-opacity: 0.035;
+    --scrollbar-track: rgba(255, 255, 255, 0.06);
+    --scrollbar-thumb: rgba(212, 120, 144, 0.45);
+    --scrollbar-thumb-hover: rgba(232, 160, 176, 0.65);
+    --scrollbar-sidebar-track: rgba(255, 255, 255, 0.05);
+    --scrollbar-sidebar-thumb: rgba(255, 255, 255, 0.22);
+    --scrollbar-sidebar-thumb-hover: rgba(255, 255, 255, 0.38);
   }
 }
 
@@ -101,6 +120,60 @@ body {
   color: var(--text);
   line-height: var(--leading);
   font-size: var(--text-base);
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* ---- Custom scrollbars ---- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.site-sidebar,
+.sidebar-nav {
+  scrollbar-color: var(--scrollbar-sidebar-thumb) var(--scrollbar-sidebar-track);
+}
+
+.site-sidebar::-webkit-scrollbar-track,
+.sidebar-nav::-webkit-scrollbar-track {
+  background: var(--scrollbar-sidebar-track);
+  margin: 0.35rem 0;
+}
+
+.site-sidebar::-webkit-scrollbar-thumb,
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-sidebar-thumb);
+}
+
+.site-sidebar::-webkit-scrollbar-thumb:hover,
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-sidebar-thumb-hover);
 }
 
 .visually-hidden {

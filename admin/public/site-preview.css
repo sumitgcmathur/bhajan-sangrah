@@ -37,9 +37,17 @@
   --pager-h: 2.65rem;
   --section-hero-fill: calc(100dvh - var(--mobile-bar-h) - env(safe-area-inset-bottom, 0px));
   --section-page-watermark-opacity: 0.05;
+  /* Bhajan lyrics rhythm — keep in sync with assets/css/pdf-export.css */
   --lyrics-line-height: 1.52;
   --lyrics-antara-gap: 0.75rem;
   --lyrics-stanza-gap: 0.75rem;
+  --scrollbar-size: 8px;
+  --scrollbar-track: rgba(44, 24, 16, 0.06);
+  --scrollbar-thumb: rgba(155, 45, 74, 0.38);
+  --scrollbar-thumb-hover: rgba(107, 31, 50, 0.58);
+  --scrollbar-sidebar-track: rgba(255, 255, 255, 0.07);
+  --scrollbar-sidebar-thumb: rgba(255, 255, 255, 0.32);
+  --scrollbar-sidebar-thumb-hover: rgba(255, 255, 255, 0.5);
 }
 
 /* Dark theme: manual toggle */
@@ -61,6 +69,12 @@
   --accent-glow: rgba(212, 120, 144, 0.15);
   --lyrics-marker: #a89088;
   --section-page-watermark-opacity: 0.035;
+  --scrollbar-track: rgba(255, 255, 255, 0.06);
+  --scrollbar-thumb: rgba(212, 120, 144, 0.45);
+  --scrollbar-thumb-hover: rgba(232, 160, 176, 0.65);
+  --scrollbar-sidebar-track: rgba(255, 255, 255, 0.05);
+  --scrollbar-sidebar-thumb: rgba(255, 255, 255, 0.22);
+  --scrollbar-sidebar-thumb-hover: rgba(255, 255, 255, 0.38);
 }
 
 /* Dark theme: system preference when user has not chosen light */
@@ -83,6 +97,12 @@
     --accent-glow: rgba(212, 120, 144, 0.15);
     --lyrics-marker: #a89088;
     --section-page-watermark-opacity: 0.035;
+    --scrollbar-track: rgba(255, 255, 255, 0.06);
+    --scrollbar-thumb: rgba(212, 120, 144, 0.45);
+    --scrollbar-thumb-hover: rgba(232, 160, 176, 0.65);
+    --scrollbar-sidebar-track: rgba(255, 255, 255, 0.05);
+    --scrollbar-sidebar-thumb: rgba(255, 255, 255, 0.22);
+    --scrollbar-sidebar-thumb-hover: rgba(255, 255, 255, 0.38);
   }
 }
 
@@ -100,6 +120,60 @@ body {
   color: var(--text);
   line-height: var(--leading);
   font-size: var(--text-base);
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* ---- Custom scrollbars ---- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.site-sidebar,
+.sidebar-nav {
+  scrollbar-color: var(--scrollbar-sidebar-thumb) var(--scrollbar-sidebar-track);
+}
+
+.site-sidebar::-webkit-scrollbar-track,
+.sidebar-nav::-webkit-scrollbar-track {
+  background: var(--scrollbar-sidebar-track);
+  margin: 0.35rem 0;
+}
+
+.site-sidebar::-webkit-scrollbar-thumb,
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-sidebar-thumb);
+}
+
+.site-sidebar::-webkit-scrollbar-thumb:hover,
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-sidebar-thumb-hover);
 }
 
 .visually-hidden {
@@ -244,6 +318,7 @@ body {
   border-left-color: var(--sidebar-active);
 }
 
+/* Hover = preview only; must not match current page (touch menus use :hover too) */
 @media (hover: hover) {
   .sidebar-link:hover:not(.is-active) .sidebar-link__count {
     color: rgba(252, 232, 236, 0.92);
@@ -297,6 +372,74 @@ body.page-section.has-sidebar.pager-visible {
   border-top: 1px solid var(--border);
   box-shadow: 0 -2px 12px var(--accent-glow);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  transition: transform 0.2s ease, visibility 0.2s ease;
+}
+
+body.bar-hidden.has-sidebar {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+body.bar-hidden .mobile-bar {
+  transform: translateY(100%);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.mobile-bar-restore {
+  display: none;
+  position: fixed;
+  right: max(0.5rem, env(safe-area-inset-right, 0px));
+  bottom: max(0.35rem, env(safe-area-inset-bottom, 0px));
+  z-index: 510;
+  margin: 0;
+}
+
+.mobile-bar-restore:not([hidden]) {
+  display: flex;
+}
+
+body:not(.bar-hidden) .mobile-bar-restore {
+  display: none !important;
+}
+
+body.bar-hidden .mobile-bar-restore:not([hidden]) {
+  display: flex !important;
+}
+
+.chrome-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 1.65rem;
+  height: 1.65rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  background: var(--surface);
+  color: var(--accent-dark);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chrome-toggle-btn:hover,
+.chrome-toggle-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+  outline: none;
+}
+
+.chrome-toggle__icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  display: block;
+  color: inherit;
+}
+
+.mobile-bar__btn--chrome {
+  flex: 0 0 auto;
+  max-width: 2.5rem;
 }
 
 .mobile-bar__btn {
@@ -314,6 +457,22 @@ body.page-section.has-sidebar.pager-visible {
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-bar__btn.chrome-toggle-btn {
+  width: 1.65rem;
+  min-width: 1.65rem;
+  min-height: 1.65rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  background: var(--surface);
+  color: var(--accent-dark);
+}
+
+.mobile-bar__btn.chrome-toggle-btn[hidden],
+.mobile-bar__btn--chrome[hidden] {
+  display: none !important;
 }
 
 .mobile-bar__icon {
@@ -946,6 +1105,21 @@ body.search-panel-open {
   margin-left: 0.35rem;
 }
 
+.bhajan-index__section {
+  font-size: 0.88em;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.content-index--master a {
+  display: inline;
+}
+
+.bhajan-index--master {
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+
 .bhajan-index__panel {
   padding: 0 1rem 1rem;
   border-top: 1px solid var(--border);
@@ -1019,6 +1193,7 @@ body.search-panel-open {
   background: var(--surface);
   border-top: 1px solid var(--border);
   box-shadow: 0 -2px 10px var(--accent-glow);
+  transition: bottom 0.2s ease;
 }
 
 .bhajan-pager[hidden] {
@@ -1051,6 +1226,13 @@ body.search-panel-open {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.bhajan-pager__tail {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.1rem;
 }
 
 .bhajan-index {
@@ -1428,6 +1610,10 @@ body.search-panel-open {
   color: var(--lyrics-even);
 }
 
+/*
+ * Verse prose: one line-height for antaras, स्थायी, pre/post shlok, aside.
+ * YAML lines + soft wrap share <br> / inline flow (see escape.js).
+ */
 .bhajan-lyrics--standard p.lyrics-antara,
 .bhajan-lyrics--standard p.lyrics-sthayi,
 .bhajan-card__pre-shlok .lyrics-pre-shlok,
