@@ -1,6 +1,6 @@
 const { exchangeCode, getGitHubUser } = require('../../lib/github');
 const { allowedUser, adminBaseUrl } = require('../../lib/config');
-const { createSessionCookie } = require('../../lib/session');
+const { createSessionCookie, clearSessionCookie } = require('../../lib/session');
 const { redirect } = require('../../lib/http');
 
 function readStateCookie(req) {
@@ -34,6 +34,10 @@ module.exports = async (req, res) => {
     const accessToken = await exchangeCode(code);
     const user = await getGitHubUser(accessToken);
     if (String(user.login || '').toLowerCase() !== allowedUser()) {
+      res.setHeader('Set-Cookie', [
+        clearSessionCookie(),
+        'bs_oauth_state=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0',
+      ]);
       redirect(res, `${base}/?error=not_allowed`);
       return;
     }

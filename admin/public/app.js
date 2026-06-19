@@ -26,6 +26,7 @@ const state = {
   sha: null,
   editor: null,
   error: null,
+  loginError: null,
   paraEditMode: 'paste',
   paraBulkDraft: null,
   editOptional: { preShlok: false, postShlok: false },
@@ -645,11 +646,45 @@ function bindBannerUpload(inputId, target) {
 
 function errMsg(code) {
   const map = {
-    not_allowed: 'This GitHub account is not allowed.',
+    not_allowed: 'This GitHub account is not allowed to use this admin app.',
     invalid_state: 'Login expired — please try again.',
     access_denied: 'GitHub login was cancelled.',
   };
   return map[code] || code;
+}
+
+function friendlyLoginError(msg) {
+  const m = String(msg || '').trim();
+  if (!m) return '';
+  if (/not found/i.test(m)) {
+    return 'This GitHub account cannot access the repository. Use an account with write access, or choose a different account below.';
+  }
+  if (/bad credentials|401|unauthorized/i.test(m)) {
+    return 'GitHub session expired. Please sign in again.';
+  }
+  return m;
+}
+
+function loginCardHtml() {
+  const q = new URLSearchParams(location.search);
+  const urlErr = q.get('error');
+  const message = urlErr
+    ? errMsg(urlErr)
+    : friendlyLoginError(state.loginError);
+  const showSwitch = Boolean(message);
+  return `
+      <main>
+        <div class="login-card">
+          <h1>Bhajan Sangrah Admin</h1>
+          ${message ? `<p class="err">${escapeHtml(message)}</p>` : ''}
+          <p>Sign in with GitHub to edit content. Only the allowed account can make changes.</p>
+          <div class="login-actions">
+            <a class="btn btn-primary" href="/api/auth/login">Sign in with GitHub</a>
+            <a class="btn" href="/api/auth/login?switch=1">Use a different GitHub account</a>
+            ${showSwitch ? '<a class="btn btn-ghost" href="/api/auth/logout">Clear saved session</a>' : ''}
+          </div>
+        </div>
+      </main>`;
 }
 
 function groupChoices() {
@@ -999,17 +1034,7 @@ function renderInner() {
   }
 
   if (state.view === 'login') {
-    const q = new URLSearchParams(location.search);
-    const err = q.get('error');
-    app.innerHTML = `
-      <main>
-        <div class="login-card">
-          <h1>Bhajan Sangrah Admin</h1>
-          ${err ? `<p class="err">${escapeHtml(errMsg(err))}</p>` : ''}
-          <p>Sign in with GitHub to edit content. Only the allowed account can make changes.</p>
-          <a class="btn btn-primary" href="/api/auth/login">Sign in with GitHub</a>
-        </div>
-      </main>`;
+    app.innerHTML = loginCardHtml();
     return;
   }
 
@@ -2095,6 +2120,7 @@ async function init() {
   try {
     const me = await api('/api/auth/me');
     state.login = me.login;
+    state.loginError = null;
     const data = await api('/api/sections');
     state.sections = data.sections;
     state.homeBanner = data.home_banner || '';
@@ -2102,8 +2128,9 @@ async function init() {
     state.view = 'loading';
     renderInner();
     await applyRouteFromHash();
-  } catch {
+  } catch (e) {
     state.view = 'login';
+    state.loginError = e.message || 'Sign-in failed';
     render();
   }
 }

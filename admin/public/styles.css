@@ -566,6 +566,25 @@ main.edit-main {
 
 .login-card p { color: var(--muted); margin: 0 0 1rem; }
 
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.login-actions .btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.login-actions .btn-ghost:hover {
+  color: var(--text);
+  background: var(--bg-alt);
+}
+
 .err {
   background: var(--danger-bg);
   color: var(--danger);
