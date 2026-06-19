@@ -24,7 +24,7 @@ function isGroupedSection(section) {
   return section?.grouped === true || section?.grouped === 'true';
 }
 
-/** Sections whose items are not included in site-wide bhajan totals (e.g. mantra). */
+/** Sections whose items are omitted from site-wide bhajan totals (rare; most sections count). */
 function excludeFromBhajanCount(section) {
   return section?.exclude_from_bhajan_count === true || section?.exclude_from_bhajan_count === 'true';
 }

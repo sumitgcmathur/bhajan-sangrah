@@ -83,8 +83,7 @@ sections:
   - slug: mantra
     folder: mantra
     google_path: mantra
-    title: वैदिक मंत्र
+    title: संस्कृत भजन और मंत्र
     banner: assets/icons/MoolTatva.jpg
     bhajan_order: file
-    exclude_from_bhajan_count: true
-    count_unit: मंत्र
+    count_unit: गीत
