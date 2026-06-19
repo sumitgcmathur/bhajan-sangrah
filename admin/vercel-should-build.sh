@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Vercel Ignored Build Step (repo root). Exit 0 = skip deploy, 1 = build.
 # Runs with Vercel Root Directory = admin (cwd is admin/). See admin/README.md.
+#
+# Build when anything outside content/ changed; skip content-only commits.
 
 set -euo pipefail
 
@@ -12,11 +14,14 @@ fi
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$ROOT"
 
-# Admin API + UI, shared libs, and site CSS used for publish preview
-PATTERN='^(admin/|scripts/lib/|assets/css/site\.css)'
-
-matches_admin() {
-  grep -qE "$PATTERN" || return 1
+# True when every changed path is under content/ (and there is at least one path).
+only_content_changed() {
+  local files="$1"
+  [ -n "$files" ] || return 1
+  if echo "$files" | grep -qvE '^content/'; then
+    return 1
+  fi
+  return 0
 }
 
 # List files changed for this deployment (handles merge commits).
@@ -43,12 +48,12 @@ changed_files() {
   git diff --name-only HEAD^1 HEAD 2>/dev/null || true
 }
 
-# This commit alone (e.g. spell-allowlist) must build even if last Production was older.
+# This commit alone must build if it touches anything outside content/.
 if git rev-parse HEAD^1 >/dev/null 2>&1; then
   commit_files="$(git diff --name-only HEAD^1 HEAD 2>/dev/null || true)"
-  if [ -n "$commit_files" ] && echo "$commit_files" | matches_admin; then
-    echo "Build: admin-related paths in this commit"
-    echo "$commit_files" | grep -E "$PATTERN" || true
+  if [ -n "$commit_files" ] && ! only_content_changed "$commit_files"; then
+    echo "Build: paths outside content/ in this commit"
+    echo "$commit_files" | grep -vE '^content/' || true
     exit 1
   fi
 fi
@@ -59,13 +64,13 @@ if ! git rev-parse HEAD^1 >/dev/null 2>&1; then
 fi
 
 all_files="$(changed_files)"
-if [ -n "$all_files" ] && echo "$all_files" | matches_admin; then
-  echo "Build: admin-related paths changed since last deploy"
-  echo "$all_files" | grep -E "$PATTERN" || true
+if [ -n "$all_files" ] && ! only_content_changed "$all_files"; then
+  echo "Build: changes outside content/ since last deploy"
+  echo "$all_files" | grep -vE '^content/' || true
   exit 1
 fi
 
-echo "Skip: no admin-related paths in this commit or since ${VERCEL_GIT_PREVIOUS_SHA:-previous deploy}"
+echo "Skip: only content/ changed since ${VERCEL_GIT_PREVIOUS_SHA:-previous deploy}"
 echo "Changed files (sample):"
 echo "$all_files" | head -20 || true
 exit 0

@@ -55,15 +55,15 @@ Each save commits to **main**. Your existing GitHub Action runs `node scripts/bu
 
 | Trigger | Admin deploy? | Public site (`gh-pages`)? |
 |---------|---------------|---------------------------|
-| Push to `main` with changes under `admin/`, `scripts/lib/`, or `assets/css/site.css` | **Yes** (Vercel) | Yes (GitHub Actions) |
-| Push to `main` with **only** `content/` (or other non-admin paths) | **Skipped** (saves builds) | Yes (GitHub Actions) |
+| Push to `main` with changes **outside** `content/` (`admin/`, `scripts/`, `assets/`, `.github/`, etc.) | **Yes** (Vercel) | Yes (GitHub Actions) |
+| Push to `main` with **only** `content/` | **Skipped** (saves builds) | Yes (GitHub Actions) |
 | Push to `gh-pages` | **No** (must not deploy) | Yes (GitHub Pages) |
 
-`admin/vercel.json` sets `"ignoreCommand": "bash vercel-should-build.sh"` (path is relative to **Root Directory** `admin`, not the repo root). The script exits **1** (build) when admin-related files changed, **0** (skip) otherwise. It also skips the `gh-pages` branch.
+`admin/vercel.json` sets `"ignoreCommand": "bash vercel-should-build.sh"` (path is relative to **Root Directory** `admin`, not the repo root). The script exits **1** (build) when any path outside `content/` changed, **0** (skip) when the commit is content-only. It also skips the `gh-pages` branch.
 
 **Merge commits:** The script diffs against **both** merge parents (and uses `VERCEL_GIT_PREVIOUS_SHA` when set). A plain `HEAD^..HEAD` diff on a merge often shows only `content/` even when `admin/` changed on the other side — that used to skip admin deploys incorrectly.
 
-If admin is behind after a skipped deploy: Vercel dashboard → **Deployments** → **Redeploy** (latest `main`), or push any commit that touches `admin/`.
+If admin is behind after a skipped deploy: Vercel dashboard → **Deployments** → **Redeploy** (latest `main`), or push any commit that touches a path outside `content/`.
 
 **Vercel project settings to confirm:**
 
@@ -73,9 +73,9 @@ If admin is behind after a skipped deploy: Vercel dashboard → **Deployments** 
 
 If you prefer **every** `main` commit to redeploy admin (even content-only edits), remove `ignoreCommand` from `admin/vercel.json` and clear the Ignored Build Step in the dashboard.
 
-**Production still on an old deploy?** Pushes that only change `content/` (spell-fix commits) **skip** the admin project. After admin-only commits (e.g. allowlist), Vercel should build; if not, use **Deployments → … → Redeploy** on latest `main`, or push any commit that touches `admin/`.
+**Production still on an old deploy?** Content-only pushes skip the admin project. Push any change outside `content/` (e.g. `admin/`, `scripts/`, `package.json`) or use **Deployments → … → Redeploy** on latest `main`.
 
-**Shared code:** Admin API routes `require()` `scripts/lib/` (YAML, preview HTML, slugs). Changes there trigger an admin rebuild even when `admin/public/` is unchanged.
+**Shared code:** Admin API routes `require()` `scripts/lib/` (YAML, preview HTML, slugs). Any change outside `content/` triggers an admin rebuild.
 
 ## Favicon
 
