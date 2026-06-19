@@ -24,6 +24,21 @@ function isGroupedSection(section) {
   return section?.grouped === true || section?.grouped === 'true';
 }
 
+/** Sections whose items are not included in site-wide bhajan totals (e.g. mantra). */
+function excludeFromBhajanCount(section) {
+  return section?.exclude_from_bhajan_count === true || section?.exclude_from_bhajan_count === 'true';
+}
+
+function isBhajanSection(section) {
+  return !excludeFromBhajanCount(section);
+}
+
+/** Label for per-section item counts in UI (default: भजन). */
+function sectionCountUnit(section) {
+  const unit = String(section?.count_unit || '').trim();
+  return unit || 'भजन';
+}
+
 /**
  * Bhajan index order for site + admin list.
  * Grouped sections (स्वरचित): group order from files; within-group sort in bhajansByGroup when title.
@@ -85,6 +100,9 @@ module.exports = {
   compareBhajanByTitle,
   sectionBhajanOrder,
   isGroupedSection,
+  excludeFromBhajanCount,
+  isBhajanSection,
+  sectionCountUnit,
   sortBhajansForDisplay,
   sortAllBhajansByTitle,
   loadSections,

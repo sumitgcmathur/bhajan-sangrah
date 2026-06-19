@@ -4,6 +4,7 @@ const {
   listBhajanFiles,
   loadBhajan,
   sortBhajansForDisplay,
+  isBhajanSection,
 } = require('./sections');
 
 /** Map swarachit `group:` (section title) → section slug. */
@@ -81,7 +82,8 @@ function buildSectionBhajanMap(sections) {
     bySlug.set(section.slug, sortBhajansForDisplay(section, bhajans));
   }
 
-  return { bySlug, records, uniqueCount: records.length };
+  const uniqueCount = records.filter((r) => isBhajanSection(r.primarySection)).length;
+  return { bySlug, records, uniqueCount };
 }
 
 function countBhajansBySection(sections, bySlug) {

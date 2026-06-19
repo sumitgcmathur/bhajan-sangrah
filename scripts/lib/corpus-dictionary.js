@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { ROOT } = require('./paths');
-const { loadSections, sectionFolder, listBhajanFiles, loadBhajan } = require('./sections');
+const { loadSections, sectionFolder, listBhajanFiles, loadBhajan, isBhajanSection } = require('./sections');
 const { collectFields } = require('../../admin/lib/bhajan-text-fields');
 const { tokenizeHindiForSpell } = require('./spell-tokens');
 
@@ -22,7 +22,7 @@ function collectWordsFromConfig(config) {
   for (const section of config.sections || []) {
     const sectionWords = new Set();
     for (const file of listBhajanFiles(section)) {
-      bhajanCount += 1;
+      if (isBhajanSection(section)) bhajanCount += 1;
       const doc = loadBhajan(path.join(sectionFolder(section), file));
       for (const { text } of collectFields(doc)) {
         for (const w of tokenizeHindiForSpell(text, MIN_WORD_LEN)) {

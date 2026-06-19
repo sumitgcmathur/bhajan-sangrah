@@ -435,6 +435,8 @@ function dumpSectionsDoc(config) {
     if (s.bhajan_order === 'file' || s.bhajan_order === 'title') {
       out.push(`    bhajan_order: ${s.bhajan_order}`);
     }
+    if (s.exclude_from_bhajan_count) out.push('    exclude_from_bhajan_count: true');
+    if (s.count_unit) out.push(`    count_unit: ${s.count_unit}`);
     if (s.sthayi_connect === true) out.push('    sthayi_connect: true');
     else if (s.sthayi_connect === false) out.push('    sthayi_connect: false');
   }

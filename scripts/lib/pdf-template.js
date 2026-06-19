@@ -3,6 +3,7 @@ const { ROOT } = require('./paths');
 const { toDevaNum } = require('./lyrics-structure');
 const { landingBannerPath } = require('./banner-thumbs');
 const { pathToFileURL } = require('./pdf-assets');
+const { sectionCountUnit } = require('./sections');
 const {
   escapeHtml,
   bhajanNumberLabel,
@@ -110,8 +111,8 @@ function renderPdfSectionIndex(section, bhajans) {
 </nav>`;
 }
 
-function formatBhajanCount(n) {
-  return `${toDevaNum(n)} भजन`;
+function formatSectionCount(section, n) {
+  return `${toDevaNum(n)} ${sectionCountUnit(section)}`;
 }
 
 function renderPdfLanding(config, sectionPayloads, resolveAsset, opts = {}) {
@@ -132,7 +133,7 @@ function renderPdfLanding(config, sectionPayloads, resolveAsset, opts = {}) {
       return `<a class="pdf-landing__card" href="${href}">
   ${media}
   <span class="pdf-landing__card-title">${escapeHtml(section.title)}</span>
-  <span class="pdf-landing__card-count">${formatBhajanCount(bhajans.length)}</span>
+  <span class="pdf-landing__card-count">${formatSectionCount(section, bhajans.length)}</span>
 </a>`;
     })
     .filter(Boolean)

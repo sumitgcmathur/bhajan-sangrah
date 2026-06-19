@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const { ROOT, DOCS, ASSETS } = require('./lib/paths');
-const { loadSections } = require('./lib/sections');
+const { loadSections, isBhajanSection } = require('./lib/sections');
 const { buildSectionBhajanMap, countBhajansBySection } = require('./lib/cross-section');
 const { prepareBhajanForRender } = require('./lib/bhajan-render');
 const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
@@ -82,8 +82,9 @@ async function main() {
       };
     });
     for (const bhajan of enriched) {
-      if (!bhajan._isCrossListed) {
-        allBhajanEntries.push({ bhajan, section: bhajan._primarySection || section });
+      const primary = bhajan._primarySection || section;
+      if (!bhajan._isCrossListed && isBhajanSection(primary)) {
+        allBhajanEntries.push({ bhajan, section: primary });
       }
     }
     fs.writeFileSync(

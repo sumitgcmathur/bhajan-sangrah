@@ -9,6 +9,7 @@ const {
 const { anchorId } = require('./slug');
 const { toDevaNum } = require('./lyrics-structure');
 const { landingBannerPath } = require('./banner-thumbs');
+const { sectionCountUnit } = require('./sections');
 
 function pageUrl(base, page) {
   if (!page) return base || './';
@@ -28,6 +29,10 @@ function sectionWatermarkAttrs(section, base, { preview = false } = {}) {
 
 function formatBhajanCount(n) {
   return `${toDevaNum(n)} भजन`;
+}
+
+function formatSectionCount(section, n) {
+  return `${toDevaNum(n)} ${sectionCountUnit(section)}`;
 }
 
 function formatSidebarCount(n) {
@@ -60,8 +65,9 @@ function renderNav(sections, base, currentSlug, sectionCounts) {
       const href = pageUrl(base, `${s.slug}.html`);
       const active = s.slug === currentSlug ? ' is-active' : '';
       const count = countBySlug.get(s.slug) ?? 0;
+      const unit = sectionCountUnit(s);
       const countHtml = `<span class="sidebar-link__count">${formatSidebarCount(count)}</span>`;
-      return `<li><a class="sidebar-link${active}" href="${href}" aria-label="${escapeHtml(s.title)}, ${count} भजन">
+      return `<li><a class="sidebar-link${active}" href="${href}" aria-label="${escapeHtml(s.title)}, ${count} ${unit}">
   <span class="sidebar-link__body">
     <span class="sidebar-link__label">${escapeHtml(s.title)}</span>
     ${countHtml}
@@ -283,8 +289,8 @@ function renderSectionGrid(sections, base, config, sectionCounts) {
       const href = pageUrl(base, `${s.slug}.html`);
       const img = sectionCardImage(s, base, config);
       const count = countBySlug.get(s.slug) ?? 0;
-      const countHtml = `<span class="section-card__count">${formatBhajanCount(count)}</span>`;
-      return `<a class="section-card" href="${href}" aria-label="${escapeHtml(s.title)}, ${count} भजन">
+      const countHtml = `<span class="section-card__count">${formatSectionCount(s, count)}</span>`;
+      return `<a class="section-card" href="${href}" aria-label="${escapeHtml(s.title)}, ${count} ${sectionCountUnit(s)}">
   ${renderSectionCardBanner(img, s.title)}
   <span class="section-card__foot">${countHtml}</span>
 </a>`;

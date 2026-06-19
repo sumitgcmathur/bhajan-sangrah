@@ -86,3 +86,5 @@ sections:
     title: वैदिक मंत्र
     banner: assets/icons/MoolTatva.jpg
     bhajan_order: file
+    exclude_from_bhajan_count: true
+    count_unit: मंत्र
