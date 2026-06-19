@@ -12,6 +12,14 @@ sections:
     title: आरती
     banner: assets/icons/aarti.jpg
     bhajan_order: file
+  - slug: mantra
+    folder: mantra
+    google_path: mantra
+    title: संस्कृत भजन और मंत्र
+    banner: assets/icons/MoolTatva.jpg
+    bhajan_order: file
+    grouped: true
+    count_unit: गीत
   - slug: shiv
     folder: shiv
     google_path: shiv
@@ -80,10 +88,3 @@ sections:
     google_path: bhairav
     title: भैरव भजन
     banner: assets/icons/KalBhairav.jpg
-  - slug: mantra
-    folder: mantra
-    google_path: mantra
-    title: संस्कृत भजन और मंत्र
-    banner: assets/icons/MoolTatva.jpg
-    bhajan_order: file
-    count_unit: गीत

@@ -290,48 +290,6 @@ function extractTarzFromText(text) {
   return { tarz: null, rest: text };
 }
 
-/** Convert legacy flat lyrics (+ optional doc.tarz) into sthayi + paragraphs */
-function migrateDoc(doc) {
-  const out = { ...doc };
-  const raw = isStructuredLyrics(doc.lyrics)
-    ? flattenLyricsText(doc.lyrics)
-    : String(doc.lyrics || '');
-
-  const { tarz: embeddedTarz, rest } = extractTarzFromText(raw);
-  if (embeddedTarz && !out.tarz) out.tarz = embeddedTarz;
-
-  const cleaned = cleanLyricsText(rest);
-  const allLines = linesOf(cleaned);
-  const hookPhrases = deriveHookPhrases(allLines, out.title || doc.title || '');
-  const blocks = splitBlocks(cleaned);
-
-  let norm;
-  if (blocks.length >= 2) {
-    norm = migrateBlankBlocksToStanzas(blocks, hookPhrases);
-  } else {
-    norm = normalizeFromLegacy(rest);
-  }
-
-  if (norm.strategy === 'empty' || norm.strategy === 'empty-blocks') {
-    out.lyrics = { sthayi: '', paragraphs: [] };
-    return out;
-  }
-
-  const cleanParas = (list) =>
-    (list || []).filter((p) => {
-      const t = String(p).trim();
-      if (!t) return false;
-      const first = linesOf(p)[0] || t;
-      return !isHeadingLine(first);
-    });
-
-  out.lyrics = {
-    sthayi: sanitizeStanzaText(norm.sthayi || ''),
-    paragraphs: cleanParas(norm.paragraphs).map(sanitizeStanzaText),
-  };
-  return out;
-}
-
 function mapLyricsStrings(doc, fn) {
   const out = { ...doc };
   if (!isStructuredLyrics(out.lyrics)) {
@@ -546,7 +504,6 @@ function enrichBhajanLyrics(lyrics, section, doc = {}, config = {}) {
 module.exports = {
   analyzeBhajanLyrics,
   enrichBhajanLyrics,
-  migrateDoc,
   extractTarzFromText,
   normalizeFromLegacy,
   flattenLyricsText,

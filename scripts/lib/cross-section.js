@@ -94,10 +94,6 @@ function countBhajansBySection(sections, bySlug) {
 }
 
 module.exports = {
-  groupTitleToSlug,
-  parseAlsoIn,
-  resolveAlsoInSlugs,
-  loadPrimaryRecords,
   buildSectionBhajanMap,
   countBhajansBySection,
 };

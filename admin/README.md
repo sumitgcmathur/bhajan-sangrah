@@ -85,7 +85,7 @@ Admin uses a tweaked variant of the site favicon (maroon ring + edit badge). Reg
 npm run admin:favicon
 ```
 
-On Windows without npm, run `powershell -File scripts/generate-admin-favicon.ps1` (PNG) and `node scripts/generate-admin-favicon.js` (SVG).
+If `sharp` is not installed, the script still writes `favicon.svg`; run `npm install` for PNG/ICO output.
 
 ## Banner images (landing + sections)
 
