@@ -40,24 +40,26 @@ function writeChunkHtml(name, html) {
 async function main() {
   const { pdfPath } = parseArgs();
   const config = loadSections();
-  const payloads = loadAllSectionPayloads(config);
+  const { sectionPayloads, uniqueCount } = loadAllSectionPayloads(config);
 
-  const resolveAsset = await createPdfAssetResolver(config, payloads);
-  const watermarkBySlug = await buildPdfWatermarks(payloads);
+  const resolveAsset = await createPdfAssetResolver(config, sectionPayloads);
+  const watermarkBySlug = await buildPdfWatermarks(sectionPayloads);
 
-  const total = payloads.reduce((n, p) => n + p.bhajans.length, 0);
-  console.log(`Exporting ${payloads.length} sections, ${total} bhajans (chunked)…`);
+  const listed = sectionPayloads.reduce((n, p) => n + p.bhajans.length, 0);
+  console.log(`Exporting ${sectionPayloads.length} sections, ${uniqueCount} bhajans (${listed} listings)…`);
 
   const jobs = [];
   const chunkPdfPaths = [];
 
-  const frontHtml = renderFrontMatterChunk(config, payloads, resolveAsset);
+  const frontHtml = renderFrontMatterChunk(config, sectionPayloads, resolveAsset, {
+    uniqueCount,
+  });
   const frontHtmlPath = writeChunkHtml('00-front', frontHtml);
   const frontPdfPath = path.join(CHUNKS_DIR, '00-front.pdf');
   jobs.push({ htmlPath: frontHtmlPath, pdfPath: frontPdfPath, label: 'front matter' });
   chunkPdfPaths.push(frontPdfPath);
 
-  payloads.forEach(({ section, bhajans }, i) => {
+  sectionPayloads.forEach(({ section, bhajans }, i) => {
     const slug = section.slug || `section-${i}`;
     const name = `${String(i + 1).padStart(2, '0')}-${slug}`;
     const html = renderSectionChunk(section, bhajans, resolveAsset, watermarkBySlug);

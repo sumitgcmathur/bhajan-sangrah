@@ -57,7 +57,7 @@ function renderFrontMatterChunk(config, sectionPayloads, resolveAsset, options =
     <p class="pdf-cover__meta">संपूर्ण भजन संग्रह · ${date}</p>
   </div>
 </section>
-${renderPdfLanding(config, sectionPayloads, resolveAsset)}`;
+${renderPdfLanding(config, sectionPayloads, resolveAsset, { uniqueCount: options.uniqueCount })}`;
 
   return wrapChunkDocument(`${config.site_title || 'भजन संग्रह'} — cover`, body, {
     watermarkUrl: '',

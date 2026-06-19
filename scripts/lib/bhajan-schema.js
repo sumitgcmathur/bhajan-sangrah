@@ -10,6 +10,7 @@ const DOC_KEYS = new Set([
   'tarz',
   'group',
   'swarachit',
+  'also_in',
   'lyrics',
   'pre_shlok',
   'post_shlok',
@@ -199,7 +200,7 @@ function issue(file, severity, code, message, line) {
 }
 
 /** Validate one bhajan YAML file. Returns issue objects (does not throw). */
-function validateBhajanYaml(text, relPath) {
+function validateBhajanYaml(text, relPath, config) {
   const issues = [];
   const add = (severity, code, message, line) => {
     issues.push(issue(relPath, severity, code, message, line));
@@ -276,6 +277,18 @@ function validateBhajanYaml(text, relPath) {
     add('error', 'empty_lyrics', 'Lyrics parsed but contain no renderable text');
   }
 
+  if (doc.also_in != null) {
+    const slugs = Array.isArray(doc.also_in) ? doc.also_in : [doc.also_in];
+    const valid = new Set((config?.sections || []).map((s) => s.slug));
+    for (const slug of slugs) {
+      const s = String(slug || '').trim();
+      if (!s) continue;
+      if (!valid.has(s)) {
+        add('error', 'invalid_also_in', `Unknown section slug in also_in: "${s}"`);
+      }
+    }
+  }
+
   const parsedPostShlok = (d) => Boolean(String(d.lyrics?.post_shlok || '').trim());
   const fieldChecks = [
     ['sthayi', (d) => Boolean(String(d.lyrics?.sthayi || '').trim())],
@@ -326,7 +339,7 @@ function validateAllBhajans(config) {
       const abs = path.join(folder, file);
       const rel = path.relative(ROOT, abs).replace(/\\/g, '/');
       const text = fs.readFileSync(abs, 'utf8');
-      const issues = validateBhajanYaml(text, rel);
+      const issues = validateBhajanYaml(text, rel, config);
       if (issues.length) byFile.push({ file: rel, section: section.slug, issues });
     }
   }

@@ -1482,6 +1482,12 @@ body.search-panel-open {
   vertical-align: middle;
 }
 
+.bhajan-badge--from {
+  background: var(--bg-alt);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
 .bhajan-tarz {
   margin: 0 0 1.1rem;
   padding: 0.65rem 0.9rem;

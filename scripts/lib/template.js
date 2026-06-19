@@ -315,7 +315,8 @@ function bhajansByGroup(bhajans, section) {
 }
 
 function sectionUsesGroups(section, bhajans) {
-  return section.grouped === true || section.grouped === 'true' || bhajans.some((b) => b.group);
+  const primary = (bhajans || []).filter((b) => !b._isCrossListed);
+  return section.grouped === true || section.grouped === 'true' || primary.some((b) => b.group);
 }
 
 function bhajanNumberLabel(num) {
@@ -454,6 +455,10 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
   const id = b.id || anchorId(section.slug, b.title, index);
   const num = index + 1;
   const sw = showSwarachitBadge && b.swarachit ? '<span class="bhajan-badge">स्वरचित</span>' : '';
+  const fromSection =
+    b._isCrossListed && b._primarySection
+      ? `<span class="bhajan-badge bhajan-badge--from">${escapeHtml(b._primarySection.title)}</span>`
+      : '';
   const sthayiAnchor = `${id}-sthayi`;
   const titleAnchor = `${id}-title`;
   const hasSthayi = lyricsHasSthayi(b.lyrics);
@@ -467,7 +472,7 @@ function renderBhajanCard(b, section, index, showSwarachitBadge) {
   return `<article class="bhajan-card om-frame" id="${id}">
   ${renderOmFrameDecor({ verticalRepeat: 400 })}
   <header class="bhajan-card__head" id="${titleAnchor}">
-    <h3 class="bhajan-card__title"><span class="bhajan-card__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}${sw}</h3>
+    <h3 class="bhajan-card__title"><span class="bhajan-card__num">${bhajanNumberLabel(num)}</span> ${escapeHtml(b.title)}${sw}${fromSection}</h3>
   </header>
   <div class="bhajan-card__lyrics">${lyricsHtml}</div>
   ${toSthayi}
@@ -524,9 +529,9 @@ function renderMasterBhajanIndex(allEntries, base) {
   });
 }
 
-function renderIndex(config, sections, base, sectionCounts, allBhajanEntries) {
+function renderIndex(config, sections, base, sectionCounts, allBhajanEntries, uniqueCount) {
   const counts = sectionCounts || [];
-  const totalBhajans = counts.reduce((sum, c) => sum + c.count, 0);
+  const totalBhajans = uniqueCount ?? counts.reduce((sum, c) => sum + c.count, 0);
   const masterIndex = allBhajanEntries?.length
     ? renderMasterBhajanIndex(allBhajanEntries, base)
     : '';
@@ -550,7 +555,7 @@ function renderIndex(config, sections, base, sectionCounts, allBhajanEntries) {
   });
 }
 
-function renderSectionPage(section, bhajans, config, sections, base, sectionCounts) {
+function renderSectionPage(section, bhajans, config, sections, base, sectionCounts, _uniqueCount) {
   const showSwarachitBadge = section.slug !== 'swarachit';
   const grouped = sectionUsesGroups(section, bhajans);
   const groups = grouped ? bhajansByGroup(bhajans, section) : [];

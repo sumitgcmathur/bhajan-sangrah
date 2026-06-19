@@ -36,6 +36,8 @@ function docToEditor(doc) {
     title: d.title || '',
     tarz: d.tarz || '',
     group: d.group || '',
+    swarachit: Boolean(d.swarachit),
+    also_in: Array.isArray(d.also_in) ? [...d.also_in] : [],
     lyrics: {
       sthayi: '',
       sthayi_connect_text: '',
@@ -79,6 +81,8 @@ function editorToDoc(editor) {
       title: (e.title || '').trim(),
       ...(e.tarz ? { tarz: e.tarz } : {}),
       ...(e.group ? { group: e.group } : {}),
+      ...(e.swarachit ? { swarachit: true } : {}),
+      ...(Array.isArray(e.also_in) && e.also_in.length ? { also_in: e.also_in.filter(Boolean) } : {}),
       lyrics: String(e.legacyLyricsText).trim(),
     };
   }
@@ -103,6 +107,8 @@ function editorToDoc(editor) {
     title: (e.title || '').trim(),
     ...(e.tarz ? { tarz: e.tarz } : {}),
     ...(e.group ? { group: e.group } : {}),
+    ...(e.swarachit ? { swarachit: true } : {}),
+    ...(Array.isArray(e.also_in) && e.also_in.length ? { also_in: e.also_in.filter(Boolean) } : {}),
     lyrics,
   };
 }

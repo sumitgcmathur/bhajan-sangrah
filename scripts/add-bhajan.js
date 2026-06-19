@@ -39,6 +39,7 @@ async function main() {
   const title = (await ask(rl, 'Title: ')).trim();
   const tarz = (await ask(rl, 'लय (optional): ')).trim();
   const sw = (await ask(rl, 'Swarachit? (y/N): ')).trim().toLowerCase();
+  const alsoRaw = (await ask(rl, 'Also list in sections (comma slugs, optional): ')).trim();
   const lyrics = await readMultiline(rl);
 
   const dir = sectionFolder(section);
@@ -49,6 +50,9 @@ async function main() {
   const doc = { title, lyrics };
   if (tarz) doc.tarz = tarz;
   if (sw === 'y' || sw === 'yes') doc.swarachit = true;
+  if (alsoRaw) {
+    doc.also_in = alsoRaw.split(',').map((s) => s.trim()).filter(Boolean);
+  }
 
   fs.writeFileSync(path.join(dir, filename), dumpBhajanDoc(doc), 'utf8');
   console.log(`\nWrote content/${section.folder}/${filename}`);

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { sectionFolder, listBhajanFiles, loadBhajan, sortBhajansForDisplay } = require('./sections');
+const { buildSectionBhajanMap } = require('./cross-section');
 const { anchorId } = require('./slug');
 
 function pageUrl(base, page) {
@@ -45,13 +45,20 @@ function collectLyricLines(b) {
     .filter(Boolean);
 }
 
-function buildSearchIndex(sections, base) {
+function buildSearchIndex(sections, base, bySlug, records) {
+  const map = bySlug || buildSectionBhajanMap(sections).bySlug;
+  const seen = new Set();
   const items = [];
+
   for (const section of sections) {
-    const files = listBhajanFiles(section);
-    const bhajans = files.map((f) => loadBhajan(path.join(sectionFolder(section), f)));
-    const sorted = sortBhajansForDisplay(section, bhajans);
-    sorted.forEach((b, i) => {
+    const list = map.get(section.slug) || [];
+    list.forEach((b, i) => {
+      const filePath = b._filePath || `${section.slug}/${b._file || i}`;
+      const primarySlug = b._primarySection?.slug || section.slug;
+      const dedupeKey = `${filePath}::${section.slug}`;
+      if (seen.has(dedupeKey)) return;
+      seen.add(dedupeKey);
+
       const id = b.id || anchorId(section.slug, b.title, i);
       items.push({
         title: b.title || '',
@@ -60,9 +67,11 @@ function buildSearchIndex(sections, base) {
         id,
         lines: collectLyricLines(b),
         href: `${pageUrl(base, `${section.slug}.html`)}#${id}`,
+        primarySection: primarySlug,
       });
     });
   }
+
   return items;
 }
 

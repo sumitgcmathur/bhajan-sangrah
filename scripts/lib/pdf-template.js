@@ -114,8 +114,9 @@ function formatBhajanCount(n) {
   return `${toDevaNum(n)} भजन`;
 }
 
-function renderPdfLanding(config, sectionPayloads, resolveAsset) {
-  const totalBhajans = sectionPayloads.reduce((n, p) => n + p.bhajans.length, 0);
+function renderPdfLanding(config, sectionPayloads, resolveAsset, opts = {}) {
+  const listed = sectionPayloads.reduce((n, p) => n + p.bhajans.length, 0);
+  const totalBhajans = opts.uniqueCount ?? listed;
   const cards = sectionPayloads
     .map(({ section, bhajans }) => {
       if (!bhajans.length) return '';

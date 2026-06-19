@@ -282,6 +282,23 @@ function loadBhajanDoc(text) {
       i = parsed.next;
       continue;
     }
+    if (line.match(/^also_in:\s*$/)) {
+      const slugs = [];
+      i += 1;
+      while (i < lines.length) {
+        const raw = lines[i];
+        if (!raw.trim()) {
+          i += 1;
+          continue;
+        }
+        const item = raw.match(/^\s{2}-\s+(.+)$/);
+        if (!item) break;
+        slugs.push(item[1].trim());
+        i += 1;
+      }
+      doc.also_in = slugs;
+      continue;
+    }
     const p = parseScalar(line);
     if (p) doc[p.key] = p.value;
     i += 1;
@@ -348,6 +365,10 @@ function dumpBhajanDoc(doc) {
   if (doc.tarz) out.push(`tarz: ${doc.tarz}`);
   if (doc.group) out.push(`group: ${doc.group}`);
   if (doc.swarachit) out.push('swarachit: true');
+  if (Array.isArray(doc.also_in) && doc.also_in.length) {
+    out.push('also_in:');
+    for (const slug of doc.also_in) out.push(`  - ${slug}`);
+  }
   if (isStructuredLyrics(doc.lyrics)) {
     out.push(...dumpLyricsObject(doc.lyrics));
   } else {

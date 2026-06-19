@@ -72,7 +72,8 @@ function loadBhajan(filePath) {
   return loadBhajanDoc(fs.readFileSync(filePath, 'utf8'));
 }
 
-function countBhajansBySection(sections) {
+/** File count per folder only — prefer cross-section.countBhajansBySection for site stats. */
+function countBhajansBySectionFiles(sections) {
   return sections.map((section) => ({
     slug: section.slug,
     count: listBhajanFiles(section).length,
@@ -91,5 +92,5 @@ module.exports = {
   sectionFolder,
   listBhajanFiles,
   loadBhajan,
-  countBhajansBySection,
+  countBhajansBySectionFiles,
 };

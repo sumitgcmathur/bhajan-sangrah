@@ -2,14 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 const { ROOT, DOCS, ASSETS } = require('./lib/paths');
-const {
-  loadSections,
-  sectionFolder,
-  listBhajanFiles,
-  loadBhajan,
-  countBhajansBySection,
-  sortBhajansForDisplay,
-} = require('./lib/sections');
+const { loadSections } = require('./lib/sections');
+const { buildSectionBhajanMap, countBhajansBySection } = require('./lib/cross-section');
 const { prepareBhajanForRender } = require('./lib/bhajan-render');
 const { renderIndex, renderSectionPage, pageUrl } = require('./lib/template');
 const { buildSearchIndex, writeSearchIndex } = require('./lib/search-index');
@@ -48,7 +42,8 @@ async function main() {
   const config = loadSections();
   const base = config.base_url || '/';
   const sections = config.sections || [];
-  const sectionCounts = countBhajansBySection(sections);
+  const { bySlug, records, uniqueCount } = buildSectionBhajanMap(sections);
+  const sectionCounts = countBhajansBySection(sections, bySlug);
 
   const schemaIssues = validateAllBhajans(config);
   printSchemaWarnings(schemaIssues, { githubActions: process.env.GITHUB_ACTIONS === 'true' });
@@ -76,19 +71,24 @@ async function main() {
   let total = 0;
   const allBhajanEntries = [];
   for (const section of sections) {
-    const files = listBhajanFiles(section);
-    const bhajans = files.map((f) => {
-      const data = loadBhajan(path.join(sectionFolder(section), f));
-      return { ...data, _file: f };
+    const rawBhajans = bySlug.get(section.slug) || [];
+    const enriched = rawBhajans.map((b, i) => {
+      const { _file, _filePath, _primarySection, _isCrossListed, ...doc } = b;
+      const prepared = prepareBhajanForRender(doc, section, config, { index: i });
+      return {
+        ...prepared,
+        _isCrossListed: Boolean(_isCrossListed),
+        _primarySection: _primarySection || section,
+      };
     });
-    const sorted = sortBhajansForDisplay(section, bhajans);
-    const enriched = sorted.map((b, i) => prepareBhajanForRender(b, section, config, { index: i }));
     for (const bhajan of enriched) {
-      allBhajanEntries.push({ bhajan, section });
+      if (!bhajan._isCrossListed) {
+        allBhajanEntries.push({ bhajan, section: bhajan._primarySection || section });
+      }
     }
     fs.writeFileSync(
       path.join(DOCS, `${section.slug}.html`),
-      renderSectionPage(section, enriched, config, sections, base, sectionCounts),
+      renderSectionPage(section, enriched, config, sections, base, sectionCounts, uniqueCount),
       'utf8'
     );
     total += enriched.length;
@@ -97,14 +97,14 @@ async function main() {
 
   fs.writeFileSync(
     path.join(DOCS, 'index.html'),
-    renderIndex(config, sections, base, sectionCounts, allBhajanEntries),
+    renderIndex(config, sections, base, sectionCounts, allBhajanEntries, uniqueCount),
     'utf8'
   );
 
-  const searchItems = buildSearchIndex(sections, base);
+  const searchItems = buildSearchIndex(sections, base, bySlug, records);
   writeSearchIndex(path.join(DOCS, 'assets', 'search-index.json'), searchItems);
 
-  console.log(`Built ${sections.length} sections, ${total} bhajans → ${DOCS}`);
+  console.log(`Built ${sections.length} sections, ${uniqueCount} bhajans (${total} section listings) → ${DOCS}`);
   console.log(`Search index: ${searchItems.length} entries`);
 }
 
