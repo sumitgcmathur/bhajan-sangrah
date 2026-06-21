@@ -1981,6 +1981,29 @@ body.search-panel-open {
   }
 }
 
+/* Share link copied / fallback toast */
+.share-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--mobile-bar-h, 3.35rem) + env(safe-area-inset-bottom, 0px) + 0.65rem);
+  z-index: 560;
+  transform: translateX(-50%);
+  max-width: min(92vw, 22rem);
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  background: var(--accent-dark);
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+}
+
+body.page-section.pager-visible .share-toast {
+  bottom: calc(var(--mobile-bar-h, 3.35rem) + var(--pager-h, 2.75rem) + env(safe-area-inset-bottom, 0px) + 0.65rem);
+}
+
 /* PWA update prompt (new service worker waiting) */
 .pwa-update {
   position: fixed;
