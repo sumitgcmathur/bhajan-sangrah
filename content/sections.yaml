@@ -17,8 +17,8 @@ sections:
     google_path: mantra
     title: संस्कृत भजन एवं मंत्र
     banner: assets/icons/MoolTatva.jpg
-    bhajan_order: file
     grouped: true
+    bhajan_order: title
     count_unit: गीत
   - slug: shiv
     folder: shiv
