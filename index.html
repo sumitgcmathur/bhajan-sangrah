@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<script>(function(){try{var t=localStorage.getItem("bhajan-sangrah-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#8b3a4a" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#2a1218" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="भजन संग्रह">
+<meta name="description" content="भक्ति भजन संग्रह">
+<title>भजन संग्रह</title>
+<link rel="icon" type="image/jpeg" href="/bhajan-sangrah/assets/icons/favicon.jpg">
+<link rel="apple-touch-icon" sizes="180x180" href="/bhajan-sangrah/assets/icons/pwa-192.png">
+<link rel="manifest" href="/bhajan-sangrah/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/bhajan-sangrah/assets/css/site.css">
+</head>
+<body class="has-sidebar page-home" data-site-base="/bhajan-sangrah/">
+<div class="site-shell">
+<aside class="site-sidebar" id="site-sidebar" aria-label="साइट मार्गदर्शन">
+  <nav class="sidebar-nav" aria-label="विभाग सूची">
+    <ul class="sidebar-nav__list sidebar-nav__list--sections">
+      <li class="sidebar-nav__item sidebar-nav__item--home">
+  <a class="sidebar-link sidebar-link--home is-active" href="/bhajan-sangrah/index.html">
+  <img class="sidebar-link__icon" src="/bhajan-sangrah/assets/icons/favicon.jpg" width="18" height="18" alt="" loading="lazy" decoding="async">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">भजन संग्रह</span>
+  </span>
+</a>
+</li>
+      <li><a class="sidebar-link" href="/bhajan-sangrah/aarti.html" aria-label="आरती, 7 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">आरती</span>
+    <span class="sidebar-link__count">(७)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/mantra.html" aria-label="संस्कृत भजन एवं मंत्र, 12 गीत">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">संस्कृत भजन एवं मंत्र</span>
+    <span class="sidebar-link__count">(१२)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/shiv.html" aria-label="शिव भजन, 12 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">शिव भजन</span>
+    <span class="sidebar-link__count">(१२)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/hanuman.html" aria-label="हनुमान भजन, 10 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">हनुमान भजन</span>
+    <span class="sidebar-link__count">(१०)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/ganpati.html" aria-label="गणपति भजन, 10 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">गणपति भजन</span>
+    <span class="sidebar-link__count">(१०)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/misc.html" aria-label="विविध भजन, 21 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">विविध भजन</span>
+    <span class="sidebar-link__count">(२१)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/ambe.html" aria-label="अम्बे भजन, 35 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">अम्बे भजन</span>
+    <span class="sidebar-link__count">(३५)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/krishna.html" aria-label="कृष्ण भजन, 33 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">कृष्ण भजन</span>
+    <span class="sidebar-link__count">(३३)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/ram.html" aria-label="राम भजन, 29 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">राम भजन</span>
+    <span class="sidebar-link__count">(२९)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/swarachit.html" aria-label="स्वरचित भजन, 12 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">स्वरचित भजन</span>
+    <span class="sidebar-link__count">(१२)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/mooltatva.html" aria-label="मूल तत्त्व भजन, 19 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">मूल तत्त्व भजन</span>
+    <span class="sidebar-link__count">(१९)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/horiya.html" aria-label="होरिया, 12 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">होरिया</span>
+    <span class="sidebar-link__count">(१२)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/navratri.html" aria-label="नवरात्रि पूजन, 8 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">नवरात्रि पूजन</span>
+    <span class="sidebar-link__count">(८)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/ambikacharitra.html" aria-label="अम्बिका चरित्र, 44 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">अम्बिका चरित्र</span>
+    <span class="sidebar-link__count">(४४)</span>
+  </span>
+</a></li>
+<li><a class="sidebar-link" href="/bhajan-sangrah/bhairav.html" aria-label="भैरव भजन, 11 भजन">
+  <span class="sidebar-link__body">
+    <span class="sidebar-link__label">भैरव भजन</span>
+    <span class="sidebar-link__count">(११)</span>
+  </span>
+</a></li>
+    </ul>
+  </nav>
+</aside>
+<div class="site-content">
+<div class="content-banner content-banner--hero">
+  <div class="content-banner__backdrop" aria-hidden="true">
+  <img class="content-banner__ambient" src="/bhajan-sangrah/assets/icons/LandingPage.jpg" alt="" loading="lazy" decoding="async">
+  <img class="content-banner__wing content-banner__wing--left" src="/bhajan-sangrah/assets/icons/LandingPage.jpg" alt="" loading="lazy" decoding="async">
+  <img class="content-banner__wing content-banner__wing--right" src="/bhajan-sangrah/assets/icons/LandingPage.jpg" alt="" loading="lazy" decoding="async">
+  <img class="content-banner__bg" src="/bhajan-sangrah/assets/icons/LandingPage.jpg" alt="" loading="lazy" decoding="async">
+</div>
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/icons/LandingPage.jpg" alt="भजन संग्रह" loading="lazy" decoding="async">
+</div>
+<main class="content-main content-main--home">
+  <h1 class="home-title">भजन संग्रह</h1>
+  <p class="home-stats" aria-label="कुल 233 भजन, 15 श्रेणियाँ">
+  <span class="home-stats__item">कुल <strong>२३३</strong> भजन</span>
+  <span class="home-stats__sep" aria-hidden="true">·</span>
+  <span class="home-stats__item"><strong>१५</strong> श्रेणियाँ</span>
+</p>
+  <div class="section-grid"><a class="section-card" href="/bhajan-sangrah/aarti.html" aria-label="आरती, 7 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/aarti.jpg" alt="आरती" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">७ भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/mantra.html" aria-label="संस्कृत भजन एवं मंत्र, 12 गीत">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/mantra.jpg" alt="संस्कृत भजन एवं मंत्र" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">१२ गीत</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/shiv.html" aria-label="शिव भजन, 12 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/shiv.jpg" alt="शिव भजन" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">१२ भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/hanuman.html" aria-label="हनुमान भजन, 10 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/hanuman.jpg" alt="हनुमान भजन" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">१० भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/ganpati.html" aria-label="गणपति भजन, 10 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/ganpati.jpg" alt="गणपति भजन" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">१० भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/misc.html" aria-label="विविध भजन, 21 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/misc.jpg" alt="विविध भजन" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">२१ भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/ambe.html" aria-label="अम्बे भजन, 35 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/ambe.jpg" alt="अम्बे भजन" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">३५ भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/krishna.html" aria-label="कृष्ण भजन, 33 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/krishna.jpg" alt="कृष्ण भजन" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">३३ भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/ram.html" aria-label="राम भजन, 29 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/ram.jpg" alt="राम भजन" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">२९ भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/swarachit.html" aria-label="स्वरचित भजन, 12 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/swarachit.jpg" alt="स्वरचित भजन" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">१२ भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/mooltatva.html" aria-label="मूल तत्त्व भजन, 19 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/mooltatva.jpg" alt="मूल तत्त्व भजन" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">१९ भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/horiya.html" aria-label="होरिया, 12 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/horiya.jpg" alt="होरिया" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">१२ भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/navratri.html" aria-label="नवरात्रि पूजन, 8 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/navratri.jpg" alt="नवरात्रि पूजन" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">८ भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/ambikacharitra.html" aria-label="अम्बिका चरित्र, 44 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/ambikacharitra.jpg" alt="अम्बिका चरित्र" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">४४ भजन</span></span>
+</a>
+<a class="section-card" href="/bhajan-sangrah/bhairav.html" aria-label="भैरव भजन, 11 भजन">
+  <div class="section-card__media content-banner content-banner--card">
+  <img class="content-banner__img" src="/bhajan-sangrah/assets/banners/bhairav.jpg" alt="भैरव भजन" loading="lazy" decoding="async">
+</div>
+  <span class="section-card__foot"><span class="section-card__count">११ भजन</span></span>
+</a></div>
+  <nav class="bhajan-index bhajan-index--collapsible bhajan-index--master" id="master-bhajan-index" aria-label="सभी भजन — शीर्षकानुसार" data-default-open="true">
+  <button type="button" class="bhajan-index__toggle" aria-expanded="true" aria-controls="master-bhajan-index-panel">
+    <span class="bhajan-index__toggle-text">सभी भजन — शीर्षकानुसार</span>
+  </button>
+  <div class="bhajan-index__panel" id="master-bhajan-index-panel"><ul class="content-index content-index--master"><li><a href="/bhajan-sangrah/aarti.html#aarti-ॐ-जय-शिव-ओंकारा-01"><span class="bhajan-index__num">1.</span>ॐ जय शिव ओंकारा <span class="bhajan-index__section">(आरती)</span></a></li>
+<li><a href="/bhajan-sangrah/aarti.html#aarti-आरती-कीजै-हनुमान-लला-की-02"><span class="bhajan-index__num">2.</span>आरती कीजै हनुमान लला की <span class="bhajan-index__section">(आरती)</span></a></li>
+<li><a href="/bhajan-sangrah/aarti.html#aarti-जय-गणेश-देवा-03"><span class="bhajan-index__num">3.</span>जय गणेश देवा <span class="bhajan-index__section">(आरती)</span></a></li>
+<li><a href="/bhajan-sangrah/aarti.html#aarti-ॐ-जय-जगदीश-हरे-04"><span class="bhajan-index__num">4.</span>ॐ जय जगदीश हरे <span class="bhajan-index__section">(आरती)</span></a></li>
+<li><a href="/bhajan-sangrah/aarti.html#aarti-जय-अम्बे-गौरी-05"><span class="bhajan-index__num">5.</span>जय अम्बे गौरी <span class="bhajan-index__section">(आरती)</span></a></li>
+<li><a href="/bhajan-sangrah/aarti.html#aarti-आरती-कुंजबिहारी-की-06"><span class="bhajan-index__num">6.</span>आरती कुंजबिहारी की <span class="bhajan-index__section">(आरती)</span></a></li>
+<li><a href="/bhajan-sangrah/aarti.html#aarti-श्री-रामचन्द्र-कृपालु-भजुमन-07"><span class="bhajan-index__num">7.</span>श्री रामचन्द्र कृपालु भजुमन <span class="bhajan-index__section">(आरती)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-सरस्वती-वंदना-01"><span class="bhajan-index__num">8.</span>सरस्वती वंदना <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-विविध-मंत्र-02"><span class="bhajan-index__num">9.</span>विविध मंत्र <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-शांति-पाठ-03"><span class="bhajan-index__num">10.</span>शांति पाठ <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-ॐ-नमः-शिवाय-ॐ-नमः-शिवाय-04"><span class="bhajan-index__num">11.</span>ॐ नमः शिवाय ॐ नमः शिवाय <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-श्रीगणेशाय-धीमहि-05"><span class="bhajan-index__num">12.</span>श्रीगणेशाय धीमहि <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-ॐ-नमो-भगवते-वासुदेवाय-06"><span class="bhajan-index__num">13.</span>ॐ नमो भगवते वासुदेवाय <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-भज-गोविन्दं-07"><span class="bhajan-index__num">14.</span>भज गोविन्दं <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-निर्वाण-षट्कम-08"><span class="bhajan-index__num">15.</span>निर्वाण षट्कम <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-शिव-तांडव-स्तोत्र-09"><span class="bhajan-index__num">16.</span>शिव तांडव स्तोत्र <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-श्री-रुद्राष्टकम्-10"><span class="bhajan-index__num">17.</span>श्री रुद्राष्टकम् <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-महिषासुर-मर्दिनी-स्तोत्र-11"><span class="bhajan-index__num">18.</span>महिषासुर मर्दिनी स्तोत्र <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/mantra.html#mantra-अधरं-मधुरं-वदनं-मधुरं-12"><span class="bhajan-index__num">19.</span>अधरं मधुरं वदनं मधुरं <span class="bhajan-index__section">(संस्कृत भजन एवं मंत्र)</span></a></li>
+<li><a href="/bhajan-sangrah/shiv.html#shiv-आदि-देव-महादेव-हे-दयानिधे-02"><span class="bhajan-index__num">20.</span>आदि देव महादेव हे दयानिधे <span class="bhajan-index__section">(शिव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/shiv.html#shiv-आशुतोष-शशाँक-शेखर-03"><span class="bhajan-index__num">21.</span>आशुतोष शशाँक शेखर <span class="bhajan-index__section">(शिव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/shiv.html#shiv-मेरा-भोला-है-भंडारी-06"><span class="bhajan-index__num">22.</span>मेरा भोला है भंडारी <span class="bhajan-index__section">(शिव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/shiv.html#shiv-शंकर-तेरी-जटा-में-07"><span class="bhajan-index__num">23.</span>शंकर तेरी जटा में <span class="bhajan-index__section">(शिव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/shiv.html#shiv-शिव-कैलाशो-के-वासी-08"><span class="bhajan-index__num">24.</span>शिव कैलाशो के वासी <span class="bhajan-index__section">(शिव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/shiv.html#shiv-शिव-शंकर-को-जिसने-पूजा-10"><span class="bhajan-index__num">25.</span>शिव शंकर को जिसने पूजा <span class="bhajan-index__section">(शिव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/shiv.html#shiv-सुबह-सुबह-ले-शिव-का-नाम-12"><span class="bhajan-index__num">26.</span>सुबह सुबह ले शिव का नाम <span class="bhajan-index__section">(शिव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/hanuman.html#hanuman-जननी-मैं-राम-दूत-हनुमान-01"><span class="bhajan-index__num">27.</span>जननी मैं राम दूत हनुमान <span class="bhajan-index__section">(हनुमान भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/hanuman.html#hanuman-जय-जय-जय-बजरंगबली-02"><span class="bhajan-index__num">28.</span>जय जय जय बजरंगबली <span class="bhajan-index__section">(हनुमान भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/hanuman.html#hanuman-जय-जय-जय-हनुमान-गोसाई-03"><span class="bhajan-index__num">29.</span>जय जय जय हनुमान गोसाई <span class="bhajan-index__section">(हनुमान भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/hanuman.html#hanuman-भरत-भाई,-कपि-से-उरिन-हम-नाहीं-04"><span class="bhajan-index__num">30.</span>भरत भाई, कपि से उरिन हम नाहीं <span class="bhajan-index__section">(हनुमान भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/hanuman.html#hanuman-मंगल-मूरति-राम-दुलारे-05"><span class="bhajan-index__num">31.</span>मंगल मूरति राम दुलारे <span class="bhajan-index__section">(हनुमान भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/hanuman.html#hanuman-वीर-हनुमाना-अति-बलवाना-06"><span class="bhajan-index__num">32.</span>वीर हनुमाना अति बलवाना <span class="bhajan-index__section">(हनुमान भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/hanuman.html#hanuman-श्री-राम-जानकी-बैठे-हैं-मेरे-सीने-में-07"><span class="bhajan-index__num">33.</span>श्री राम जानकी बैठे हैं मेरे सीने में <span class="bhajan-index__section">(हनुमान भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/hanuman.html#hanuman-हनुमान-चालीसा-08"><span class="bhajan-index__num">34.</span>हनुमान चालीसा <span class="bhajan-index__section">(हनुमान भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/hanuman.html#hanuman-हनुमानाष्टक-09"><span class="bhajan-index__num">35.</span>हनुमानाष्टक <span class="bhajan-index__section">(हनुमान भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/hanuman.html#hanuman-हे-दुःख-भन्जन,-मारुती-नंदन-10"><span class="bhajan-index__num">36.</span>हे दुःख भन्जन, मारुती नंदन <span class="bhajan-index__section">(हनुमान भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ganpati.html#ganpati-आजो,-आजो-जी-आजो-गणराज-02"><span class="bhajan-index__num">37.</span>आजो, आजो जी आजो गणराज <span class="bhajan-index__section">(गणपति भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ganpati.html#ganpati-गौरी-के-नन्दन-की,-हम-पूजा-करते-है-03"><span class="bhajan-index__num">38.</span>गौरी के नन्दन की, हम पूजा करते है <span class="bhajan-index__section">(गणपति भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ganpati.html#ganpati-घुमतड़ा-घर-आओ२-05"><span class="bhajan-index__num">39.</span>घुमतड़ा घर आओ२ <span class="bhajan-index__section">(गणपति भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ganpati.html#ganpati-घुमतड़ा-घर-आवो-06"><span class="bhajan-index__num">40.</span>घुमतड़ा घर आवो <span class="bhajan-index__section">(गणपति भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ganpati.html#ganpati-नमो-नमो-हिमगिरि-कन्या-कुमार-07"><span class="bhajan-index__num">41.</span>नमो नमो हिमगिरि कन्या कुमार <span class="bhajan-index__section">(गणपति भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ganpati.html#ganpati-महाराज-गजानन्द-आवोनी-08"><span class="bhajan-index__num">42.</span>महाराज गजानन्द आवोनी <span class="bhajan-index__section">(गणपति भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-ॐ-है-जीवन-हमारा-02"><span class="bhajan-index__num">43.</span>ॐ है जीवन हमारा <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-अब-सौंप-दिया-इस-जीवन-का-04"><span class="bhajan-index__num">44.</span>अब सौंप दिया इस जीवन का <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-उड़-जाएगा-हंस-अकेला-05"><span class="bhajan-index__num">45.</span>उड़ जाएगा हंस अकेला <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-ओ,-पालनहारे,-निर्गुण-और-न्यारे-06"><span class="bhajan-index__num">46.</span>ओ, पालनहारे, निर्गुण और न्यारे <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-काया-नहीं-तेरी,-नहीं-तेरी-07"><span class="bhajan-index__num">47.</span>काया नहीं तेरी, नहीं तेरी <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-चदरिया-झीनी-रे-झीनी-08"><span class="bhajan-index__num">48.</span>चदरिया झीनी रे झीनी <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-जो-भजे-हरि-को-सदा-10"><span class="bhajan-index__num">49.</span>जो भजे हरि को सदा <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-तुम-जानत-हमरे-संग-बीती-12"><span class="bhajan-index__num">50.</span>तुम जानत हमरे संग बीती <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-पता-नहीं-किस-रूप-में-आकर,-नारायण-मिल-जाएगा-13"><span class="bhajan-index__num">51.</span>पता नहीं किस रूप में आकर, नारायण मिल जाएगा <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-भगवान-मेरी-नैया-14"><span class="bhajan-index__num">52.</span>भगवान मेरी नैया <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-मैली-चादर-ओढ़-के-कैसे-17"><span class="bhajan-index__num">53.</span>मैली चादर ओढ़ के कैसे <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-सुमिरन-कर-ले-मेरे-मना-19"><span class="bhajan-index__num">54.</span>सुमिरन कर ले मेरे मना <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/misc.html#misc-स्वीकारो-मेरे-प्रणाम-21"><span class="bhajan-index__num">55.</span>स्वीकारो मेरे प्रणाम <span class="bhajan-index__section">(विविध भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-अम्बे-चरण-कमल-है-तेरे-04"><span class="bhajan-index__num">56.</span>अम्बे चरण कमल है तेरे <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-अम्बे-दरश-तिहारो-05"><span class="bhajan-index__num">57.</span>अम्बे दरश तिहारो <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-अम्बे-रानी-मैं-तो-राज-रा-09"><span class="bhajan-index__num">58.</span>अम्बे रानी मैं तो राज रा <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-आतो-आद-भवानी-ईश्वरी-10"><span class="bhajan-index__num">59.</span>आतो आद भवानी ईश्वरी <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-आयो-मैं-तो-अम्बे-रानी-13"><span class="bhajan-index__num">60.</span>आयो मैं तो अम्बे रानी <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-ऐसा-प्यार-बहा-दे-मैया-14"><span class="bhajan-index__num">61.</span>ऐसा प्यार बहा दे मैया <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-जै-जै-जै-जै-सुरराई-17"><span class="bhajan-index__num">62.</span>जै जै जै जै सुरराई <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-नवदुर्गा-मात-भवानी-का-19"><span class="bhajan-index__num">63.</span>नवदुर्गा मात भवानी का <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-पूर-है-धीरियाणी-है-20"><span class="bhajan-index__num">64.</span>पूर है धीरियाणी है <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-बरसे-श्री-जगदम्ब-मात-के-21"><span class="bhajan-index__num">65.</span>बरसे श्री जगदम्ब मात के <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-मारी-सहाय-करे-जगदम्बा-सिंह-गाज-रयो-23"><span class="bhajan-index__num">66.</span>मारी सहाय करे जगदम्बा सिंह गाज रयो <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-मेरा-जीवन-तेरी-शरण।-24"><span class="bhajan-index__num">67.</span>मेरा जीवन तेरी शरण। <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-मेरे-मन-के-अंध-तमस-में-25"><span class="bhajan-index__num">68.</span>मेरे मन के अंध तमस में <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-मैं-शरणे-आयो-है-26"><span class="bhajan-index__num">69.</span>मैं शरणे आयो है <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-मोय-दीजे-वरदान-देवी-27"><span class="bhajan-index__num">70.</span>मोय दीजे वरदान देवी <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-रट-जगदम्बा-रो-नाम-28"><span class="bhajan-index__num">71.</span>रट जगदम्बा रो नाम <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-शिव-प्रिये-अम्बे-मात-मनाऊँ-30"><span class="bhajan-index__num">72.</span>शिव प्रिये अम्बे मात मनाऊँ <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-सहाय-जगदम्बे-कीजो-हमारी-32"><span class="bhajan-index__num">73.</span>सहाय जगदम्बे कीजो हमारी <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-हद-नीको-रे-दरशन-33"><span class="bhajan-index__num">74.</span>हद नीको रे दरशन <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambe.html#ambe-हे-गिरि-नंदिनी,-विश्व-की-स्वामिनी-35"><span class="bhajan-index__num">75.</span>हे गिरि नंदिनी, विश्व की स्वामिनी <span class="bhajan-index__section">(अम्बे भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-अखियाँ-हरी-दर्शन-की-प्यासी-01"><span class="bhajan-index__num">76.</span>अखियाँ हरी दर्शन की प्यासी <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-अच्युतम्-केशवं-कृष्ण-दामोदरं-02"><span class="bhajan-index__num">77.</span>अच्युतम् केशवं कृष्ण दामोदरं <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-आओ-भोग-लगाओ-प्यारे-मोहन-04"><span class="bhajan-index__num">78.</span>आओ भोग लगाओ प्यारे मोहन <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-ऐसी-लागी-लगन-05"><span class="bhajan-index__num">79.</span>ऐसी लागी लगन <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-कुंवर-कानजी-एक-समय-06"><span class="bhajan-index__num">80.</span>कुंवर कानजी एक समय <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-कृष्ण-जिनका-नाम-है-07"><span class="bhajan-index__num">81.</span>कृष्ण जिनका नाम है <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-गरुड़गामी-मधुसूदन-08"><span class="bhajan-index__num">82.</span>गरुड़गामी मधुसूदन <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-जय-राधा-माधव-10"><span class="bhajan-index__num">83.</span>जय राधा माधव <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-तन-के-तम्बूरे-में-दो-11"><span class="bhajan-index__num">84.</span>तन के तम्बूरे में दो <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-तुम-ढूंढो-मुझे-गोपाल-12"><span class="bhajan-index__num">85.</span>तुम ढूंढो मुझे गोपाल <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-तुम-मोरी-राखो-लाज-हरि-13"><span class="bhajan-index__num">86.</span>तुम मोरी राखो लाज हरि <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-दीनन-दुख-हरन-देव-14"><span class="bhajan-index__num">87.</span>दीनन दुख हरन देव <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-फूलों-में-सज-रहे-हैं-16"><span class="bhajan-index__num">88.</span>फूलों में सज रहे हैं <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-बांके-बिहारी-कृष्ण-मुरारी-17"><span class="bhajan-index__num">89.</span>बांके बिहारी कृष्ण मुरारी <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-बाट-निहारे-घनश्याम-18"><span class="bhajan-index__num">90.</span>बाट निहारे घनश्याम <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-मुरली-मनोहर-गोपाला-20"><span class="bhajan-index__num">91.</span>मुरली मनोहर गोपाला <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-मेरे-बांके-बिहारी-लाल-21"><span class="bhajan-index__num">92.</span>मेरे बांके बिहारी लाल <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-मैया-मोरी-मैं-नहिं-माखन-खायो।-22"><span class="bhajan-index__num">93.</span>मैया मोरी मैं नहिं माखन खायो। <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-रानी-तेरो-चिरजीयो-गोपाल-।-23"><span class="bhajan-index__num">94.</span>रानी तेरो चिरजीयो गोपाल । <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-लाज-रखो-गिरधारी-24"><span class="bhajan-index__num">95.</span>लाज रखो गिरधारी <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-वो-काला-एक-बांसुरी-वाला-26"><span class="bhajan-index__num">96.</span>वो काला एक बांसुरी वाला <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-श्याम-पिया-मोरे-रंग-दे-चुनरिया-27"><span class="bhajan-index__num">97.</span>श्याम पिया मोरे रंग दे चुनरिया <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-श्याम-बिना-उनये-ये-बदरा-28"><span class="bhajan-index__num">98.</span>श्याम बिना उनये ये बदरा <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-श्री-राधे-गोविंदा-29"><span class="bhajan-index__num">99.</span>श्री राधे गोविंदा <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-हे-गोविन्द-हे-गोपाल-32"><span class="bhajan-index__num">100.</span>हे गोविन्द हे गोपाल <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/krishna.html#krishna-हे,-कृष्ण-गोपाल-हरी-33"><span class="bhajan-index__num">101.</span>हे, कृष्ण गोपाल हरी <span class="bhajan-index__section">(कृष्ण भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-कभी-राम-बनके-कभी-श्याम-बनके-01"><span class="bhajan-index__num">102.</span>कभी राम बनके कभी श्याम बनके <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-केवट-ने-कहा-रघुराई-से-02"><span class="bhajan-index__num">103.</span>केवट ने कहा रघुराई से <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-जग-में-सुन्दर-हैं-दो-नाम-03"><span class="bhajan-index__num">104.</span>जग में सुन्दर हैं दो नाम <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-जन्म-सफल-होगा-रे-बन्दे-04"><span class="bhajan-index__num">105.</span>जन्म सफल होगा रे बन्दे <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-जय-रघुनन्दन-जय-सियाराम-05"><span class="bhajan-index__num">106.</span>जय रघुनन्दन जय सियाराम <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-जानकी-नाथ-सहाय-करें-06"><span class="bhajan-index__num">107.</span>जानकी नाथ सहाय करें <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-ठुमक-चलत-रामचंद्र-07"><span class="bhajan-index__num">108.</span>ठुमक चलत रामचंद्र <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-तुम-उठो-सिया-सिंगार-करो-09"><span class="bhajan-index__num">109.</span>तुम उठो सिया सिंगार करो <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-तेरा-रामजी-करेंगे-बेड़ा-पार-10"><span class="bhajan-index__num">110.</span>तेरा रामजी करेंगे बेड़ा पार <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-दाता-एक-राम-11"><span class="bhajan-index__num">111.</span>दाता एक राम <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-नगरी-हो-अयोध्या-सी-12"><span class="bhajan-index__num">112.</span>नगरी हो अयोध्या सी <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-पायो-जी-मैंने-राम-रतन-धन-पायो-13"><span class="bhajan-index__num">113.</span>पायो जी मैंने राम रतन धन पायो <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-प्रेम-मुदित-मन-से-कहो-14"><span class="bhajan-index__num">114.</span>प्रेम मुदित मन से कहो <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-भए-प्रगट-कृपाला-15"><span class="bhajan-index__num">115.</span>भए प्रगट कृपाला <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-भज-मन-राम-चरण-सुखदाई-16"><span class="bhajan-index__num">116.</span>भज मन राम चरण सुखदाई <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-भजहु-रे-मन-श्री-नंद-नंदन-17"><span class="bhajan-index__num">117.</span>भजहु रे मन श्री नंद-नंदन <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-रघुवर-तुमको-मेरी-लाज-18"><span class="bhajan-index__num">118.</span>रघुवर तुमको मेरी लाज <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-राम-आएँगे-20"><span class="bhajan-index__num">119.</span>राम आएँगे <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-राम-का-गुणगान-करिये-21"><span class="bhajan-index__num">120.</span>राम का गुणगान करिये <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-राम-को-देख-के-जनक-नंदिनी-22"><span class="bhajan-index__num">121.</span>राम को देख के जनक नंदिनी <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-राम-नाम-के-साबुन-से-जो-मन-का-मैल-भगाएगा-23"><span class="bhajan-index__num">122.</span>राम नाम के साबुन से जो मन का मैल भगाएगा <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-राम-सिया-की-करुण-कहानी-24"><span class="bhajan-index__num">123.</span>राम सिया की करुण कहानी <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-रामा-रामा-रटते-रटते-25"><span class="bhajan-index__num">124.</span>रामा रामा रटते रटते <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-सीता-राम-सीता-राम,-सीताराम-कहिये-26"><span class="bhajan-index__num">125.</span>सीता राम सीता राम, सीताराम कहिये <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-सुमति-सीता-राम-27"><span class="bhajan-index__num">126.</span>सुमति सीता राम <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-हमारे-साथ-श्री-रघुनाथ-तो-28"><span class="bhajan-index__num">127.</span>हमारे साथ श्री रघुनाथ तो <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ram.html#ram-हे-रोम-रोम-में-बसने-वाले-राम-29"><span class="bhajan-index__num">128.</span>हे रोम रोम में बसने वाले राम <span class="bhajan-index__section">(राम भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-हम-तो-है-जपते-रहते-01"><span class="bhajan-index__num">129.</span>हम तो है जपते रहते <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-अम्बे-अम्बे-जगदम्बे-माँ-02"><span class="bhajan-index__num">130.</span>अम्बे अम्बे जगदम्बे माँ <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-अम्बे-नाम,-अम्बे-नाम,-अम्बे-नाम-कहिए-03"><span class="bhajan-index__num">131.</span>अम्बे नाम, अम्बे नाम, अम्बे नाम कहिए <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-अम्बे-का-जयकारा-04"><span class="bhajan-index__num">132.</span>अम्बे का जयकारा <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-सप्त-मातृका-05"><span class="bhajan-index__num">133.</span>सप्त मातृका <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-अब-अम्बे-मैया,-दर्शन-देने-06"><span class="bhajan-index__num">134.</span>अब अम्बे मैया, दर्शन देने <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-शक्तिपीठ-वर्णन-07"><span class="bhajan-index__num">135.</span>शक्तिपीठ वर्णन <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-धरी-रूप-नाना,-बहु-विधाना-08"><span class="bhajan-index__num">136.</span>धरी रूप नाना, बहु विधाना <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-अम्बे-माँ,-हम-है-तेरे-09"><span class="bhajan-index__num">137.</span>अम्बे माँ, हम है तेरे <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-मेरे-घर-आओ,-गणपति-आप-10"><span class="bhajan-index__num">138.</span>मेरे घर आओ, गणपति आप <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-आओ-गणपति-आज-11"><span class="bhajan-index__num">139.</span>आओ गणपति आज <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/swarachit.html#swarachit-अब-तू-जाने-रघुनाथ-12"><span class="bhajan-index__num">140.</span>अब तू जाने रघुनाथ <span class="bhajan-index__section">(स्वरचित भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-अम्बे-रा-सब-गुण-गावे-रे-01"><span class="bhajan-index__num">141.</span>अम्बे रा सब गुण गावे रे <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-आन-सहाय-करो-मोरी-02"><span class="bhajan-index__num">142.</span>आन सहाय करो मोरी <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-आया-तोरे-द्वारे-भवानी-03"><span class="bhajan-index__num">143.</span>आया तोरे द्वारे भवानी <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-उमा-शंकर-से-यूँ-बोले-होले-होले-04"><span class="bhajan-index__num">144.</span>उमा शंकर से यूँ बोले होले होले <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-घर-आओजी-म्हारे-घर-आओ-05"><span class="bhajan-index__num">145.</span>घर आओजी म्हारे घर आओ <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-जगदम्बा-को-देखा-तो-ऐसा-लगा-06"><span class="bhajan-index__num">146.</span>जगदम्बा को देखा तो ऐसा लगा <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-जब-जब-भी-असुरादि-जन्मे-धरती-पे-२-07"><span class="bhajan-index__num">147.</span>जब जब भी असुरादि जन्मे धरती पे २ <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-जीवो-भुगते-जगरें-माय-08"><span class="bhajan-index__num">148.</span>जीवो भुगते जगरें माय <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-झूठी-जग-की-माया-09"><span class="bhajan-index__num">149.</span>झूठी जग की माया <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-धोली-धोली-चांदनी-चमक-रयो-चीर-10"><span class="bhajan-index__num">150.</span>धोली-धोली चांदनी चमक रयो चीर <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-बालकिया-लांकडिया-रे-11"><span class="bhajan-index__num">151.</span>बालकिया लांकडिया रे <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-भगतारे-बस-में-गोपाल-12"><span class="bhajan-index__num">152.</span>भगतारे बस में गोपाल <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-मिनख-जमारो-दुर्लभ-है-13"><span class="bhajan-index__num">153.</span>मिनख जमारो दुर्लभ है <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-रट-रट-रे-मन-राम-नाम-तू-14"><span class="bhajan-index__num">154.</span>रट रट रे मन राम नाम तू <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-ले-लो-रे-ले-लो-गुरुजी-से-ज्ञान-15"><span class="bhajan-index__num">155.</span>ले लो रे ले लो गुरुजी से ज्ञान <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-वारी-हो-कन्हैया-लाल-16"><span class="bhajan-index__num">156.</span>वारी हो कन्हैया लाल <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-सावरिया-प्रेम-रस-घोल-नी-रे-17"><span class="bhajan-index__num">157.</span>सावरिया प्रेम रस घोल नी रे <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-सेवा-मात-पिता-री-करले-रे,-करले-रे-18"><span class="bhajan-index__num">158.</span>सेवा मात पिता री करले रे, करले रे <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/mooltatva.html#mooltatva-हे-आय-गोपियाँ-यूँ-केवे-19"><span class="bhajan-index__num">159.</span>हे आय गोपियाँ यूँ केवे <span class="bhajan-index__section">(मूल तत्त्व भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-आज-ब्रिज-में-होरी-ओ-रसिया-01"><span class="bhajan-index__num">160.</span>आज ब्रिज में होरी ओ रसिया <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-और-रंग-दे-रे-राधे-और-रंग-दे-02"><span class="bhajan-index__num">161.</span>और रंग दे रे राधे और रंग दे <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-कान्हा-धर-लो-मुकुट-और-खेलो-होली-03"><span class="bhajan-index__num">162.</span>कान्हा धर लो मुकुट और खेलो होली <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-कैसे-होरी-खेलूं-रे-इन-सावरिया-रे-संग-04"><span class="bhajan-index__num">163.</span>कैसे होरी खेलूं रे इन सावरिया रे संग <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-खेले-माडाणी-होली-रो-रसियो-05"><span class="bhajan-index__num">164.</span>खेले माडाणी होली रो रसियो <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-खेलो-जी-खेलो-गंग-श्याम-मो-संग-होरी-खेलो-06"><span class="bhajan-index__num">165.</span>खेलो जी खेलो गंग श्याम मो संग होरी खेलो <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-झोली-को-भरलो-भक्तो-07"><span class="bhajan-index__num">166.</span>झोली को भरलो भक्तो <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-सांवरियो-होरी-खेले-रे-08"><span class="bhajan-index__num">167.</span>सांवरियो होरी खेले रे <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-हारे-आनंद-आयो-रे-09"><span class="bhajan-index__num">168.</span>हारे आनंद आयो रे <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-हारे-महीनो-फागण-रो-10"><span class="bhajan-index__num">169.</span>हारे महीनो फागण रो <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-हारे-लारो-छोड़-दे-11"><span class="bhajan-index__num">170.</span>हारे लारो छोड़ दे <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/horiya.html#horiya-होली-कनक-भवन-में-12"><span class="bhajan-index__num">171.</span>होली कनक भवन में <span class="bhajan-index__section">(होरिया)</span></a></li>
+<li><a href="/bhajan-sangrah/navratri.html#navratri-राजभोग-01"><span class="bhajan-index__num">172.</span>राजभोग <span class="bhajan-index__section">(नवरात्रि पूजन)</span></a></li>
+<li><a href="/bhajan-sangrah/navratri.html#navratri-श्रृंगार-02"><span class="bhajan-index__num">173.</span>श्रृंगार <span class="bhajan-index__section">(नवरात्रि पूजन)</span></a></li>
+<li><a href="/bhajan-sangrah/navratri.html#navratri-जय-अम्बे-गौरी-03"><span class="bhajan-index__num">174.</span>जय अम्बे गौरी <span class="bhajan-index__section">(नवरात्रि पूजन)</span></a></li>
+<li><a href="/bhajan-sangrah/navratri.html#navratri-पुष्पांजलि-04"><span class="bhajan-index__num">175.</span>पुष्पांजलि <span class="bhajan-index__section">(नवरात्रि पूजन)</span></a></li>
+<li><a href="/bhajan-sangrah/navratri.html#navratri-परिक्रमा-05"><span class="bhajan-index__num">176.</span>परिक्रमा <span class="bhajan-index__section">(नवरात्रि पूजन)</span></a></li>
+<li><a href="/bhajan-sangrah/navratri.html#navratri-तोरी-शरण-में-06"><span class="bhajan-index__num">177.</span>तोरी शरण में <span class="bhajan-index__section">(नवरात्रि पूजन)</span></a></li>
+<li><a href="/bhajan-sangrah/navratri.html#navratri-मेहंदी-07"><span class="bhajan-index__num">178.</span>मेहंदी <span class="bhajan-index__section">(नवरात्रि पूजन)</span></a></li>
+<li><a href="/bhajan-sangrah/navratri.html#navratri-ध्वनि-08"><span class="bhajan-index__num">179.</span>ध्वनि <span class="bhajan-index__section">(नवरात्रि पूजन)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-नमो-नमो-हिमगिरि-कन्या-कुमार-01"><span class="bhajan-index__num">180.</span>नमो नमो हिमगिरि कन्या-कुमार <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-श्री-सरस्वती-स्तुति-02"><span class="bhajan-index__num">181.</span>श्री सरस्वती स्तुति <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-श्री-गुरू-प्रार्थना-03"><span class="bhajan-index__num">182.</span>श्री गुरू प्रार्थना <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-देवी-प्रार्थना-04"><span class="bhajan-index__num">183.</span>देवी प्रार्थना <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-मोय-दीजे-कथा-सुनाय-05"><span class="bhajan-index__num">184.</span>मोय दीजे कथा सुनाय <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-राज-ऋषि-राजा-से-फरमावें-06"><span class="bhajan-index__num">185.</span>राज ऋषि राजा से फरमावें <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-कर-जोर-अरज-गुदरावें-07"><span class="bhajan-index__num">186.</span>कर जोर अरज गुदरावें <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-सुनत-वचन-विधि-मन-मुसकाई-08"><span class="bhajan-index__num">187.</span>सुनत वचन विधि मन मुसकाई <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-कछु-हेर-फेर-चतुराई-09"><span class="bhajan-index__num">188.</span>कछु हेर फेर चतुराई <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-सुन-शुम्भ-को-राज्यभिषेक-10"><span class="bhajan-index__num">189.</span>सुन शुम्भ को राज्यभिषेक <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-इन्द्र-अरू-देव-सब-जाई-11"><span class="bhajan-index__num">190.</span>इन्द्र अरू देव सब जाई <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-कहे-गुरू-राज-समझाई-12"><span class="bhajan-index__num">191.</span>कहे गुरू राज समझाई <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-सहाय-जगदम्बे-कीजो-हमारी-सहाय-13"><span class="bhajan-index__num">192.</span>सहाय जगदम्बे कीजो हमारी सहाय <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-होय-प्रसन्न-भवानी-मैया-14"><span class="bhajan-index__num">193.</span>होय प्रसन्न भवानी मैया <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-चंड-अरू-मुंड-गये-दोऊ-भाई-15"><span class="bhajan-index__num">194.</span>चंड अरू मुंड गये दोऊ भाई <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-आदर-सहित-सुग्रीव-ही-बोल्यो-16"><span class="bhajan-index__num">195.</span>आदर सहित सुग्रीव ही बोल्यो <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-बोली-मन-मुसकाइ-यूँ-महामाईं-17"><span class="bhajan-index__num">196.</span>बोली मन मुसकाइ यूँ महामाईं <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-जावोरे-सेना-ले-जाओ-18"><span class="bhajan-index__num">197.</span>जावोरे सेना ले जाओ <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-धूम्रलोचन-को-समझावे-19"><span class="bhajan-index__num">198.</span>धूम्रलोचन को समझावे <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-युद्ध-को-हाल-कहे-क्या-20"><span class="bhajan-index__num">199.</span>युद्ध को हाल कहे क्या <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-सुन-शुम्भ-यह-बात-21"><span class="bhajan-index__num">200.</span>सुन शुम्भ यह बात <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-कर-चंड-मुंड-चतुराई-22"><span class="bhajan-index__num">201.</span>कर चंड मुंड चतुराई <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-सुन-चंड-अरू-मंड-के-बैन-23"><span class="bhajan-index__num">202.</span>सुन चंड अरू मंड के बैन <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-काई-बात-बतावा-हो-24"><span class="bhajan-index__num">203.</span>काई बात बतावा हो <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-असुर-झट-बोल-उठ्यो-झूंजलाई-25"><span class="bhajan-index__num">204.</span>असुर झट बोल उठ्यो झूंजलाई <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-हँस-बोली-भवानी-26"><span class="bhajan-index__num">205.</span>हँस बोली भवानी <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-निज-निज-रूप-समान-शक्तियां-27"><span class="bhajan-index__num">206.</span>निज निज रूप समान शक्तियां <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-हम-आये-हैं-कहाँ-के-पठाये-28"><span class="bhajan-index__num">207.</span>हम आये हैं कहाँ के पठाये <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-अब-रक्तबीज-उठके-29"><span class="bhajan-index__num">208.</span>अब रक्तबीज उठके <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-जगदम्ब-बने-सुरराई-है-30"><span class="bhajan-index__num">209.</span>जगदम्ब बने सुरराई है <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-भग-दानव-सेना-आई-31"><span class="bhajan-index__num">210.</span>भग दानव सेना आई <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-हँस-बोली-आद-भवानी-32"><span class="bhajan-index__num">211.</span>हँस बोली आद भवानी <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-घनघोर-युद्ध-मचायारी-33"><span class="bhajan-index__num">212.</span>घनघोर युद्ध मचायारी <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-सुनहो-सुनहो-सुनहो-नृपराई-34"><span class="bhajan-index__num">213.</span>सुनहो सुनहो सुनहो नृपराई <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-क्रोध-भरे-बैन-35"><span class="bhajan-index__num">214.</span>क्रोध भरे बैन <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-कामातुर-होय-शुम्भ-बने-लख-36"><span class="bhajan-index__num">215.</span>कामातुर होय शुम्भ बने लख <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-हँस-बोली-आद-भवानी-37"><span class="bhajan-index__num">216.</span>हँस बोली आद भवानी <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-काली-से-शुम्भ-लड़े-हैं-38"><span class="bhajan-index__num">217.</span>काली से शुम्भ लड़े हैं <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-जै-जै-जै-शब्द-उचारी-39"><span class="bhajan-index__num">218.</span>जै जै जै शब्द उचारी <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-जै-जै-अंबिके-40"><span class="bhajan-index__num">219.</span>जै जै अंबिके <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-चरित्र-महात्म-41"><span class="bhajan-index__num">220.</span>चरित्र महात्म <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-बधाई-42"><span class="bhajan-index__num">221.</span>बधाई <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-कथा-महात्म्य-43"><span class="bhajan-index__num">222.</span>कथा महात्म्य <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/ambikacharitra.html#ambikacharitra-स्वामीजी-की-महिमा-44"><span class="bhajan-index__num">223.</span>स्वामीजी की महिमा <span class="bhajan-index__section">(अम्बिका चरित्र)</span></a></li>
+<li><a href="/bhajan-sangrah/bhairav.html#bhairav-अम्बाजी-रो-लाडलो-01"><span class="bhajan-index__num">224.</span>अम्बाजी रो लाडलो <span class="bhajan-index__section">(भैरव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/bhairav.html#bhairav-चालो-हे-सहेलियां-आपा-02"><span class="bhajan-index__num">225.</span>चालो हे सहेलियां आपा <span class="bhajan-index__section">(भैरव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/bhairav.html#bhairav-दर्शन-करसाँ-मैं-तो-आज-03"><span class="bhajan-index__num">226.</span>दर्शन करसाँ मैं तो आज <span class="bhajan-index__section">(भैरव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/bhairav.html#bhairav-देखो-देखो-रे-अलबेली-04"><span class="bhajan-index__num">227.</span>देखो देखो रे अलबेली <span class="bhajan-index__section">(भैरव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/bhairav.html#bhairav-भैंरु-थारी-बीन-बजी-06"><span class="bhajan-index__num">228.</span>भैंरु थारी बीन बजी <span class="bhajan-index__section">(भैरव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/bhairav.html#bhairav-मन-भजो-तो-सरी-07"><span class="bhajan-index__num">229.</span>मन भजो तो सरी <span class="bhajan-index__section">(भैरव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/bhairav.html#bhairav-में-तो-भैरू-जी-थाने-नोतियो-08"><span class="bhajan-index__num">230.</span>में तो भैरू जी थाने नोतियो <span class="bhajan-index__section">(भैरव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/bhairav.html#bhairav-लटियाला-बाला-घणा-हो-09"><span class="bhajan-index__num">231.</span>लटियाला बाला घणा हो <span class="bhajan-index__section">(भैरव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/bhairav.html#bhairav-वावा-लटियालो-10"><span class="bhajan-index__num">232.</span>वावा लटियालो <span class="bhajan-index__section">(भैरव भजन)</span></a></li>
+<li><a href="/bhajan-sangrah/bhairav.html#bhairav-हे-माने-भैरू-रो-थान-सुहावे-है-माँ-11"><span class="bhajan-index__num">233.</span>हे माने भैरू रो थान सुहावे है माँ <span class="bhajan-index__section">(भैरव भजन)</span></a></li></ul></div>
+</nav>
+</main>
+</div>
+</div>
+<nav class="mobile-bar" aria-label="मुख्य मेनू">
+  <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">≡</span></button>
+  <button type="button" class="mobile-bar__btn" data-action="index" aria-label="सभी भजन सूची पर जाएँ"><svg class="mobile-bar__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5.25 4.25h10.85L17.75 6v13.25H5.25V4.25z" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+  <path d="M15.9 4.25V6.35h2.1" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M15.9 4.25 17.75 6.35 15.9 6.35z" fill="var(--surface)" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+  <rect x="7.1" y="7.85" width="9.4" height="2.15" rx="0.45" fill="var(--accent)" opacity="0.88"/>
+  <circle cx="7.85" cy="11.85" r="0.75" fill="currentColor"/>
+  <path d="M9.35 11.85h5.1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M15.35 11.85h1.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="7.85" cy="14.15" r="0.75" fill="currentColor"/>
+  <path d="M9.35 14.15h5.1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M15.35 14.15h1.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="7.85" cy="16.45" r="0.75" fill="currentColor"/>
+  <path d="M9.35 16.45h5.1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M15.35 16.45h1.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+</svg></button>
+  <button type="button" class="mobile-bar__btn search-toggle" aria-expanded="false" aria-controls="bhajan-search-panel" aria-label="भजन खोजें"><svg class="mobile-bar__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="10.5" cy="10.5" r="5.75" stroke="currentColor" stroke-width="1.75"/>
+  <path d="M15.2 15.2L20 20" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+</svg></button>
+  <button type="button" class="mobile-bar__btn" data-action="share" aria-label="लिंक साझा करें"><svg class="mobile-bar__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 3v10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+  <path d="m7 8 5-5 5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></button>
+  <button type="button" class="mobile-bar__btn" data-action="theme" aria-pressed="false" aria-label="गहरा रंग"><span class="mobile-bar__icon mobile-bar__icon--theme" aria-hidden="true">☽</span></button>
+  
+</nav>
+
+<div class="bhajan-search-backdrop" id="bhajan-search-backdrop" hidden></div>
+<aside class="bhajan-search-panel" id="bhajan-search-panel" aria-hidden="true" aria-label="भजन खोज">
+  <div class="bhajan-search-panel__head">
+    <p class="bhajan-search-panel__title">भजन खोजें</p>
+    <button type="button" class="bhajan-search-panel__close" aria-label="बंद करें">×</button>
+  </div>
+  <div class="bhajan-search-panel__body">
+    <label class="visually-hidden" for="bhajan-search">भजन खोजें</label>
+    <input type="search" id="bhajan-search" class="bhajan-search__input" placeholder="शब्द या पंक्ति लिखें…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="bhajan-search-results" aria-autocomplete="list">
+    <ul id="bhajan-search-results" class="bhajan-search__results" role="listbox" hidden></ul>
+  </div>
+</aside>
+<script src="/bhajan-sangrah/assets/js/nav.js"></script>
+<script src="/bhajan-sangrah/assets/js/theme.js"></script>
+<script src="/bhajan-sangrah/assets/js/ui.js"></script>
+<script src="/bhajan-sangrah/assets/js/search.js"></script>
+<script src="/bhajan-sangrah/assets/js/share.js"></script>
+<script src="/bhajan-sangrah/assets/js/pwa.js"></script>
+</body>
+</html>
