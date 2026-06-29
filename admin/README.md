@@ -95,12 +95,14 @@ Upload accepts JPEG, PNG, WebP, or GIF (max **3 MB**). The server resizes and co
 
 | Output | Path | Size |
 |--------|------|------|
-| Hero & PDF | `assets/icons/…` or `home_banner` path | 704×1522 JPEG |
+| Hero & PDF | `assets/icons/{slug}.jpg` (sections) or `home_banner` | 704×1522 JPEG |
 | Landing grid tile | `assets/banners/{slug\|home}.jpg` | 352×761 JPEG |
+
+Each section must have its **own** hero file (`assets/icons/{slug}.jpg`). Upload always writes to the slug path and updates `sections.yaml` — two sections must not share one icon file.
 
 The left sidebar stays text-only (section menu icons are not shown on the public site).
 
-If `home_banner` or `section.banner` is missing in `sections.yaml`, the first upload sets the default path. GitHub Actions rebuilds the public site after each commit.
+If `home_banner` is missing in `sections.yaml`, the first landing upload sets the default path. GitHub Actions rebuilds the public site after each commit.
 
 ## Find & replace (all bhajan YAML)
 

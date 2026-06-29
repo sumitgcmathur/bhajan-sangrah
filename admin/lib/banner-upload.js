@@ -6,7 +6,6 @@ const { dumpSectionsDoc } = require(path.join(__dirname, '..', '..', 'scripts', 
 const { processBannerUpload } = require('./banner-resize');
 const {
   homeIconPath,
-  resolveSectionIconPath,
   defaultSectionIconPath,
   thumbPathForSlug,
   landingHomeBannerPath,
@@ -68,12 +67,12 @@ async function uploadBannerImage(token, target, imageBuffer) {
       throw err;
     }
     label = section.title || target;
-    if (!section.banner) {
-      section.banner = defaultSectionIconPath(section);
+    iconRel = defaultSectionIconPath(section);
+    thumbRel = thumbPathForSlug(section.slug);
+    if (section.banner !== iconRel) {
+      section.banner = iconRel;
       yamlChanged = true;
     }
-    iconRel = resolveSectionIconPath(section);
-    thumbRel = thumbPathForSlug(section.slug);
   }
 
   const msg = `admin: update ${label} banner image`;

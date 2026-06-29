@@ -16,7 +16,7 @@ sections:
     folder: mantra
     google_path: mantra
     title: संस्कृत भजन एवं मंत्र
-    banner: assets/icons/MoolTatva.jpg
+    banner: assets/icons/mantra.jpg
     grouped: true
     bhajan_order: title
     count_unit: गीत
