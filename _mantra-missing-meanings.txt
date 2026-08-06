@@ -1,0 +1,18 @@
+﻿python : Traceback (most recent call last):
+At C:\Users\sumitm\AppData\Local\Temp\ps-script-442acbeb-b5e9-42cb-b8d9-fb83ce83ef96.ps1:85 char:1
++ python "c:\Sumit\coding\bhajan-sangrah\_tmp_check_meanings.py" 2>&1 | ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "c:\Sumit\coding\bhajan-sangrah\_tmp_check_meanings.py", line 92, in <module>
+    main()
+  File "c:\Sumit\coding\bhajan-sangrah\_tmp_check_meanings.py", line 85, in main
+    Path(__file__).resolve().parent.joinpath("_mantra-missing-meanings.txt").write_text(
+  File "C:\Users\sumitm\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1048, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sumitm\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1014, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'C:\\Sumit\\coding\\bhajan-sangrah\\_mantra-missing-meanings.txt'

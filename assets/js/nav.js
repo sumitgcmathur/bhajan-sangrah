@@ -22,7 +22,10 @@
     btn.addEventListener("click", function () {
       var open = sidebar.classList.toggle("is-open");
       setMenuExpanded(open);
-      if (open) closeSearchPanel();
+      if (open) {
+        sidebar.scrollTop = 0;
+        closeSearchPanel();
+      }
     });
   });
 

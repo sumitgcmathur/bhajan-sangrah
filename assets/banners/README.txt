@@ -1,12 +1,3 @@
-Landing-page thumbnails (committed; not rebuilt on every site build).
-
-Full banners: assets/icons/ (banner: in content/sections.yaml).
-Section pages use icons/; the home grid uses these smaller JPEGs.
-
-Regenerate only when a full banner changes (352×761 landing tiles + 40×40 sidebar icons):
-  npm install
-  npm run build:banners
-
-After updating icons/, run once to recompress icons and refresh banners:
-  npm run optimize:icons
-  git add assets/banners/*.jpg assets/menu/*.jpg
+•	Rahul Bejgamwar – Title: Solution Designer, Role: Business Analyst
+•	Sophia Dmello – Title: Business Analyst, Role: Business Analyst
+•	Sajal Sawant – Title: Data Analyst, Role: Data Analyst
