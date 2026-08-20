@@ -1735,12 +1735,17 @@ body.search-panel-open {
     pointer-events: none;
   }
 
+  /* Sidebar lives inside .site-shell (z-index 1); lift shell so drawer stacks above .mobile-bar (500). */
+  .site-shell:has(.site-sidebar.is-open) {
+    z-index: 530;
+  }
+
   .site-sidebar.is-open {
     z-index: 520;
+    bottom: calc(var(--mobile-bar-h) + env(safe-area-inset-bottom, 0px));
     transform: translate3d(0, 0, 0);
     -webkit-transform: translate3d(0, 0, 0);
     pointer-events: auto;
-    padding-bottom: calc(var(--mobile-bar-h) + env(safe-area-inset-bottom, 0px));
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
   }
