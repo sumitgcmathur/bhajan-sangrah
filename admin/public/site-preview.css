@@ -1735,11 +1735,6 @@ body.search-panel-open {
     pointer-events: none;
   }
 
-  /* Sidebar lives inside .site-shell (z-index 1); lift shell so drawer stacks above .mobile-bar (500). */
-  .site-shell:has(.site-sidebar.is-open) {
-    z-index: 530;
-  }
-
   .site-sidebar.is-open {
     z-index: 520;
     transform: translate3d(0, 0, 0);
