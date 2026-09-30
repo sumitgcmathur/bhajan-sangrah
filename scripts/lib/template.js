@@ -107,7 +107,7 @@ function renderIconLinks(base, config) {
   const type = iconTypeFromHref(iconHref);
   const typeAttr = type ? ` type="${type}"` : '';
   return (
-    `<link rel="icon"${typeAttr} href="${iconHref}">\n` +
+    `<link rel="icon"${typeAttr} href="${iconHref}\n` +
     `<link rel="apple-touch-icon" sizes="180x180" href="${pwa192 || iconHref}">\n` +
     `<link rel="manifest" href="${manifest}">\n`
   );
@@ -152,7 +152,7 @@ function renderSearchPanel() {
   </div>
   <div class="bhajan-search-panel__body">
     <label class="visually-hidden" for="bhajan-search">भजन खोजें</label>
-    <input type="search" id="bhajan-search" class="bhajan-search__input" placeholder="शब्द या पंक्ति लिखें…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="bhajan-search-results" aria-autocomplete="list">
+    <input type="search" id="bhajan-search" class="bhajan-search__input" placeholder="शब्द या पंक्ति लिखें…" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false">
     <ul id="bhajan-search-results" class="bhajan-search__results" role="listbox" hidden></ul>
   </div>
 </aside>`;
@@ -208,11 +208,11 @@ function renderMobileBar(isSectionPage, isHomePage) {
     ? `<button type="button" class="chrome-toggle-btn mobile-bar__btn mobile-bar__btn--chrome" data-action="bar-toggle" aria-pressed="false" aria-label="पट्टी छिपाएँ">${renderChromeHideIcon()}</button>`
     : '';
   return `<nav class="mobile-bar" aria-label="मुख्य मेनू">
-  <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">≡</span></button>
+  <button type="button" class="mobile-bar__btn sidebar-toggle" data-action="menu" aria-expanded="false" aria-controls="site-sidebar" aria-label="मेनू"><span class="mobile-bar__icon" aria-hidden="true">☰</span></button>
   ${indexBtn}
   <button type="button" class="mobile-bar__btn search-toggle" aria-expanded="false" aria-controls="bhajan-search-panel" aria-label="भजन खोजें">${renderToolbarSearchIcon()}</button>
   <button type="button" class="mobile-bar__btn" data-action="share" aria-label="लिंक साझा करें">${renderToolbarShareIcon()}</button>
-  <button type="button" class="mobile-bar__btn" data-action="theme" aria-pressed="false" aria-label="गहरा रंग"><span class="mobile-bar__icon mobile-bar__icon--theme" aria-hidden="true">☽</span></button>
+  <button type="button" class="mobile-bar__btn" data-action="theme" aria-pressed="false" aria-label="गहरा रंग"><span class="mobile-bar__icon mobile-bar__icon--theme" aria-hidden="true">◐</span></button>
   ${barToggle}
 </nav>`;
 }
@@ -357,16 +357,12 @@ function wrapCollapsibleBhajanIndex(innerHtml, count, opts = {}) {
 }
 
 function renderBhajanIndexItem(b, opts = {}) {
-  const { href, num, sectionTitle } = opts;
-  const sectionHtml = sectionTitle
-    ? ` <span class="bhajan-index__section">(${escapeHtml(sectionTitle)})</span>`
-    : '';
-  return `<li><a href="${href}"><span class="bhajan-index__num">${bhajanNumberLabel(num)}</span>${escapeHtml(b.title)}${sectionHtml}</a></li>`;
+  const { href, num } = opts;
+  return `<li><a href="${href}"><span class="bhajan-index__num">${bhajanNumberLabel(num)}</span>${escapeHtml(b.title)}</a></li>`;
 }
 
 function renderBhajanIndexList(bhajans, section, opts = {}) {
   const pageBase = opts.pageBase || '';
-  const sectionTitle = opts.showSection ? section.title : null;
   const items = bhajans
     .map((b, i) => {
       const id = b.id || anchorId(section.slug, b.title, i);
@@ -374,7 +370,7 @@ function renderBhajanIndexList(bhajans, section, opts = {}) {
       const href = opts.crossSection
         ? `${pageBase}${section.slug}.html#${id}`
         : `#${id}`;
-      return renderBhajanIndexItem(b, { href, num, sectionTitle });
+      return renderBhajanIndexItem(b, { href, num });
     })
     .join('\n');
   return `<ul class="content-index">${items}</ul>`;
@@ -392,11 +388,7 @@ function renderGroupedBhajanIndexList(groups, section, opts = {}) {
           const href = opts.crossSection
             ? `${opts.pageBase || ''}${section.slug}.html#${b.id}`
             : `#${b.id}`;
-          return renderBhajanIndexItem(b, {
-            href,
-            num: labelNum,
-            sectionTitle: opts.showSection ? section.title : null,
-          });
+          return renderBhajanIndexItem(b, { href, num: labelNum });
         })
         .join('\n');
       return `<section class="index-group">
@@ -520,6 +512,13 @@ function renderHomeBanner(config, base) {
   return renderPageBanner(src, config.site_title, { hero: true });
 }
 
+function renderHomeShortcutBanner(config, base) {
+  const src = config?.home_banner ? pageUrl(base, config.home_banner) : '';
+  if (!src) return '';
+  const homeHref = pageUrl(base, 'index.html');
+  return `<a class="home-shortcut" href="${homeHref}" aria-label="मुख्य पृष्ठ पर जाएँ" title="मुख्य पृष्ठ पर जाएँ">${renderPageBanner(src, 'मुख्य पृष्ठ', { hero: true })}</a>`;
+}
+
 function renderSectionBanner(section, base) {
   if (!section.banner) return '';
   return renderPageBanner(pageUrl(base, section.banner), section.title, { hero: true });
@@ -534,14 +533,14 @@ function renderMasterBhajanIndex(allEntries, base) {
       const { bhajan, section } = entry;
       const id = bhajan.id || anchorId(section.slug, bhajan.title, i);
       const href = `${pageBase}${section.slug}.html#${id}`;
-      return renderBhajanIndexItem(bhajan, { href, num: i + 1, sectionTitle: section.title });
+      return renderBhajanIndexItem(bhajan, { href, num: i + 1 });
     })
     .join('\n');
   const inner = `<ul class="content-index content-index--master">${items}</ul>`;
   return wrapCollapsibleBhajanIndex(inner, sorted.length, {
     id: 'master-bhajan-index',
     panelId: 'master-bhajan-index-panel',
-    label: 'सभी भजन — शीर्षकानुसार',
+    label: 'सूचि',
     extraClass: 'bhajan-index--master',
     defaultOpen: true,
   });
@@ -554,12 +553,12 @@ function renderIndex(config, sections, base, sectionCounts, allBhajanEntries, un
     ? renderMasterBhajanIndex(allBhajanEntries, base)
     : '';
   const body = `${renderHomeBanner(config, base)}
-<main class="content-main content-main--home">
-  <h1 class="home-title">${escapeHtml(config.site_title)}</h1>
-  ${renderHomeStats(totalBhajans, sections.length)}
-  ${renderSectionGrid(sections, base, config, counts)}
-  ${masterIndex}
-</main>`;
+ <main class="content-main content-main--home">
+   <h1 class="home-title">${escapeHtml(config.site_title)}</h1>
+   ${renderHomeStats(totalBhajans, sections.length)}
+   ${renderSectionGrid(sections, base, config, counts)}
+   ${masterIndex}
+ </main>`;
 
   return renderPage({
     pageTitle: config.site_title,
@@ -616,7 +615,9 @@ function renderSectionPage(section, bhajans, config, sections, base, sectionCoun
   const navList = flattenBhajansForNav(bhajans, section, grouped, groups);
   const navJson = escapeHtml(JSON.stringify(navList));
   const wm = sectionWatermarkAttrs(section, base);
+  const homeShortcut = renderHomeShortcutBanner(config, base);
   const body = `${heroHtml || ''}
+${homeShortcut || ''}
 ${renderSectionScrollHeader(section.title, navList.length)}
 <main class="content-main content-main--section${wm.classSuffix}" data-section-title="${escapeHtml(section.title)}" data-section-slug="${escapeHtml(section.slug)}" data-bhajan-nav="${navJson}">
   ${wm.markup}
