@@ -535,7 +535,6 @@ function renderSectionBanner(section, base) {
 }
 
 function renderMasterBhajanIndex(allEntries, sectionsOrBase, maybeBase) {
-  const { compareBhajanByTitle } = require('./sections');
   const sections = Array.isArray(sectionsOrBase) ? sectionsOrBase : [];
   const base = maybeBase || (Array.isArray(sectionsOrBase) ? './' : sectionsOrBase) || './';
   const groupedBySection = new Map();
@@ -550,7 +549,12 @@ function renderMasterBhajanIndex(allEntries, sectionsOrBase, maybeBase) {
   }
 
   for (const group of groupedBySection.values()) {
-    group.items.sort((a, b) => compareBhajanByTitle(a.bhajan, b.bhajan));
+    const bhajans = group.items.map((entry) => entry.bhajan);
+    if (!sectionUsesGroups(group.section, bhajans)) continue;
+    const entryByBhajan = new Map(group.items.map((entry) => [entry.bhajan, entry]));
+    group.items = bhajansByGroup(bhajans, group.section)
+      .flatMap((bhajanGroup) => bhajanGroup.items)
+      .map((bhajan) => entryByBhajan.get(bhajan));
   }
 
   const orderedSections = sections.length
