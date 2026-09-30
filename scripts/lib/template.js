@@ -522,11 +522,10 @@ function renderHomeBanner(config, base) {
   return renderPageBanner(src, config.site_title, { hero: true });
 }
 
-function renderHomeShortcutBanner(config, base) {
-  const src = config?.home_banner ? pageUrl(base, config.home_banner) : '';
-  if (!src) return '';
+function renderHomeShortcutLink(config, base) {
   const homeHref = pageUrl(base, 'index.html');
-  return `<a class="home-shortcut" href="${homeHref}" aria-label="मुख्य पृष्ठ पर जाएँ" title="मुख्य पृष्ठ पर जाएँ">${renderPageBanner(src, config.site_title, { hero: false })}</a>`;
+  const iconSrc = pageUrl(base, config?.site_icon || 'assets/icons/favicon.jpg');
+  return `<a class="section-home-link" href="${homeHref}" aria-label="मुख्य पृष्ठ पर जाएँ" title="मुख्य पृष्ठ पर जाएँ"><img src="${iconSrc}" width="24" height="24" alt="" loading="lazy" decoding="async"></a>`;
 }
 
 function renderSectionBanner(section, base) {
@@ -657,13 +656,14 @@ function renderSectionPage(section, bhajans, config, sections, base, sectionCoun
   const navList = flattenBhajansForNav(bhajans, section, grouped, groups);
   const navJson = escapeHtml(JSON.stringify(navList));
   const wm = sectionWatermarkAttrs(section, base);
-  const homeShortcut = renderHomeShortcutBanner(config, base);
   const body = `${heroHtml || ''}
-${homeShortcut || ''}
 ${renderSectionScrollHeader(section.title, navList.length)}
 <main class="content-main content-main--section${wm.classSuffix}" data-section-title="${escapeHtml(section.title)}" data-section-slug="${escapeHtml(section.slug)}" data-bhajan-nav="${navJson}">
   ${wm.markup}
-  <h1 class="section-title">${escapeHtml(section.title)}</h1>
+  <div class="section-heading">
+    ${renderHomeShortcutLink(config, base)}
+    <h1 class="section-title">${escapeHtml(section.title)}</h1>
+  </div>
   ${indexHtml}
   ${articlesHtml}
 </main>
