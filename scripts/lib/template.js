@@ -222,8 +222,9 @@ function renderBarRestoreFab() {
   return `<button type="button" class="chrome-toggle-btn mobile-bar-restore" id="mobile-bar-restore" hidden aria-label="पट्टी दिखाएँ">${renderChromeRestoreIcon()}</button>`;
 }
 
-function renderSectionScrollHeader(sectionTitle, total) {
+function renderSectionScrollHeader(sectionTitle, total, config, base) {
   return `<div class="section-scroll-header" id="section-scroll-header" hidden aria-live="polite">
+  ${renderHomeShortcutLink(config, base)}
   <span class="section-scroll-header__title">${escapeHtml(sectionTitle)}</span>
   <span class="section-scroll-header__progress" id="section-scroll-progress">१ / ${total}</span>
 </div>`;
@@ -525,7 +526,7 @@ function renderHomeBanner(config, base) {
 function renderHomeShortcutLink(config, base) {
   const homeHref = pageUrl(base, 'index.html');
   const iconSrc = pageUrl(base, config?.site_icon || 'assets/icons/favicon.jpg');
-  return `<a class="section-home-link" href="${homeHref}" aria-label="मुख्य पृष्ठ पर जाएँ" title="मुख्य पृष्ठ पर जाएँ"><img src="${iconSrc}" width="24" height="24" alt="" loading="lazy" decoding="async"></a>`;
+  return `<a class="section-scroll-header__home" href="${homeHref}" aria-label="मुख्य पृष्ठ पर जाएँ" title="मुख्य पृष्ठ पर जाएँ"><img src="${iconSrc}" width="20" height="20" alt="" loading="lazy" decoding="async"></a>`;
 }
 
 function renderSectionBanner(section, base) {
@@ -656,9 +657,8 @@ function renderSectionPage(section, bhajans, config, sections, base, sectionCoun
   const navList = flattenBhajansForNav(bhajans, section, grouped, groups);
   const navJson = escapeHtml(JSON.stringify(navList));
   const wm = sectionWatermarkAttrs(section, base);
-  const body = `${renderHomeShortcutLink(config, base)}
-${heroHtml || ''}
-${renderSectionScrollHeader(section.title, navList.length)}
+  const body = `${heroHtml || ''}
+${renderSectionScrollHeader(section.title, navList.length, config, base)}
 <main class="content-main content-main--section${wm.classSuffix}" data-section-title="${escapeHtml(section.title)}" data-section-slug="${escapeHtml(section.slug)}" data-bhajan-nav="${navJson}">
   ${wm.markup}
   <h1 class="section-title">${escapeHtml(section.title)}</h1>
