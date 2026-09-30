@@ -656,14 +656,12 @@ function renderSectionPage(section, bhajans, config, sections, base, sectionCoun
   const navList = flattenBhajansForNav(bhajans, section, grouped, groups);
   const navJson = escapeHtml(JSON.stringify(navList));
   const wm = sectionWatermarkAttrs(section, base);
-  const body = `${heroHtml || ''}
+  const body = `${renderHomeShortcutLink(config, base)}
+${heroHtml || ''}
 ${renderSectionScrollHeader(section.title, navList.length)}
 <main class="content-main content-main--section${wm.classSuffix}" data-section-title="${escapeHtml(section.title)}" data-section-slug="${escapeHtml(section.slug)}" data-bhajan-nav="${navJson}">
   ${wm.markup}
-  <div class="section-heading">
-    ${renderHomeShortcutLink(config, base)}
-    <h1 class="section-title">${escapeHtml(section.title)}</h1>
-  </div>
+  <h1 class="section-title">${escapeHtml(section.title)}</h1>
   ${indexHtml}
   ${articlesHtml}
 </main>

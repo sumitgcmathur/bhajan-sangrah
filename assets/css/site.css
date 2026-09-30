@@ -875,19 +875,13 @@ body.search-panel-open {
 }
 
 /* Section page heading */
-.section-heading {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 1.25rem;
-}
-
 .section-home-link {
-  display: grid;
-  flex: 0 0 2.25rem;
-  place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0.25rem 0 0.25rem var(--content-pad-x);
   border-radius: 0.25rem;
 }
 
@@ -909,9 +903,7 @@ body.search-panel-open {
 }
 
 .section-title {
-  flex: 1;
-  min-width: 0;
-  margin: 0;
+  margin: 0 0 1.25rem;
   padding: 0.85rem 1rem 0.95rem;
   font-size: clamp(1.55rem, 5.5vw, 1.95rem);
   font-weight: 700;
