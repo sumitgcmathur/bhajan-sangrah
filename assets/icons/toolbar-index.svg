@@ -1,0 +1,15 @@
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M5.25 4.25h10.85L17.75 6v13.25H5.25V4.25z" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+  <path d="M15.9 4.25V6.35h2.1" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M15.9 4.25 17.75 6.35 15.9 6.35z" fill="#fffdf9" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+  <rect x="7.1" y="7.85" width="9.4" height="2.15" rx="0.45" fill="#9b2d4a" opacity="0.88"/>
+  <circle cx="7.85" cy="11.85" r="0.75" fill="currentColor"/>
+  <path d="M9.35 11.85h5.1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M15.35 11.85h1.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="7.85" cy="14.15" r="0.75" fill="currentColor"/>
+  <path d="M9.35 14.15h5.1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M15.35 14.15h1.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="7.85" cy="16.45" r="0.75" fill="currentColor"/>
+  <path d="M9.35 16.45h5.1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M15.35 16.45h1.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,33 @@
+{
+  "name": "भजन संग्रह",
+  "short_name": "भजन संग्रह",
+  "description": "भक्ति भजन संग्रह — स्थानीय ऑफ़लाइन पढ़ने के लिए इंस्टॉल करें",
+  "start_url": "/bhajan-sangrah/index.html",
+  "scope": "/bhajan-sangrah/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf6f0",
+  "theme_color": "#8b3a4a",
+  "lang": "hi",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "assets/icons/pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
